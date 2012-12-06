@@ -28,3 +28,28 @@ img.page-image {
     margin-bottom: 16px;
 }
 
+#myModal .modal-body {
+    max-height: 500px;
+}
+
+#myModal {
+    width: 800px;
+    margin: -170px 0 0 -400px;
+}
+
+.modal.fade.in {
+    top: 30% !important;
+}
+
+.modal-body table, .modal-body table:focus {
+    outline: 0px solid transparent;
+}
+
+.modal-body td:hover {
+    background-color: #cccccc;
+}
+
+.debug-canvas {
+    position: absolute;
+    z-index: 1000;
+}
