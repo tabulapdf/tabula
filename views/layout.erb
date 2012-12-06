@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" type="text/css" href="/css/imgareaselect-default.css" />
+    <link rel="stylesheet" type="text/css" href="/css/megalist.css" />
+    <link rel="stylesheet" type="text/css" href="/css/tabula_web.css" />
+    <title>Vertical projection Sarasa</title>
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Tabula</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about" rel="popover" data-html="true" data-placement="bottom" data-content="<p><strong>Tabula</strong> is a tool to help liberate data tables trapped inside PDF files</p><br><p>It was created by <a href='http://twitter.com/manuelaristaran' target='_blank'>@manuelaristaran</a></p>" data-title="What is <strong>Tabula</strong>?">About</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/scripts/jquery.imgareaselect.pack.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+      $(function() {
+          $("a[href='#about']").popover();
+      });
+    </script>
+
+    <br>    <br>    <br>
+    <%= content %>
+    <!-- script src="http://d3js.org/d3.v2.js"></script -->
+  </body>
+</html>

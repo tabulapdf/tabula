@@ -1,0 +1,94 @@
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span3">
+      <div class="well sidebar-nav affix">
+        <ul class="thumbnail-list">
+          <% page_images.each_with_index do |pi, i| %>
+          <li data-page="page-<%= i + 1 %>">
+            <img src="<%= pi.sub(/^static/, '') %>" width="200">
+            <br>Page <%= i + 1 %>
+          </li>
+          <% end %>
+        </ul>
+      </div>
+    </div> <!-- /sidebar container -->
+    <div class="span9">
+      <div class="row">
+        <div class="alert alert-info span7" >
+          <button type="button" class="close" data-dismiss="alert">×</button>
+          <strong>How to use</strong>: make a rectangular selection over a table on the PDF pages. That's it!
+        </div>
+      </div>
+      <div class="row">
+        <% page_images.each_with_index do |pi, i| %>
+        <img class="page-image" id="page-<%= i + 1 %>" src="<%= pi.sub(/^static/, '') %>" data-page="<%= i + 1 %>" data-original-width="<%= page_sizes[i][0] %>" data-original-height="<%= page_sizes[i][1] %>"><br>
+        <% end %>
+      </div>
+    </div> <!-- /main container -->
+
+  </div>
+</div>
+
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Extracted tabular data</h3>
+  </div>
+  <div class="modal-body">
+    <p>One fine body…</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <a class="btn btn-primary">Download this data as CSV</a>
+  </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+
+    $('.thumbnail-list li').click(function() {
+        
+        console.log($('#' + $(this).data('page')).position());
+        var contentPosTop = $('#' + $(this).data('page')).position().top - 60;
+        $('html, body').stop().animate({
+            scrollTop: contentPosTop
+        }, 600);
+    });
+
+    $('img.page-image').imgAreaSelect({
+        handles: true,
+        minHeight: 50, minWidth: 100,
+        onSelectEnd: function(img, selection) {
+            if (selection.height * selection.width < 5000) return;
+            var thumb_width = $(img).width(); var thumb_height = $(img).height();
+
+            var pdf_width = parseInt($(img).data('original-width')); 
+            var pdf_height = parseInt($(img).data('original-height'));
+
+            var pdf_id = window.location.pathname.split('/')[2];
+
+            $.get('/pdf/' + pdf_id + '/data',
+                  { 
+                      x1: selection.x1 * (pdf_width / thumb_width), 
+                      x2: selection.x2 * (pdf_width / thumb_width),
+                      y1: selection.y1 * (pdf_height / thumb_height),
+                      y2: selection.y2 * (pdf_height / thumb_height),
+                      page: $(img).data('page')
+                  },
+                  function(data) {
+                      var tableHTML = '<table class="table table-condensed">';
+                      $.each(data, function(i, row) {
+                          tableHTML += '<tr><td>' + $.map(row, function(cell, j) { return cell.text; }).join('</td><td>') + '</td></tr>';
+                      });
+                      tableHTML += '</table>';
+                      console.log(data);
+
+                      $('.modal-body').html(tableHTML);
+                      $('.modal-footer a.btn-primary').attr('href', '/pdf/' + pdf_id + '/data?format=csv');
+                      $('#myModal').modal();
+                                                    
+                  });
+        }
+    });
+});
+</script>

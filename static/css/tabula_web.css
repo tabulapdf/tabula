@@ -1,0 +1,30 @@
+.sidebar-nav {
+    height: 85% !important;
+    overflow: auto !important;
+}
+
+.thumbnail-list {
+    margin-left: 0;
+    list-style-type: none;
+}
+
+  .thumbnail-list li {
+      margin: 5px;
+      text-align: center;
+      margin-bottom: 15px;
+  }
+
+  .thumbnail-list li:hover {
+      cursor: pointer;
+      background-color: #cccccc;
+  }
+
+    .thumbnail-list li img {
+/*        display: block; */
+    }
+
+img.page-image {
+    border: 1px solid #888888;
+    margin-bottom: 16px;
+}
+
