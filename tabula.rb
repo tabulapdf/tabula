@@ -32,19 +32,6 @@ module Tabula
     end
 
     def contains?(t) # called 'in_the_line' in original version
-      # Font f = (Font) this.fonts.elementAt(t.font);
-      
-      # 	int text_bottom = t.top + f.size;
-      
-      # 	if (t.top >= l.first_top && t.top <= l.bottom) {
-      # 		return true;
-      # 	} else if (text_bottom >= l.first_top && text_bottom <= l.bottom) {
-      # 		return true;
-      # 	} else if (t.top <= l.first_top && text_bottom >= l.bottom) {
-      # 		return true;
-      # 	} else {
-      # 		return false;
-      # 	}
       text_bottom = t[:top] + t[:height] # java version uses font size
       # instead of t[:height] - why?
       #    require 'ruby-debug'; debugger
@@ -53,7 +40,87 @@ module Tabula
 
   end
 
-  def Tabula.make_table(text_elements) 
+  class Column
+    attr_accessor :left, :width
+    
+    def initialize(left, width)
+      @left = left; @width = width
+    end
+
+    def right
+      left + width
+    end
+    
+  end
+
+  CHARACTER_DISTANCE_THRESHOLD = 1.8
+
+  def Tabula.should_merge?(char1, char2)
+    char1_x = char1[:left]; char1_yp = char1[:top] + char1[:height]; char1_xp = char1[:left] + char1[:width]; char1_y = char1[:top]
+    char2_x = char2[:left]; char2_yp = char2[:top] + char2[:height]; char2_xp = char2[:left] + char2[:width]; char2_y = char2[:top]
+    distance = char2_x - char1_xp
+    
+    (char2_y == char1_y) or 
+      (char2_y.between?(char1_y, char1_yp) and char1_yp.between?(char2_y, char2_yp)) or
+      (char1_y.between?(char2_y, char2_yp) and char2_yp.between?(char1_y, char1_yp)) or
+      (char1_y.between?(char2_y, char2_yp) and char1_yp.between?(char2_y, char2_yp)) or 
+      (char2_y.between?(char1_y, char1_yp)  and char2_yp.between?(char1_y, char1_yp)) or
+      (char1[:height] == 0 and char2[:height] != 0) or
+      (char2[:height] == 0 and char1[:height] != 0) and
+      distance.abs < CHARACTER_DISTANCE_THRESHOLD
+  end
+
+  # innefficient TODO optimize
+  def Tabula.group_by_columns(text_elements)
+    columns = [Column.new(text_elements.first[:left], text_elements.first[:width])]
+    text_elements[1..-1].each do |te|
+      if column = columns.detect { |c| 
+          (te[:left].between?(c.left, c.right) and te[:right].between?(c.left, c.right)) or
+          (te[:left].between?(c.left, c.right)) or
+          (te[:right].between?(c.left, c.right)) or
+          (c.right.between?(te[:left], te[:right]) and c.left.between?(te[:left], te[:right]))
+        }
+        column.update_boundaries!(te)
+        columns << column
+      else
+        columns << [Column.new(te.first[:left], te.first[:width])]
+      end
+    end
+    columns
+  end
+
+  def Tabula.merge_words(text_elements)
+    current_word_index = i = 0
+    char1 = text_elements[i]
+
+    while i < text_elements.size-1 do
+
+      char2 = text_elements[i+1]
+
+      # if text_elements[current_word_index][:text][0..4] == 'La Pa'
+      #   require 'ruby-debug'; debugger
+      # end
+
+      next if char2.nil? or char1.nil? 
+
+      if self.should_merge?(text_elements[current_word_index], char2)
+        text_elements[current_word_index][:text]   << char2[:text]
+        text_elements[current_word_index][:width]  += char2[:width]
+        text_elements[current_word_index][:height]  = [text_elements[current_word_index][:height], char2[:height]].max
+
+        char1 = char2
+        text_elements[i+1] = nil
+      else
+        current_word_index = i+1
+      end
+      i += 1
+    end
+
+    text_elements.compact!
+
+  end
+
+  def Tabula.make_table(text_elements, merge_words=false) 
     # first approach. so naive, candid and innocent that it makes you
     # cry.
     
@@ -63,6 +130,9 @@ module Tabula
     # end
 
     # second approach, inspired in pdf2table first_classifcation
+
+    text_elements = Tabula.merge_words(text_elements) if merge_words
+
     lines = []
     distance = 0
 
