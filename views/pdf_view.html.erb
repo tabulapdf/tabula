@@ -55,9 +55,11 @@ $(function () {
                                                                        }, 600);
                                     });
 
+      query_parameters = {};
+
       $('img.page-image').imgAreaSelect({
                                             handles: true,
-                                            minHeight: 50, minWidth: 100,
+                                            //minHeight: 50, minWidth: 100,
                                             onSelectEnd: function(img, selection) {
                                                 if (selection.height * selection.width < 5000) return;
                                                 var thumb_width = $(img).width(); var thumb_height = $(img).height();
@@ -73,7 +75,8 @@ $(function () {
                                                 var y1 = selection.y1 * (pdf_height / thumb_height);
                                                 var y2 = selection.y2 * (pdf_height / thumb_height);
 
-                                                // we might need to rotate (fucking PDF)
+                                                // rotate the selection (fucking PDF)
+                                                // TODO check this
                                                 if (pdf_rotation != 0) {
                                                     x1 = x1 * Math.cos(pdf_rotation) - y1 * Math.sin(pdf_rotation);
                                                     y1 = y1 * Math.cos(pdf_rotation) + x1 * Math.sin(pdf_rotation);
@@ -82,15 +85,16 @@ $(function () {
 
                                                 }
 
-
-                                                $.get('/pdf/' + pdf_id + '/data',
-                                                      {
+                                                query_parameters = {
                                                           x1: selection.x1 * (pdf_width / thumb_width),
                                                           x2: selection.x2 * (pdf_width / thumb_width),
                                                           y1: selection.y1 * (pdf_height / thumb_height),
                                                           y2: selection.y2 * (pdf_height / thumb_height),
                                                           page: $(img).data('page')
-                                                      },
+                                                      };
+
+                                                $.get('/pdf/' + pdf_id + '/data',
+                                                      query_parameters,
                                                       function(data) {
                                                           var tableHTML = '<table contenteditable="true" class="table table-condensed table-bordered">';
                                                           $.each(data, function(i, row) {
@@ -100,7 +104,7 @@ $(function () {
                                                           console.log(data);
 
                                                           $('.modal-body').html(tableHTML);
-                                                          $('.modal-footer a.btn-primary').attr('href', '/pdf/' + pdf_id + '/data?format=csv');
+                                                          $('.modal-footer a.btn-primary').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(query_parameters));
                                                           $('#myModal').modal();
 
                                                       });

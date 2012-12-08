@@ -42,22 +42,42 @@ module Tabula
 
   class Column
     attr_accessor :left, :width
+    attr_accessor :text_elements
     
-    def initialize(left, width)
+    def initialize(left, width, text_elements=[])
       @left = left; @width = width
+      @text_elements = text_elements
     end
 
     def right
-      left + width
+      self.left + self.width
+    end
+
+    def right=(r)
+      @width = r - left
+    end
+
+    def update_boundaries!(text_element)
+      left  = [text_element[:left], self.left].max
+      right = [text_element[:left] + text_element[:width], self.right].max
+    end
+
+    def inspect
+      vars = self.instance_variables.map{ |v| "#{v}=#{instance_variable_get(v).inspect}"}.join(", ")
+      "<#{self.class}: #{vars}>"
     end
     
   end
 
+  # how to make this dynamic? collecting average character widths? @
+  # TODO investigate
   CHARACTER_DISTANCE_THRESHOLD = 1.8
 
   def Tabula.should_merge?(char1, char2)
-    char1_x = char1[:left]; char1_yp = char1[:top] + char1[:height]; char1_xp = char1[:left] + char1[:width]; char1_y = char1[:top]
-    char2_x = char2[:left]; char2_yp = char2[:top] + char2[:height]; char2_xp = char2[:left] + char2[:width]; char2_y = char2[:top]
+    char1_x = char1[:left]; char1_yp = char1[:top] + char1[:height]
+    char1_xp = char1[:left] + char1[:width]; char1_y = char1[:top]
+    char2_x = char2[:left]; char2_yp = char2[:top] + char2[:height]
+    char2_xp = char2[:left] + char2[:width]; char2_y = char2[:top]
     distance = char2_x - char1_xp
     
     (char2_y == char1_y) or 
@@ -70,20 +90,19 @@ module Tabula
       distance.abs < CHARACTER_DISTANCE_THRESHOLD
   end
 
-  # innefficient TODO optimize
   def Tabula.group_by_columns(text_elements)
-    columns = [Column.new(text_elements.first[:left], text_elements.first[:width])]
+    columns = [Column.new(text_elements.first[:left], text_elements.first[:width], [text_elements.first])]
     text_elements[1..-1].each do |te|
       if column = columns.detect { |c| 
-          (te[:left].between?(c.left, c.right) and te[:right].between?(c.left, c.right)) or
+          (te[:left].between?(c.left, c.right) and (te[:left] + te[:width]).between?(c.left, c.right)) or
           (te[:left].between?(c.left, c.right)) or
-          (te[:right].between?(c.left, c.right)) or
-          (c.right.between?(te[:left], te[:right]) and c.left.between?(te[:left], te[:right]))
+          ((te[:left] + te[:width]).between?(c.left, c.right)) or
+          (c.right.between?(te[:left], (te[:left] + te[:width])) and c.left.between?(te[:left], te[:left] + te[:width]))
         }
         column.update_boundaries!(te)
-        columns << column
+        column.text_elements << te
       else
-        columns << [Column.new(te.first[:left], te.first[:width])]
+        columns << Column.new(te[:left], te[:width], [te])
       end
     end
     columns
