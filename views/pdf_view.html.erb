@@ -38,13 +38,23 @@
     <p>One fine body…</p>
   </div>
   <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <p>
+      <input type="checkbox" id="split_multiline_cells"> Try to split multiline cells
+    </p>
+    <button id="close-modal" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
     <a class="btn btn-primary">Download this data as CSV</a>
   </div>
 </div>
 
 <script type="text/javascript">
 $(function () {
+
+      var lastQuery = {};
+
+      $('input#split_multiline_cells').change(function() {
+                                                  $.extend(lastQuery, { split_multiline_cells: $(this).is(':checked') });
+                                                  doQuery(PDF_ID, lastQuery);
+                                              });
 
       $('.thumbnail-list li').click(function() {
 
@@ -57,42 +67,10 @@ $(function () {
 
       query_parameters = {};
 
-      $('img.page-image').imgAreaSelect({
-                                            handles: true,
-                                            //minHeight: 50, minWidth: 100,
-                                            onSelectEnd: function(img, selection) {
-                                                if (selection.height * selection.width < 5000) return;
-                                                var thumb_width = $(img).width(); var thumb_height = $(img).height();
+      var PDF_ID = window.location.pathname.split('/')[2];
 
-                                                var pdf_width = parseInt($(img).data('original-width'));
-                                                var pdf_height = parseInt($(img).data('original-height'));
-                                                var pdf_rotation = parseInt($(img).data('rotation')) * (Math.PI / 180.0);
-
-                                                var pdf_id = window.location.pathname.split('/')[2];
-
-                                                var x1 = (selection.x1 * (pdf_width / thumb_width));
-                                                var x2 = selection.x2 * (pdf_width / thumb_width);
-                                                var y1 = selection.y1 * (pdf_height / thumb_height);
-                                                var y2 = selection.y2 * (pdf_height / thumb_height);
-
-                                                // rotate the selection (fucking PDF)
-                                                // TODO check this
-                                                if (pdf_rotation != 0) {
-                                                    x1 = x1 * Math.cos(pdf_rotation) - y1 * Math.sin(pdf_rotation);
-                                                    y1 = y1 * Math.cos(pdf_rotation) + x1 * Math.sin(pdf_rotation);
-                                                    x2 = x2 * Math.cos(pdf_rotation) - y2 * Math.sin(pdf_rotation);
-                                                    y2 = y2 * Math.cos(pdf_rotation) + x2 * Math.sin(pdf_rotation);
-
-                                                }
-
-                                                query_parameters = {
-                                                          x1: selection.x1 * (pdf_width / thumb_width),
-                                                          x2: selection.x2 * (pdf_width / thumb_width),
-                                                          y1: selection.y1 * (pdf_height / thumb_height),
-                                                          y2: selection.y2 * (pdf_height / thumb_height),
-                                                          page: $(img).data('page')
-                                                      };
-
+      var doQuery = function(pdf_id, query_parameters) {
+                                                lastQuery = query_parameters;
                                                 $.get('/pdf/' + pdf_id + '/data',
                                                       query_parameters,
                                                       function(data) {
@@ -108,8 +86,48 @@ $(function () {
                                                           $('#myModal').modal();
 
                                                       });
-                                            }
-                                        });
+                                            };
+
+      $('img.page-image').imgAreaSelect({
+                                            handles: true,
+                                            //minHeight: 50, minWidth: 100,
+                                            onSelectEnd: function(img, selection) {
+                                                if (selection.height * selection.width < 5000) return;
+                                                var thumb_width = $(img).width(); var thumb_height = $(img).height();
+
+                                                var pdf_width = parseInt($(img).data('original-width'));
+                                                var pdf_height = parseInt($(img).data('original-height'));
+                                                var pdf_rotation = parseInt($(img).data('rotation'));
+
+                                                // if rotated, swap width and height
+                                                if (pdf_rotation == 90 || pdf_rotation == 270) {
+                                                   var tmp = pdf_height;
+                                                   pdf_height = pdf_width;
+                                                   pdf_width = tmp;
+                                                }
+
+                                                console.log('unscaled selection:');
+                                                console.log(selection);
+
+                                                var scale_x = (pdf_width / thumb_width);
+                                                var scale_y = (pdf_height / thumb_height);
+
+                                                var x1 = selection.x1 * scale_x;
+                                                var x2 = selection.x2 * scale_x;
+                                                var y1 = selection.y1 * scale_y;
+                                                var y2 = selection.y2 * scale_y;
+
+                                                var query_parameters = {
+                                                          x1: x1,
+                                                          x2: x2,
+                                                          y1: y1,
+                                                          y2: y2,
+                                                          page: $(img).data('page')
+                                                      };
+
+                                                doQuery(PDF_ID, query_parameters);
+
+                                        }});
 
       /* obtained from: http://jsfiddle.net/timdown/2YcaX/ */
 

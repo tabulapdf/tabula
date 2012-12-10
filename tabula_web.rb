@@ -16,7 +16,6 @@ Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/pdfs", "/s
 
 def run_pdftohtml(file, output_dir)
   `#{Settings::PDFTOHTML_PATH} -xml #{file} #{File.join(output_dir, 'document.xml')}`
-  #`/usr/local/Cellar/pdftohtml/0.40a/bin/pdftohtml -xml #{file} #{File.join(output_dir, 'document.xml')}`
 end
 
 def run_jrubypdftohtml(file, output_dir)
@@ -31,14 +30,13 @@ Cuba.define do
 
   on get do
     on root do
-      puts req.inspect
       res.write view("index.html", )
     end
 
     on "pdf/:file_id/data" do |file_id| # TODO validate that file_id is /[a-f0-9]{40}/
       xml = parse_document_xml(File.join(Dir.pwd, "static/pdfs/#{file_id}/document.xml"))
       
-      text_nodes = xml.xpath("//page[@number=#{req.params['page']}]//text[@top > #{req.params['y1']} and @top < #{req.params['y2']} and @left > #{req.params['x1']} and @left < #{req.params['x2']}]")
+      text_nodes = xml.xpath("//page[@number=#{req.params['page']}]//text[@top > #{req.params['y1']} and (@top + @height) < #{req.params['y2']} and @left > #{req.params['x1']} and (@left + @width) < #{req.params['x2']}]")
 
       text_elements = text_nodes.map { |tn| 
         { 
@@ -46,27 +44,47 @@ Cuba.define do
           top: tn.attr('top').to_f,
           width: tn.attr('width').to_f,
           height: tn.attr('height').to_f,
+          font: tn.attr('font').to_s,
           text: tn.text
         }
       }
 
-      table = Tabula.make_table(text_elements, Settings::USE_JRUBY_ANALYZER).map { |line| 
-        line.texts.sort_by { |t| t[:left] }
+
+      table = Tabula.make_table(text_elements, 
+                                Settings::USE_JRUBY_ANALYZER,
+                                req.params['split_multiline_cells'] == 'true')
+
+      x = table.map(&:text_elements).flatten
+
+#      require 'ruby-debug'; debugger
+
+      table = Tabula.make_table(x, false)
+
+
+      # TODO this is recursive, actually.
+      # see refactor note at the top of tabula.rb
+      # columns = Tabula.group_by_columns(table.map(&:texts).flatten)
+      # puts Tabula.regroup_columns(columns).sort_by(&:left).inspect
+
+      #puts Tabula.multiline_blocks(table.flatten).inspect
+      #puts; puts; puts; puts; puts;
+      #puts table
+
+      line_texts = table.map { |line| 
+        line.text_elements.sort_by { |t| t[:left] }
       }
 
-      #puts Tabula.group_by_columns(table.flatten).map(&:inspect)
-      #puts table
       if req.params['format'] == 'csv'
         res['Content-Type'] = 'text/csv'
         csv_string = CSV.generate { |csv|
-          table.each { |l|
+          line_texts.each { |l|
             csv << l.map { |c| c[:text] }
           }
         }
         res.write csv_string
       else
         res['Content-Type'] = 'application/json'
-        res.write table.to_json
+        res.write line_texts.to_json
       end
 
     end
@@ -74,11 +92,17 @@ Cuba.define do
 
     on "pdf/:file_id" do |file_id| 
       # TODO validate that file_id is  /[a-f0-9]{40}/
-            
-      res.write view("pdf_view.html",
-                     page_images: Dir.glob(File.join("static/pdfs/", file_id, "document_*.jpg")).sort_by { |f| f.gsub(/[^\d]/, '').to_i },
-                     pages:       parse_document_xml(File.join(Dir.pwd, "static/pdfs/#{file_id}/document.xml"))
-                                    .xpath("//page"))
+      document_dir = File.join(Dir.pwd, "static/pdfs/#{file_id}")
+      unless File.directory?(document_dir)
+        res.status = 404
+      else
+        res.write view("pdf_view.html",
+                       page_images: Dir.glob(File.join(document_dir, "document_*.jpg"))
+                         .sort_by { |f| f.gsub(/[^\d]/, '').to_i }
+                         .map { |f| f.gsub(Dir.pwd + '/static', '') },
+                       pages:       parse_document_xml(File.join(document_dir, "document.xml"))
+                         .xpath("//page"))
+      end
       
     end
 
