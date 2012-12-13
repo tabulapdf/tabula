@@ -28,6 +28,19 @@ img.page-image {
     margin-bottom: 16px;
 }
 
+#myModal .modal-body {
+    max-height: 550px;
+}
+
+#myModal {
+    width: 800px;
+    margin: -170px 0 0 -400px;
+}
+
+.modal.fade.in {
+    top: 30% !important;
+}
+
 .modal-body table, .modal-body table:focus {
     outline: 0px solid transparent;
 }

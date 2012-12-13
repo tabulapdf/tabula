@@ -120,7 +120,7 @@ module Tabula
 
   # how to make this dynamic? collecting average character widths? @
   # TODO investigate
-  CHARACTER_DISTANCE_THRESHOLD = 2
+  CHARACTER_DISTANCE_THRESHOLD = 3
 
   def Tabula.should_merge?(char1, char2)
     char1_x = char1[:left]; char1_yp = char1[:top] + char1[:height]
@@ -280,55 +280,59 @@ module Tabula
     avg_distance = columns.map(&:average_line_distance).inject{ |sum, el| sum + el }.to_f / columns.size
 
     if split_multiline_cells
-    columns.each_with_index do |column, column_idx|
-      i = 0
-      while i < column.text_elements.size - 1 do
-        te = column.text_elements[i]
-        te_next = column.text_elements[i+1]
+      columns.each_with_index do |column, column_idx|
+        i = 0
+        while i < column.text_elements.size - 1 do
+          te = column.text_elements[i]
+          te_next = column.text_elements[i+1]
 
-        if (te_next[:top] - te[:top]).abs < avg_distance and # closer than avg
-            te_next[:font] == te[:font] # same font
+          if (te_next[:top] - te[:top]).abs < avg_distance and # closer than avg
+              te_next[:font] == te[:font] # same font
 
-          # find these text_elements in `lines` and merge
-          te_line = lines.index { |l| l.text_elements.include?(te) }
-          te_next_line = lines.index { |l| l.text_elements.include?(te_next) }
+            # find these text_elements in `lines` and merge
+            te_line = lines.index { |l| l.text_elements.include?(te) }
+            te_next_line = lines.index { |l| l.text_elements.include?(te_next) }
 
-          # cells are being duplicated, for some reason
-          # avoid that bug, in a nasty way.
-          if (te_line.nil? or te_next_line.nil?)
-            i += 1
-            next 
+            # cells are being duplicated, for some reason
+            # work around that bug, in a nasty way.
+            if (te_line.nil? or te_next_line.nil?)
+              i += 1
+              next 
+            end
+
+            # shit, this is getting ugly
+            # these are references to the to-be-merged elements
+            # in the 'lines' array
+            te_in_lines = lines[te_line].text_elements.detect { |x| x == te }
+            te_next_in_lines = lines[te_next_line].text_elements.detect { |x| x == te_next }
+            if te_in_lines == te_next_in_lines
+              i +=1
+              next
+            end
+            
+            te_in_lines[:text]   << te_next_in_lines[:text]
+            te_in_lines[:width]   = [te_in_lines[:width], te_next_in_lines[:width]].max
+            te_in_lines[:left]    = [te_in_lines[:left], te_next_in_lines[:left]].min
+            te_in_lines[:height] += te_next_in_lines[:height]
+            
+            lines[te_next_line].text_elements.delete(te_next_in_lines)
+
+            #          puts "line for te: #{te_line} - line for te_next: #{te_next_line}"
+
+            #          lines[te_line][lines[te_line].
+            
+            #          puts "Column: #{column_idx} - LESS THAN AVERAGE, MOTHERFUCKER!: '#{te[:text]}' - '#{te_next[:text]}'"
           end
-
-          # shit, this is getting ugly
-          # these are references to the to-be-merged elements
-          # in the 'lines' array
-          te_in_lines = lines[te_line].text_elements.detect { |x| x == te }
-          te_next_in_lines = lines[te_next_line].text_elements.detect { |x| x == te_next }
-          if te_in_lines == te_next_in_lines
-            i +=1
-            next
-          end
-          
-          te_in_lines[:text]   << te_next_in_lines[:text]
-          te_in_lines[:width]   = [te_in_lines[:width], te_next_in_lines[:width]].max
-          te_in_lines[:left]    = [te_in_lines[:left], te_next_in_lines[:left]].min
-          te_in_lines[:height] += te_next_in_lines[:height]
-          
-          lines[te_next_line].text_elements.delete(te_next_in_lines)
-
-#          puts "line for te: #{te_line} - line for te_next: #{te_next_line}"
-
-#          lines[te_line][lines[te_line].
-          
-#          puts "Column: #{column_idx} - LESS THAN AVERAGE, MOTHERFUCKER!: '#{te[:text]}' - '#{te_next[:text]}'"
+          i += 1
         end
-        i += 1
       end
-    end
-    end  
+    end  # /if split_multiline_cells
 
-    lines.each { |l| l.text_elements.uniq! }
+    lines.each { |l| 
+      l.text_elements.uniq!  # TODO WHY do I have to do this?
+      
+      
+    }
   end
 
 
