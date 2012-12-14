@@ -11,7 +11,6 @@ module Tabula
     attr_accessor :top, :left, :width, :height
 
     def merge!(other)
-      raise TypeError, "argument must be a #{self.class}" if self.class != other.class
       self.top    = [self.top, other.top].min
       self.left   = [self.left, other.left].min
       self.width += other.width
@@ -67,9 +66,6 @@ module Tabula
 
       super(other)
       self.text << other.text
-      # self.width += other.width
-      # self.height = [self.height, other.height].max
-      
     end
 
 
