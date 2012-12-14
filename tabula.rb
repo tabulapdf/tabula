@@ -6,6 +6,44 @@
 
 module Tabula
 
+  module ZoneEntity
+    attr_accessor :top, :left, :width, :height
+  end
+
+  class TextElement
+    include ZoneEntity
+    attr_accessor :font, :text
+
+    def initialize(top, left, width, height, font, text)
+      self.top = top
+      self.left = left
+      self.width = width
+      self.height = height
+      self.font = font
+      self.text = text
+    end
+
+    def merge!(other)
+      raise TypeError, "argument is not a TextElement" unless other.instance_of?(TextElement)
+
+      self.text << other.text
+      self.width += other.width
+      self.height = [self.height, other.height].max
+      
+    end
+
+
+    def to_json(arg)
+      hash = {}
+      [:@top, :@left, :@width, :@height, :@font, :@text].each do |var|
+        hash[var[1..-1]] = self.instance_variable_get var
+      end
+      hash.to_json
+    end
+
+  end
+
+
   class Line
     attr_accessor :top, :bottom, :height, :leftmost, :rightmost, :font, :last_top, :first_top, :used_space, :typ, :text_elements  
     
@@ -23,33 +61,33 @@ module Tabula
     end
 
     def set_new_line_values!(t)
-      self.top        = t[:top]
-      self.bottom     = t[:top] + t[:height]
+      self.top        = t.top
+      self.bottom     = t.top + t.height
       self.height     = bottom - top
-      self.leftmost   = t[:left]
-      self.rightmost  = t[:left] + t[:width]
-      #self.font      = t[:font]
-      self.last_top   = t[:top]
-      self.first_top  = t[:top]
-      self.used_space = t[:width] * t[:height]
+      self.leftmost   = t.left
+      self.rightmost  = t.left + t.width
+      #self.font      = t.font
+      self.last_top   = t.top
+      self.first_top  = t.top
+      self.used_space = t.width * t.height
     end
 
     def update_line_values!(t)
-      self.top        = [t[:top], top].min
-      b               = t[:top] + t[:height]
+      self.top        = [t.top, top].min
+      b               = t.top + t.height
       self.bottom     = [b, bottom].max
       self.height     = bottom - top
-      self.leftmost   = [t[:left], leftmost].min
-      self.rightmost  = [rightmost, t[:left] + t[:width]].max
-      self.last_top   = [t[:top], last_top].max
-      self.first_top  = [t[:top], first_top].min
-      self.used_space = t[:width] * t[:height]
+      self.leftmost   = [t.left, leftmost].min
+      self.rightmost  = [rightmost, t.left + t.width].max
+      self.last_top   = [t.top, last_top].max
+      self.first_top  = [t.top, first_top].min
+      self.used_space = t.width * t.height
     end
 
     def contains?(t) # called 'in_the_line' in original version
-      # java version uses font size instead of t[:height] - why?
-      text_bottom = t[:top] + t[:height] 
-      (t[:top] > self.first_top && t[:top] <= self.bottom) || (text_bottom > self.first_top && text_bottom <= self.bottom) || (t[:top] <= self.first_top && text_bottom >= self.bottom)
+      # java version uses font size instead of t.height - why?
+      text_bottom = t.top + t.height 
+      (t.top > self.first_top && t.top <= self.bottom) || (text_bottom > self.first_top && text_bottom <= self.bottom) || (t.top <= self.first_top && text_bottom >= self.bottom)
     end
 
     def multiline?
@@ -78,12 +116,12 @@ module Tabula
     def <<(te)
       self.text_elements << te
       self.update_boundaries!(te)
-      self.text_elements.sort_by! { |t| t[:top] }
+      self.text_elements.sort_by! { |t| t.top }
     end
 
     def update_boundaries!(text_element)
-      self.left  = [text_element[:left], self.left].min
-      self.right = [text_element[:left] + text_element[:width], self.right].max
+      self.left  = [text_element.left, self.left].min
+      self.right = [text_element.left + text_element.width, self.right].max
     end
 
     # this column can be merged with other_column?
@@ -106,27 +144,29 @@ module Tabula
       # this might help to MERGE lines that are shouldn't be split
       # e.g. cells with > 1 lines of text
       1.upto(self.text_elements.size - 1).map { |i|
-        self.text_elements[i][:top] - self.text_elements[i - 1][:top]
+        self.text_elements[i].top - self.text_elements[i - 1].top
       }.inject{ |sum, el| sum + el }.to_f / self.text_elements.size
     end
 
     def inspect
       vars = (self.instance_variables - [:@text_elements]).map{ |v| "#{v}=#{instance_variable_get(v).inspect}" }
-      texts = self.text_elements.sort_by { |te| te[:top] }.map { |te| te[:text] }
+      texts = self.text_elements.sort_by { |te| te.top }.map { |te| te.text }
       "<#{self.class}: #{vars.join(', ')}, @text_elements=#{texts.join(', ')}>"
     end
     
   end
+
+  
 
   # how to make this dynamic? collecting average character widths? @
   # TODO investigate
   CHARACTER_DISTANCE_THRESHOLD = 3
 
   def Tabula.should_merge?(char1, char2)
-    char1_x = char1[:left]; char1_yp = char1[:top] + char1[:height]
-    char1_xp = char1[:left] + char1[:width]; char1_y = char1[:top]
-    char2_x = char2[:left]; char2_yp = char2[:top] + char2[:height]
-    char2_xp = char2[:left] + char2[:width]; char2_y = char2[:top]
+    char1_x = char1.left; char1_yp = char1.top + char1.height
+    char1_xp = char1.left + char1.width; char1_y = char1.top
+    char2_x = char2.left; char2_yp = char2.top + char2.height
+    char2_xp = char2.left + char2.width; char2_y = char2.top
     distance = char2_x - char1_xp
     
     (char2_y == char1_y) or 
@@ -134,24 +174,24 @@ module Tabula
       (char1_y.between?(char2_y, char2_yp) and char2_yp.between?(char1_y, char1_yp)) or
       (char1_y.between?(char2_y, char2_yp) and char1_yp.between?(char2_y, char2_yp)) or 
       (char2_y.between?(char1_y, char1_yp)  and char2_yp.between?(char1_y, char1_yp)) or
-      (char1[:height] == 0 and char2[:height] != 0) or
-      (char2[:height] == 0 and char1[:height] != 0) and
+      (char1.height == 0 and char2.height != 0) or
+      (char2.height == 0 and char1.height != 0) and
       distance.abs < CHARACTER_DISTANCE_THRESHOLD
   end
 
   def Tabula.group_by_columns(text_elements)
-    columns = [Column.new(text_elements.first[:left], text_elements.first[:width], [text_elements.first])]
+    columns = [Column.new(text_elements.first.left, text_elements.first.width, [text_elements.first])]
     text_elements[1..-1].each do |te|
 
       if column = columns.detect { |c| 
-          (te[:left].between?(c.left, c.right) and (te[:left] + te[:width]).between?(c.left, c.right)) or
-          (te[:left].between?(c.left, c.right)) or
-          ((te[:left] + te[:width]).between?(c.left, c.right)) or
-          (c.right.between?(te[:left], (te[:left] + te[:width])) and c.left.between?(te[:left], te[:left] + te[:width]))
+          (te.left.between?(c.left, c.right) and (te.left + te.width).between?(c.left, c.right)) or
+          (te.left.between?(c.left, c.right)) or
+          ((te.left + te.width).between?(c.left, c.right)) or
+          (c.right.between?(te.left, (te.left + te.width)) and c.left.between?(te.left, te.left + te.width))
         }
         column << te
       else
-        columns << Column.new(te[:left], te[:width], [te])
+        columns << Column.new(te.left, te.width, [te])
       end
     end
     columns
@@ -179,10 +219,7 @@ module Tabula
       next if char2.nil? or char1.nil? 
 
       if self.should_merge?(text_elements[current_word_index], char2)
-        text_elements[current_word_index][:text]   << char2[:text]
-        text_elements[current_word_index][:width]  += char2[:width]
-        text_elements[current_word_index][:height]  = [text_elements[current_word_index][:height], char2[:height]].max
-
+        text_elements[current_word_index].merge!(char2)
         char1 = char2
         text_elements[i+1] = nil
       else
@@ -228,12 +265,16 @@ module Tabula
     
   end
 
+  def Tabula.row_histogram(text_elements)
+      1
+  end
+
   def Tabula.make_table(text_elements, merge_words=false, split_multiline_cells=false) 
 
     # first approach. so naive, candid and innocent that it makes you
     # cry.
-    # text_elements.group_by {|te| te[:top] }.map do |y_pos, row_cells|
-    #   row_cells.sort_by { |c| c[:left] }.map { |c| c[:text] }
+    # text_elements.group_by {|te| te.top }.map do |y_pos, row_cells|
+    #   row_cells.sort_by { |c| c.left }.map { |c| c.text }
     # end
 
 
@@ -250,7 +291,7 @@ module Tabula
     end
 
     text_elements.each { |te|
-      # if te[:text] == "Cantidad de "
+      # if te.text == "Cantidad de "
       #   require 'ruby-debug'; debugger
       # end
       l = lines.last
@@ -286,8 +327,8 @@ module Tabula
           te = column.text_elements[i]
           te_next = column.text_elements[i+1]
 
-          if (te_next[:top] - te[:top]).abs < avg_distance and # closer than avg
-              te_next[:font] == te[:font] # same font
+          if (te_next.top - te.top).abs < avg_distance and # closer than avg
+              te_next.font == te.font # same font
 
             # find these text_elements in `lines` and merge
             te_line = lines.index { |l| l.text_elements.include?(te) }
@@ -310,10 +351,10 @@ module Tabula
               next
             end
             
-            te_in_lines[:text]   << te_next_in_lines[:text]
-            te_in_lines[:width]   = [te_in_lines[:width], te_next_in_lines[:width]].max
-            te_in_lines[:left]    = [te_in_lines[:left], te_next_in_lines[:left]].min
-            te_in_lines[:height] += te_next_in_lines[:height]
+            te_in_lines.text   << te_next_in_lines.text
+            te_in_lines.width   = [te_in_lines.width, te_next_in_lines.width].max
+            te_in_lines.left    = [te_in_lines.left, te_next_in_lines.left].min
+            te_in_lines.height += te_next_in_lines.height
             
             lines[te_next_line].text_elements.delete(te_next_in_lines)
 
@@ -321,7 +362,7 @@ module Tabula
 
             #          lines[te_line][lines[te_line].
             
-            #          puts "Column: #{column_idx} - LESS THAN AVERAGE, MOTHERFUCKER!: '#{te[:text]}' - '#{te_next[:text]}'"
+            #          puts "Column: #{column_idx} - LESS THAN AVERAGE, MOTHERFUCKER!: '#{te.text}' - '#{te_next.text}'"
           end
           i += 1
         end

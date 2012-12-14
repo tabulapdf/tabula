@@ -39,16 +39,13 @@ Cuba.define do
       text_nodes = xml.xpath("//page[@number=#{req.params['page']}]//text[@top > #{req.params['y1']} and (@top + @height) < #{req.params['y2']} and @left > #{req.params['x1']} and (@left + @width) < #{req.params['x2']}]")
 
       text_elements = text_nodes.map { |tn| 
-        { 
-          left: tn.attr('left').to_f,
-          top: tn.attr('top').to_f,
-          width: tn.attr('width').to_f,
-          height: tn.attr('height').to_f,
-          font: tn.attr('font').to_s,
-          text: tn.text
-        }
+          Tabula::TextElement.new(tn.attr('top').to_f, 
+                                  tn.attr('left').to_f, 
+                                  tn.attr('width').to_f,
+                                  tn.attr('height').to_f,
+                                  tn.attr('font').to_s,
+                                  tn.text)
       }
-
 
       table = Tabula.make_table(text_elements, 
                                 Settings::USE_JRUBY_ANALYZER,
@@ -71,14 +68,14 @@ Cuba.define do
       #puts table
 
       line_texts = table.map { |line| 
-        line.text_elements.sort_by { |t| t[:left] }
+        line.text_elements.sort_by { |t| t.left }
       }
 
       if req.params['format'] == 'csv'
         res['Content-Type'] = 'text/csv'
         csv_string = CSV.generate { |csv|
           line_texts.each { |l|
-            csv << l.map { |c| c[:text] }
+            csv << l.map { |c| c.text }
           }
         }
         res.write csv_string
