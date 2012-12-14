@@ -6,13 +6,33 @@
 
 module Tabula
 
+  # TextElement, Line and Column should all include this Mixin
   module ZoneEntity
     attr_accessor :top, :left, :width, :height
+
+    def merge!(other)
+      raise TypeError, "argument must be a #{self.class}" if self.class != other.class
+      self.top    = [self.top, other.top].min
+      self.left   = [self.left, other.left].min
+      self.width += other.width
+      self.height = [self.top + self.height, other.top + other.height].max - top
+    end
+
+    def bottom
+      self.top + self.height
+    end
+
+    def right
+      self.left + self.width
+    end
+
   end
 
   class TextElement
     include ZoneEntity
     attr_accessor :font, :text
+
+    CHARACTER_DISTANCE_THRESHOLD = 3
 
     def initialize(top, left, width, height, font, text)
       self.top = top
@@ -23,12 +43,32 @@ module Tabula
       self.text = text
     end
 
+    def should_merge?(other)
+      raise TypeError, "argument is not a TextElement" unless other.instance_of?(TextElement)
+      char1_x = self.left; char1_yp = self.top + self.height
+      char1_xp = self.left + self.width; char1_y = self.top
+      char2_x = other.left; char2_yp = other.top + other.height
+      char2_xp = other.left + other.width; char2_y = other.top
+      distance = char2_x - char1_xp
+      
+      (char2_y == char1_y) or 
+        (char2_y.between?(char1_y, char1_yp) and char1_yp.between?(char2_y, char2_yp)) or
+        (char1_y.between?(char2_y, char2_yp) and char2_yp.between?(char1_y, char1_yp)) or
+        (char1_y.between?(char2_y, char2_yp) and char1_yp.between?(char2_y, char2_yp)) or 
+        (char2_y.between?(char1_y, char1_yp)  and char2_yp.between?(char1_y, char1_yp)) or
+        (self.height == 0 and other.height != 0) or
+        (other.height == 0 and self.height != 0) and
+        distance.abs < CHARACTER_DISTANCE_THRESHOLD
+    end
+
+
     def merge!(other)
       raise TypeError, "argument is not a TextElement" unless other.instance_of?(TextElement)
 
+      super(other)
       self.text << other.text
-      self.width += other.width
-      self.height = [self.height, other.height].max
+      # self.width += other.width
+      # self.height = [self.height, other.height].max
       
     end
 
@@ -156,29 +196,6 @@ module Tabula
     
   end
 
-  
-
-  # how to make this dynamic? collecting average character widths? @
-  # TODO investigate
-  CHARACTER_DISTANCE_THRESHOLD = 3
-
-  def Tabula.should_merge?(char1, char2)
-    char1_x = char1.left; char1_yp = char1.top + char1.height
-    char1_xp = char1.left + char1.width; char1_y = char1.top
-    char2_x = char2.left; char2_yp = char2.top + char2.height
-    char2_xp = char2.left + char2.width; char2_y = char2.top
-    distance = char2_x - char1_xp
-    
-    (char2_y == char1_y) or 
-      (char2_y.between?(char1_y, char1_yp) and char1_yp.between?(char2_y, char2_yp)) or
-      (char1_y.between?(char2_y, char2_yp) and char2_yp.between?(char1_y, char1_yp)) or
-      (char1_y.between?(char2_y, char2_yp) and char1_yp.between?(char2_y, char2_yp)) or 
-      (char2_y.between?(char1_y, char1_yp)  and char2_yp.between?(char1_y, char1_yp)) or
-      (char1.height == 0 and char2.height != 0) or
-      (char2.height == 0 and char1.height != 0) and
-      distance.abs < CHARACTER_DISTANCE_THRESHOLD
-  end
-
   def Tabula.group_by_columns(text_elements)
     columns = [Column.new(text_elements.first.left, text_elements.first.width, [text_elements.first])]
     text_elements[1..-1].each do |te|
@@ -218,7 +235,7 @@ module Tabula
 
       next if char2.nil? or char1.nil? 
 
-      if self.should_merge?(text_elements[current_word_index], char2)
+      if text_elements[current_word_index].should_merge?(char2)
         text_elements[current_word_index].merge!(char2)
         char1 = char2
         text_elements[i+1] = nil
@@ -291,9 +308,6 @@ module Tabula
     end
 
     text_elements.each { |te|
-      # if te.text == "Cantidad de "
-      #   require 'ruby-debug'; debugger
-      # end
       l = lines.last
       if l.contains?(te)
         l << te
@@ -351,11 +365,8 @@ module Tabula
               next
             end
             
-            te_in_lines.text   << te_next_in_lines.text
-            te_in_lines.width   = [te_in_lines.width, te_next_in_lines.width].max
-            te_in_lines.left    = [te_in_lines.left, te_next_in_lines.left].min
-            te_in_lines.height += te_next_in_lines.height
-            
+            te_in_lines.merge!(te_next_in_lines)
+
             lines[te_next_line].text_elements.delete(te_next_in_lines)
 
             #          puts "line for te: #{te_line} - line for te_next: #{te_next_line}"
