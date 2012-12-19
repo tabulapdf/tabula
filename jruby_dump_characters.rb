@@ -96,7 +96,7 @@ def print_text_locations_and_generate_images(pdf_file_name, image_output_directo
     $current_page = i
     contents = page.getContents
     
-    printer.printPage page
+#    printer.printPage page
 
     $page_fonts[i].merge! page.findResources.getFonts($page_fonts)
     extractor.processStream(page, page.findResources, contents.getStream) unless contents.nil?

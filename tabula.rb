@@ -1,20 +1,45 @@
-# TODO Refactor
-# Text elements, Columns and Lines have same the positional properties
-# (left, width, height, top, etc)
-# They all should implement the same interface, so the algorithms can
-# be applied to any of those entities
-
 module Tabula
 
   # TextElement, Line and Column should all include this Mixin
-  module ZoneEntity
+  class ZoneEntity
     attr_accessor :top, :left, :width, :height
+    
+    attr_accessor :texts
+
+    def initialize(top, left, width, height)
+      self.top = top
+      self.left = left
+      self.width = width
+      self.height = height
+      self.texts = []
+    end
 
     def merge!(other)
       self.top    = [self.top, other.top].min
       self.left   = [self.left, other.left].min
       self.width += other.width
       self.height = [self.top + self.height, other.top + other.height].max - top
+    end
+
+    # TODO write better method description
+    # Roughly, detects if both ZoneEntity belongs to the same line
+    def vertically_overlaps?(other)
+
+      # if self.texts.detect { |t| t.include? 'Cantidad' }
+      #   puts self.inspect
+      #   puts other.inspect
+      # end
+
+      char1_yp = (self.top + self.height).round(2)
+      char1_y = self.top.round(2)
+      char2_yp = (other.top + other.height).round(2)
+      char2_y = other.top.round(2)
+
+      (char2_y == char1_y) or 
+        (char2_y.between?(char1_y, char1_yp) and char1_yp.between?(char2_y, char2_yp)) or
+        (char1_y.between?(char2_y, char2_yp) and char2_yp.between?(char1_y, char1_yp)) or
+        (char1_y.between?(char2_y, char2_yp) and char1_yp.between?(char2_y, char2_yp)) or 
+        (char2_y.between?(char1_y, char1_yp)  and char2_yp.between?(char1_y, char1_yp))
     end
 
     def bottom
@@ -27,17 +52,13 @@ module Tabula
 
   end
 
-  class TextElement
-    include ZoneEntity
+  class TextElement < ZoneEntity
     attr_accessor :font, :text
 
     CHARACTER_DISTANCE_THRESHOLD = 3
 
     def initialize(top, left, width, height, font, text)
-      self.top = top
-      self.left = left
-      self.width = width
-      self.height = height
+      super(top, left, width, height)
       self.font = font
       self.text = text
     end
@@ -279,7 +300,20 @@ module Tabula
   end
 
   def Tabula.row_histogram(text_elements)
-      1
+    bins = []
+    
+    text_elements.each do |te|
+      row = bins.detect { |l| l.vertically_overlaps?(te) }
+      ze = ZoneEntity.new(te.top, te.left, te.width, te.height)
+      if row.nil?
+        bins << ze
+        ze.texts << te.text
+      else
+        row.merge!(ze)
+        row.texts << te.text
+      end
+    end
+    bins 
   end
 
   def Tabula.make_table(text_elements, merge_words=false, split_multiline_cells=false) 
@@ -290,10 +324,12 @@ module Tabula
     #   row_cells.sort_by { |c| c.left }.map { |c| c.text }
     # end
 
-
-
     # second approach, inspired in pdf2table first_classifcation
     text_elements = Tabula.merge_words(text_elements) if merge_words
+
+#    puts text_elements.inspect
+
+    puts Tabula.row_histogram(text_elements).inspect
     
     lines = []
     distance = 0

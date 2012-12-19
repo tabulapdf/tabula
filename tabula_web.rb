@@ -12,7 +12,7 @@ require './tabula.rb'
 require './local_settings.rb'
 
 Cuba.plugin Cuba::Render
-Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/pdfs", "/scripts"]
+Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/pdfs", "/scripts", "/swf"]
 
 def run_pdftohtml(file, output_dir)
   `#{Settings::PDFTOHTML_PATH} -xml #{file} #{File.join(output_dir, 'document.xml')}`
@@ -52,11 +52,8 @@ Cuba.define do
                                 req.params['split_multiline_cells'] == 'true')
 
       x = table.map(&:text_elements).flatten
-
-#      require 'ruby-debug'; debugger
-
+      
       table = Tabula.make_table(x, false)
-
 
       # TODO this is recursive, actually.
       # see refactor note at the top of tabula.rb
