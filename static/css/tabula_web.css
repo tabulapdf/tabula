@@ -48,3 +48,8 @@ img.page-image {
 .modal-body td:hover {
     background-color: #cccccc;
 }
+
+.debug-canvas {
+    position: absolute;
+    z-index: 1000;
+}

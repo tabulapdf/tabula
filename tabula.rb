@@ -14,40 +14,42 @@ module Tabula
       self.texts = []
     end
 
-    def merge!(other)
-      self.top    = [self.top, other.top].min
-      self.left   = [self.left, other.left].min
-      self.width += other.width
-      self.height = [self.top + self.height, other.top + other.height].max - top
-    end
-
-    # TODO write better method description
-    # Roughly, detects if both ZoneEntity belongs to the same line
-    def vertically_overlaps?(other)
-
-      # if self.texts.detect { |t| t.include? 'Cantidad' }
-      #   puts self.inspect
-      #   puts other.inspect
-      # end
-
-      char1_yp = (self.top + self.height).round(2)
-      char1_y = self.top.round(2)
-      char2_yp = (other.top + other.height).round(2)
-      char2_y = other.top.round(2)
-
-      (char2_y == char1_y) or 
-        (char2_y.between?(char1_y, char1_yp) and char1_yp.between?(char2_y, char2_yp)) or
-        (char1_y.between?(char2_y, char2_yp) and char2_yp.between?(char1_y, char1_yp)) or
-        (char1_y.between?(char2_y, char2_yp) and char1_yp.between?(char2_y, char2_yp)) or 
-        (char2_y.between?(char1_y, char1_yp)  and char2_yp.between?(char1_y, char1_yp))
-    end
-
     def bottom
       self.top + self.height
     end
 
     def right
       self.left + self.width
+    end
+        
+    def merge!(other)
+      self.top    = [self.top, other.top].min
+      self.left   = [self.left, other.left].min
+      self.width  = [self.right, other.right].max - left
+      self.height = [self.bottom, other.bottom].max - top
+    end
+
+
+    # Roughly, detects if self and other belong to the same line
+    def vertically_overlaps?(other)
+      char1_yp = (self.top + self.height).round(2)
+      char1_y = self.top.round(2)
+      char2_yp = (other.top + other.height).round(2)
+      char2_y = other.top.round(2)
+
+      (other.top == self.top) or 
+        (char2_y.between?(char1_y, char1_yp) and char1_yp.between?(char2_y, char2_yp)) or
+        (char1_y.between?(char2_y, char2_yp) and char2_yp.between?(char1_y, char1_yp)) or
+        (char1_y.between?(char2_y, char2_yp) and char1_yp.between?(char2_y, char2_yp)) or 
+        (char2_y.between?(char1_y, char1_yp)  and char2_yp.between?(char1_y, char1_yp))
+    end
+
+    # detects if self and other belong to the same column
+    def horizontally_overlaps?(other)
+      (self.left.between?(other.left, other.right) and self.right.between?(other.left, other.right)) or
+        self.left.between?(other.left, other.right) or
+        self.right.between?(other.left, other.right) or
+        (other.right.between?(self.left, self.right) and other.left.between?(self.left, self.right))
     end
 
   end
@@ -65,17 +67,10 @@ module Tabula
 
     def should_merge?(other)
       raise TypeError, "argument is not a TextElement" unless other.instance_of?(TextElement)
-      char1_x = self.left; char1_yp = self.top + self.height
-      char1_xp = self.left + self.width; char1_y = self.top
-      char2_x = other.left; char2_yp = other.top + other.height
-      char2_xp = other.left + other.width; char2_y = other.top
-      distance = char2_x - char1_xp
+
+      distance = other.left - self.right
       
-      (char2_y == char1_y) or 
-        (char2_y.between?(char1_y, char1_yp) and char1_yp.between?(char2_y, char2_yp)) or
-        (char1_y.between?(char2_y, char2_yp) and char2_yp.between?(char1_y, char1_yp)) or
-        (char1_y.between?(char2_y, char2_yp) and char1_yp.between?(char2_y, char2_yp)) or 
-        (char2_y.between?(char1_y, char1_yp)  and char2_yp.between?(char1_y, char1_yp)) or
+      self.vertically_overlaps?(other) or
         (self.height == 0 and other.height != 0) or
         (other.height == 0 and self.height != 0) and
         distance.abs < CHARACTER_DISTANCE_THRESHOLD
@@ -84,7 +79,6 @@ module Tabula
 
     def merge!(other)
       raise TypeError, "argument is not a TextElement" unless other.instance_of?(TextElement)
-
       super(other)
       self.text << other.text
     end
@@ -102,6 +96,7 @@ module Tabula
 
 
   class Line
+    # TODO clean this up
     attr_accessor :top, :bottom, :height, :leftmost, :rightmost, :font, :last_top, :first_top, :used_space, :typ, :text_elements  
     
     def initialize
@@ -141,6 +136,7 @@ module Tabula
       self.used_space = t.width * t.height
     end
 
+    # TODO check if this could be reformulated in terms of vertically_overlaps?
     def contains?(t) # called 'in_the_line' in original version
       # java version uses font size instead of t.height - why?
       text_bottom = t.top + t.height 
@@ -153,21 +149,12 @@ module Tabula
 
   end
 
-  class Column
-    attr_accessor :left, :width
+  class Column < ZoneEntity
     attr_accessor :text_elements
     
     def initialize(left, width, text_elements=[])
-      @left = left; @width = width
+      super(0, left, width, 0)
       @text_elements = text_elements
-    end
-
-    def right
-      self.left + self.width
-    end
-
-    def right=(r)
-      @width = r - left
     end
 
     def <<(te)
@@ -177,23 +164,12 @@ module Tabula
     end
 
     def update_boundaries!(text_element)
-      self.left  = [text_element.left, self.left].min
-      self.right = [text_element.left + text_element.width, self.right].max
+      self.merge!(text_element)
     end
 
     # this column can be merged with other_column?
     def contains?(other_column)
-      (self.left.between?(other_column.left, other_column.right) and self.right.between?(other_column.left, other_column.right)) or
-        self.left.between?(other_column.left, other_column.right) or
-        self.right.between?(other_column.left, other_column.right) or
-        (other_column.right.between?(self.left, self.right) and other_column.left.between?(self.left, self.right))
-    end
-
-    def merge!(other_column)
-      return unless self.contains?(other_column)
-      other_column.text_elements.each { |te|
-        self.text_elements << te
-      }
+      self.horizontally_overlaps?(other_column)
     end
 
     def average_line_distance
@@ -214,14 +190,13 @@ module Tabula
   end
 
   def Tabula.group_by_columns(text_elements)
-    columns = [Column.new(text_elements.first.left, text_elements.first.width, [text_elements.first])]
-    text_elements[1..-1].each do |te|
-
+    columns = []
+    text_elements.sort_by(&:left).each do |te|
       if column = columns.detect { |c| 
-          (te.left.between?(c.left, c.right) and (te.left + te.width).between?(c.left, c.right)) or
-          (te.left.between?(c.left, c.right)) or
-          ((te.left + te.width).between?(c.left, c.right)) or
-          (c.right.between?(te.left, (te.left + te.width)) and c.left.between?(te.left, te.left + te.width))
+          (te.left.between?(c.left, c.right) and te.right.between?(c.left, c.right)) or
+          te.left.between?(c.left, c.right) or
+          te.right.between?(c.left, c.right) or
+          (c.right.between?(te.left, te.right) and c.left.between?(te.left, te.right))
         }
         column << te
       else
@@ -229,17 +204,6 @@ module Tabula
       end
     end
     columns
-  end
-
-  def Tabula.regroup_columns(list_of_columns)
-    merged_columns = []
-    list_of_columns.combination(2).each { |c1, c2|
-      if c1.contains?(c2)
-        c1.merge!(c2)
-        merged_columns << c2
-      end
-    }
-    list_of_columns - merged_columns
   end
 
   def Tabula.merge_words(text_elements)
@@ -316,6 +280,48 @@ module Tabula
     bins 
   end
 
+  def Tabula.get_columns(text_elements, merge_words=false)
+    # second approach, inspired in pdf2table first_classifcation
+    text_elements = Tabula.merge_words(text_elements) if merge_words
+
+    lines = []
+    distance = 0
+    unless text_elements.empty?
+      line = Line.new
+      line << text_elements.first
+      lines << line
+    end
+
+    text_elements.each { |te|
+      l = lines.last
+      if l.contains?(te)
+        l << te
+      else
+        new_line = Line.new
+        new_line << te
+        lines << new_line
+        distance += new_line.first_top - l.last_top
+      end
+    }
+
+    lines.sort_by!(&:top)
+
+    Tabula.group_by_columns(lines.map(&:text_elements).flatten.uniq).map do |c|
+      {'left' => c.left, 'right' => c.right, 'width' => c.width}
+    end
+  end
+
+  def Tabula.get_rows(text_elements, merge_words=false)
+    text_elements = Tabula.merge_words(text_elements) if merge_words
+    hg = Tabula.row_histogram(text_elements)
+    rows = []
+    1.upto(hg.size - 1).each do |i|
+      rows << hg[i-1].bottom + ((hg[i].top - hg[i-1].bottom) / 2.0)
+    end
+    rows
+
+  end
+
   def Tabula.make_table(text_elements, merge_words=false, split_multiline_cells=false) 
 
     # first approach. so naive, candid and innocent that it makes you
@@ -329,7 +335,7 @@ module Tabula
 
 #    puts text_elements.inspect
 
-    puts Tabula.row_histogram(text_elements).inspect
+#    puts Tabula.row_histogram(text_elements).inspect
     
     lines = []
     distance = 0
@@ -357,10 +363,13 @@ module Tabula
     # TODO this is recursive, shouldn't be 2 different methods
     # (see note at the top of this file)
 #    puts lines.map(&:text_elements).flatten.uniq.inspect
+ #   require 'debugger'; debugger
     columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.uniq)
 #    puts; puts; puts
 #    puts columns.inspect
-    columns = Tabula.regroup_columns(columns)
+
+#    require 'debugger'; debugger
+
 
 #    puts columns.inspect
 
@@ -412,12 +421,24 @@ module Tabula
       end
     end  # /if split_multiline_cells
 
-    lines.each { |l| 
+
+    lines.each_with_index { |l, line_index| 
+      next if l.text_elements.nil?
+      l.text_elements.compact! # TODO WHY do I have to do this?
       l.text_elements.uniq!  # TODO WHY do I have to do this?
-      
-      
+
+      # # # insert empty cells if needed
+      next unless l.text_elements.size < columns.size
+
+      l.text_elements.sort_by!(&:left)
+      columns.sort_by(&:left).each_with_index do |c, i|
+        if !l.text_elements(&:left)[i].nil? and !c.text_elements.include?(l.text_elements[i])
+          l.text_elements.insert(i, TextElement.new(l.top, c.left, c.width, l.height, nil, '  '))
+        end
+      end
     }
   end
 
 
 end
+

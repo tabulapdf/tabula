@@ -191,17 +191,17 @@
       this.htmlBridge.setAttribute("data-clipboard-ready", true);
       break;
      case "mouseover":
-      ZeroClipboard.currentElement.addClass("zeroclipboard-is-hover");
+      ZeroClipboard.currentElement.addClass("hover");
       break;
      case "mouseout":
-      ZeroClipboard.currentElement.removeClass("zeroclipboard-is-hover");
+      ZeroClipboard.currentElement.removeClass("hover");
       this.resetBridge();
       break;
      case "mousedown":
-      ZeroClipboard.currentElement.addClass("zeroclipboard-is-active");
+      ZeroClipboard.currentElement.addClass("active");
       break;
      case "mouseup":
-      ZeroClipboard.currentElement.removeClass("zeroclipboard-is-active");
+      ZeroClipboard.currentElement.removeClass("active");
       break;
     }
     if (this.handlers[eventName]) {

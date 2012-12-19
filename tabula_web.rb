@@ -26,6 +26,21 @@ def parse_document_xml(file)
   Nokogiri::XML(File.open(file)) # { |config| config.default_xml.noblanks }
 end
 
+def get_text_elements(file_id, page, x1, y1, x2, y2)
+  xml = parse_document_xml(File.join(Dir.pwd, "static/pdfs/#{file_id}/document.xml"))
+  
+  text_nodes = xml.xpath("//page[@number=#{page}]//text[@top > #{y1} and (@top + @height) < #{y2} and @left > #{x1} and (@left + @width) < #{x2}]")
+  
+  text_nodes.map { |tn| 
+    Tabula::TextElement.new(tn.attr('top').to_f, 
+                            tn.attr('left').to_f, 
+                            tn.attr('width').to_f,
+                            tn.attr('height').to_f,
+                            tn.attr('font').to_s,
+                            tn.text)
+  }
+end
+
 Cuba.define do
 
   on get do
@@ -34,26 +49,21 @@ Cuba.define do
     end
 
     on "pdf/:file_id/data" do |file_id| # TODO validate that file_id is /[a-f0-9]{40}/
-      xml = parse_document_xml(File.join(Dir.pwd, "static/pdfs/#{file_id}/document.xml"))
-      
-      text_nodes = xml.xpath("//page[@number=#{req.params['page']}]//text[@top > #{req.params['y1']} and (@top + @height) < #{req.params['y2']} and @left > #{req.params['x1']} and (@left + @width) < #{req.params['x2']}]")
 
-      text_elements = text_nodes.map { |tn| 
-          Tabula::TextElement.new(tn.attr('top').to_f, 
-                                  tn.attr('left').to_f, 
-                                  tn.attr('width').to_f,
-                                  tn.attr('height').to_f,
-                                  tn.attr('font').to_s,
-                                  tn.text)
-      }
+      text_elements = get_text_elements(file_id,
+                                        req.params['page'],
+                                        req.params['x1'],
+                                        req.params['y1'],
+                                        req.params['x2'],
+                                        req.params['y2'])
 
       table = Tabula.make_table(text_elements, 
                                 Settings::USE_JRUBY_ANALYZER,
                                 req.params['split_multiline_cells'] == 'true')
 
-      x = table.map(&:text_elements).flatten
+      #x = table.map(&:text_elements).flatten
       
-      table = Tabula.make_table(x, false)
+      #table = Tabula.make_table(x, false)
 
       # TODO this is recursive, actually.
       # see refactor note at the top of tabula.rb
@@ -83,6 +93,34 @@ Cuba.define do
 
     end
  
+    on "pdf/:file_id/columns" do |file_id|
+      text_elements = get_text_elements(file_id,
+                                        req.params['page'],
+                                        req.params['x1'],
+                                        req.params['y1'],
+                                        req.params['x2'],
+                                        req.params['y2'])
+
+      res['Content-Type'] = 'application/json'
+      res.write Tabula.get_columns(text_elements, 
+                              Settings::USE_JRUBY_ANALYZER).to_json
+
+    end
+
+    on "pdf/:file_id/rows" do |file_id|
+      text_elements = get_text_elements(file_id,
+                                        req.params['page'],
+                                        req.params['x1'],
+                                        req.params['y1'],
+                                        req.params['x2'],
+                                        req.params['y2'])
+
+      res['Content-Type'] = 'application/json'
+      res.write Tabula.get_rows(text_elements, 
+                                Settings::USE_JRUBY_ANALYZER).to_json
+
+    end
+
 
     on "pdf/:file_id" do |file_id| 
       # TODO validate that file_id is  /[a-f0-9]{40}/
