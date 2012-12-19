@@ -32,16 +32,11 @@ module Tabula
 
     # Roughly, detects if self and other belong to the same line
     def vertically_overlaps?(other)
-      char1_yp = (self.top + self.height).round(2)
-      char1_y = self.top.round(2)
-      char2_yp = (other.top + other.height).round(2)
-      char2_y = other.top.round(2)
-
       (other.top == self.top) or 
-        (char2_y.between?(char1_y, char1_yp) and char1_yp.between?(char2_y, char2_yp)) or
-        (char1_y.between?(char2_y, char2_yp) and char2_yp.between?(char1_y, char1_yp)) or
-        (char1_y.between?(char2_y, char2_yp) and char1_yp.between?(char2_y, char2_yp)) or 
-        (char2_y.between?(char1_y, char1_yp)  and char2_yp.between?(char1_y, char1_yp))
+        (other.top.between?(self.top, self.height) and self.height.between?(other.top, other.height)) or
+        (self.top.between?(other.top, other.height) and other.height.between?(self.top, self.height)) or
+        (self.top.between?(other.top, other.height) and self.height.between?(other.top, other.height)) or 
+        (other.top.between?(self.top, self.height)  and other.height.between?(self.top, self.height))
     end
 
     # detects if self and other belong to the same column
@@ -192,12 +187,7 @@ module Tabula
   def Tabula.group_by_columns(text_elements)
     columns = []
     text_elements.sort_by(&:left).each do |te|
-      if column = columns.detect { |c| 
-          (te.left.between?(c.left, c.right) and te.right.between?(c.left, c.right)) or
-          te.left.between?(c.left, c.right) or
-          te.right.between?(c.left, c.right) or
-          (c.right.between?(te.left, te.right) and c.left.between?(te.left, te.right))
-        }
+      if column = columns.detect { |c| te.horizontally_overlaps?(c) }
         column << te
       else
         columns << Column.new(te.left, te.width, [te])
@@ -231,37 +221,6 @@ module Tabula
 
   end
 
-  # Returns an array of array of [start_idx, end_idx] (start and end
-  # indices of multiline blocks)
-  # a multiline block is a run of consecutive multilines
-  # a multiline is a line with > 1 text elements
-  def Tabula.multiline_blocks(lines)
-    in_multiline = false
-    multiline_blocks_indices = []
-    current_multiline_block = []
-    
-    lines.each_with_index do |line, i|
-      if line.multiline?
-        if in_multiline
-          multiline_blocks_indices.last[1] = i
-        else
-          in_multiline = true
-          multiline_blocks_indices << [i, i]
-        end
-      else
-        if in_multiline
-          in_multiline = false
-        end
-      end
-    end
-
-    if in_multiline
-      multiline_blocks_indices[-1][1] = lines.size - 1
-    end
-
-    multiline_blocks_indices
-    
-  end
 
   def Tabula.row_histogram(text_elements)
     bins = []
@@ -284,29 +243,7 @@ module Tabula
     # second approach, inspired in pdf2table first_classifcation
     text_elements = Tabula.merge_words(text_elements) if merge_words
 
-    lines = []
-    distance = 0
-    unless text_elements.empty?
-      line = Line.new
-      line << text_elements.first
-      lines << line
-    end
-
-    text_elements.each { |te|
-      l = lines.last
-      if l.contains?(te)
-        l << te
-      else
-        new_line = Line.new
-        new_line << te
-        lines << new_line
-        distance += new_line.first_top - l.last_top
-      end
-    }
-
-    lines.sort_by!(&:top)
-
-    Tabula.group_by_columns(lines.map(&:text_elements).flatten.uniq).map do |c|
+    Tabula.group_by_columns(text_elements).map do |c|
       {'left' => c.left, 'right' => c.right, 'width' => c.width}
     end
   end
@@ -315,10 +252,13 @@ module Tabula
     text_elements = Tabula.merge_words(text_elements) if merge_words
     hg = Tabula.row_histogram(text_elements)
     rows = []
-    1.upto(hg.size - 1).each do |i|
-      rows << hg[i-1].bottom + ((hg[i].top - hg[i-1].bottom) / 2.0)
-    end
-    rows
+#    1.upto(hg.size - 1).each do |i|
+#      rows << hg[i-1].bottom + ((hg[i].top - hg[i-1].bottom) / 2.0)
+#    end
+    puts (0..hg.size-1).to_a.combination(2).map { |r1, r2| 
+    }.inspect
+    hg.sort_by(&:top).map { |r| {'top' => r.top, 'bottom' => r.bottom} }
+    #rows
 
   end
 
@@ -333,9 +273,6 @@ module Tabula
     # second approach, inspired in pdf2table first_classifcation
     text_elements = Tabula.merge_words(text_elements) if merge_words
 
-#    puts text_elements.inspect
-
-#    puts Tabula.row_histogram(text_elements).inspect
     
     lines = []
     distance = 0
@@ -365,13 +302,6 @@ module Tabula
 #    puts lines.map(&:text_elements).flatten.uniq.inspect
  #   require 'debugger'; debugger
     columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.uniq)
-#    puts; puts; puts
-#    puts columns.inspect
-
-#    require 'debugger'; debugger
-
-
-#    puts columns.inspect
 
     avg_distance = columns.map(&:average_line_distance).inject{ |sum, el| sum + el }.to_f / columns.size
 
@@ -422,12 +352,12 @@ module Tabula
     end  # /if split_multiline_cells
 
 
+    # insert empty cells if needed
     lines.each_with_index { |l, line_index| 
       next if l.text_elements.nil?
       l.text_elements.compact! # TODO WHY do I have to do this?
       l.text_elements.uniq!  # TODO WHY do I have to do this?
 
-      # # # insert empty cells if needed
       next unless l.text_elements.size < columns.size
 
       l.text_elements.sort_by!(&:left)
@@ -437,6 +367,35 @@ module Tabula
         end
       end
     }
+
+    # merge elements that are in the same column
+    columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.uniq)
+    lines.each_with_index do |l, line_index|
+      next if l.text_elements.nil?
+      
+      (0..l.text_elements.size-1).to_a.combination(2).each do |t1, t2|
+        next if l.text_elements[t1].nil? or l.text_elements[t2].nil?
+        
+        # if same column...
+        if columns.detect { |c| c.text_elements.include? l.text_elements[t1] } \
+           == columns.detect { |c| c.text_elements.include? l.text_elements[t2] }
+          if l.text_elements[t1].top <= l.text_elements[t2].top
+            l.text_elements[t1].merge!(l.text_elements[t2])
+            l.text_elements[t2] = nil
+          else
+            l.text_elements[t2].merge!(l.text_elements[t1])
+            l.text_elements[t1] = nil
+          end
+        end
+      end
+      l.text_elements.compact!
+    end
+
+
+    lines
+
+
+
   end
 
 

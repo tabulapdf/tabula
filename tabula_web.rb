@@ -61,19 +61,6 @@ Cuba.define do
                                 Settings::USE_JRUBY_ANALYZER,
                                 req.params['split_multiline_cells'] == 'true')
 
-      #x = table.map(&:text_elements).flatten
-      
-      #table = Tabula.make_table(x, false)
-
-      # TODO this is recursive, actually.
-      # see refactor note at the top of tabula.rb
-      # columns = Tabula.group_by_columns(table.map(&:texts).flatten)
-      # puts Tabula.regroup_columns(columns).sort_by(&:left).inspect
-
-      #puts Tabula.multiline_blocks(table.flatten).inspect
-      #puts; puts; puts; puts; puts;
-      #puts table
-
       line_texts = table.map { |line| 
         line.text_elements.sort_by { |t| t.left }
       }
