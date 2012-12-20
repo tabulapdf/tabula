@@ -108,6 +108,25 @@ Cuba.define do
 
     end
 
+    on "pdf/:file_id/characters" do |file_id|
+      text_elements = get_text_elements(file_id,
+                                        req.params['page'],
+                                        req.params['x1'],
+                                        req.params['y1'],
+                                        req.params['x2'],
+                                        req.params['y2'])
+      puts text_elements.map(&:text).inspect
+
+      res['Content-Type'] = 'application/json'
+      res.write text_elements.map { |te|
+        { 'left' => te.left,
+          'top' => te.top,
+          'width' => te.width,
+          'height' => te.height,
+          'text' => te.text }
+      }.to_json
+    end
+
 
     on "pdf/:file_id" do |file_id| 
       # TODO validate that file_id is  /[a-f0-9]{40}/

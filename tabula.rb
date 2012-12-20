@@ -33,10 +33,10 @@ module Tabula
     # Roughly, detects if self and other belong to the same line
     def vertically_overlaps?(other)
       (other.top == self.top) or 
-        (other.top.between?(self.top, self.height) and self.height.between?(other.top, other.height)) or
-        (self.top.between?(other.top, other.height) and other.height.between?(self.top, self.height)) or
-        (self.top.between?(other.top, other.height) and self.height.between?(other.top, other.height)) or 
-        (other.top.between?(self.top, self.height)  and other.height.between?(self.top, self.height))
+        (other.top.between?(self.top, self.bottom) and self.bottom.between?(other.top, other.bottom)) or
+        (self.top.between?(other.top, other.bottom) and other.bottom.between?(self.top, self.bottom)) or
+        (self.top.between?(other.top, other.bottom) and self.bottom.between?(other.top, other.bottom)) or 
+        (other.top.between?(self.top, self.bottom)  and other.bottom.between?(self.top, self.bottom))
     end
 
     # detects if self and other belong to the same column
@@ -65,7 +65,9 @@ module Tabula
 
       distance = other.left - self.right
       
-      self.vertically_overlaps?(other) or
+      overlaps = self.vertically_overlaps?(other)
+      
+      overlaps or
         (self.height == 0 and other.height != 0) or
         (other.height == 0 and self.height != 0) and
         distance.abs < CHARACTER_DISTANCE_THRESHOLD
@@ -184,17 +186,6 @@ module Tabula
     
   end
 
-  def Tabula.group_by_columns(text_elements)
-    columns = []
-    text_elements.sort_by(&:left).each do |te|
-      if column = columns.detect { |c| te.horizontally_overlaps?(c) }
-        column << te
-      else
-        columns << Column.new(te.left, te.width, [te])
-      end
-    end
-    columns
-  end
 
   def Tabula.merge_words(text_elements)
     current_word_index = i = 0
@@ -215,12 +206,21 @@ module Tabula
       end
       i += 1
     end
-
-    text_elements.compact!
-    return text_elements
+    return text_elements.compact
 
   end
 
+  def Tabula.group_by_columns(text_elements)
+    columns = []
+    text_elements.sort_by(&:left).each do |te|
+      if column = columns.detect { |c| te.horizontally_overlaps?(c) }
+        column << te
+      else
+        columns << Column.new(te.left, te.width, [te])
+      end
+    end
+    columns
+  end
 
   def Tabula.row_histogram(text_elements)
     bins = []
@@ -239,7 +239,7 @@ module Tabula
     bins 
   end
 
-  def Tabula.get_columns(text_elements, merge_words=false)
+  def Tabula.get_columns(text_elements, merge_words=true)
     # second approach, inspired in pdf2table first_classifcation
     text_elements = Tabula.merge_words(text_elements) if merge_words
 
@@ -255,14 +255,13 @@ module Tabula
 #    1.upto(hg.size - 1).each do |i|
 #      rows << hg[i-1].bottom + ((hg[i].top - hg[i-1].bottom) / 2.0)
 #    end
-    puts (0..hg.size-1).to_a.combination(2).map { |r1, r2| 
-    }.inspect
+
     hg.sort_by(&:top).map { |r| {'top' => r.top, 'bottom' => r.bottom} }
     #rows
 
   end
 
-  def Tabula.make_table(text_elements, merge_words=false, split_multiline_cells=false) 
+  def Tabula.make_table(text_elements, merge_words=true, split_multiline_cells=false) 
 
     # first approach. so naive, candid and innocent that it makes you
     # cry.
@@ -271,11 +270,9 @@ module Tabula
     # end
 
     # second approach, inspired in pdf2table first_classifcation
-    text_elements = Tabula.merge_words(text_elements) if merge_words
-
-    
+    text_elements = Tabula.merge_words(text_elements)
+   
     lines = []
-    distance = 0
     unless text_elements.empty?
       line = Line.new
       line << text_elements.first
@@ -290,17 +287,15 @@ module Tabula
         new_line = Line.new
         new_line << te
         lines << new_line
-        distance += new_line.first_top - l.last_top
       end
     }
 
     lines.sort_by!(&:top)
 
 
+
     # TODO this is recursive, shouldn't be 2 different methods
     # (see note at the top of this file)
-#    puts lines.map(&:text_elements).flatten.uniq.inspect
- #   require 'debugger'; debugger
     columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.uniq)
 
     avg_distance = columns.map(&:average_line_distance).inject{ |sum, el| sum + el }.to_f / columns.size
@@ -340,17 +335,11 @@ module Tabula
 
             lines[te_next_line].text_elements.delete(te_next_in_lines)
 
-            #          puts "line for te: #{te_line} - line for te_next: #{te_next_line}"
-
-            #          lines[te_line][lines[te_line].
-            
-            #          puts "Column: #{column_idx} - LESS THAN AVERAGE, MOTHERFUCKER!: '#{te.text}' - '#{te_next.text}'"
           end
           i += 1
         end
       end
     end  # /if split_multiline_cells
-
 
     # insert empty cells if needed
     lines.each_with_index { |l, line_index| 
@@ -358,28 +347,34 @@ module Tabula
       l.text_elements.compact! # TODO WHY do I have to do this?
       l.text_elements.uniq!  # TODO WHY do I have to do this?
 
+      l.text_elements = l.text_elements.sort_by(&:left)
+
+      merged = Tabula.merge_words(l.text_elements)
+
       next unless l.text_elements.size < columns.size
 
-      l.text_elements.sort_by!(&:left)
+
       columns.sort_by(&:left).each_with_index do |c, i|
-        if !l.text_elements(&:left)[i].nil? and !c.text_elements.include?(l.text_elements[i])
+        if (i > l.text_elements.size - 1) or !l.text_elements(&:left)[i].nil? and !c.text_elements.include?(l.text_elements[i])
           l.text_elements.insert(i, TextElement.new(l.top, c.left, c.width, l.height, nil, '  '))
         end
       end
     }
 
-    # merge elements that are in the same column
+    # # merge elements that are in the same column
     columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.uniq)
+
     lines.each_with_index do |l, line_index|
       next if l.text_elements.nil?
       
+
       (0..l.text_elements.size-1).to_a.combination(2).each do |t1, t2|
         next if l.text_elements[t1].nil? or l.text_elements[t2].nil?
         
         # if same column...
         if columns.detect { |c| c.text_elements.include? l.text_elements[t1] } \
            == columns.detect { |c| c.text_elements.include? l.text_elements[t2] }
-          if l.text_elements[t1].top <= l.text_elements[t2].top
+          if l.text_elements[t1].bottom <= l.text_elements[t2].bottom
             l.text_elements[t1].merge!(l.text_elements[t2])
             l.text_elements[t2] = nil
           else
@@ -388,6 +383,8 @@ module Tabula
           end
         end
       end
+
+      
       l.text_elements.compact!
     end
 

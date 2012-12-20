@@ -28,7 +28,6 @@
     }
     var elements = ZeroClipboard.$(query);
     for (var i = 0; i < elements.length; i++) {
-       console.log(elements[i]);
       _addEventHandler(elements[i], "mouseover", _elementMouseOver);
     }
   };
