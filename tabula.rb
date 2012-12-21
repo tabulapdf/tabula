@@ -92,56 +92,24 @@ module Tabula
   end
 
 
-  class Line
+  class Line < ZoneEntity
     # TODO clean this up
-    attr_accessor :top, :bottom, :height, :leftmost, :rightmost, :font, :last_top, :first_top, :used_space, :typ, :text_elements  
+    attr_accessor :text_elements  
     
     def initialize
-      @text_elements = []
+      self.text_elements = []
     end
 
     def <<(t)
       self.text_elements << t
       if self.text_elements.size == 1
-        self.set_new_line_values!(t)      
+        self.top = t.top
+        self.left = t.left
+        self.width = t.width
+        self.height = t.height
       else
-        self.update_line_values!(t)
+        self.merge!(t)
       end
-    end
-
-    def set_new_line_values!(t)
-      self.top        = t.top
-      self.bottom     = t.top + t.height
-      self.height     = bottom - top
-      self.leftmost   = t.left
-      self.rightmost  = t.left + t.width
-      #self.font      = t.font
-      self.last_top   = t.top
-      self.first_top  = t.top
-      self.used_space = t.width * t.height
-    end
-
-    def update_line_values!(t)
-      self.top        = [t.top, top].min
-      b               = t.top + t.height
-      self.bottom     = [b, bottom].max
-      self.height     = bottom - top
-      self.leftmost   = [t.left, leftmost].min
-      self.rightmost  = [rightmost, t.left + t.width].max
-      self.last_top   = [t.top, last_top].max
-      self.first_top  = [t.top, first_top].min
-      self.used_space = t.width * t.height
-    end
-
-    # TODO check if this could be reformulated in terms of vertically_overlaps?
-    def contains?(t) # called 'in_the_line' in original version
-      # java version uses font size instead of t.height - why?
-      text_bottom = t.top + t.height 
-      (t.top > self.first_top && t.top <= self.bottom) || (text_bottom > self.first_top && text_bottom <= self.bottom) || (t.top <= self.first_top && text_bottom >= self.bottom)
-    end
-
-    def multiline?
-      self.text_elements.size > 1
     end
 
   end
@@ -251,48 +219,25 @@ module Tabula
   def Tabula.get_rows(text_elements, merge_words=false)
     text_elements = Tabula.merge_words(text_elements) if merge_words
     hg = Tabula.row_histogram(text_elements)
-    rows = []
-#    1.upto(hg.size - 1).each do |i|
-#      rows << hg[i-1].bottom + ((hg[i].top - hg[i-1].bottom) / 2.0)
-#    end
-
     hg.sort_by(&:top).map { |r| {'top' => r.top, 'bottom' => r.bottom} }
-    #rows
 
   end
 
   def Tabula.make_table(text_elements, merge_words=true, split_multiline_cells=false) 
 
-    # first approach. so naive, candid and innocent that it makes you
-    # cry.
-    # text_elements.group_by {|te| te.top }.map do |y_pos, row_cells|
-    #   row_cells.sort_by { |c| c.left }.map { |c| c.text }
-    # end
-
-    # second approach, inspired in pdf2table first_classifcation
     text_elements = Tabula.merge_words(text_elements)
-   
+
+    # group by lines
     lines = []
-    unless text_elements.empty?
+    line_boundaries = Tabula.row_histogram(text_elements)
+    line_boundaries.each { |lb|
       line = Line.new
-      line << text_elements.first
+      text_elements.find_all { |te| 
+        te.vertically_overlaps?(lb) } \
+        .sort_by(&:left).each { |te| line << te }
       lines << line
-    end
-
-    text_elements.each { |te|
-      l = lines.last
-      if l.contains?(te)
-        l << te
-      else
-        new_line = Line.new
-        new_line << te
-        lines << new_line
-      end
     }
-
     lines.sort_by!(&:top)
-
-
 
     # TODO this is recursive, shouldn't be 2 different methods
     # (see note at the top of this file)

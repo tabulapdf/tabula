@@ -67,7 +67,7 @@ class TextExtractor < org.apache.pdfbox.util.PDFTextStripper
     $fonts[$current_page].merge!({ 
       font_plus_size => { :family => text_font.getBaseFont, :size => text_size }
     })
-    $page_contents[$current_page] += "<text top=\"#{text.getYDirAdj - text.getHeightDir}\" left=\"#{text.getXDirAdj}\" width=\"#{text.getWidthDirAdj}\" height=\"#{text.getHeightDir}\" font=\"#{font_plus_size}\">#{text.getCharacter}</text>\n"
+    $page_contents[$current_page] += "<text top=\"#{text.getYDirAdj - text.getHeightDir}\" left=\"#{text.getXDirAdj}\" width=\"#{text.getWidthDirAdj}\" height=\"#{text.getHeightDir}\" font=\"#{font_plus_size}\" dir=\"#{text.getDir}\">#{text.getCharacter}</text>\n"
   end
 
 end
