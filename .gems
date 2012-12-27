@@ -1,0 +1,3 @@
+nokogiri -v 1.5.6
+cuba -v 3.1.0
+docsplit -v 0.6.4
