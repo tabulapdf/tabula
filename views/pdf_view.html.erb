@@ -1,11 +1,11 @@
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span3">
-      <div class="well sidebar-nav affix">
+      <div class="nav well sidebar-nav affix">
         <ul class="thumbnail-list">
           <% page_images.each_with_index do |pi, i| %>
-          <li data-page="page-<%= i + 1 %>">
-            <img src="<%= pi.sub(/^static/, '') %>" width="200">
+          <li data-page="page-<%= i + 1 %>" id="thumb-page-<%= i + 1 %>">
+            <a href="#page-<%= i + 1 %>"><img src="<%= pi.sub(/^static/, '') %>" width="200"></a>
             <br>Page <%= i + 1 %>
           </li>
           <% end %>
@@ -13,6 +13,7 @@
       </div>
     </div> <!-- /sidebar container -->
     <div class="span9">
+      <div class="alert alert-success" id="loading">Loading...</div>
       <div class="row">
         <div class="alert alert-info span7" >
           <button type="button" class="close" data-dismiss="alert">×</button>

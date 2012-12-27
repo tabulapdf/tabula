@@ -12,6 +12,9 @@
       margin: 5px;
       text-align: center;
       margin-bottom: 15px;
+      display: block;
+      position: relative;
+      top: 0; left: 0;
   }
 
   .thumbnail-list li:hover {
@@ -20,21 +23,30 @@
   }
 
     .thumbnail-list li img {
-/*        display: block; */
+        display: block; 
+        position: relative; top: 0; left: 0;
+    }
+
+    .thumbnail-list li div.selection-show {
+        position: absolute;
+        border: 1px dashed red;
+        display: none;
     }
 
 img.page-image {
     border: 1px solid #888888;
     margin-bottom: 16px;
+    display: block;
 }
 
 #myModal .modal-body {
-    max-height: 500px;
+    overflow: auto;
 }
 
 #myModal {
     width: 800px;
     margin: -170px 0 0 -400px;
+    max-height: 500px;
 }
 
 .modal.fade.in {
@@ -52,4 +64,12 @@ img.page-image {
 .debug-canvas {
     position: absolute;
     z-index: 1000;
+}
+
+#loading {
+    position: fixed;
+    visibility: hidden;
+    top: 51px;
+    width: 40px;
+    left: 1058px;
 }
