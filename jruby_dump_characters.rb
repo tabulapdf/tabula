@@ -21,10 +21,10 @@ class PagePrinter < org.apache.pdfbox.pdfviewer.PageDrawer
   attr_accessor :image_width
   attr_accessor :output_directory
 
-  def fillPath(windingRule)
-    puts "FILL STROKE, MOTHERFUCKER"
-    super
-  end
+  # def fillPath(windingRule)
+  #   puts "FILL STROKE, MOTHERFUCKER"
+  #   super
+  # end
 
   def printPage(page)
     size = (page.findMediaBox()).createDimension()

@@ -102,9 +102,9 @@ Cuba.define do
                                         req.params['x2'],
                                         req.params['y2'])
 
+      rows = Tabula.get_rows(text_elements, Settings::USE_JRUBY_ANALYZER)
       res['Content-Type'] = 'application/json'
-      res.write Tabula.get_rows(text_elements, 
-                                Settings::USE_JRUBY_ANALYZER).to_json
+      res.write rows.to_json
 
     end
 
@@ -115,7 +115,6 @@ Cuba.define do
                                         req.params['y1'],
                                         req.params['x2'],
                                         req.params['y2'])
-      puts text_elements.map(&:text).inspect
 
       res['Content-Type'] = 'application/json'
       res.write text_elements.map { |te|

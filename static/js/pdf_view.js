@@ -1,3 +1,5 @@
+// TODO this really needs a refactor. maybe bootstrap.js
+
 var clip = null;
 
 $(document).ready(function() {
@@ -183,9 +185,9 @@ $(function () {
       //         doQuery(PDF_ID, lastQuery);
       // });
 
-      $('.thumbnail-list li').click(function() {
-              var contentPosTop = $('#' + $(this).data('page')).position().top - 60;
-              $('html, body').stop().animate({ scrollTop: contentPosTop}, 600);
+      $('.thumbnail-list li img').load(function() {
+              $(this).after($('<div />',
+                               { class: 'selection-show'}));
       });
 
       query_parameters = {};
@@ -195,6 +197,8 @@ $(function () {
                        });
 
       var doQuery = function(pdf_id, query_parameters) {
+          $('#loading').css('left', ($(window).width() - 98) + 'px').css('visibility', 'visible');
+
           lastQuery = query_parameters;
           $.get('/pdf/' + pdf_id + '/data',
                 query_parameters,
@@ -209,15 +213,30 @@ $(function () {
                     $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(query_parameters));
                     $('#myModal').modal();
                     clip.glue('#copy-csv-to-clipboard');
-
+                    $('#loading').css('visibility', 'hidden');
                 });
       };
 
       $('img.page-image').imgAreaSelect({
               handles: true,
               //minHeight: 50, minWidth: 100,
+              onSelectStart: function(img, selection)  {
+                  $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
+              },
+              onSelectChange: function(img, selection) {
+                  var sshow = $('#thumb-' + $(img).attr('id') + ' .selection-show');
+                  var scale = $('#thumb-' + $(img).attr('id') + ' img').width() / $(img).width();
+                  $(sshow).css('top', selection.y1 * scale + 'px')
+                       .css('left', selection.x1 * scale + 'px')
+                       .css('width', ((selection.x2 - selection.x1) * scale) + 'px')
+                       .css('height', ((selection.y2 - selection.y1) * scale) + 'px');
+
+              },
               onSelectEnd: function(img, selection) {
-                  if (selection.height * selection.width < 5000) return;
+                  if (selection.width == 0 && selection.height == 0) {
+                      $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'none');
+                  }
+                  // if (selection.height * selection.width < 5000) return;
                   lastSelection = selection;
                   var thumb_width = $(img).width();
                   var thumb_height = $(img).height();
@@ -232,6 +251,13 @@ $(function () {
                       pdf_height = pdf_width;
                       pdf_width = tmp;
                   }
+                  // var tmp;
+                  // switch(pdf_rotation) {
+                  // case 180:
+                  //     console.log('180 carajo!');
+                  //     tmp = selection.x1; selection.x1 = selection.x2; selection.x2 = tmp;
+                  //     tmp = selection.y1; selection.y1 = selection.y2; selection.y2 = tmp;
+                  // }
 
                   var scale_x = (pdf_width / thumb_width);
                   var scale_y = (pdf_height / thumb_height);

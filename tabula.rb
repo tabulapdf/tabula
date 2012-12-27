@@ -29,6 +29,13 @@ module Tabula
       self.height = [self.bottom, other.bottom].max - top
     end
 
+    def horizontal_distance(other)
+      (other.left - self.right).abs
+    end
+
+    def vertical_distance(other)
+      (other.top - self.bottom).abs
+    end
 
     # Roughly, detects if self and other belong to the same line
     def vertically_overlaps?(other)
@@ -63,14 +70,12 @@ module Tabula
     def should_merge?(other)
       raise TypeError, "argument is not a TextElement" unless other.instance_of?(TextElement)
 
-      distance = other.left - self.right
-      
       overlaps = self.vertically_overlaps?(other)
       
       overlaps or
         (self.height == 0 and other.height != 0) or
         (other.height == 0 and self.height != 0) and
-        distance.abs < CHARACTER_DISTANCE_THRESHOLD
+        self.horizontal_distance(other) < CHARACTER_DISTANCE_THRESHOLD
     end
 
 
@@ -219,7 +224,7 @@ module Tabula
   def Tabula.get_rows(text_elements, merge_words=false)
     text_elements = Tabula.merge_words(text_elements) if merge_words
     hg = Tabula.row_histogram(text_elements)
-    hg.sort_by(&:top).map { |r| {'top' => r.top, 'bottom' => r.bottom} }
+    hg.sort_by(&:top).map { |r| {'top' => r.top, 'bottom' => r.bottom, 'text' => r.texts} }
 
   end
 
@@ -239,53 +244,16 @@ module Tabula
     }
     lines.sort_by!(&:top)
 
-    # TODO this is recursive, shouldn't be 2 different methods
-    # (see note at the top of this file)
-    columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.uniq)
 
-    avg_distance = columns.map(&:average_line_distance).inject{ |sum, el| sum + el }.to_f / columns.size
+    distances = (1..lines.size - 1).map { |i| lines[i].bottom - lines[i-1].bottom }
+    avg_distance = distances.inject(0) { |sum, el| sum + el } / distances.size.to_f
+    stddev_distance = Math.sqrt(distances.inject(0) { |variance, x| variance += (x - avg_distance) ** 2 } / (distances.size - 1).to_f)
+    puts "distances: #{distances.inspect}"
+    puts "avg_distance: #{avg_distance}"
+    puts "stddev_distance: #{stddev_distance}"
 
-    if split_multiline_cells
-      columns.each_with_index do |column, column_idx|
-        i = 0
-        while i < column.text_elements.size - 1 do
-          te = column.text_elements[i]
-          te_next = column.text_elements[i+1]
-
-          if (te_next.top - te.top).abs < avg_distance and # closer than avg
-              te_next.font == te.font # same font
-
-            # find these text_elements in `lines` and merge
-            te_line = lines.index { |l| l.text_elements.include?(te) }
-            te_next_line = lines.index { |l| l.text_elements.include?(te_next) }
-
-            # cells are being duplicated, for some reason
-            # work around that bug, in a nasty way.
-            if (te_line.nil? or te_next_line.nil?)
-              i += 1
-              next 
-            end
-
-            # shit, this is getting ugly
-            # these are references to the to-be-merged elements
-            # in the 'lines' array
-            te_in_lines = lines[te_line].text_elements.detect { |x| x == te }
-            te_next_in_lines = lines[te_next_line].text_elements.detect { |x| x == te_next }
-            if te_in_lines == te_next_in_lines
-              i +=1
-              next
-            end
-            
-            te_in_lines.merge!(te_next_in_lines)
-
-            lines[te_next_line].text_elements.delete(te_next_in_lines)
-
-          end
-          i += 1
-        end
-      end
-    end  # /if split_multiline_cells
-
+    columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.compact.uniq)
+                                
     # insert empty cells if needed
     lines.each_with_index { |l, line_index| 
       next if l.text_elements.nil?
@@ -307,11 +275,10 @@ module Tabula
     }
 
     # # merge elements that are in the same column
-    columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.uniq)
+    columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.compact.uniq)
 
     lines.each_with_index do |l, line_index|
       next if l.text_elements.nil?
-      
 
       (0..l.text_elements.size-1).to_a.combination(2).each do |t1, t2|
         next if l.text_elements[t1].nil? or l.text_elements[t2].nil?
@@ -333,10 +300,19 @@ module Tabula
       l.text_elements.compact!
     end
 
-
-    lines
-
-
+    # remove duplicate lines
+    # TODO this shouldn't have happened here, check why we have to do
+    # this (maybe duplication is happening in the column merging phase?)
+    (0..lines.size - 2).each do |i|
+      next if lines[i].nil?
+      # if any of the elements on the next line is duplicated, kill
+      # the next line
+      if (0..lines[i].text_elements.size-1).any? { |j| lines[i].text_elements[j] == lines[i+1].text_elements[j] }
+        lines[i+1] = nil 
+      end
+    end
+    
+    lines.compact
 
   end
 
