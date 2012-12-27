@@ -236,7 +236,7 @@ $(function () {
                   if (selection.width == 0 && selection.height == 0) {
                       $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'none');
                   }
-                  // if (selection.height * selection.width < 5000) return;
+                  if (selection.height * selection.width < 5000) return;
                   lastSelection = selection;
                   var thumb_width = $(img).width();
                   var thumb_height = $(img).height();
