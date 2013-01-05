@@ -8,7 +8,7 @@ require "digest/sha1"
 require 'json'
 require 'csv'
 
-require './tabula.rb'
+require './lib/tabula.rb'
 require './local_settings.rb'
 
 Cuba.plugin Cuba::Render
@@ -19,11 +19,15 @@ def run_pdftohtml(file, output_dir)
 end
 
 def run_jrubypdftohtml(file, output_dir)
-  `CLASSPATH=lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar #{Settings::JRUBY_PATH} --1.9 --server jruby_dump_characters.rb #{file} /tmp 500 > #{File.join(output_dir, 'document.xml')}`
+  `CLASSPATH=lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar #{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} /tmp 500 > #{File.join(output_dir, 'document.xml')}`
+end
+
+def run_mupdfdraw(file, output_dir, width=560)
+  `#{Settings::MUDRAW_PATH} -x -w #{width} -o #{File.join(output_dir, 'document_%d.png')} #{file} > /dev/null`
 end
 
 def parse_document_xml(file)
-  Nokogiri::XML(File.open(file)) # { |config| config.default_xml.noblanks }
+  Nokogiri::XML(File.open(file))
 end
 
 def get_text_elements(file_id, page, x1, y1, x2, y2)
@@ -176,7 +180,7 @@ Cuba.define do
         res.status = 404
       else
         res.write view("pdf_view.html",
-                       page_images: Dir.glob(File.join(document_dir, "document_*.jpg"))
+                       page_images: Dir.glob(File.join(document_dir, "document_*.png"))
                          .sort_by { |f| f.gsub(/[^\d]/, '').to_i }
                          .map { |f| f.gsub(Dir.pwd + '/static', '') },
                        pages:       parse_document_xml(File.join(document_dir, "document.xml"))
@@ -196,8 +200,7 @@ Cuba.define do
       FileUtils.cp(req.params['file'][:tempfile].path, 
                    File.join(file_path, 'document.pdf'))
 
-      Docsplit.extract_images(File.join(file_path, 'document.pdf'),
-                              :size => '560x', :format => [:jpg], :output => file_path)
+      run_mupdfdraw(File.join(file_path, 'document.pdf'), file_path)
 
       if Settings::USE_JRUBY_ANALYZER
         run_jrubypdftohtml(File.join(file_path, 'document.pdf'), file_path)
