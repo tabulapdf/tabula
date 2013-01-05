@@ -54,6 +54,18 @@ module Tabula
         (other.right.between?(self.left, self.right) and other.left.between?(self.left, self.right))
     end
 
+    def to_h
+      hash = {}
+      [:top, :left, :width, :height].each do |m|
+        hash[m] = self.send(m)
+      end
+      hash
+    end
+    
+    def to_json(arg)
+      self.to_h.to_json
+    end
+
   end
 
   class TextElement < ZoneEntity
@@ -85,14 +97,14 @@ module Tabula
       self.text << other.text
     end
 
-
-    def to_json(arg)
-      hash = {}
-      [:@top, :@left, :@width, :@height, :@font, :@text].each do |var|
-        hash[var[1..-1]] = self.instance_variable_get var
+    def to_h
+      hash = super
+      [:font, :text].each do |m|
+        hash[m] = self.send(m)
       end
-      hash.to_json
+      hash
     end
+
 
   end
 
@@ -155,6 +167,22 @@ module Tabula
       vars = (self.instance_variables - [:@text_elements]).map{ |v| "#{v}=#{instance_variable_get(v).inspect}" }
       texts = self.text_elements.sort_by { |te| te.top }.map { |te| te.text }
       "<#{self.class}: #{vars.join(', ')}, @text_elements=#{texts.join(', ')}>"
+    end
+    
+  end
+
+  class Ruling < ZoneEntity
+    attr_accessor :color
+
+    def initialize(top, left, width, height, color)
+      super(top, left, width, height)
+      self.color = color
+    end
+
+    def to_h
+      hash = super
+      hash[:color] = self.color
+      hash
     end
     
   end
@@ -244,14 +272,6 @@ module Tabula
     }
     lines.sort_by!(&:top)
 
-
-    distances = (1..lines.size - 1).map { |i| lines[i].bottom - lines[i-1].bottom }
-    avg_distance = distances.inject(0) { |sum, el| sum + el } / distances.size.to_f
-    stddev_distance = Math.sqrt(distances.inject(0) { |variance, x| variance += (x - avg_distance) ** 2 } / (distances.size - 1).to_f)
-    puts "distances: #{distances.inspect}"
-    puts "avg_distance: #{avg_distance}"
-    puts "stddev_distance: #{stddev_distance}"
-
     columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.compact.uniq)
                                 
     # insert empty cells if needed
@@ -261,15 +281,20 @@ module Tabula
       l.text_elements.uniq!  # TODO WHY do I have to do this?
 
       l.text_elements = l.text_elements.sort_by(&:left)
+      
+      # if l.text_elements.detect { |te| te.text.include? "PEARA" } 
+      #   require 'debugger'; debugger
+      # end
 
-      merged = Tabula.merge_words(l.text_elements)
+      # merged = Tabula.merge_words(l.text_elements)
+      l.text_elements = Tabula.merge_words(l.text_elements)
 
       next unless l.text_elements.size < columns.size
 
 
       columns.sort_by(&:left).each_with_index do |c, i|
         if (i > l.text_elements.size - 1) or !l.text_elements(&:left)[i].nil? and !c.text_elements.include?(l.text_elements[i])
-          l.text_elements.insert(i, TextElement.new(l.top, c.left, c.width, l.height, nil, '  '))
+          l.text_elements.insert(i, TextElement.new(l.top, c.left, c.width, l.height, nil, ''))
         end
       end
     }
@@ -295,8 +320,7 @@ module Tabula
           end
         end
       end
-
-      
+     
       l.text_elements.compact!
     end
 
@@ -311,6 +335,30 @@ module Tabula
         lines[i+1] = nil 
       end
     end
+
+
+    # EXPERIMENTAL: Merge lines closer than the global average
+    # vertical distance
+    lines.compact!
+    distances = (1..lines.size - 1).map { |i| lines[i].bottom - lines[i-1].bottom }
+    avg_distance = distances.inject(0) { |sum, el| sum + el } / distances.size.to_f
+    stddev_distance = Math.sqrt(distances.inject(0) { |variance, x| variance += (x - avg_distance) ** 2 } / (distances.size - 1).to_f)
+    puts "distances: #{distances.inspect}"
+    puts "avg_distance: #{avg_distance}"
+    puts "stddev_distance: #{stddev_distance}"
+
+    (0..lines.size - 2).each do |i|
+      next if lines[i].nil?
+      dist = (lines[i].bottom - lines[i+1].bottom).abs
+      puts "dist: #{dist}"
+      if dist < avg_distance - stddev_distance
+        lines[i].text_elements.each_with_index { |te, j|
+          lines[i].text_elements[j].merge!(lines[i+1].text_elements[j])
+        }
+        lines[i+1] = nil
+      end
+    end
+
     
     lines.compact
 

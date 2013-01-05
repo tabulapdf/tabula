@@ -13,18 +13,83 @@ $(document).ready(function() {
 
 });
 
+var debugRulings;
 var debugColumns;
 var debugRows;
 var debugCharacters;
 var lastQuery;
 var lastSelection;
 
-var COLORS = ['#f00', '#0f0', '#00f'];
+var COLORS = ['#f00', '#0f0', '#00f', '#ffff00', '#FF00FF'];
+
+var rotatePoint = function(point, rot_deg) {
+    //  x' = x cos f - y sin f
+    //  y' = y cos f + x sin f
+    var rot_rad = rot_deg * (Math.PI / 180.0);
+    var rv = [ point[0] * Math.cos(rot_rad) - point[1] * Math.sin(rot_rad),
+             point[1] * Math.cos(rot_rad) + point[0] * Math.sin(rot_rad)];
+    return rv;
+
+};
+
+var rotatePath = function(path, rot_deg) {
+    var rot_p1 = rotatePoint([path.left, path.top], rot_deg);
+    var rot_p2 = rotatePoint([path.left + path.width, path.top + path.height], rot_deg);
+    return {
+        top: rot_p1[1], left: rot_p1[0],
+        width: rot_p2[0] - rot_p1[0], height: rot_p2[1] - rot_p1[1]
+    };
+};
 
 $(function () {
 
       var PDF_ID = window.location.pathname.split('/')[2];
       lastQuery = {};
+
+      debugRulings = function(image) {
+          image = $(image);
+          var imagePos = image.offset();
+          var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
+                               .attr('width', image.width())
+                               .attr('height', image.height())
+                               .css('top', imagePos.top + 'px')
+                               .css('left', imagePos.left + 'px');
+          $('body').append(newCanvas);
+
+          var thumb_width = $(image).width();
+          var thumb_height = $(image).height();
+          var pdf_width = parseInt($(image).data('original-width'));
+          var pdf_height = parseInt($(image).data('original-height'));
+          var pdf_rotation = parseInt($(image).data('rotation'));
+
+          // if rotated, swap width and height
+          if (pdf_rotation == 90 || pdf_rotation == 270) {
+              var tmp = pdf_height;
+              pdf_height = pdf_width;
+              pdf_width = tmp;
+          }
+
+          var scale_x = (thumb_width / pdf_width);
+          var scale_y = (thumb_height / pdf_height);
+
+          $.get('/pdf/' + PDF_ID + '/rulings',
+                lastQuery,
+                function(data) {
+                    $.each(data, function(i, ruling) {
+                               console.log(ruling);
+                               $("canvas").drawRect({
+                                                        strokeStyle: COLORS[i % COLORS.length],
+                                                        strokeWidth: 1,
+                                                        x: ruling.left * scale_x,
+                                                        y: ruling.top * scale_y,
+                                                        width: ruling.width * scale_x,
+                                                        height: ruling.height * scale_y,
+                                                        fromCenter: false
+                                                    });
+                });
+                });
+      };
+
 
       debugRows = function(image) {
           image = $(image);
@@ -166,7 +231,6 @@ $(function () {
                                $("canvas").drawRect({
                                        strokeStyle: COLORS[i % COLORS.length],
                                        strokeWidth: 1,
-//                                       fillStyle: COLORS[i % COLORS.length],
                                        x: row.left * scale_x, y: row.top * scale_y,
                                        width: row.width * scale_x,
                                        height: row.height * scale_y,
