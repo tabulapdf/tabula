@@ -347,17 +347,17 @@ module Tabula
     puts "avg_distance: #{avg_distance}"
     puts "stddev_distance: #{stddev_distance}"
 
-    (0..lines.size - 2).each do |i|
-      next if lines[i].nil?
-      dist = (lines[i].bottom - lines[i+1].bottom).abs
-      puts "dist: #{dist}"
-      if dist < avg_distance - stddev_distance
-        lines[i].text_elements.each_with_index { |te, j|
-          lines[i].text_elements[j].merge!(lines[i+1].text_elements[j])
-        }
-        lines[i+1] = nil
-      end
-    end
+    # (0..lines.size - 2).each do |i|
+    #   next if lines[i].nil?
+    #   dist = (lines[i].bottom - lines[i+1].bottom).abs
+    #   puts "dist: #{dist}"
+    #   if dist < avg_distance - stddev_distance
+    #     lines[i].text_elements.each_with_index { |te, j|
+    #       lines[i].text_elements[j].merge!(lines[i+1].text_elements[j])
+    #     }
+    #     lines[i+1] = nil
+    #   end
+    # end
 
     
     lines.compact
