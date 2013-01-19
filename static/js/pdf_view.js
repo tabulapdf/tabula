@@ -56,35 +56,18 @@ $(function () {
                                .css('left', imagePos.left + 'px');
           $('body').append(newCanvas);
 
-          var thumb_width = $(image).width();
-          var thumb_height = $(image).height();
-          var pdf_width = parseInt($(image).data('original-width'));
-          var pdf_height = parseInt($(image).data('original-height'));
-          var pdf_rotation = parseInt($(image).data('rotation'));
+          var scaleFactor = 560.0 / 2048.0;
 
-          // if rotated, swap width and height
-          if (pdf_rotation == 90 || pdf_rotation == 270) {
-              var tmp = pdf_height;
-              pdf_height = pdf_width;
-              pdf_width = tmp;
-          }
-
-          var scale_x = (thumb_width / pdf_width);
-          var scale_y = (thumb_height / pdf_height);
-
-          $.get('/pdf/' + PDF_ID + '/rulings',
+          $.get('/pdf/' + PDF_ID + '/lines',
                 lastQuery,
                 function(data) {
                     $.each(data, function(i, ruling) {
                                console.log(ruling);
-                               $("canvas").drawRect({
+                               $("canvas").drawLine({
                                                         strokeStyle: COLORS[i % COLORS.length],
                                                         strokeWidth: 1,
-                                                        x: ruling.left * scale_x,
-                                                        y: ruling.top * scale_y,
-                                                        width: ruling.width * scale_x,
-                                                        height: ruling.height * scale_y,
-                                                        fromCenter: false
+                                                        x1: ruling[0] * scaleFactor, y1: ruling[1] * scaleFactor,
+                                                        x2: ruling[2] * scaleFactor, y2: ruling[3] * scaleFactor
                                                     });
                 });
                 });

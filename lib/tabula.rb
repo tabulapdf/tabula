@@ -3,7 +3,7 @@ module Tabula
   # TextElement, Line and Column should all include this Mixin
   class ZoneEntity
     attr_accessor :top, :left, :width, :height
-    
+
     attr_accessor :texts
 
     def initialize(top, left, width, height)
@@ -21,7 +21,7 @@ module Tabula
     def right
       self.left + self.width
     end
-        
+
     def merge!(other)
       self.top    = [self.top, other.top].min
       self.left   = [self.left, other.left].min
@@ -39,10 +39,10 @@ module Tabula
 
     # Roughly, detects if self and other belong to the same line
     def vertically_overlaps?(other)
-      (other.top == self.top) or 
+      (other.top == self.top) or
         (other.top.between?(self.top, self.bottom) and self.bottom.between?(other.top, other.bottom)) or
         (self.top.between?(other.top, other.bottom) and other.bottom.between?(self.top, self.bottom)) or
-        (self.top.between?(other.top, other.bottom) and self.bottom.between?(other.top, other.bottom)) or 
+        (self.top.between?(other.top, other.bottom) and self.bottom.between?(other.top, other.bottom)) or
         (other.top.between?(self.top, self.bottom)  and other.bottom.between?(self.top, self.bottom))
     end
 
@@ -61,7 +61,7 @@ module Tabula
       end
       hash
     end
-    
+
     def to_json(arg)
       self.to_h.to_json
     end
@@ -83,7 +83,7 @@ module Tabula
       raise TypeError, "argument is not a TextElement" unless other.instance_of?(TextElement)
 
       overlaps = self.vertically_overlaps?(other)
-      
+
       overlaps or
         (self.height == 0 and other.height != 0) or
         (other.height == 0 and self.height != 0) and
@@ -111,8 +111,8 @@ module Tabula
 
   class Line < ZoneEntity
     # TODO clean this up
-    attr_accessor :text_elements  
-    
+    attr_accessor :text_elements
+
     def initialize
       self.text_elements = []
     end
@@ -133,7 +133,7 @@ module Tabula
 
   class Column < ZoneEntity
     attr_accessor :text_elements
-    
+
     def initialize(left, width, text_elements=[])
       super(0, left, width, 0)
       @text_elements = text_elements
@@ -168,7 +168,7 @@ module Tabula
       texts = self.text_elements.sort_by { |te| te.top }.map { |te| te.text }
       "<#{self.class}: #{vars.join(', ')}, @text_elements=#{texts.join(', ')}>"
     end
-    
+
   end
 
   class Ruling < ZoneEntity
@@ -184,7 +184,7 @@ module Tabula
       hash[:color] = self.color
       hash
     end
-    
+
   end
 
 
@@ -196,7 +196,7 @@ module Tabula
 
       char2 = text_elements[i+1]
 
-      next if char2.nil? or char1.nil? 
+      next if char2.nil? or char1.nil?
 
       if text_elements[current_word_index].should_merge?(char2)
         text_elements[current_word_index].merge!(char2)
@@ -225,7 +225,7 @@ module Tabula
 
   def Tabula.row_histogram(text_elements)
     bins = []
-    
+
     text_elements.each do |te|
       row = bins.detect { |l| l.vertically_overlaps?(te) }
       ze = ZoneEntity.new(te.top, te.left, te.width, te.height)
@@ -237,7 +237,7 @@ module Tabula
         row.texts << te.text
       end
     end
-    bins 
+    bins
   end
 
   def Tabula.get_columns(text_elements, merge_words=true)
@@ -256,7 +256,7 @@ module Tabula
 
   end
 
-  def Tabula.make_table(text_elements, merge_words=true, split_multiline_cells=false) 
+  def Tabula.make_table(text_elements, merge_words=true, split_multiline_cells=false)
 
     text_elements = Tabula.merge_words(text_elements)
 
@@ -265,7 +265,7 @@ module Tabula
     line_boundaries = Tabula.row_histogram(text_elements)
     line_boundaries.each { |lb|
       line = Line.new
-      text_elements.find_all { |te| 
+      text_elements.find_all { |te|
         te.vertically_overlaps?(lb) } \
         .sort_by(&:left).each { |te| line << te }
       lines << line
@@ -273,16 +273,16 @@ module Tabula
     lines.sort_by!(&:top)
 
     columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.compact.uniq)
-                                
+
     # insert empty cells if needed
-    lines.each_with_index { |l, line_index| 
+    lines.each_with_index { |l, line_index|
       next if l.text_elements.nil?
       l.text_elements.compact! # TODO WHY do I have to do this?
       l.text_elements.uniq!  # TODO WHY do I have to do this?
 
       l.text_elements = l.text_elements.sort_by(&:left)
-      
-      # if l.text_elements.detect { |te| te.text.include? "PEARA" } 
+
+      # if l.text_elements.detect { |te| te.text.include? "PEARA" }
       #   require 'debugger'; debugger
       # end
 
@@ -307,7 +307,7 @@ module Tabula
 
       (0..l.text_elements.size-1).to_a.combination(2).each do |t1, t2|
         next if l.text_elements[t1].nil? or l.text_elements[t2].nil?
-        
+
         # if same column...
         if columns.detect { |c| c.text_elements.include? l.text_elements[t1] } \
            == columns.detect { |c| c.text_elements.include? l.text_elements[t2] }
@@ -320,7 +320,7 @@ module Tabula
           end
         end
       end
-     
+
       l.text_elements.compact!
     end
 
@@ -332,7 +332,7 @@ module Tabula
       # if any of the elements on the next line is duplicated, kill
       # the next line
       if (0..lines[i].text_elements.size-1).any? { |j| lines[i].text_elements[j] == lines[i+1].text_elements[j] }
-        lines[i+1] = nil 
+        lines[i+1] = nil
       end
     end
 
@@ -359,11 +359,10 @@ module Tabula
     #   end
     # end
 
-    
+
     lines.compact
 
   end
 
 
 end
-
