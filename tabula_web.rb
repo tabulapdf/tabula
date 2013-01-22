@@ -108,8 +108,11 @@ Cuba.define do
                                         req.params['y2'])
 
       table = Tabula.make_table(text_elements,
-                                Settings::USE_JRUBY_ANALYZER,
-                                req.params['split_multiline_cells'] == 'true')
+                                Settings::USE_JRUBY_ANALYZER)
+
+      if req.params['split_multiline_cells'] == 'true'
+        table = Tabula.merge_multiline_cells(table)
+      end
 
       line_texts = table.map { |line|
         line.text_elements.sort_by { |t| t.left }

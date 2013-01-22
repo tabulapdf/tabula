@@ -34,7 +34,7 @@ module Tabula
     end
 
     def vertical_distance(other)
-      (other.top - self.bottom).abs
+      (other.bottom - self.bottom).abs
     end
 
     # Roughly, detects if self and other belong to the same line
@@ -282,12 +282,7 @@ module Tabula
 
       l.text_elements = l.text_elements.sort_by(&:left)
 
-      # if l.text_elements.detect { |te| te.text.include? "PEARA" }
-      #   require 'debugger'; debugger
-      # end
-
-      # merged = Tabula.merge_words(l.text_elements)
-      l.text_elements = Tabula.merge_words(l.text_elements)
+      # l.text_elements = Tabula.merge_words(l.text_elements)
 
       next unless l.text_elements.size < columns.size
 
@@ -301,6 +296,7 @@ module Tabula
 
     # # merge elements that are in the same column
     columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.compact.uniq)
+
 
     lines.each_with_index do |l, line_index|
       next if l.text_elements.nil?
@@ -335,10 +331,12 @@ module Tabula
         lines[i+1] = nil
       end
     end
+    lines.compact
+  end
 
-
-    # EXPERIMENTAL: Merge lines closer than the global average
-    # vertical distance
+  # EXPERIMENTAL: Merge lines closer than the global average
+  # vertical distance
+  def Tabula.merge_multiline_cells(lines)
     lines.compact!
     distances = (1..lines.size - 1).map { |i| lines[i].bottom - lines[i-1].bottom }
     avg_distance = distances.inject(0) { |sum, el| sum + el } / distances.size.to_f
@@ -347,21 +345,26 @@ module Tabula
     puts "avg_distance: #{avg_distance}"
     puts "stddev_distance: #{stddev_distance}"
 
-    # (0..lines.size - 2).each do |i|
-    #   next if lines[i].nil?
-    #   dist = (lines[i].bottom - lines[i+1].bottom).abs
-    #   puts "dist: #{dist}"
-    #   if dist < avg_distance - stddev_distance
-    #     lines[i].text_elements.each_with_index { |te, j|
-    #       lines[i].text_elements[j].merge!(lines[i+1].text_elements[j])
-    #     }
-    #     lines[i+1] = nil
-    #   end
-    # end
-
-
+    i = 1
+    cur_line = lines[0]
+    while i < lines.size
+      dist = cur_line.vertical_distance(lines[i])
+      puts "dist: #{dist}"
+      if dist < avg_distance
+        cur_line.text_elements.each_with_index { |te, j|
+          cur_line.text_elements[j].merge! lines[i].text_elements[j]
+        }
+        cur_line.merge! lines[i]
+        lines[i] = nil
+      else
+        cur_line = lines[i]
+      end
+      puts cur_line.text_elements.map(&:text).inspect
+      i += 1
+    end
+    puts '----------------------------------------'
+    puts;     puts;     puts;     puts;     puts;
     lines.compact
-
   end
 
 

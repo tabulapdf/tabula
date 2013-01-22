@@ -1,5 +1,5 @@
 # VERY DIRTY SCRIPT
-# TODO refactor. we need to get rid of the XML intermediate step, anyway.
+# TODO refactor. we should get rid of the XML intermediate step, anyway.
 require 'java'
 
 java_import org.apache.pdfbox.pdfparser.PDFParser
@@ -30,7 +30,9 @@ class TextExtractor < org.apache.pdfbox.util.PDFTextStripper
     $fonts[$current_page].merge!({
       font_plus_size => { :family => text_font.getBaseFont, :size => text_size }
     })
-    $page_contents[$current_page] += "  <text top=\"#{text.getYDirAdj - text.getHeightDir}\" left=\"#{text.getXDirAdj}\" width=\"#{text.getWidthDirAdj}\" height=\"#{text.getHeightDir}\" font=\"#{font_plus_size}\" dir=\"#{text.getDir}\">#{text.getCharacter}</text>\n"
+
+    $page_contents[$current_page] += "  <text top=\"%.2f\" left=\"%.2f\" width=\"%.2f\" height=\"%.2f\" font=\"#{font_plus_size}\" dir=\"#{text.getDir}\">#{text.getCharacter}</text>\n" % [text.getYDirAdj - text.getHeightDir, text.getXDirAdj, text.getWidthDirAdj, text.getHeightDir]
+
   end
 
 end
