@@ -7,10 +7,9 @@ require 'nokogiri'
 require "digest/sha1"
 require 'json'
 require 'csv'
-require 'opencv'
-
 
 require './lib/tabula.rb'
+require './lib/detect_rulings.rb'
 require './local_settings.rb'
 
 Cuba.plugin Cuba::Render
@@ -21,25 +20,33 @@ def run_pdftohtml(file, output_dir)
 end
 
 def run_jrubypdftohtml(file, output_dir)
-  cmd = "CLASSPATH=lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar #{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} /tmp 500 > #{File.join(output_dir, 'document.xml')}"
+  cmd = "CLASSPATH=lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar #{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}"
   puts cmd
   `#{cmd}`
-
 end
 
-def run_mupdfdraw(file, output_dir, width=560)
+def run_mupdfdraw(file, output_dir, width=560, page=nil)
+
   cmd = "#{Settings::MUDRAW_PATH} -w #{width} -o " \
     + File.join(output_dir, "document_#{width}_%d.png") \
-    + " #{file} > /dev/null"
+    + " #{file}"
+
+  cmd += " #{page}" unless page.nil?
+
   `#{cmd}`
+
 end
 
-def parse_document_xml(file)
-  Nokogiri::XML(File.open(file))
+def parse_document_xml(file_id, page)
+  f = File.open(File.join(Dir.pwd, "static/pdfs/#{file_id}/page_#{page}.xml"))
+  xml = Nokogiri::XML(f)
+  f.close
+  xml
 end
 
 def get_text_elements(file_id, page, x1, y1, x2, y2)
-  xml = parse_document_xml(File.join(Dir.pwd, "static/pdfs/#{file_id}/document.xml"))
+  xml = parse_document_xml(file_id, page)
+  #xml = parse_document_xml(File.join(Dir.pwd, "static/pdfs/#{file_id}/document.xml"))
   xpath = "//page[@number=#{page}]//text[@top > #{y1} and (@top + @height) < #{y2} and @left > #{x1} and (@left + @width) < #{x2}]"
   text_nodes = xml.xpath(xpath)
   text_nodes.find_all { |e| e.name == 'text' }.map { |tn|
@@ -53,7 +60,7 @@ def get_text_elements(file_id, page, x1, y1, x2, y2)
 end
 
 def get_rulings(file_id, page, x1, y1, x2, y2)
-  xml = parse_document_xml(File.join(Dir.pwd, "static/pdfs/#{file_id}/document.xml"))
+  xml = parse_document_xml(file_id, page)
   xpath = "//page[@number=#{page}]//line[@top > #{y1} and (@top + @height) < #{y2} and @left > #{x1} and (@left + @width) < #{x2}]"
   line_nodes = xml.xpath(xpath)
   line_nodes.map { |tn|
@@ -63,30 +70,6 @@ def get_rulings(file_id, page, x1, y1, x2, y2)
                        tn.attr('height').to_f,
                        tn.attr('color').to_s)
   }.uniq
-end
-
-def hough(file_id, page)
-  mat = OpenCV::CvMat.load(File.join(Dir.pwd, "static/pdfs/#{file_id}/document_2048_#{page}.png"),
-                           OpenCV::CV_LOAD_IMAGE_ANYCOLOR | OpenCV::CV_LOAD_IMAGE_ANYDEPTH)
-
-  # TODO if mat is not 3-channel, don't do BGR2GRAY
-  mat = mat.BGR2GRAY
-  mat_canny = mat.canny(1, 50, 3)
-  mat = mat.GRAY2BGR
-
-  lines = mat_canny.hough_lines(:probabilistic, 5, (Math::PI/180) * 45, 200, 100, 10)
-  lines.map do |line|
-    [line.point1.x, line.point1.y, line.point2.x, line.point2.y]
-  end
-
-  # wh = mat.size.width + mat.size.height
-  # lines = mat_canny.hough_lines(:multi_scale, 1, Math::PI / 180, 100, 0, 0)
-  # lines.map do |line|
-  #   rho = line[0]; theta = line[1]
-  #   a = Math.cos(theta); b = Math.sin(theta)
-  #   x0 = a * rho; y0 = b * rho;
-  #   [x0 + wh * (-b), y0 + wh*(a), x0 - wh*(-b), y0 - wh*(a)]
-  # end
 end
 
 
@@ -99,7 +82,6 @@ Cuba.define do
 
     # TODO validate that file_id is /[a-f0-9]{40}/
     on "pdf/:file_id/data" do |file_id|
-
       text_elements = get_text_elements(file_id,
                                         req.params['page'],
                                         req.params['x1'],
@@ -130,6 +112,7 @@ Cuba.define do
         res['Content-Type'] = 'application/json'
         res.write line_texts.to_json
       end
+
 
     end
 
@@ -193,12 +176,10 @@ Cuba.define do
     end
 
     on "pdf/:file_id/lines" do |file_id|
-      lines = hough(file_id,
-                    req.params['page'])
+      lines = Tabula::Rulings::detect_rulings(File.join(Dir.pwd, "static/pdfs/#{file_id}/document_2048_#{req.params['page']}.png"))
       res['Content-Type'] = 'application/json'
       res.write lines.to_json
     end
-
 
     on "pdf/:file_id" do |file_id|
       # TODO validate that file_id is  /[a-f0-9]{40}/
@@ -210,8 +191,11 @@ Cuba.define do
                        page_images: Dir.glob(File.join(document_dir, "document_560_*.png"))
                          .sort_by { |f| f.gsub(/[^\d]/, '').to_i }
                          .map { |f| f.gsub(Dir.pwd + '/static', '') },
-                       pages:       parse_document_xml(File.join(document_dir, "document.xml"))
-                         .xpath("//page"))
+                       pages: Dir.glob(File.join(document_dir, "page_*.xml"))
+                         .sort_by { |f| f.gsub(/[^\d]/, '').to_i }
+                         .map { |f| parse_document_xml(file_id,
+                                                       /\/page_(\d+)\.xml$/.match(f)[1].to_i)
+                                      .xpath("//page") })
       end
 
     end

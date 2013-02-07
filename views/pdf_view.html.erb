@@ -1,18 +1,18 @@
 <div class="container-fluid">
   <div class="row-fluid">
-    <div class="span3">
+    <div class="span2">
       <div class="nav well sidebar-nav affix">
         <ul class="thumbnail-list">
           <% page_images.each_with_index do |pi, i| %>
           <li data-page="page-<%= i + 1 %>" id="thumb-page-<%= i + 1 %>">
-            <a href="#page-<%= i + 1 %>"><img src="<%= pi.sub(/^static/, '') %>" width="200"></a>
+            <a href="#page-<%= i + 1 %>"><img src="<%= pi.sub(/^static/, '') %>" width="100"></a>
             <br>Page <%= i + 1 %>
           </li>
           <% end %>
         </ul>
       </div>
     </div> <!-- /sidebar container -->
-    <div class="span9">
+    <div class="span10">
       <div class="alert alert-success" id="loading">Loading...</div>
       <div class="row">
         <div class="alert alert-info span7" >
@@ -52,39 +52,3 @@
 <script type="text/javascript" src="/js/ZeroClipboard.js"></script>
 <script type="text/javascript" src="/js/table2CSV.js"></script>
 <script type="text/javascript" src="/js/pdf_view.js"></script>
-
-<!--- PARA OBTENER LA POSICIÓN DEL CURSOR EN UN ÁREA CONTENT EDITABLE -->
-<!---
-
-/* obtained from: http://jsfiddle.net/timdown/2YcaX/ */
-
-function getCharacterOffsetWithin(range, node) {
-    var treeWalker = document.createTreeWalker(
-        node,
-        NodeFilter.SHOW_TEXT,
-        function(node) {
-            var nodeRange = document.createRange();
-            nodeRange.selectNodeContents(node);
-            return nodeRange.compareBoundaryPoints(Range.END_TO_END, range) < 1 ?
-                NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-        },
-        false
-    );
-
-    var charCount = 0;
-    while (treeWalker.nextNode()) {
-        charCount += treeWalker.currentNode.length;
-    }
-    if (range.startContainer.nodeType == 3) {
-        charCount += range.startOffset;
-    }
-    return charCount;
-}
-
-document.body.addEventListener("mouseup", function() {
-    var el = document.getElementById("test");
-    var range = window.getSelection().getRangeAt(0);
-    console.log("Caret char pos: " + getCharacterOffsetWithin(range, el))
-}, false);
-
--->

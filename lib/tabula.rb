@@ -1,5 +1,4 @@
 module Tabula
-
   # TextElement, Line and Column should all include this Mixin
   class ZoneEntity
     attr_accessor :top, :left, :width, :height
@@ -296,7 +295,6 @@ module Tabula
 
     # # merge elements that are in the same column
     columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.compact.uniq)
-
 
     lines.each_with_index do |l, line_index|
       next if l.text_elements.nil?
