@@ -2,8 +2,6 @@
 # TODO refactor. we should get rid of the XML intermediate step, anyway.
 require 'java'
 
-require 'parallel'
-
 java_import org.apache.pdfbox.pdfparser.PDFParser
 java_import org.apache.pdfbox.pdmodel.PDDocument
 java_import org.apache.pdfbox.util.PDFTextStripper
