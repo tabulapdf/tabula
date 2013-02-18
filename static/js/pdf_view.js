@@ -58,8 +58,13 @@ $(function () {
 
         var scaleFactor = 560.0 / 2048.0;
 
+        var lq = $.extend(lastQuery,
+                          {
+                              pdf_page_width: $('img#page-' + lastQuery.page).data('original-width')
+                          });
+
         $.get('/pdf/' + PDF_ID + '/rulings',
-              lastQuery,
+              lq,
               function(data) {
                   $.each(data, function(i, ruling) {
                       console.log(ruling);
@@ -292,14 +297,13 @@ $(function () {
             //     tmp = selection.y1; selection.y1 = selection.y2; selection.y2 = tmp;
             // }
 
-            var scale_x = (pdf_width / thumb_width);
-            var scale_y = (pdf_height / thumb_height);
+            var scale = (pdf_width / thumb_width);
 
             var query_parameters = {
-                x1: selection.x1 * scale_x,
-                x2: selection.x2 * scale_x,
-                y1: selection.y1 * scale_y,
-                y2: selection.y2 * scale_y,
+                x1: selection.x1 * scale,
+                x2: selection.x2 * scale,
+                y1: selection.y1 * scale,
+                y2: selection.y2 * scale,
                 page: $(img).data('page')
             };
 

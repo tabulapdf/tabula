@@ -27,7 +27,13 @@ class TextExtractor < org.apache.pdfbox.util.PDFTextStripper
     super
     self.fonts = {}
     self.contents = ''
+    self.setSortByPosition(true)
   end
+
+  def clear!
+    self.contents = ''; self.fonts = {}
+  end
+
 
   def processTextPosition(text)
 #    return if text.getCharacter == ' '
@@ -52,9 +58,14 @@ end
 def print_text_locations(pdf_file_name, output_directory)
   pdf_file = PDDocument.loadNonSeq(java.io.File.new(pdf_file_name), nil)
   all_pages = pdf_file.getDocumentCatalog.getAllPages
+  extractor = TextExtractor.new
 
-  # Parallel.each_with_index(all_pages,
-  #                          :in_threads => 4) do |page, i|
+  index_file = File.new(output_directory + "/pages.xml", 'w')
+  index_file.puts <<-index_preamble
+  <?xml version="1.0" encoding="UTF-8"?>
+  <index>
+  index_preamble
+
   all_pages.each_with_index do |page, i|
 
     contents = page.getContents
@@ -62,9 +73,7 @@ def print_text_locations(pdf_file_name, output_directory)
 
     outfile = File.new(output_directory + "/page_#{i + 1}.xml", 'w')
 
-    extractor = TextExtractor.new
-    extractor.setSortByPosition(true)
-
+    extractor.clear!
     extractor.processStream(page, page.findResources, contents.getStream)
 
     preamble = <<-xmlpreamble
@@ -72,21 +81,26 @@ def print_text_locations(pdf_file_name, output_directory)
 <pdf2xml producer="pdfbox" version="1.7.5">
     xmlpreamble
     outfile.puts preamble
-    outfile.puts "<page number=\"#{i+1}\" position=\"absolute\" top=\"0\" left=\"0\" height=\"#{page.findCropBox.getHeight}\" width=\"#{page.findCropBox.getWidth}\" rotation=\"#{page.getRotation}\">"
+    page_tag = "<page number=\"#{i+1}\" position=\"absolute\" top=\"0\" left=\"0\" height=\"#{page.findCropBox.getHeight}\" width=\"#{page.findCropBox.getWidth}\" rotation=\"#{page.getRotation}\""
+    outfile.puts page_tag + ">"
 
-    # $fonts[i].each { |font_id, font|
-    #   puts "  <fontspec id=\"#{font_id}\" size=\"#{font[:size]}\" family=\"#{font[:family]}\" color=\"#000000\"/>"
-    # }
+    # # $fonts[i].each { |font_id, font|
+    # #   puts "  <fontspec id=\"#{font_id}\" size=\"#{font[:size]}\" family=\"#{font[:family]}\" color=\"#000000\"/>"
+    # # }
 
     outfile.puts extractor.contents
     outfile.puts "</page>"
     outfile.puts "</pdf2xml>"
     outfile.close
 
+    index_file.puts page_tag + "/> "
+
     STDERR.puts "converted #{i+1}/#{all_pages.size}"
 
   end
 
+  index_file.puts "</index>"
+  index_file.close
   pdf_file.close
 
 end

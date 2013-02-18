@@ -36,6 +36,27 @@ module Tabula
          % [left, top, right, bottom]
       end
 
+      # // Test to see if a line intersects a Rectangle
+      # bool LineIntersectsRect( const Vector2f &v1, const Vector2f &v2, const Rect &r )
+      # {
+      #   Vector2f lowerLeft( r.x, r.y+r.height );
+      #   Vector2f upperRight( r.x+r.width, r.y );
+      #   Vector2f upperLeft( r.x, r.y );
+      #   Vector2f lowerRight( r.x+r.width, r.y+r.height);
+      #   // check if it is inside
+      #   if (v1.x > lowerLeft.x && v1.x < upperRight.x && v1.y < lowerLeft.y && v1.y > upperRight.y &&
+      #       v2.x > lowerLeft.x && v2.x < upperRight.x && v2.y < lowerLeft.y && v2.y > upperRight.y )
+      #     {
+      #       return true;
+      #     }
+      #     // check each line for intersection
+      #     if (LineIntersectLine(v1,v2, upperLeft, lowerLeft ) ) return true;
+      #     if (LineIntersectLine(v1,v2, lowerLeft, lowerRight) ) return true;
+      #     if (LineIntersectLine(v1,v2, upperLeft, upperRight) ) return true;
+      #     if (LineIntersectLine(v1,v2, upperRight, lowerRight) ) return true;
+      #     return false;
+      # }
+
     end
 
     # generate an xml string of
@@ -48,14 +69,22 @@ module Tabula
       # delete lines that don't look like rulings (TODO: define rulingness)
     end
 
-    def Rulings.detect_rulings(image_filename)
+    def Rulings.detect_rulings(image_filename,
+                               crop_x1, crop_y1, crop_x2, crop_y2)
 
-      mat = OpenCV::CvMat.load(image_filename,
-                               OpenCV::CV_LOAD_IMAGE_ANYCOLOR | \
-                               OpenCV::CV_LOAD_IMAGE_ANYDEPTH)
+      image = OpenCV::IplImage.load(image_filename,
+                                    OpenCV::CV_LOAD_IMAGE_ANYCOLOR | OpenCV::CV_LOAD_IMAGE_ANYDEPTH)
 
-      # TODO if mat is not 3-channel, don't do BGR2GRAY
-      mat = mat.BGR2GRAY
+      image.set_roi(OpenCV::CvRect.new(crop_x1, crop_y1,
+                                       (crop_x2 - crop_x1).abs,
+                                       (crop_y2 - crop_y1).abs))
+
+      mat = image.to_CvMat
+
+      mat = mat.BGR2GRAY if mat.channel == 3
+
+      mat.save_image('/tmp/cropped.png')
+
       mat_canny = mat.canny(1, 50, 3)
 
       lines = mat_canny.hough_lines(:probabilistic,
@@ -75,8 +104,10 @@ module Tabula
         line.point1.y != line.point2.y
       }
 
+      # rulings are returned relative to the image before cropping
       lines.map do |line|
-        Ruling.new(line.point1.x, line.point1.y, line.point2.x, line.point2.y)
+        Ruling.new(line.point1.x + crop_x1, line.point1.y + crop_y1,
+                   line.point2.x + crop_x1, line.point2.y + crop_y1)
       end
 
       # Hough non-probabilistic
@@ -88,7 +119,6 @@ module Tabula
       #   x0 = a * rho; y0 = b * rho;
       #   [x0 + wh * (-b), y0 + wh*(a), x0 - wh*(-b), y0 - wh*(a)]
       # end
-
     end
   end
 end

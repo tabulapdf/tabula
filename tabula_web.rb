@@ -44,7 +44,6 @@ end
 
 def get_text_elements(file_id, page, x1, y1, x2, y2)
   xml = parse_document_xml(file_id, page)
-  #xml = parse_document_xml(File.join(Dir.pwd, "static/pdfs/#{file_id}/document.xml"))
   xpath = "//page[@number=#{page}]//text[@top > #{y1} and (@top + @height) < #{y2} and @left > #{x1} and (@left + @width) < #{x2}]"
   text_nodes = xml.xpath(xpath)
   text_nodes.find_all { |e| e.name == 'text' }.map { |tn|
@@ -148,9 +147,9 @@ Cuba.define do
 
     on "pdf/:file_id/rulings" do |file_id|
       lines = Tabula::Rulings::detect_rulings(File.join(Dir.pwd, "static/pdfs/#{file_id}/document_2048_#{req.params['page']}.png"))
-      File.open('/tmp/rulings.marshal', 'w') do |f|
-        f.write(Marshal.dump(lines))
-      end
+      # File.open('/tmp/rulings.marshal', 'w') do |f|
+      #   f.write(Marshal.dump(lines))
+      # end
       res['Content-Type'] = 'application/json'
       res.write lines.to_json
     end
@@ -165,16 +164,12 @@ Cuba.define do
                        page_images: Dir.glob(File.join(document_dir, "document_560_*.png"))
                          .sort_by { |f| f.gsub(/[^\d]/, '').to_i }
                          .map { |f| f.gsub(Dir.pwd + '/static', '') },
-                       pages: Dir.glob(File.join(document_dir, "page_*.xml"))
-                         .sort_by { |f| f.gsub(/[^\d]/, '').to_i }
-                         .map { |f| parse_document_xml(file_id,
-                                                       /\/page_(\d+)\.xml$/.match(f)[1].to_i)
-                                      .xpath("//page") })
+                       pages: File.open(File.join(Dir.pwd,
+                                                  "static/pdfs/#{file_id}/pages.xml")) { |index_file|
+                         Nokogiri::XML(index_file).xpath('//page')
+                       })
       end
-
     end
-
-
   end
 
   on post do
