@@ -58,7 +58,7 @@ $(function () {
 
         var scaleFactor = 560.0 / 2048.0;
 
-        $.get('/pdf/' + PDF_ID + '/lines',
+        $.get('/pdf/' + PDF_ID + '/rulings',
               lastQuery,
               function(data) {
                   $.each(data, function(i, ruling) {

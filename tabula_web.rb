@@ -19,9 +19,8 @@ def run_pdftohtml(file, output_dir)
 end
 
 def run_jrubypdftohtml(file, output_dir)
-  cmd = "CLASSPATH=lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar #{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}"
-  puts cmd
-  `#{cmd}`
+  system({"CLASSPATH" => "lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar"},
+         "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}")
 end
 
 def run_mupdfdraw(file, output_dir, width=560, page=nil)
@@ -37,7 +36,7 @@ def run_mupdfdraw(file, output_dir, width=560, page=nil)
 end
 
 def parse_document_xml(file_id, page)
-  f = File.open(File.join(Dir.pwd, "static/pdfs/#{file_id}/page_#{page}.xml"))
+  f = Fpile.open(File.join(Dir.pwd, "static/pdfs/#{file_id}/page_#{page}.xml"))
   xml = Nokogiri::XML(f)
   f.close
   xml
@@ -57,20 +56,6 @@ def get_text_elements(file_id, page, x1, y1, x2, y2)
                             tn.text)
   }
 end
-
-def get_rulings(file_id, page, x1, y1, x2, y2)
-  xml = parse_document_xml(file_id, page)
-  xpath = "//page[@number=#{page}]//line[@top > #{y1} and (@top + @height) < #{y2} and @left > #{x1} and (@left + @width) < #{x2}]"
-  line_nodes = xml.xpath(xpath)
-  line_nodes.map { |tn|
-    Tabula::Ruling.new(tn.attr('top').to_f,
-                       tn.attr('left').to_f,
-                       tn.attr('width').to_f,
-                       tn.attr('height').to_f,
-                       tn.attr('color').to_s)
-  }.uniq
-end
-
 
 Cuba.define do
 
@@ -143,19 +128,6 @@ Cuba.define do
 
     end
 
-    on "pdf/:file_id/rulings" do |file_id|
-      rulings = get_rulings(file_id,
-                            req.params['page'],
-                            req.params['x1'],
-                            req.params['y1'],
-                            req.params['x2'],
-                            req.params['y2'])
-
-      res['Content-Type'] = 'application/json'
-      r = rulings.sort_by(&:top).find_all { |x| x.height < 1 }.map(&:to_h).uniq
-      res.write r.to_json
-    end
-
     on "pdf/:file_id/characters" do |file_id|
       text_elements = get_text_elements(file_id,
                                         req.params['page'],
@@ -174,8 +146,11 @@ Cuba.define do
       }.to_json
     end
 
-    on "pdf/:file_id/lines" do |file_id|
+    on "pdf/:file_id/rulings" do |file_id|
       lines = Tabula::Rulings::detect_rulings(File.join(Dir.pwd, "static/pdfs/#{file_id}/document_2048_#{req.params['page']}.png"))
+      File.open('/tmp/rulings.marshal', 'w') do |f|
+        f.write(Marshal.dump(lines))
+      end
       res['Content-Type'] = 'application/json'
       res.write lines.to_json
     end
