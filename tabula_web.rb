@@ -2,7 +2,6 @@
 require 'cuba'
 require "cuba/render"
 
-require "docsplit" # for page thumbnails
 require 'nokogiri'
 require "digest/sha1"
 require 'json'
