@@ -1,39 +1,51 @@
 require 'opencv'
 
+require './tabula.rb'
+
 module Tabula
   module Rulings
 
-    class Ruling
+    class Ruling < ZoneEntity
       attr_accessor :x1, :y1, :x2, :y2
-
-      def initialize(x1, y1, x2, y2)
-        self.x1 = x1
-        self.y1 = y1
-        self.x2 = x2
-        self.y2 = y2
-      end
 
       # 2D line intersection test taken from comp.graphics.algorithms FAQ
       def intersects?(other)
-        r = ((self.y1-other.y1)*(other.x2-other.x1) - (self.x1-other.x1)*(other.y2-other.y1)) / ((self.x2-self.x1)*(other.y2-other.y1)-(self.y2-self.y1)*(other.x2-other.x1))
+        r = ((self.top-other.top)*(other.right-other.left) - (self.left-other.left)*(other.bottom-other.top)) \
+             / ((self.right-self.left)*(other.bottom-other.top)-(self.bottom-self.top)*(other.right-other.left))
 
-        s = ((self.y1-other.y1)*(self.x2-self.x1) - (self.x1-other.x1)*(self.y2-self.y1))/((self.x2-self.x1)*(other.y2-other.y1) - (self.y2-self.y1)*(other.x2-other.x1))
+        s = ((self.top-other.top)*(self.right-self.left) - (self.left-other.left)*(self.bottom-self.top)) \
+            / ((self.right-self.left)*(other.bottom-other.top) - (self.bottom-self.top)*(other.right-other.left))
 
         r >= 0 and r < 1 and s >= 0 and s < 1
       end
 
       def vertical?
-        x1 == x2
+        left == right
       end
 
       def horizontal?
-        y1 == y2
+        top == bottom
       end
 
       def to_json(arg)
-        [x1, y1, x2, y2].to_json
+        [left, top, right, bottom].to_json
       end
 
+      def to_xml
+        "<ruling x1=\"%.2f\" y1=\"%.2f\" x2=\"%.2f\" y2=\"%.2f\" />" \
+         % [left, top, right, bottom]
+      end
+
+    end
+
+    # generate an xml string of
+    def Rulings.to_xml(rulings)
+    end
+
+    def Rulings.clean_rulings(rulings)
+      # merge close rulings (TODO: decide how close is close?)
+      # stitch rulings ("tips" are close enough)
+      # delete lines that don't look like rulings (TODO: define rulingness)
     end
 
     def Rulings.detect_rulings(image_filename)
