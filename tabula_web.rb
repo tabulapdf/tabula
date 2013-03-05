@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 require 'cuba'
-require "cuba/render"
+require 'cuba/render'
 
 require 'nokogiri'
-require "digest/sha1"
+require 'digest/sha1'
 require 'json'
 require 'csv'
 
+#require './lib/detect_rulings.rb'
 require './lib/tabula.rb'
-require './lib/detect_rulings.rb'
 require './local_settings.rb'
 
 Cuba.plugin Cuba::Render
@@ -36,7 +36,7 @@ def run_mupdfdraw(file, output_dir, width=560, page=nil)
 end
 
 def parse_document_xml(file_id, page)
-  f = Fpile.open(File.join(Dir.pwd, "static/pdfs/#{file_id}/page_#{page}.xml"))
+  f = File.open(File.join(Dir.pwd, "static/pdfs/#{file_id}/page_#{page}.xml"))
   xml = Nokogiri::XML(f)
   f.close
   xml
@@ -52,6 +52,7 @@ def get_text_elements(file_id, page, x1, y1, x2, y2)
                             tn.attr('width').to_f,
                             tn.attr('height').to_f,
                             tn.attr('font').to_s,
+                            tn.attr('fontsize').to_f,
                             tn.text)
   }
 end

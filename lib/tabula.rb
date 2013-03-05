@@ -21,6 +21,11 @@ module Tabula
       self.left + self.width
     end
 
+    # [x, y]
+    def midpoint
+      [self.left + (self.width / 2), self.top + (self.height / 2)]
+    end
+
     def merge!(other)
       self.top    = [self.top, other.top].min
       self.left   = [self.left, other.left].min
@@ -64,17 +69,17 @@ module Tabula
     def to_json(arg)
       self.to_h.to_json
     end
-
   end
 
   class TextElement < ZoneEntity
-    attr_accessor :font, :text
+    attr_accessor :font, :font_size, :text
 
     CHARACTER_DISTANCE_THRESHOLD = 3
 
-    def initialize(top, left, width, height, font, text)
+    def initialize(top, left, width, height, font, font_size, text)
       super(top, left, width, height)
       self.font = font
+      self.font_size = font_size
       self.text = text
     end
 
@@ -103,8 +108,6 @@ module Tabula
       end
       hash
     end
-
-
   end
 
 

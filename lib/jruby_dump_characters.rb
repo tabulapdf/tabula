@@ -48,7 +48,7 @@ class TextExtractor < org.apache.pdfbox.util.PDFTextStripper
 
 #    $page_contents[$current_page] += "  <text top=\"%.2f\" left=\"%.2f\" width=\"%.2f\" height=\"%.2f\" font=\"#{font_plus_size}\" dir=\"#{text.getDir}\">#{text.getCharacter}</text>\n" % [text.getYDirAdj - text.getHeightDir, text.getXDirAdj, text.getWidthDirAdj, text.getHeightDir]
 
-    self.contents += "  <text top=\"%.2f\" left=\"%.2f\" width=\"%.2f\" height=\"%.2f\" font=\"\" dir=\"%s\"><![CDATA[%s]]></text>\n" % [text.getYDirAdj - text.getHeightDir, text.getXDirAdj, text.getWidthDirAdj, text.getHeightDir, text.getDir, text.getCharacter]
+    self.contents += "  <text top=\"%.2f\" left=\"%.2f\" width=\"%.2f\" height=\"%.2f\" fontsize=\"%.2f\" dir=\"%s\"><![CDATA[%s]]></text>\n" % [text.getYDirAdj - text.getHeightDir, text.getXDirAdj, text.getWidthDirAdj, text.getHeightDir, text.getFontSize, text.getDir, text.getCharacter]
 
   end
 
