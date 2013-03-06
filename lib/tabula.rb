@@ -66,7 +66,7 @@ module Tabula
       hash
     end
 
-    def to_json(arg)
+    def to_json(options={})
       self.to_h.to_json
     end
   end
@@ -85,13 +85,14 @@ module Tabula
 
     def should_merge?(other)
       raise TypeError, "argument is not a TextElement" unless other.instance_of?(TextElement)
-
       overlaps = self.vertically_overlaps?(other)
+
+      tolerance = ((self.font_size + other.font_size) / 2) * 0.25
 
       overlaps or
         (self.height == 0 and other.height != 0) or
         (other.height == 0 and self.height != 0) and
-        self.horizontal_distance(other) < CHARACTER_DISTANCE_THRESHOLD
+        self.horizontal_distance(other) < tolerance
     end
 
 

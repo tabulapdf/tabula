@@ -46,6 +46,61 @@ $(function () {
     var PDF_ID = window.location.pathname.split('/')[2];
     lastQuery = {};
 
+
+    debugGraph = function(image) {
+    image = $(image);
+        var imagePos = image.offset();
+        var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
+            .attr('width', image.width())
+            .attr('height', image.height())
+            .css('top', imagePos.top + 'px')
+            .css('left', imagePos.left + 'px');
+        $('body').append(newCanvas);
+
+        var thumb_width = $(image).width();
+        var thumb_height = $(image).height();
+        var pdf_width = parseInt($(image).data('original-width'));
+        var pdf_height = parseInt($(image).data('original-height'));
+        var pdf_rotation = parseInt($(image).data('rotation'));
+
+        // if rotated, swap width and height
+        if (pdf_rotation == 90 || pdf_rotation == 270) {
+            var tmp = pdf_height;
+            pdf_height = pdf_width;
+            pdf_width = tmp;
+        }
+
+        var scale = (thumb_width / pdf_width);
+
+        $.get('/pdf/' + PDF_ID + '/graph',
+              lastQuery,
+              function(data) {
+                  // draw rectangles enclosing each cluster
+                  $.each(data.vertices, function(i, row) {
+                      $(newCanvas).drawRect({
+                          x: lastSelection.x1,
+                          y: row.top * scale_y,
+                          width: lastSelection.x2 - lastSelection.x1,
+                          height: row.bottom - row.top,
+                          strokeStyle: COLORS[i % COLORS.length],
+                          fromCenter: false
+                      });
+                  });
+
+                  // draw lines connecting clusters (edges)
+                  // $.each(data, function(i, row) {
+                  //     $(newCanvas).drawRect({
+                  //         x: lastSelection.x1,
+                  //         y: row.top * scale_y,
+                  //         width: lastSelection.x2 - lastSelection.x1,
+                  //         height: row.bottom - row.top,
+                  //         strokeStyle: COLORS[i % COLORS.length],
+                  //         fromCenter: false
+                  //     });
+                  // });
+              });
+    };
+
     debugRulings = function(image) {
         image = $(image);
         var imagePos = image.offset();

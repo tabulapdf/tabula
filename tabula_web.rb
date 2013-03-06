@@ -9,6 +9,7 @@ require 'csv'
 
 #require './lib/detect_rulings.rb'
 require './lib/tabula.rb'
+require './lib/tabula_graph.rb'
 require './local_settings.rb'
 
 Cuba.plugin Cuba::Render
@@ -153,6 +154,20 @@ Cuba.define do
       # end
       res['Content-Type'] = 'application/json'
       res.write lines.to_json
+    end
+
+    on 'pdf/:file_id/graph' do |file_id|
+      text_elements = get_text_elements(file_id,
+                                        req.params['page'],
+                                        req.params['x1'],
+                                        req.params['y1'],
+                                        req.params['x2'],
+                                        req.params['y2'])
+      text_elements = Tabula::Graph.merge_text_elements(text_elements)
+
+      res['Content-Type'] = 'application/json'
+      res.write Tabula::Graph::Graph.make_graph(text_elements).to_json
+
     end
 
     on "pdf/:file_id" do |file_id|
