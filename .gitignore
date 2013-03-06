@@ -1,2 +1,17 @@
 static/pdfs
+local_settings.rb
 
+# Based on https://github.com/github/gitignore/blob/master/Ruby.gitignore
+*.gem
+*.rbc
+.bundle
+.config
+coverage
+InstalledFiles
+lib/bundler/man
+pkg
+rdoc
+spec/reports
+test/tmp
+test/version_tmp
+tmp
