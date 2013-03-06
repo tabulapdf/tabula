@@ -28,6 +28,34 @@ module Tabula
   end
 end
 
+class Edge
+  attr_accessor :from, :to, :direction
+  attr_writer :length, :font_size
+
+  def initialize(from, to, direction)
+    self.from = from
+    self.to = to
+    self.direction = direction
+  end
+
+  def length
+    @length ||= case self.direction
+                when :above, :below
+                  u.left - v.right
+                when :left, :right
+                  u.top - v.bottom
+                end.abs / self.font_size
+  end
+
+  def font_size
+    @font_size ||= (u.font_size + v.font_size) / 2.0
+  end
+
+  def horizontal?
+    self.direction == :above || self.direction == :below
+  end
+end
+
 class Graph
 
   attr_accessor :vertices, :edges
@@ -42,14 +70,20 @@ class Graph
     self.edges = {}
   end
 
-  def add_edge(u, v, attributes = {})
+  def add_edge(u, v, direction)
     self.edges[u] = [] if self.edges[u].nil?
     self.edges[v] = [] if self.edges[v].nil?
-    if !self.edges[u].find { |e| e[:target] == v }
-      self.edges[u] << { :target => v, :attributes => attributes}
-      self.edges[v] << { :target => u, :attributes => attributes.clone.merge({:direction => OPPOSITE[attributes[:direction]]})}
+
+    if !self.edges[u].find { |e| e.to == v }
+      self.edges[u] << Edge.new(u, v, direction)
+      self.edges[v] << Edge.new(v, u, OPPOSITE[direction])
     end
   end
+
+  def cluster_together(from, target, cluster_from, cluster_target)
+
+  end
+
 end
 
 
@@ -62,40 +96,39 @@ def make_graph(text_elements)
   graph = Graph.new(text_elements)
 
   text_elements.each do |te|
-    te_x, te_y = te.midpoint
 
     hi = horizontal.index(te); vi = vertical.index(te)
 
     (hi-1).downto(0) do |i|
       if te.top <= horizontal[i].midpoint[1] and te.bottom >= horizontal[i].midpoint[1]
-        graph.add_edge(te, horizontal[i], { :direction => :right })
+        graph.add_edge(te, horizontal[i], :right)
         break
       end
     end
 
     (hi+1).upto(horizontal.length - 1) do |i|
       if te.top <= horizontal[i].midpoint[1] and te.bottom >= horizontal[i].midpoint[1]
-        graph.add_edge(te, horizontal[i], { :direction => :left })
+        graph.add_edge(te, horizontal[i], :left)
         break
       end
     end
 
     (vi-1).downto(0) do |i|
       if te.left <= vertical[i].midpoint[0] and te.right >= vertical[i].midpoint[0]
-        graph.add_edge(te, vertical[i], { :direction => :below })
+        graph.add_edge(te, vertical[i], :below)
         break
       end
     end
 
     (vi+1).upto(vertical.length - 1) do |i|
       if te.left <= vertical[i].midpoint[0] and te.right >= vertical[i].midpoint[0]
-        graph.add_edge(te, vertical[i], { :direction => :above })
+        graph.add_edge(te, vertical[i], :above)
         break
       end
     end
   end
 
-  graph
+  return graph
 
 end
 
