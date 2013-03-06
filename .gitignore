@@ -1,6 +1,8 @@
 static/pdfs
 local_settings.rb
 
+.ruby-version
+
 # Based on https://github.com/github/gitignore/blob/master/Ruby.gitignore
 *.gem
 *.rbc
