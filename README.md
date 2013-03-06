@@ -12,7 +12,8 @@ TODO: extremely incomplete and possibly incorrect
     gem install resque -v 1.23.0
     gem install resque-progress -v 1.0.1
 
-    Install XQuartz: https://xquartz.macosforge.org/landing/
+    # ...Install XQuartz since brew won't do it for you...
+    #      -> https://xquartz.macosforge.org/landing/
     brew install mupdf
 
 ### Not yet integrated, but someday you will need ruby-opencv:
