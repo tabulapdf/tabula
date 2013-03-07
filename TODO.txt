@@ -1,0 +1,12 @@
+* README
+  * bootstrapping instructions
+  * about, etc.
+
+* UI refactor
+  * bootstrap?
+
+* tests
+
+* async processing
+  * resque?
+  * progress UI / notifications for long jobs
