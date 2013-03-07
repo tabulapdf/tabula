@@ -7,6 +7,8 @@ require 'digest/sha1'
 require 'json'
 require 'csv'
 require 'resque'
+require 'resque/status_server'
+require 'resque/job_with_status'
 
 #require './lib/detect_rulings.rb'
 require './lib/tabula.rb'
@@ -16,16 +18,28 @@ require './local_settings.rb'
 Cuba.plugin Cuba::Render
 Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/pdfs", "/scripts", "/swf"]
 
+##### PDF handling utils #####
+# TODO: move out of this file?
+
 def run_pdftohtml(file, output_dir)
   `#{Settings::PDFTOHTML_PATH} -xml #{file} #{File.join(output_dir, 'document.xml')}`
 end
 
 class ProcessPDFJob
+  include Resque::Plugins::Status
+  Resque::Plugins::Status::Hash.expire_in = (30 * 60) # 30min
   @queue = :pdftohtml
 
-  def self.perform(file_id, file, output_dir)
+  def perform
+      file_id = options['file_id']
+      file = options['file']
+      output_dir = options['output_dir']
+
+      at(0, 3, "processing PDF thumbnails...", 'file_id' => file_id)
       run_mupdfdraw(File.join(output_dir, 'document.pdf'), output_dir) # 560 width
+      at(1, 3, "processing PDF thumbnails...", 'file_id' => file_id)
       run_mupdfdraw(File.join(output_dir, 'document.pdf'), output_dir, 2048) # 2048 width
+      at(2, 3, "analyzing PDF text...", 'file_id' => file_id)
 
       if Settings::USE_JRUBY_ANALYZER
         system(
@@ -38,13 +52,11 @@ class ProcessPDFJob
           File.join(file_path, 'document.pdf'),
           file_path
         )
-        res.redirect "/pdf/#{file_id}"
       end
+      at(3, 3, "complete", 'file_id' => file_id)
 
   end
 end
-
-
 
 def run_mupdfdraw(file, output_dir, width=560, page=nil)
 
@@ -79,6 +91,9 @@ def get_text_elements(file_id, page, x1, y1, x2, y2)
                             tn.text)
   }
 end
+
+
+##### Web #####
 
 Cuba.define do
 
@@ -208,6 +223,17 @@ Cuba.define do
                        })
       end
     end
+
+    on "queue/:job_id" do |job_id|
+      status = Resque::Plugins::Status::Hash.get(job_id)
+      if status.nil?
+        res['Content-Type'] = 'text/plain'
+        res.status = 404
+        res.write "No such job"
+      else
+        res.write view("status.html", status: status)
+      end
+    end
   end
 
   on post do
@@ -218,10 +244,12 @@ Cuba.define do
       FileUtils.cp(req.params['file'][:tempfile].path,
                    File.join(file_path, 'document.pdf'))
 
-      Resque.enqueue(ProcessPDFJob, file_id, File.join(file_path, 'document.pdf'), file_path)
-
-      res.write "/pdf/#{file_id}"
-
+      job_id = ProcessPDFJob.create(
+        :file_id => file_id,
+        :file => File.join(file_path, 'document.pdf'),
+        :output_dir => file_path
+      )
+      res.redirect "/queue/#{job_id}"
     end
   end
 

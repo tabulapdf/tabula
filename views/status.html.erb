@@ -1,0 +1,17 @@
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span6 offset3">
+      <div class="hero-unit">
+        <h1>Tabula</h1>
+        <p>Upload Status<br><%= status.pct_complete %>%<% if status.message? %>: <%= status.message %><% elsif status.pct_complete == 0 %>: in processing queue...<% end %></p>
+      </div> <!-- /hero-unit -->
+    </div>
+  </div>
+</div>
+<script>
+    <% if status.pct_complete == 100 %>
+    window.location = '/pdf/<%= status['file_id'] %>';
+    <% else %>
+    setTimeout("location.reload(true);", 1000);
+    <% end %>
+</script>

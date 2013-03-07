@@ -34,6 +34,7 @@ Install some dependencies:
     brew install redis
     gem install bundler
     gem install resque
+    gem install resque-status
 
 Install jruby and get the full path to the jruby executable.
 Instructions for rbenv:
@@ -48,14 +49,16 @@ step.
 
 ### Dev Usage
 
-Start redis in a separate terminal tab
+Start `redis-server` in a separate terminal tab
 
     redis-server /usr/local/etc/redis.conf
 
-Start resque in a separate terminal tab
+Start `resque` in a separate terminal tab
 
     VERBOSE=1 TERM_CHILD=1 QUEUE=* rake resque:work
 
 Run your server
 
     rackup
+
+The site instance should now be viewable at http://127.0.0.1:9292/
