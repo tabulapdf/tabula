@@ -6,6 +6,7 @@ require 'nokogiri'
 require 'digest/sha1'
 require 'json'
 require 'csv'
+require 'resque'
 
 #require './lib/detect_rulings.rb'
 require './lib/tabula.rb'
@@ -19,10 +20,16 @@ def run_pdftohtml(file, output_dir)
   `#{Settings::PDFTOHTML_PATH} -xml #{file} #{File.join(output_dir, 'document.xml')}`
 end
 
-def run_jrubypdftohtml(file, output_dir)
-  system({"CLASSPATH" => "lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar"},
-         "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}")
+class JRubyPDFToHTML
+  @queue = :pdftohtml
+
+  def self.perform(file_id, file, output_dir)
+    system({"CLASSPATH" => "lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar"},
+       "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}")
+  end
 end
+
+
 
 def run_mupdfdraw(file, output_dir, width=560, page=nil)
 
@@ -201,13 +208,14 @@ Cuba.define do
 
 
       if Settings::USE_JRUBY_ANALYZER
-        run_jrubypdftohtml(File.join(file_path, 'document.pdf'), file_path)
+        Resque.enqueue(JRubyPDFToHTML, file_id, File.join(file_path, 'document.pdf'), file_path)
+        res['Content-Type'] = 'text/plain'
+        res.write "/pdf/#{file_id}"
       else
         run_pdftohtml(File.join(file_path, 'document.pdf'), file_path)
+        res.redirect "/pdf/#{file_id}"
       end
 
-
-      res.redirect "/pdf/#{file_id}"
     end
   end
 

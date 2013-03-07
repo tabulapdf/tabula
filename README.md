@@ -30,6 +30,11 @@ Install some dependencies:
     brew install opencv --with-tbb --with-opencl --with-qt
     gem install ruby-opencv
 
+    # resque + deps
+    brew install redis
+    gem install bundler
+    gem install resque
+
 Install jruby and get the full path to the jruby executable.
 Instructions for rbenv:
 
@@ -41,6 +46,16 @@ repo root and set `JRUBY_PATH` to the path you got in the previous
 step.
 
 
-### Usage
+### Dev Usage
+
+Start redis in a separate terminal tab
+
+    redis-server /usr/local/etc/redis.conf
+
+Start resque in a separate terminal tab
+
+    VERBOSE=1 TERM_CHILD=1 QUEUE=* rake resque:work
+
+Run your server
 
     rackup

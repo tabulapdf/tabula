@@ -1,2 +1,2 @@
-# require 'your/app'
+require './tabula_web.rb'
 require 'resque/tasks'
