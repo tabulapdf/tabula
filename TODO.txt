@@ -8,5 +8,5 @@
 * tests
 
 * async processing
-  * resque?
+  * error handling
   * progress UI / notifications for long jobs

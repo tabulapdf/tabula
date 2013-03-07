@@ -20,12 +20,27 @@ def run_pdftohtml(file, output_dir)
   `#{Settings::PDFTOHTML_PATH} -xml #{file} #{File.join(output_dir, 'document.xml')}`
 end
 
-class JRubyPDFToHTML
+class ProcessPDFJob
   @queue = :pdftohtml
 
   def self.perform(file_id, file, output_dir)
-    system({"CLASSPATH" => "lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar"},
-       "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}")
+      run_mupdfdraw(File.join(output_dir, 'document.pdf'), output_dir) # 560 width
+      run_mupdfdraw(File.join(output_dir, 'document.pdf'), output_dir, 2048) # 2048 width
+
+      if Settings::USE_JRUBY_ANALYZER
+        system(
+          {"CLASSPATH" => "lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar"},
+          "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}"
+        )
+      else
+        # DEPRECATED
+        run_pdftohtml(
+          File.join(file_path, 'document.pdf'),
+          file_path
+        )
+        res.redirect "/pdf/#{file_id}"
+      end
+
   end
 end
 
@@ -203,18 +218,9 @@ Cuba.define do
       FileUtils.cp(req.params['file'][:tempfile].path,
                    File.join(file_path, 'document.pdf'))
 
-      run_mupdfdraw(File.join(file_path, 'document.pdf'), file_path) # 560 width
-      run_mupdfdraw(File.join(file_path, 'document.pdf'), file_path, 2048) # 2048 width
+      Resque.enqueue(ProcessPDFJob, file_id, File.join(file_path, 'document.pdf'), file_path)
 
-
-      if Settings::USE_JRUBY_ANALYZER
-        Resque.enqueue(JRubyPDFToHTML, file_id, File.join(file_path, 'document.pdf'), file_path)
-        res['Content-Type'] = 'text/plain'
-        res.write "/pdf/#{file_id}"
-      else
-        run_pdftohtml(File.join(file_path, 'document.pdf'), file_path)
-        res.redirect "/pdf/#{file_id}"
-      end
+      res.write "/pdf/#{file_id}"
 
     end
   end
