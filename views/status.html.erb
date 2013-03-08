@@ -3,14 +3,24 @@
     <div class="span6 offset3">
       <div class="hero-unit">
         <h1>Tabula</h1>
-        <p>Upload Status<br><span id="message"><%= status.pct_complete %>%<% if status.message? %>: <%= status.message %><% elsif status.pct_complete == 0 %>: in processing queue...<% end %></span></p>
+        <h2>Upload Status</h2>
+        <div id="spinner" style="display:block;float:left;width:2em;height:1em;margin:3px 0 0 0"></div>
+        <p><span id="message"><%= status.pct_complete %>%<% if status.message? %>: <%= status.message %><% elsif status.pct_complete == 0 %>: waiting to be processed...<% end %></span></p>
       </div> <!-- /hero-unit -->
     </div>
   </div>
 </div>
+<script type="text/javascript" src="http://fgnass.github.com/spin.js/dist/spin.min.js"></script>
 <script>
-function statusComplete() {
-    window.location = '/pdf/<%= status['file_id'] %>';
+function statusComplete(file_id) {
+    if (!!window.spinobj) {
+        window.spinobj.stop()
+    };
+    if (!!file_id) {
+        window.location = '/pdf/' + file_id;
+    } else {
+        window.location = '/pdf/<%= status['file_id'] %>';
+    }
 }
 <% if status.pct_complete < 100 %>
 function checkStatus() {
@@ -21,7 +31,7 @@ function checkStatus() {
             console.log(data);
             processStatus(data);
             if (data.pct_complete >= 100) {
-                statusComplete();
+                statusComplete(data.file_id);
             } else {
                 setTimeout(checkStatus, 2000);
             }
@@ -37,11 +47,22 @@ function processStatus(data) {
         msg += ": ";
         msg += data.message;
     } else if (data.pct_complete === 0) {
-        msg += "in processing queue..."
+        msg += ": waiting to be processed..."
     }
     $("#message").text(msg);
 }
 $(function() {
+    window.spinpots = {
+        lines: 11,
+        length: 5,
+        width: 2,
+        radius: 4,
+        hwaccel: true,
+        top: '0',
+        left: 0
+    };
+    window.spintarget = document.getElementById('spinner');
+    window.spinobj = new Spinner(window.spinpots).spin(window.spintarget);
     checkStatus();
 });
 <% else %>
