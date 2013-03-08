@@ -2,6 +2,7 @@
 require 'cuba'
 require 'cuba/render'
 
+require 'open3'
 require 'nokogiri'
 require 'digest/sha1'
 require 'json'
@@ -78,27 +79,47 @@ class AnalyzePDFJob
 
       filename = File.join(output_dir, 'document.pdf')
 
-      at(1, 100, "generating thumbnails...",
+      at(0, 100, "generating thumbnails...",
           'file_id' => file_id,
           'upload_id' => upload_id
       )
       run_mupdfdraw(filename, output_dir, 560)
-      at(2, 100, "generating thumbnails...",
+      at(5, 100, "generating thumbnails...",
           'file_id' => file_id,
           'upload_id' => upload_id
       )
       run_mupdfdraw(filename, output_dir, 2048)
 
       if Settings::USE_JRUBY_ANALYZER
-        at(3, 100, "analyzing PDF text...",
+        at(10, 100, "analyzing PDF text...",
           'file_id' => file_id,
           'upload_id' => upload_id,
           'thumbnails_complete' => true
         )
-        system(
-          {"CLASSPATH" => "lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar"},
-          "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}"
+        #system(
+        #  {"CLASSPATH" => "lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar"},
+        #  "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}"
+        #)
+        i, o, e, thr = Open3.popen3(
+            {"CLASSPATH" => "lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar"},
+            "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}"
         )
+        e.each {|line|
+            progress, total = line.split('///', 2)
+            progress = (progress.strip).to_i
+            total = (total.strip).to_i
+            if total === 0
+              total = 1
+            end
+
+            converted_progress = (90 * progress / total).to_i + 10
+            #puts "#{progress} of #{total} (#{converted_progress}%)"
+            at(converted_progress, 100, "processing page #{progress} of #{total}...",
+              'file_id' => file_id,
+              'upload_id' => upload_id
+            )
+        }
+        Process.wait(thr.pid)
       else
         # DEPRECATED
         at(50, 100, "analyzing PDF text...",

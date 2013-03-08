@@ -95,7 +95,7 @@ def print_text_locations(pdf_file_name, output_directory)
 
     index_file.puts page_tag + "/> "
 
-    STDERR.puts "converted #{i+1}/#{all_pages.size}"
+    STDERR.puts "#{i+1}///#{all_pages.size}"
 
   end
 

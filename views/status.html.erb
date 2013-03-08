@@ -33,7 +33,7 @@ function checkStatus() {
             if (data.pct_complete >= 100) {
                 statusComplete(data.file_id);
             } else {
-                setTimeout(checkStatus, 2000);
+                setTimeout(checkStatus, 1000);
             }
         },
         error: function(xhr, status, err) {

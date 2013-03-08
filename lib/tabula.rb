@@ -343,15 +343,15 @@ module Tabula
     distances = (1..lines.size - 1).map { |i| lines[i].bottom - lines[i-1].bottom }
     avg_distance = distances.inject(0) { |sum, el| sum + el } / distances.size.to_f
     stddev_distance = Math.sqrt(distances.inject(0) { |variance, x| variance += (x - avg_distance) ** 2 } / (distances.size - 1).to_f)
-    puts "distances: #{distances.inspect}"
-    puts "avg_distance: #{avg_distance}"
-    puts "stddev_distance: #{stddev_distance}"
+    #puts "distances: #{distances.inspect}"
+    #puts "avg_distance: #{avg_distance}"
+    #puts "stddev_distance: #{stddev_distance}"
 
     i = 1
     cur_line = lines[0]
     while i < lines.size
       dist = cur_line.vertical_distance(lines[i])
-      puts "dist: #{dist}"
+      #puts "dist: #{dist}"
       if dist < avg_distance
         cur_line.text_elements.each_with_index { |te, j|
           cur_line.text_elements[j].merge! lines[i].text_elements[j]
@@ -361,11 +361,11 @@ module Tabula
       else
         cur_line = lines[i]
       end
-      puts cur_line.text_elements.map(&:text).inspect
+      #puts cur_line.text_elements.map(&:text).inspect
       i += 1
     end
-    puts '----------------------------------------'
-    puts;     puts;     puts;     puts;     puts;
+    #puts '----------------------------------------'
+    #puts;     puts;     puts;     puts;     puts;
     lines.compact
   end
 
