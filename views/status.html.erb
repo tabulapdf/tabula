@@ -3,15 +3,50 @@
     <div class="span6 offset3">
       <div class="hero-unit">
         <h1>Tabula</h1>
-        <p>Upload Status<br><%= status.pct_complete %>%<% if status.message? %>: <%= status.message %><% elsif status.pct_complete == 0 %>: in processing queue...<% end %></p>
+        <p>Upload Status<br><span id="message"><%= status.pct_complete %>%<% if status.message? %>: <%= status.message %><% elsif status.pct_complete == 0 %>: in processing queue...<% end %></span></p>
       </div> <!-- /hero-unit -->
     </div>
   </div>
 </div>
 <script>
-    <% if status.pct_complete == 100 %>
+function statusComplete() {
     window.location = '/pdf/<%= status['file_id'] %>';
-    <% else %>
-    setTimeout("location.reload(true);", 1000);
-    <% end %>
+}
+<% if status.pct_complete < 100 %>
+function checkStatus() {
+    $.ajax({
+        dataType: 'json',
+        url: '/queue/<%= upload_id %>/json',
+        success: function(data, status, xhr) {
+            console.log(data);
+            processStatus(data);
+            if (data.pct_complete >= 100) {
+                statusComplete();
+            } else {
+                setTimeout(checkStatus, 2000);
+            }
+        },
+        error: function(xhr, status, err) {
+            console.log(err);
+        }
+    });
+}
+function processStatus(data) {
+    var msg = "" + data.pct_complete + "%";
+    if (data.message) {
+        msg += ": ";
+        msg += data.message;
+    } else if (data.pct_complete === 0) {
+        msg += "in processing queue..."
+    }
+    $("#message").text(msg);
+}
+$(function() {
+    checkStatus();
+});
+<% else %>
+$(function() {
+    statusComplete();
+});
+<% end %>
 </script>

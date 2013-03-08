@@ -18,45 +18,13 @@ require './local_settings.rb'
 Cuba.plugin Cuba::Render
 Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/pdfs", "/scripts", "/swf"]
 
-##### PDF handling utils #####
+########## PDF handling internal utils ##########
 # TODO: move out of this file?
 
 def run_pdftohtml(file, output_dir)
   `#{Settings::PDFTOHTML_PATH} -xml #{file} #{File.join(output_dir, 'document.xml')}`
 end
 
-class ProcessPDFJob
-  include Resque::Plugins::Status
-  Resque::Plugins::Status::Hash.expire_in = (30 * 60) # 30min
-  @queue = :pdftohtml
-
-  def perform
-      file_id = options['file_id']
-      file = options['file']
-      output_dir = options['output_dir']
-
-      at(0, 3, "processing PDF thumbnails...", 'file_id' => file_id)
-      run_mupdfdraw(File.join(output_dir, 'document.pdf'), output_dir) # 560 width
-      at(1, 3, "processing PDF thumbnails...", 'file_id' => file_id)
-      run_mupdfdraw(File.join(output_dir, 'document.pdf'), output_dir, 2048) # 2048 width
-      at(2, 3, "analyzing PDF text...", 'file_id' => file_id)
-
-      if Settings::USE_JRUBY_ANALYZER
-        system(
-          {"CLASSPATH" => "lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar"},
-          "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}"
-        )
-      else
-        # DEPRECATED
-        run_pdftohtml(
-          File.join(file_path, 'document.pdf'),
-          file_path
-        )
-      end
-      at(3, 3, "complete", 'file_id' => file_id)
-
-  end
-end
 
 def run_mupdfdraw(file, output_dir, width=560, page=nil)
 
@@ -92,8 +60,72 @@ def get_text_elements(file_id, page, x1, y1, x2, y2)
   }
 end
 
+########## PDF handling resque jobs ##########
+# TODO: move out of this file?
 
-##### Web #####
+class AnalyzePDFJob
+  # args: (:file_id, :file, :output_dir)
+  # Runs the jruby PDF analyzer on the uploaded file.
+  include Resque::Plugins::Status
+  Resque::Plugins::Status::Hash.expire_in = (30 * 60) # 30min
+  @queue = :pdftohtml
+
+  def perform
+      file_id = options['file_id']
+      file = options['file']
+      output_dir = options['output_dir']
+      upload_id = self.uuid
+
+      filename = File.join(output_dir, 'document.pdf')
+
+      at(1, 100, "generating thumbnails...",
+          'file_id' => file_id,
+          'upload_id' => upload_id
+      )
+      run_mupdfdraw(filename, output_dir, 560)
+      at(2, 100, "generating thumbnails...",
+          'file_id' => file_id,
+          'upload_id' => upload_id
+      )
+      run_mupdfdraw(filename, output_dir, 2048)
+
+      if Settings::USE_JRUBY_ANALYZER
+        at(3, 100, "analyzing PDF text...",
+          'file_id' => file_id,
+          'upload_id' => upload_id,
+          'thumbnails_complete' => true
+        )
+        system(
+          {"CLASSPATH" => "lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar"},
+          "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}"
+        )
+      else
+        # DEPRECATED
+        at(50, 100, "analyzing PDF text...",
+          'file_id' => file_id,
+          'upload_id' => upload_id,
+          'thumbnails_complete' => true
+        )
+        run_pdftohtml(
+          File.join(file_path, 'document.pdf'),
+          file_path
+        )
+      end
+      at(100, 100, "complete",
+        'file_id' => file_id,
+          'upload_id' => upload_id,
+        'thumbnails_complete' => true
+      )
+
+  end
+end
+
+
+
+
+
+
+########## Web ##########
 
 Cuba.define do
 
@@ -224,17 +256,39 @@ Cuba.define do
       end
     end
 
-    on "queue/:job_id" do |job_id|
-      status = Resque::Plugins::Status::Hash.get(job_id)
+    on "queue/:upload_id/json" do |upload_id|
+      # upload_id is the "job id" uuid that resque-status provides
+      status = Resque::Plugins::Status::Hash.get(upload_id)
+      res['Content-Type'] = 'application/json'
+      message = {}
+      if status.nil?
+        res.status = 404
+        message[:status] = "error"
+        message[:message] = "No such job"
+        message[:pct_complete] = 0
+      else
+        message[:status] = status.status
+        message[:message] = status.message
+        message[:pct_complete] = status.pct_complete
+        message[:thumbnails_complete] = status['thumbnails_complete']
+        message[:file_id] = status['file_id']
+        message[:upload_id] = status['upload_id']
+        res.write message.to_json
+      end
+    end
+
+    on "queue/:upload_id" do |upload_id|
+      # upload_id is the "job id" uuid that resque-status provides
+      status = Resque::Plugins::Status::Hash.get(upload_id)
       if status.nil?
         res['Content-Type'] = 'text/plain'
         res.status = 404
         res.write "No such job"
       else
-        res.write view("status.html", status: status)
+        res.write view("status.html", :status => status, :upload_id => upload_id)
       end
     end
-  end
+  end # /get
 
   on post do
     on 'upload' do
@@ -244,12 +298,12 @@ Cuba.define do
       FileUtils.cp(req.params['file'][:tempfile].path,
                    File.join(file_path, 'document.pdf'))
 
-      job_id = ProcessPDFJob.create(
+      upload_id = AnalyzePDFJob.create(
         :file_id => file_id,
         :file => File.join(file_path, 'document.pdf'),
         :output_dir => file_path
       )
-      res.redirect "/queue/#{job_id}"
+      res.redirect "/queue/#{upload_id}"
     end
   end
 
