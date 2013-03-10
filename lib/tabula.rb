@@ -252,15 +252,13 @@ module Tabula
     end
   end
 
-  def Tabula.get_rows(text_elements, merge_words=false)
+  def Tabula.get_rows(text_elements, merge_words=true)
     text_elements = Tabula.merge_words(text_elements) if merge_words
     hg = Tabula.row_histogram(text_elements)
     hg.sort_by(&:top).map { |r| {'top' => r.top, 'bottom' => r.bottom, 'text' => r.texts} }
-
   end
 
   def Tabula.make_table(text_elements, merge_words=true, split_multiline_cells=false)
-
     text_elements = Tabula.merge_words(text_elements)
 
     # group by lines
@@ -289,10 +287,9 @@ module Tabula
 
       next unless l.text_elements.size < columns.size
 
-
       columns.sort_by(&:left).each_with_index do |c, i|
         if (i > l.text_elements.size - 1) or !l.text_elements(&:left)[i].nil? and !c.text_elements.include?(l.text_elements[i])
-          l.text_elements.insert(i, TextElement.new(l.top, c.left, c.width, l.height, nil, ''))
+          l.text_elements.insert(i, TextElement.new(l.top, c.left, c.width, l.height, nil, 0, ''))
         end
       end
     }

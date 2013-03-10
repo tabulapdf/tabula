@@ -14,6 +14,7 @@ require 'resque/job_with_status'
 #require './lib/detect_rulings.rb'
 require './lib/tabula.rb'
 require './lib/tabula_graph.rb'
+require './lib/jobs/analyze_pdf.rb'
 require './local_settings.rb'
 
 Cuba.plugin Cuba::Render
@@ -61,90 +62,6 @@ def get_text_elements(file_id, page, x1, y1, x2, y2)
   }
 end
 
-########## PDF handling resque jobs ##########
-# TODO: move out of this file?
-
-class AnalyzePDFJob
-  # args: (:file_id, :file, :output_dir)
-  # Runs the jruby PDF analyzer on the uploaded file.
-  include Resque::Plugins::Status
-  Resque::Plugins::Status::Hash.expire_in = (30 * 60) # 30min
-  @queue = :pdftohtml
-
-  def perform
-      file_id = options['file_id']
-      file = options['file']
-      output_dir = options['output_dir']
-      upload_id = self.uuid
-
-      filename = File.join(output_dir, 'document.pdf')
-
-      at(0, 100, "generating thumbnails...",
-          'file_id' => file_id,
-          'upload_id' => upload_id
-      )
-      run_mupdfdraw(filename, output_dir, 560)
-      at(5, 100, "generating thumbnails...",
-          'file_id' => file_id,
-          'upload_id' => upload_id
-      )
-      run_mupdfdraw(filename, output_dir, 2048)
-
-      if Settings::USE_JRUBY_ANALYZER
-        at(10, 100, "analyzing PDF text...",
-          'file_id' => file_id,
-          'upload_id' => upload_id,
-          'thumbnails_complete' => true
-        )
-        #system(
-        #  {"CLASSPATH" => "lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar"},
-        #  "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}"
-        #)
-        i, o, e, thr = Open3.popen3(
-            {"CLASSPATH" => "lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar"},
-            "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}"
-        )
-        e.each {|line|
-            progress, total = line.split('///', 2)
-            progress = (progress.strip).to_i
-            total = (total.strip).to_i
-            if total === 0
-              total = 1
-            end
-
-            converted_progress = (90 * progress / total).to_i + 10
-            #puts "#{progress} of #{total} (#{converted_progress}%)"
-            at(converted_progress, 100, "processing page #{progress} of #{total}...",
-              'file_id' => file_id,
-              'upload_id' => upload_id
-            )
-        }
-        Process.wait(thr.pid)
-      else
-        # DEPRECATED
-        at(50, 100, "analyzing PDF text...",
-          'file_id' => file_id,
-          'upload_id' => upload_id,
-          'thumbnails_complete' => true
-        )
-        run_pdftohtml(
-          File.join(file_path, 'document.pdf'),
-          file_path
-        )
-      end
-      at(100, 100, "complete",
-        'file_id' => file_id,
-          'upload_id' => upload_id,
-        'thumbnails_complete' => true
-      )
-
-  end
-end
-
-
-
-
-
 
 ########## Web ##########
 
@@ -164,8 +81,7 @@ Cuba.define do
                                         req.params['x2'],
                                         req.params['y2'])
 
-      table = Tabula.make_table(text_elements,
-                                Settings::USE_JRUBY_ANALYZER)
+      table = Tabula.make_table(text_elements)
 
       if req.params['split_multiline_cells'] == 'true'
         table = Tabula.merge_multiline_cells(table)
@@ -200,8 +116,7 @@ Cuba.define do
                                         req.params['y2'])
 
       res['Content-Type'] = 'application/json'
-      res.write Tabula.get_columns(text_elements,
-                              Settings::USE_JRUBY_ANALYZER).to_json
+      res.write Tabula.get_columns(text_elements).to_json
 
     end
 
@@ -213,7 +128,7 @@ Cuba.define do
                                         req.params['x2'],
                                         req.params['y2'])
 
-      rows = Tabula.get_rows(text_elements, Settings::USE_JRUBY_ANALYZER)
+      rows = Tabula.get_rows(text_elements)
       res['Content-Type'] = 'application/json'
       res.write rows.to_json
 
