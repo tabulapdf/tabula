@@ -1,6 +1,6 @@
 require 'opencv'
 
-require './tabula.rb'
+require_relative './tabula.rb'
 
 module Tabula
   module Rulings
@@ -26,6 +26,15 @@ module Tabula
       def horizontal?
         top == bottom
       end
+
+      # def merge!(other)
+      #   if self.horizontal?
+      #     self.width = [self.width, other.width].max
+      #     self.left = [self.left, other.left].min
+      #   else
+
+      #   end
+      # end
 
       def to_json(arg)
         [left, top, right, bottom].to_json
@@ -63,27 +72,76 @@ module Tabula
     def Rulings.to_xml(rulings)
     end
 
-    def Rulings.clean_rulings(rulings)
+    def Rulings.clean_rulings(rulings, max_distance=4)
       # merge close rulings (TODO: decide how close is close?)
       # stitch rulings ("tips" are close enough)
       # delete lines that don't look like rulings (TODO: define rulingness)
+
+      horiz = rulings.select(&:horizontal?).sort_by(&:top)
+      ruling1 = horiz.first
+      current_line_index = i = 0
+
+      while i < horiz.size - 1 do
+        ruling2 = horiz[i+1]
+        if ruling1.nil? or ruling2.nil?
+          next
+        end
+
+        if horiz[current_line_index].vertical_distance(ruling2) <= max_distance and
+            horiz[current_line_index].horizontally_overlaps?(ruling2)
+
+          horiz[current_line_index].top = (horiz[current_line_index].top + ruling2.top) / 2
+          horiz[current_line_index].width = [horiz[current_line_index].width, ruling2.width].max
+          ruling1 = ruling2
+          horiz[i+1] = nil
+        else
+          current_line_index = i+1
+        end
+        i += 1
+      end
+
+      vert = rulings.select(&:vertical?)
+      ruling1 = vert.first
+      current_line_index = i = 0
+
+      while i < vert.size - 1 do
+        ruling2 = vert[i+1]
+        if ruling1.nil? or ruling2.nil?
+          next
+        end
+
+        if vert[current_line_index].vertical_distance(ruling2) <= max_distance and
+            vert[current_line_index].vertically_overlaps?(ruling2)
+
+          vert[current_line_index].left = (vert[current_line_index].left + ruling2.left) / 2
+          vert[current_line_index].height = [vert[current_line_index].height, ruling2.height].max
+          ruling1 = ruling2
+          vert[i+1] = nil
+        else
+          current_line_index = i+1
+        end
+        i += 1
+      end
+
+      return horiz.compact + vert.compact
+
     end
 
     def Rulings.detect_rulings(image_filename,
-                               crop_x1, crop_y1, crop_x2, crop_y2)
+                               crop_x1=0, crop_y1=0, crop_x2=0, crop_y2=0)
 
       image = OpenCV::IplImage.load(image_filename,
                                     OpenCV::CV_LOAD_IMAGE_ANYCOLOR | OpenCV::CV_LOAD_IMAGE_ANYDEPTH)
 
-      image.set_roi(OpenCV::CvRect.new(crop_x1, crop_y1,
-                                       (crop_x2 - crop_x1).abs,
-                                       (crop_y2 - crop_y1).abs))
+      # unless crop_x1 == 0 && crop_y1 == 0 && crop_x2 == 0 && crop_y2 == 0
+      #   image.set_roi(OpenCV::CvRect.new(crop_x1, crop_y1,
+      #                                    (crop_x2 - crop_x1).abs,
+      #                                    (crop_y2 - crop_y1).abs))
+      # end
 
       mat = image.to_CvMat
 
       mat = mat.BGR2GRAY if mat.channel == 3
-
-      mat.save_image('/tmp/cropped.png')
 
       mat_canny = mat.canny(1, 50, 3)
 
@@ -105,10 +163,13 @@ module Tabula
       }
 
       # rulings are returned relative to the image before cropping
-      lines.map do |line|
-        Ruling.new(line.point1.x + crop_x1, line.point1.y + crop_y1,
-                   line.point2.x + crop_x1, line.point2.y + crop_y1)
-      end
+      clean_rulings(lines.map { |line|
+                      Ruling.new(line.point1.y,
+                                 line.point1.x,
+                                 line.point2.x - line.point1.x,
+                                 line.point2.y - line.point1.y)
+                    }.sort_by(&:top))
+
 
       # Hough non-probabilistic
       # wh = mat.size.width + mat.size.height

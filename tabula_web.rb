@@ -7,7 +7,7 @@ require 'digest/sha1'
 require 'json'
 require 'csv'
 
-#require './lib/detect_rulings.rb'
+require './lib/detect_rulings.rb'
 require './lib/tabula.rb'
 require './lib/tabula_graph.rb'
 require './local_settings.rb'
@@ -148,7 +148,11 @@ Cuba.define do
     end
 
     on "pdf/:file_id/rulings" do |file_id|
-      lines = Tabula::Rulings::detect_rulings(File.join(Dir.pwd, "static/pdfs/#{file_id}/document_2048_#{req.params['page']}.png"))
+      lines = Tabula::Rulings::detect_rulings(File.join(Dir.pwd, "static/pdfs/#{file_id}/document_2048_#{req.params['page']}.png"),
+                                              req.params['x1'].to_f,
+                                              req.params['y1'].to_f,
+                                              req.params['x2'].to_f,
+                                              req.params['y2'].to_f)
       # File.open('/tmp/rulings.marshal', 'w') do |f|
       #   f.write(Marshal.dump(lines))
       # end
