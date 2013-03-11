@@ -29,14 +29,14 @@ class AnalyzePDFJob
     # open a subprocess and catch input/output/stderr (and a reference
     # to our thread that watches it). this opens asynchronously
     # so we can continually handle the output stream.
-    i, o, e, thr = Open3.popen3(
+    _stdin, _stdout, _stderr, thr = Open3.popen3(
         {"CLASSPATH" => "lib/jars/fontbox-1.7.1.jar:lib/jars/pdfbox-1.7.1.jar:lib/jars/commons-logging-1.1.1.jar:lib/jars/jempbox-1.7.1.jar"},
         "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}"
     )
 
     # handle stderr (which is where we are "printing" the page number
     # status -- see near bottom of libs/jruby_dump_characters.rb)
-    e.each { |line|
+    _stderr.each { |line|
       progress, total = line.split('///', 2)
 
       if progress.nil? || total.nil?
@@ -59,6 +59,9 @@ class AnalyzePDFJob
          'upload_id' => upload_id
          )
     }
+    _stdin.close
+    _stdout.close
+    _stderr.close
     # don't need to wait, since above will block until popen3 call is done
     #Process.wait(thr.pid)
 
