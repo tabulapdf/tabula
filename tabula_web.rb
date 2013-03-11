@@ -15,6 +15,7 @@ require 'resque/job_with_status'
 require './lib/tabula.rb'
 require './lib/tabula_graph.rb'
 require './lib/jobs/analyze_pdf.rb'
+require './lib/jobs/generate_thumbails.rb'
 require './local_settings.rb'
 
 Cuba.plugin Cuba::Render
@@ -234,10 +235,25 @@ Cuba.define do
       FileUtils.cp(req.params['file'][:tempfile].path,
                    File.join(file_path, 'document.pdf'))
 
+      file = File.join(file_path, 'document.pdf')
+
+      # fire off thumbnail jobs
+      sm_thumbnail_job = GenerateThumbnailJob.create(
+        :file => file,
+        :output_dir => file_path,
+        :thumbnail_size => 560
+      )
+      lg_thumbnail_job = GenerateThumbnailJob.create(
+        :file => file,
+        :output_dir => file_path,
+        :thumbnail_size => 2048
+      )
       upload_id = AnalyzePDFJob.create(
         :file_id => file_id,
-        :file => File.join(file_path, 'document.pdf'),
-        :output_dir => file_path
+        :file => file,
+        :output_dir => file_path,
+        :sm_thumbnail_job => sm_thumbnail_job,
+        :lg_thumbnail_job => lg_thumbnail_job
       )
       res.redirect "/queue/#{upload_id}"
     end
