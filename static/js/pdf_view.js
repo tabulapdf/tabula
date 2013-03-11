@@ -111,7 +111,7 @@ $(function () {
             .css('left', imagePos.left + 'px');
         $('body').append(newCanvas);
 
-        var scaleFactor = 560.0 / 2048.0;
+        var scaleFactor = image.width() / 2048.0;
 
         var lq = $.extend(lastQuery,
                           {
