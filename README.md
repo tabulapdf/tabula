@@ -55,7 +55,7 @@ Start `redis-server` in a separate terminal tab
 
 Start `resque` in a separate terminal tab
 
-    VERBOSE=1 TERM_CHILD=1 QUEUE=* rake resque:work
+    VERBOSE=1 COUNT=3 TERM_CHILD=1 QUEUE=* rake resque:workers
 
 Run your server
 
