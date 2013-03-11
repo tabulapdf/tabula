@@ -1,6 +1,6 @@
 require 'opencv'
 
-require './tabula.rb'
+require_relative './tabula.rb'
 
 module Tabula
   module Rulings
