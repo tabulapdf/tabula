@@ -8,5 +8,6 @@
 * tests
 
 * async processing
-  * error handling
-  * progress UI / notifications for long jobs
+  * graceful error handling
+  * e-mail notification for super long jobs?
+  * parallelize thumbnail generation?
