@@ -46,6 +46,83 @@ $(function () {
     var PDF_ID = window.location.pathname.split('/')[2];
     lastQuery = {};
 
+    debugWhitespace = function(image) {
+        image = $(image);
+        var imagePos = image.offset();
+        var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
+            .attr('width', image.width())
+            .attr('height', image.height())
+            .css('top', imagePos.top + 'px')
+            .css('left', imagePos.left + 'px');
+        $('body').append(newCanvas);
+
+        var thumb_width = $(image).width();
+        var thumb_height = $(image).height();
+        var pdf_width = parseInt($(image).data('original-width'));
+        var pdf_height = parseInt($(image).data('original-height'));
+        var pdf_rotation = parseInt($(image).data('rotation'));
+
+        // if rotated, swap width and height
+        if (pdf_rotation == 90 || pdf_rotation == 270) {
+            var tmp = pdf_height;
+            pdf_height = pdf_width;
+            pdf_width = tmp;
+        }
+
+        var scale = (thumb_width / pdf_width);
+
+        $.get('/pdf/' + PDF_ID + '/whitespace',
+              lastQuery,
+              function(data) {
+                  // draw rectangles enclosing each cluster
+
+
+                  $(newCanvas).drawRect({
+                      x: data[0].left * scale,
+                      y: data[0].top * scale,
+                      width: data[0].width * scale,
+                      height: data[0].height * scale,
+                      strokeStyle: '#000',
+                      fromCenter: false
+                  });
+
+                  // subrectangles
+                  $.each(data[1], function(i, row) {
+                      $(newCanvas).drawRect({
+                          x: row.left * scale,
+                          y: row.top * scale,
+                          width: row.width * scale,
+                          height: row.height * scale,
+                          strokeStyle: COLORS[i % COLORS.length],
+                          fromCenter: false
+                      });
+                  });
+                  // obstacles
+                  $.each(data[2], function(i, row) {
+                      $(newCanvas).drawRect({
+                          x: row.left * scale,
+                          y: row.top * scale,
+                          width: row.width * scale,
+                          height: row.height * scale,
+                          strokeStyle: '#f00',
+                          fromCenter: false
+                      });
+                  });
+
+
+                  // draw lines connecting clusters (edges)
+                  // $.each(data, function(i, row) {
+                  //     $(newCanvas).drawRect({
+                  //         x: lastSelection.x1,
+                  //         y: row.top * scale_y,
+                  //         width: lastSelection.x2 - lastSelection.x1,
+                  //         height: row.bottom - row.top,
+                  //         strokeStyle: COLORS[i % COLORS.length],
+                  //         fromCenter: false
+                  //     });
+                  // });
+              });
+    };
 
     debugGraph = function(image) {
     image = $(image);

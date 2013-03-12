@@ -65,6 +65,30 @@ Cuba.define do
       res.write view("index.html")
     end
 
+    ## TODO delete
+    on "pdf/:file_id/whitespace" do |file_id|
+      text_elements = get_text_elements(file_id,
+                                        req.params['page'],
+                                        req.params['x1'],
+                                        req.params['y1'],
+                                        req.params['x2'],
+                                        req.params['y2'])
+
+      # table = Tabula.make_table(text_elements)
+
+
+      merged = Tabula.merge_words(text_elements)
+      whitespace = Tabula.find_whitespace(merged,
+                                          Tabula::ZoneEntity.new(req.params['y1'].to_f,
+                                                                 req.params['x1'].to_f,
+                                                                 req.params['x2'].to_f - req.params['x1'].to_f,
+                                                                 req.params['y2'].to_f - req.params['y1'].to_f))
+
+      res['Content-Type'] = 'application/json'
+      res.write whitespace.to_json
+
+    end
+
     # TODO validate that file_id is /[a-f0-9]{40}/
     on "pdf/:file_id/data" do |file_id|
       text_elements = get_text_elements(file_id,
@@ -74,8 +98,17 @@ Cuba.define do
                                         req.params['x2'],
                                         req.params['y2'])
 
-      table = Tabula.make_table(text_elements,
-                                Settings::USE_JRUBY_ANALYZER)
+      # table = Tabula.make_table(text_elements)
+
+
+      merged = Tabula.merge_words(text_elements)
+      whitespace = Tabula.find_whitespace(merged,
+                                          Tabula::ZoneEntity.new(req.params['y1'].to_f,
+                                                                 req.params['x1'].to_f,
+                                                                 req.params['x2'].to_f - req.params['x1'].to_f,
+                                                                 req.params['y2'].to_f - req.params['y1'].to_f))
+
+      puts whitespace.inspect
 
       if req.params['split_multiline_cells'] == 'true'
         table = Tabula.merge_multiline_cells(table)
@@ -110,8 +143,7 @@ Cuba.define do
                                         req.params['y2'])
 
       res['Content-Type'] = 'application/json'
-      res.write Tabula.get_columns(text_elements,
-                              Settings::USE_JRUBY_ANALYZER).to_json
+      res.write Tabula.get_columns(text_elements, true).to_json
 
     end
 
@@ -123,7 +155,7 @@ Cuba.define do
                                         req.params['x2'],
                                         req.params['y2'])
 
-      rows = Tabula.get_rows(text_elements, Settings::USE_JRUBY_ANALYZER)
+      rows = Tabula.get_rows(text_elements, true)
       res['Content-Type'] = 'application/json'
       res.write rows.to_json
 
@@ -204,12 +236,7 @@ Cuba.define do
       run_mupdfdraw(File.join(file_path, 'document.pdf'), file_path, 2048) # 2048 width
 
 
-      if Settings::USE_JRUBY_ANALYZER
-        run_jrubypdftohtml(File.join(file_path, 'document.pdf'), file_path)
-      else
-        run_pdftohtml(File.join(file_path, 'document.pdf'), file_path)
-      end
-
+      run_jrubypdftohtml(File.join(file_path, 'document.pdf'), file_path)
 
       res.redirect "/pdf/#{file_id}"
     end

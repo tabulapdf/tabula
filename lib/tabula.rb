@@ -13,6 +13,8 @@ module Tabula
       self.texts = []
     end
 
+
+
     def bottom
       self.top + self.height
     end
@@ -334,6 +336,62 @@ module Tabula
       end
     end
     lines.compact
+  end
+
+  require 'algorithms'
+
+
+
+  def Tabula.find_closest(text_elements, x, y)
+    text_elements.sort_by { |te|
+      Math.sqrt((x - te.midpoint[0]) ** 2 + (y - te.midpoint[1]) ** 2)
+    }.first
+  end
+
+
+  def Tabula.find_whitespace(text_elements, bounds)
+
+#    require 'debugger'; debugger
+    queue = Containers::PriorityQueue.new
+    queue.push([bounds, text_elements], bounds.width * bounds.height)
+    rv = []
+
+    i = 0
+
+#    require 'debugger'; debugger
+    while not queue.empty?
+      r, obstacles = queue.pop
+      if obstacles.empty?
+        return []
+      end
+
+      pivot = Tabula.find_closest(obstacles, *r.midpoint)
+
+      subrectangles = [
+                       ZoneEntity.new(r.top, pivot.right, (r.right - pivot.right).abs, (pivot.top - r.top).abs),
+                       ZoneEntity.new(r.top, r.left, (pivot.left - r.left).abs, pivot.top - r.top),
+                       ZoneEntity.new(pivot.bottom, r.left, (pivot.left - r.left).abs, (r.bottom - pivot.bottom).abs),
+                       ZoneEntity.new(pivot.bottom, pivot.right, (r.right - pivot.right).abs, (r.bottom - pivot.bottom).abs)
+                      ]
+
+      if i == 1
+        return [pivot, [r], obstacles]
+      end
+
+      subrectangles.each do |sub_r|
+        obs = obstacles.select { |s| !s.vertically_overlaps?(sub_r) && !s.horizontally_overlaps?(sub_r) }
+        if obs.empty?
+          rv << sub_r
+          break
+        else
+          queue.push([sub_r, obs], sub_r.width * sub_r.height)
+        end
+      end
+      i = i + 1
+
+    end
+
+    return rv
   end
 
   # EXPERIMENTAL: Merge lines closer than the global average
