@@ -13,8 +13,6 @@ module Tabula
       self.texts = []
     end
 
-
-
     def bottom
       self.top + self.height
     end
@@ -358,8 +356,10 @@ module Tabula
 
     i = 0
 
+
 #    require 'debugger'; debugger
-    while not queue.empty?
+    get_out = false
+    while !get_out and !queue.empty?
       r, obstacles = queue.pop
       if obstacles.empty?
         return []
@@ -374,15 +374,23 @@ module Tabula
                        ZoneEntity.new(pivot.bottom, pivot.right, (r.right - pivot.right).abs, (r.bottom - pivot.bottom).abs)
                       ]
 
-      if i == 1
-        return [pivot, [r], obstacles]
+       # if i == 6
+       #   return [pivot, subrectangles, obstacles]
+       # end
+
+      if i == 1000
+      get_out = true
+        puts rv.inspect
       end
 
       subrectangles.each do |sub_r|
-        obs = obstacles.select { |s| !s.vertically_overlaps?(sub_r) && !s.horizontally_overlaps?(sub_r) }
+        obs = obstacles.select { |s| s.vertically_overlaps?(sub_r) && s.horizontally_overlaps?(sub_r) }
+        puts obs.inspect
+        puts
         if obs.empty?
           rv << sub_r
-          break
+          puts "GETTING OUT"
+          get_out = true
         else
           queue.push([sub_r, obs], sub_r.width * sub_r.height)
         end
@@ -391,7 +399,7 @@ module Tabula
 
     end
 
-    return rv
+    return [pivot, subrectangles, [r]]
   end
 
   # EXPERIMENTAL: Merge lines closer than the global average
