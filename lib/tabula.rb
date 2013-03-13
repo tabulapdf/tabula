@@ -43,19 +43,27 @@ module Tabula
 
     # Roughly, detects if self and other belong to the same line
     def vertically_overlaps?(other)
-      (other.top == self.top) or
-        (other.top.between?(self.top, self.bottom) and self.bottom.between?(other.top, other.bottom)) or
-        (self.top.between?(other.top, other.bottom) and other.bottom.between?(self.top, self.bottom)) or
-        (self.top.between?(other.top, other.bottom) and self.bottom.between?(other.top, other.bottom)) or
-        (other.top.between?(self.top, self.bottom)  and other.bottom.between?(self.top, self.bottom))
+      vertical_overlap = [0, [self.bottom, other.bottom].min - [self.top, other.top].max].max
+      vertical_overlap > 0
     end
 
     # detects if self and other belong to the same column
     def horizontally_overlaps?(other)
-      (self.left.between?(other.left, other.right) and self.right.between?(other.left, other.right)) or
-        self.left.between?(other.left, other.right) or
-        self.right.between?(other.left, other.right) or
-        (other.right.between?(self.left, self.right) and other.left.between?(self.left, self.right))
+      horizontal_overlap = [0, [self.right, other.right].min  - [self.left, other.left].max].max
+      horizontal_overlap > 0
+    end
+
+    def overlaps?(other, ratio_tolerance=0.00001)
+      self.overlap_ratio(other) > ratio_tolerance
+    end
+
+    def overlap_ratio(other)
+      intersection_width = [0, [self.right, other.right].min  - [self.left, other.left].max].max
+      intersection_height = [0, [self.bottom, other.bottom].min - [self.top, other.top].max].max
+      intersection_area = [0, intersection_height * intersection_width].max
+
+      union_area = (self.width * self.height) + (other.width * other.height) - intersection_area
+      intersection_area / union_area
     end
 
     def to_h
@@ -348,18 +356,12 @@ module Tabula
 
 
   def Tabula.find_whitespace(text_elements, bounds)
-
-#    require 'debugger'; debugger
     queue = Containers::PriorityQueue.new
     queue.push([bounds, text_elements], bounds.width * bounds.height)
     rv = []
 
-    i = 0
 
-
-#    require 'debugger'; debugger
-    get_out = false
-    while !get_out and !queue.empty?
+    while !queue.empty?
       r, obstacles = queue.pop
       if obstacles.empty?
         return []
@@ -368,38 +370,23 @@ module Tabula
       pivot = Tabula.find_closest(obstacles, *r.midpoint)
 
       subrectangles = [
-                       ZoneEntity.new(r.top, pivot.right, (r.right - pivot.right).abs, (pivot.top - r.top).abs),
-                       ZoneEntity.new(r.top, r.left, (pivot.left - r.left).abs, pivot.top - r.top),
-                       ZoneEntity.new(pivot.bottom, r.left, (pivot.left - r.left).abs, (r.bottom - pivot.bottom).abs),
-                       ZoneEntity.new(pivot.bottom, pivot.right, (r.right - pivot.right).abs, (r.bottom - pivot.bottom).abs)
+                       ZoneEntity.new(r.top, pivot.right, r.right - pivot.right, pivot.top - r.top),
+                       ZoneEntity.new(r.top, r.left, pivot.left - r.left, pivot.top - r.top),
+                       ZoneEntity.new(pivot.bottom, r.left, pivot.left - r.left, r.bottom - pivot.bottom),
+                       ZoneEntity.new(pivot.bottom, pivot.right, r.right - pivot.right, r.bottom - pivot.bottom)
                       ]
-
-       # if i == 6
-       #   return [pivot, subrectangles, obstacles]
-       # end
-
-      if i == 1000
-      get_out = true
-        puts rv.inspect
-      end
-
       subrectangles.each do |sub_r|
-        obs = obstacles.select { |s| s.vertically_overlaps?(sub_r) && s.horizontally_overlaps?(sub_r) }
-        puts obs.inspect
-        puts
+        obs = obstacles.select { |s|
+          s.overlaps?(sub_r)
+        }
         if obs.empty?
           rv << sub_r
-          puts "GETTING OUT"
-          get_out = true
         else
           queue.push([sub_r, obs], sub_r.width * sub_r.height)
         end
       end
-      i = i + 1
-
     end
-
-    return [pivot, subrectangles, [r]]
+    return rv
   end
 
   # EXPERIMENTAL: Merge lines closer than the global average
