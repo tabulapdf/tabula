@@ -26,6 +26,10 @@ module Tabula
       [self.left + (self.width / 2), self.top + (self.height / 2)]
     end
 
+    def area
+      self.width * self.height
+    end
+
     def merge!(other)
       self.top    = [self.top, other.top].min
       self.left   = [self.left, other.left].min
@@ -62,7 +66,7 @@ module Tabula
       intersection_height = [0, [self.bottom, other.bottom].min - [self.top, other.top].max].max
       intersection_area = [0, intersection_height * intersection_width].max
 
-      union_area = (self.width * self.height) + (other.width * other.height) - intersection_area
+      union_area = self.area + other.area - intersection_area
       intersection_area / union_area
     end
 
@@ -300,7 +304,7 @@ module Tabula
 
       columns.sort_by(&:left).each_with_index do |c, i|
         if (i > l.text_elements.size - 1) or !l.text_elements(&:left)[i].nil? and !c.text_elements.include?(l.text_elements[i])
-          l.text_elements.insert(i, TextElement.new(l.top, c.left, c.width, l.height, nil, ''))
+          l.text_elements.insert(i, TextElement.new(l.top, c.left, c.width, l.height, nil, 0, ''))
         end
       end
     }
@@ -364,7 +368,7 @@ module Tabula
     while !queue.empty?
       r, obstacles = queue.pop
       if obstacles.empty?
-        return []
+        return r
       end
 
       pivot = Tabula.find_closest(obstacles, *r.midpoint)

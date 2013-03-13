@@ -81,7 +81,7 @@ $(function () {
                           y: row.top * scale,
                           width: row.width * scale,
                           height: row.height * scale,
-                          strokeStyle: '#f00',
+                          /*strokeStyle: '#f00', */fillStyle: '#f00',
                           fromCenter: false
                       });
                   });

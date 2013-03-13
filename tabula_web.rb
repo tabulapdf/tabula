@@ -74,15 +74,11 @@ Cuba.define do
                                         req.params['x2'],
                                         req.params['y2'])
 
-      # table = Tabula.make_table(text_elements)
-
-
-      merged = Tabula.merge_words(text_elements)
-      whitespace = Tabula.find_whitespace(merged,
-                                          Tabula::ZoneEntity.new(req.params['y1'].to_f,
-                                                                 req.params['x1'].to_f,
-                                                                 req.params['x2'].to_f - req.params['x1'].to_f,
-                                                                 req.params['y2'].to_f - req.params['y1'].to_f))
+      whitespace =  Tabula.find_whitespace(text_elements,
+                                           Tabula::ZoneEntity.new(req.params['y1'].to_f,
+                                                                  req.params['x1'].to_f,
+                                                                  req.params['x2'].to_f - req.params['x1'].to_f,
+                                                                  req.params['y2'].to_f - req.params['y1'].to_f))
 
       res['Content-Type'] = 'application/json'
       res.write whitespace.to_json
@@ -98,17 +94,17 @@ Cuba.define do
                                         req.params['x2'],
                                         req.params['y2'])
 
-      # table = Tabula.make_table(text_elements)
+      table = Tabula.make_table(text_elements)
 
 
-      merged = Tabula.merge_words(text_elements)
-      whitespace = Tabula.find_whitespace(merged,
-                                          Tabula::ZoneEntity.new(req.params['y1'].to_f,
-                                                                 req.params['x1'].to_f,
-                                                                 req.params['x2'].to_f - req.params['x1'].to_f,
-                                                                 req.params['y2'].to_f - req.params['y1'].to_f))
+      # merged = Tabula.merge_words(text_elements)
+      # whitespace = Tabula.find_whitespace(merged,
+      #                                     Tabula::ZoneEntity.new(req.params['y1'].to_f,
+      #                                                            req.params['x1'].to_f,
+      #                                                            req.params['x2'].to_f - req.params['x1'].to_f,
+      #                                                            req.params['y2'].to_f - req.params['y1'].to_f))
 
-      puts whitespace.inspect
+      # puts whitespace.inspect
 
       if req.params['split_multiline_cells'] == 'true'
         table = Tabula.merge_multiline_cells(table)
