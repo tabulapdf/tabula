@@ -11,7 +11,7 @@ require 'resque'
 require 'resque/status_server'
 require 'resque/job_with_status'
 
-#require './lib/detect_rulings.rb'
+require './lib/detect_rulings.rb'
 require './lib/tabula.rb'
 require './lib/tabula_graph.rb'
 require './lib/jobs/analyze_pdf.rb'
@@ -73,6 +73,26 @@ Cuba.define do
       res.write view("index.html")
     end
 
+    ## TODO delete
+    on "pdf/:file_id/whitespace" do |file_id|
+      text_elements = get_text_elements(file_id,
+                                        req.params['page'],
+                                        req.params['x1'],
+                                        req.params['y1'],
+                                        req.params['x2'],
+                                        req.params['y2'])
+
+      whitespace =  Tabula.find_whitespace(text_elements,
+                                           Tabula::ZoneEntity.new(req.params['y1'].to_f,
+                                                                  req.params['x1'].to_f,
+                                                                  req.params['x2'].to_f - req.params['x1'].to_f,
+                                                                  req.params['y2'].to_f - req.params['y1'].to_f))
+
+      res['Content-Type'] = 'application/json'
+      res.write whitespace.to_json
+
+    end
+
     # TODO validate that file_id is /[a-f0-9]{40}/
     on "pdf/:file_id/data" do |file_id|
       text_elements = get_text_elements(file_id,
@@ -117,7 +137,7 @@ Cuba.define do
                                         req.params['y2'])
 
       res['Content-Type'] = 'application/json'
-      res.write Tabula.get_columns(text_elements).to_json
+      res.write Tabula.get_columns(text_elements, true).to_json
 
     end
 
@@ -129,7 +149,7 @@ Cuba.define do
                                         req.params['x2'],
                                         req.params['y2'])
 
-      rows = Tabula.get_rows(text_elements)
+      rows = Tabula.get_rows(text_elements, true)
       res['Content-Type'] = 'application/json'
       res.write rows.to_json
 
@@ -154,7 +174,11 @@ Cuba.define do
     end
 
     on "pdf/:file_id/rulings" do |file_id|
-      lines = Tabula::Rulings::detect_rulings(File.join(Dir.pwd, "static/pdfs/#{file_id}/document_2048_#{req.params['page']}.png"))
+      lines = Tabula::Rulings::detect_rulings(File.join(Dir.pwd, "static/pdfs/#{file_id}/document_2048_#{req.params['page']}.png"),
+                                              req.params['x1'].to_f,
+                                              req.params['y1'].to_f,
+                                              req.params['x2'].to_f,
+                                              req.params['y2'].to_f)
       # File.open('/tmp/rulings.marshal', 'w') do |f|
       #   f.write(Marshal.dump(lines))
       # end

@@ -18,6 +18,7 @@ $current_page = 0
 $fonts = Hash.new({})
 $page_fonts = Hash.new({})
 
+PRINTABLE_RE = /[[:print:]]/
 
 class TextExtractor < org.apache.pdfbox.util.PDFTextStripper
 
@@ -48,7 +49,10 @@ class TextExtractor < org.apache.pdfbox.util.PDFTextStripper
 
 #    $page_contents[$current_page] += "  <text top=\"%.2f\" left=\"%.2f\" width=\"%.2f\" height=\"%.2f\" font=\"#{font_plus_size}\" dir=\"#{text.getDir}\">#{text.getCharacter}</text>\n" % [text.getYDirAdj - text.getHeightDir, text.getXDirAdj, text.getWidthDirAdj, text.getHeightDir]
 
-    self.contents += "  <text top=\"%.2f\" left=\"%.2f\" width=\"%.2f\" height=\"%.2f\" fontsize=\"%.2f\" dir=\"%s\"><![CDATA[%s]]></text>\n" % [text.getYDirAdj - text.getHeightDir, text.getXDirAdj, text.getWidthDirAdj, text.getHeightDir, text.getFontSize, text.getDir, text.getCharacter]
+    c = text.getCharacter
+    if c =~ PRINTABLE_RE  # probably not the fastest way of detecting printable chars
+      self.contents += "  <text top=\"%.2f\" left=\"%.2f\" width=\"%.2f\" height=\"%.2f\" fontsize=\"%.2f\" dir=\"%s\"><![CDATA[%s]]></text>\n" % [text.getYDirAdj, text.getXDirAdj, text.getWidthDirAdj, text.getHeightDir, text.getFontSize, text.getDir, text.getCharacter]
+    end
 
   end
 

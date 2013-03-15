@@ -17,18 +17,20 @@ Install some dependencies:
     # ...Install XQuartz since brew won't do it for you...
     #      -> https://xquartz.macosforge.org/landing/
     brew install mupdf
-
-    gem update
-    gem install nokogiri -v 1.5.6
-    gem install cuba -v 3.1.0
-    gem install resque -v 1.23.0
-    gem install resque-progress -v 1.0.1
-
-    # opencv + deps
-    brew install python
-    pip install numpy
     brew install opencv --with-tbb --with-opencl --with-qt
-    gem install ruby-opencv
+
+    # Handle installing Python and pip.  You can skip this
+    # if you already have it.
+    brew install python
+    curl http://python-distribute.org/distribute_setup.py | python
+    curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | python
+
+    # Install numpy (feel free to put it in a virtualenv)
+    pip install numpy
+
+    # Make sure bundler is installed (skip if you have it)
+    gem install bundler
+    bundle install
 
     # resque + deps
     brew install redis
@@ -46,6 +48,8 @@ Now copy `local_settings-example.rb`  to `local_settings.rb` in your
 repo root and set `JRUBY_PATH` to the path you got in the previous
 step.
 
+Note: You shouldn't use jRuby to run or install the various gems.  Tabula just
+uses it in a few areas where Java libraries are better.
 
 ### Dev Usage
 
@@ -59,6 +63,6 @@ Start `resque` in a separate terminal tab
 
 Run your server
 
-    rackup
+    bundle exec rackup
 
 The site instance should now be viewable at http://127.0.0.1:9292/
