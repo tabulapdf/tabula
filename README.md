@@ -57,9 +57,9 @@ Start `redis-server` in a separate terminal tab
 
     redis-server /usr/local/etc/redis.conf
 
-Start `resque` in a separate terminal tab
+Start `resque` in a separate terminal tab (there may be no output)
 
-    VERBOSE=1 COUNT=3 TERM_CHILD=1 QUEUE=* rake resque:workers
+    COUNT=3 TERM_CHILD=1 QUEUE=* bundle exec rake resque:workers
 
 Run your server
 
