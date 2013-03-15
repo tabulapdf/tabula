@@ -14,29 +14,27 @@ Check out the repo, blah blah.
 
 Install some dependencies:
 
-    # ...Install XQuartz since brew won't do it for you...
-    #      -> https://xquartz.macosforge.org/landing/
-    brew install mupdf
-    brew install opencv --with-tbb --with-opencl --with-qt
-
     # Handle installing Python and pip.  You can skip this
     # if you already have it.
     brew install python
     curl http://python-distribute.org/distribute_setup.py | python
     curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | python
 
-    # Install numpy (feel free to put it in a virtualenv)
+    # Install numpy (feel free to put it in a virtualenv); opencv dependency
     pip install numpy
+
+    # ...Install XQuartz since brew won't do it for you...
+    #      -> https://xquartz.macosforge.org/landing/
+
+    brew install mupdf
+    brew install opencv --with-tbb --with-opencl --with-qt
+
+    # redis; resque dependency
+    brew install redis
 
     # Make sure bundler is installed (skip if you have it)
     gem install bundler
     bundle install
-
-    # resque + deps
-    brew install redis
-    gem install bundler
-    gem install resque
-    gem install resque-status
 
 Install jruby and get the full path to the jruby executable.
 Instructions for rbenv:
