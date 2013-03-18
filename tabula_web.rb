@@ -2,7 +2,6 @@
 require 'cuba'
 require 'cuba/render'
 
-require 'open3'
 require 'nokogiri'
 require 'digest/sha1'
 require 'json'
@@ -82,6 +81,7 @@ Cuba.define do
                                         req.params['x2'],
                                         req.params['y2'])
 
+#      text_elements = Tabula.merge_words(text_elements)
       whitespace =  Tabula.find_whitespace(text_elements,
                                            Tabula::ZoneEntity.new(req.params['y1'].to_f,
                                                                   req.params['x1'].to_f,
