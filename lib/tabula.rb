@@ -281,7 +281,7 @@ module Tabula
       text_elements.find_all { |te|
         te.vertically_overlaps?(lb) } \
         .sort_by(&:left).each { |te| line << te }
-      lines << line
+      lines << line if line.text_elements.size > 0
     }
     lines.sort_by!(&:top)
 
