@@ -1,4 +1,7 @@
+require 'open3'
+
 require_relative '../detect_rulings.rb'
+
 
 class AnalyzePDFJob
   # args: (:file_id, :file, :output_dir, :sm_thumbnail_job, :lg_thumbnail_job)
