@@ -2,12 +2,10 @@ GEM
   remote: https://rubygems.org/
   specs:
     algorithms (0.6.1)
-    algorithms (0.6.1-java)
     cuba (3.1.0)
       rack
     multi_json (1.6.1)
     nokogiri (1.5.6)
-    nokogiri (1.5.6-java)
     nokogirl (1.0)
       nokogiri
     rack (1.5.2)
