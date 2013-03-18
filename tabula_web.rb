@@ -246,7 +246,7 @@ Cuba.define do
         res.status = 404
         res.write "No such job"
       else
-        res.write view("status.html", :status => status, :upload_id => upload_id)
+        res.write view("upload_status.html", :status => status, :upload_id => upload_id)
       end
     end
   end # /get
@@ -261,25 +261,33 @@ Cuba.define do
 
       file = File.join(file_path, 'document.pdf')
 
-      # fire off thumbnail jobs
-      sm_thumbnail_job = GenerateThumbnailJob.create(
-        :file => file,
-        :output_dir => file_path,
-        :thumbnail_size => 560
-      )
-      lg_thumbnail_job = GenerateThumbnailJob.create(
-        :file => file,
-        :output_dir => file_path,
-        :thumbnail_size => 2048
-      )
-      upload_id = AnalyzePDFJob.create(
-        :file_id => file_id,
-        :file => file,
-        :output_dir => file_path,
-        :sm_thumbnail_job => sm_thumbnail_job,
-        :lg_thumbnail_job => lg_thumbnail_job
-      )
-      res.redirect "/queue/#{upload_id}"
+      # Make sure this is a PDF.
+      # TODO: cleaner way to do this without blindly relying on file extension (which we provided)?
+      mime = `file -b --mime-type #{file}`
+      if !mime.include? "application/pdf"
+        res.write view("upload_error.html",
+            :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
+      else
+        # fire off thumbnail jobs
+        sm_thumbnail_job = GenerateThumbnailJob.create(
+          :file => file,
+          :output_dir => file_path,
+          :thumbnail_size => 560
+        )
+        lg_thumbnail_job = GenerateThumbnailJob.create(
+          :file => file,
+          :output_dir => file_path,
+          :thumbnail_size => 2048
+        )
+        upload_id = AnalyzePDFJob.create(
+          :file_id => file_id,
+          :file => file,
+          :output_dir => file_path,
+          :sm_thumbnail_job => sm_thumbnail_job,
+          :lg_thumbnail_job => lg_thumbnail_job
+        )
+        res.redirect "/queue/#{upload_id}"
+      end
     end
   end
 
