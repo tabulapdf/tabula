@@ -62,23 +62,34 @@ class AnalyzePDFJob
     _stdin.close
     _stdout.close
     _stderr.close
-    # don't need to wait, since above will block until popen3 call is done
-    #Process.wait(thr.pid)
 
-    # If thumbnail jobs haven't finished, wait up for them
-    while (!Resque::Plugins::Status::Hash.get(sm_thumbnail_job).completed? && !Resque::Plugins::Status::Hash.get(lg_thumbnail_job).completed?) do
-      at(99, 100, "generating thumbnails...",
-        'file_id' => file_id,
-        'upload_id' => upload_id
-      )
-      sleep 0.25
+    # catch exit code of jruby/pdfbox process
+    # TODO: if fail, should probably do something useful with stderr
+    # TODO: if fail, should clean up upload directory
+    exit_status = thr.value.exitstatus
+    if exit_status != 0
+        failed(
+           'file_id' => file_id,
+           'upload_id' => upload_id
+        )
+        return nil
+    else
+      # If thumbnail jobs haven't finished, wait up for them
+      while (!Resque::Plugins::Status::Hash.get(sm_thumbnail_job).completed? && !Resque::Plugins::Status::Hash.get(lg_thumbnail_job).completed?) do
+        at(99, 100, "generating thumbnails...",
+          'file_id' => file_id,
+          'upload_id' => upload_id
+        )
+        sleep 0.25
+      end
+
+      at(100, 100, "complete",
+         'file_id' => file_id,
+         'upload_id' => upload_id,
+         'thumbnails_complete' => true
+         )
+
+      return nil
     end
-
-    at(100, 100, "complete",
-       'file_id' => file_id,
-       'upload_id' => upload_id,
-       'thumbnails_complete' => true
-       )
-
   end
 end

@@ -30,7 +30,9 @@ function checkStatus() {
         success: function(data, status, xhr) {
             console.log(data);
             processStatus(data);
-            if (data.pct_complete >= 100) {
+            if (data.status == "error") {
+                window.location.reload(true);
+            } else if (data.pct_complete >= 100) {
                 statusComplete(data.file_id);
             } else {
                 setTimeout(checkStatus, 1000);

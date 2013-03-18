@@ -227,6 +227,11 @@ Cuba.define do
         message[:status] = "error"
         message[:message] = "No such job"
         message[:pct_complete] = 0
+      elsif status.failed?
+        message[:status] = "error"
+        message[:message] = "Sorry, your file upload could not be processed. Please double-check that the file you uploaded is a valid PDF file and try again."
+        message[:pct_complete] = 99
+        res.write message.to_json
       else
         message[:status] = status.status
         message[:message] = status.message
@@ -242,9 +247,13 @@ Cuba.define do
       # upload_id is the "job id" uuid that resque-status provides
       status = Resque::Plugins::Status::Hash.get(upload_id)
       if status.nil?
-        res['Content-Type'] = 'text/plain'
         res.status = 404
-        res.write "No such job"
+        res.write ""
+        res.write view("upload_error.html",
+            :message => "invalid upload_id (TODO: make this generic 404)")
+      elsif status.failed?
+        res.write view("upload_error.html",
+            :message => "Sorry, your file upload could not be processed. Please double-check that the file you uploaded is a valid PDF file and try again.")
       else
         res.write view("upload_status.html", :status => status, :upload_id => upload_id)
       end
