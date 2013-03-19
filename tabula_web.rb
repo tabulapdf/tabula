@@ -23,22 +23,7 @@ Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/pdfs", "/s
 ########## PDF handling internal utils ##########
 # TODO: move out of this file?
 
-def run_pdftohtml(file, output_dir)
-  `#{Settings::PDFTOHTML_PATH} -xml #{file} #{File.join(output_dir, 'document.xml')}`
-end
 
-
-def run_mupdfdraw(file, output_dir, width=560, page=nil)
-
-  cmd = "#{Settings::MUDRAW_PATH} -w #{width} -o " \
-    + File.join(output_dir, "document_#{width}_%d.png") \
-    + " #{file}"
-
-  cmd += " #{page}" unless page.nil?
-
-  `#{cmd}`
-
-end
 
 def parse_document_xml(file_id, page)
   f = File.open(File.join(Dir.pwd, "static/pdfs/#{file_id}/page_#{page}.xml"))
