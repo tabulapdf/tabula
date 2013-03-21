@@ -3,7 +3,7 @@ source "https://rubygems.org"
 group :production do
   platforms :mri_19, :mri_20 do
     gem "algorithms"
-    gem "nokogirl"
+    gem "nokogiri"
     gem "cuba"
     gem "rake"
     gem "resque"
