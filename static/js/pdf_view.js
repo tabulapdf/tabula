@@ -351,8 +351,11 @@ $(function () {
               });
     };
 
+    //TODO: make sure this doesn't get called until tables.json exists, i.e. when the job finishes.
     $.getJSON("/pdfs/" + PDF_ID + "/tables.json", function(tableGuesses){ 
-      for(var imageNum=0; imageNum < $('img.page-image').size(); imageNum++){ //TODO do all pages, not just first five.
+      for(var imageNum=0; imageNum < $('img.page-image').size(); imageNum++){ 
+        console.log(tableGuesses);
+
         pageIndex = imageNum + 1
 
         img = $('img.page-image#page-' + pageIndex);

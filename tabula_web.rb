@@ -287,7 +287,8 @@ Cuba.define do
           :file => file,
           :output_dir => file_path,
           :sm_thumbnail_job => sm_thumbnail_job,
-          :lg_thumbnail_job => lg_thumbnail_job
+          :lg_thumbnail_job => lg_thumbnail_job,
+          :table_detection_job => table_detector
         )
         res.redirect "/queue/#{upload_id}"
       end

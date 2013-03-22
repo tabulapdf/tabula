@@ -20,6 +20,7 @@ class AnalyzePDFJob
     # pass the IDs to here.
     sm_thumbnail_job = options['sm_thumbnail_job']
     lg_thumbnail_job = options['lg_thumbnail_job']
+    table_detection_job = options['table_detection_job']
     upload_id = self.uuid
 
     # return some status to browser
@@ -50,7 +51,7 @@ class AnalyzePDFJob
         next
       end
 
-      progress = (progress.strip).to_i
+      progress = (progress.strip).to_i * 0.9 #scale by 90%, because table detection and thumbnailification may not be done yet.
       total = (total.strip).to_i
       if total === 0
         total = 1
@@ -78,6 +79,14 @@ class AnalyzePDFJob
         return nil
     else
       # If thumbnail jobs haven't finished, wait up for them
+      while (!Resque::Plugins::Status::Hash.get(table_detection_job).completed?) do
+        at(90, 100, "attempting to auto-detect data tables...",
+          'file_id' => file_id,
+          'upload_id' => upload_id
+        )
+        sleep 0.25
+      end
+
       while (!Resque::Plugins::Status::Hash.get(sm_thumbnail_job).completed? && !Resque::Plugins::Status::Hash.get(lg_thumbnail_job).completed?) do
         at(99, 100, "generating thumbnails...",
           'file_id' => file_id,
