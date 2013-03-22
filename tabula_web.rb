@@ -2,6 +2,8 @@
 require 'cuba'
 require 'cuba/render'
 
+raise Errno::ENOENT, "'./local_settings.rb' could not be found. See README.md for more info." unless File.exists?('./local_settings.rb')
+
 require 'nokogiri'
 require 'digest/sha1'
 require 'json'
