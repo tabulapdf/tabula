@@ -6,8 +6,6 @@ GEM
       rack
     multi_json (1.6.1)
     nokogiri (1.5.6)
-    nokogirl (1.0)
-      nokogiri
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
@@ -43,7 +41,7 @@ PLATFORMS
 DEPENDENCIES
   algorithms
   cuba
-  nokogirl
+  nokogiri
   rake
   resque
   resque-progress
