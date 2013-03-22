@@ -351,9 +351,48 @@ $(function () {
               });
     };
 
+    $.getJSON("/pdfs/" + PDF_ID + "/tables.json", function(tableGuesses){ 
+      for(var imageNum=0; imageNum < $('img.page-image').size(); imageNum++){ //TODO do all pages, not just first five.
+        pageIndex = imageNum + 1
+
+        img = $('img.page-image#page-' + pageIndex);
+
+        var thumb_width = img.width();
+        var thumb_height = img.height();
+
+        var pdf_width = parseInt(img.data('original-width'));
+        var pdf_height = parseInt(img.data('original-height'));
+        var pdf_rotation = parseInt(img.data('rotation'));
+
+        // if rotated, swap width and height
+        if (pdf_rotation == 90 || pdf_rotation == 270) {
+            var tmp = pdf_height;
+            pdf_height = pdf_width;
+            pdf_width = tmp;
+        }
+
+        var scale = (pdf_width / thumb_width);
+
+        var my_x2 = tableGuesses[imageNum][0][0] + tableGuesses[imageNum][0][2];
+        var my_y2 = tableGuesses[imageNum][0][1] + tableGuesses[imageNum][0][3];
+
+        console.log(scale);
+        console.log(my_x2 * scale);
+        console.log(my_y2 * scale);
+
+        $('img.page-image#page-' + pageIndex).imgAreaSelect({
+          x1: tableGuesses[imageNum][0][0] / scale,
+          y1: tableGuesses[imageNum][0][1] / scale,
+          x2: my_x2 / scale,
+          y2: my_y2 / scale
+        });
+      }
+    });
+
     $('img.page-image').imgAreaSelect({
         handles: true,
         //minHeight: 50, minWidth: 100,
+
         onSelectStart: function(img, selection)  {
             $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
         },
@@ -405,5 +444,6 @@ $(function () {
 
             doQuery(PDF_ID, query_parameters);
         }});
+        
 
 });

@@ -17,6 +17,7 @@ require './lib/tabula.rb'
 require './lib/tabula_graph.rb'
 require './lib/jobs/analyze_pdf.rb'
 require './lib/jobs/generate_thumbails.rb'
+require './lib/jobs/detect_tables.rb'
 require './local_settings.rb'
 
 Cuba.plugin Cuba::Render
@@ -194,6 +195,7 @@ Cuba.define do
         res.status = 404
       else
         res.write view("pdf_view.html",
+                       file_id: file_id,
                        page_images: Dir.glob(File.join(document_dir, "document_560_*.png"))
                          .sort_by { |f| f.gsub(/[^\d]/, '').to_i }
                          .map { |f| f.gsub(Dir.pwd + '/static', '') },
@@ -274,6 +276,11 @@ Cuba.define do
           :file => file,
           :output_dir => file_path,
           :thumbnail_size => 2048
+        )
+        table_detector = DetectTablesJob.create(
+          :file_id => file_id,
+          :file => file,
+          :output_dir => file_path
         )
         upload_id = AnalyzePDFJob.create(
           :file_id => file_id,
