@@ -78,7 +78,7 @@ class AnalyzePDFJob
         return nil
     else
       # If thumbnail jobs haven't finished, wait up for them
-      while (!Resque::Plugins::Status::Hash.get(sm_thumbnail_job).completed? && !Resque::Plugins::Status::Hash.get(lg_thumbnail_job).completed?) do
+      while (!Resque::Plugins::Status::Hash.get(sm_thumbnail_job).completed? || !Resque::Plugins::Status::Hash.get(lg_thumbnail_job).completed?) do
         at(99, 100, "generating thumbnails...",
           'file_id' => file_id,
           'upload_id' => upload_id
