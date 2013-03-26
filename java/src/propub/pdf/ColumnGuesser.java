@@ -72,7 +72,7 @@ public class ColumnGuesser {
 	        	individual_guesses = false;
 	        }
         }else{
-        	max_pages = 3;
+        	max_pages = Integer.MAX_VALUE;
         	individual_guesses = false;
         }
         System.err.println("pages: " + max_pages);
