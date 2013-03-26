@@ -266,7 +266,12 @@ Cuba.define do
         res.write view("upload_error.html",
             :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
       else
-        # fire off thumbnail jobs
+        # fire off thumbnail and table detection jobs; table detection goes first, since it often takes longer.
+        table_detector = DetectTablesJob.create(
+          :file_id => file_id,
+          :file => file,
+          :output_dir => file_path
+        )
         sm_thumbnail_job = GenerateThumbnailJob.create(
           :file => file,
           :output_dir => file_path,
@@ -276,11 +281,6 @@ Cuba.define do
           :file => file,
           :output_dir => file_path,
           :thumbnail_size => 2048
-        )
-        table_detector = DetectTablesJob.create(
-          :file_id => file_id,
-          :file => file,
-          :output_dir => file_path
         )
         upload_id = AnalyzePDFJob.create(
           :file_id => file_id,
