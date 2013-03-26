@@ -13,6 +13,7 @@ class DetectTablesJob
     f = open(File.join(output_dir, "tables.json"), 'w')
     f.write(guess_tables(file))
     f.close
+    return nil
   end
 
   private

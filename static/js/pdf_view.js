@@ -351,12 +351,10 @@ $(function () {
               });
     };
 
-    //TODO: make sure this doesn't get called until tables.json exists, i.e. when the job finishes.
     $.getJSON("/pdfs/" + PDF_ID + "/tables.json", function(tableGuesses){ 
-      for(var imageNum=0; imageNum < $('img.page-image').size(); imageNum++){ 
-        console.log(tableGuesses);
+      for(var imageIndex=0; imageIndex < $('img.page-image').size(); imageIndex++){ 
 
-        pageIndex = imageNum + 1
+        pageIndex = imageIndex + 1
 
         img = $('img.page-image#page-' + pageIndex);
 
@@ -376,16 +374,19 @@ $(function () {
 
         var scale = (pdf_width / thumb_width);
 
-        var my_x2 = tableGuesses[imageNum][0][0] + tableGuesses[imageNum][0][2];
-        var my_y2 = tableGuesses[imageNum][0][1] + tableGuesses[imageNum][0][3];
+        var my_x2 = tableGuesses[imageIndex][0][0] + tableGuesses[imageIndex][0][2];
+        var my_y2 = tableGuesses[imageIndex][0][1] + tableGuesses[imageIndex][0][3];
 
+        console.log("page " + pageIndex);
+        console.log(tableGuesses);
         console.log(scale);
-        console.log(my_x2 * scale);
-        console.log(my_y2 * scale);
+        console.log(my_x2 / scale);
+        console.log(my_y2 / scale);
+        console.log("");
 
         $('img.page-image#page-' + pageIndex).imgAreaSelect({
-          x1: tableGuesses[imageNum][0][0] / scale,
-          y1: tableGuesses[imageNum][0][1] / scale,
+          x1: tableGuesses[imageIndex][0][0] / scale,
+          y1: tableGuesses[imageIndex][0][1] / scale,
           x2: my_x2 / scale,
           y2: my_y2 / scale
         });
