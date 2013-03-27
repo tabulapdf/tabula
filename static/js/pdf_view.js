@@ -420,8 +420,6 @@ $(function () {
       function updateThing(e){
         img = $(e);
 
-        console.log(img);
-
         imageIndex = parseInt(img.attr("id").replace("page-", '')) - 1;
 
         var thumb_width = img.width();
@@ -443,16 +441,17 @@ $(function () {
         var my_x2 = tableGuesses[imageIndex][0][0] + tableGuesses[imageIndex][0][2];
         var my_y2 = tableGuesses[imageIndex][0][1] + tableGuesses[imageIndex][0][3];
 
-        // console.log(tableGuesses[imageIndex]);
-        // console.log(scale);
-        // console.log(my_x2 / scale);
-        // console.log(my_y2 / scale);
-        // console.log("");
+        console.log("page: " + imageIndex + 1);
+        console.log(tableGuesses[imageIndex]);
+        console.log(scale);
+        console.log(my_x2 / scale);
+        console.log(my_y2 / scale);
+        console.log("");
         $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
         imgAreaSelectObj = imgAreaSelects[imageIndex];
 
         imgAreaSelectObj.setSelection(tableGuesses[imageIndex][0][0] / scale, 
-                                      tableGuesses[imageIndex][0][0] / scale, 
+                                      tableGuesses[imageIndex][0][1] / scale, 
                                       my_x2 / scale, 
                                       my_y2 / scale);
         imgAreaSelectObj.setOptions({show: true});
