@@ -351,60 +351,10 @@ $(function () {
               });
     };
 
-
-    //TODO: only run these functions if the image is loaded already.
-    //http://stackoverflow.com/questions/1743880/image-height-using-jquery-in-chrome-problem
-
-    // or,
-    $.getJSON("/pdfs/" + PDF_ID + "/tables.json", function(tableGuesses){ 
-      for(var imageIndex=0; imageIndex < $('img.page-image').size(); imageIndex++){ 
-
-        var pageIndex = imageIndex + 1;
-
-        $('img.page-image#page-' + pageIndex).imageLoad(function(){
-          var img = $(this);
-          var pageIndex = parseInt(img.attr('id').replace("page-", ""));
-          var imageIndex = pageIndex - 1;
-
-
-          var thumb_width = img.width();
-          var thumb_height = img.height();
-
-          var pdf_width = parseInt(img.data('original-width'));
-          var pdf_height = parseInt(img.data('original-height'));
-          var pdf_rotation = parseInt(img.data('rotation'));
-
-          // if rotated, swap width and height
-          if (pdf_rotation == 90 || pdf_rotation == 270) {
-              var tmp = pdf_height;
-              pdf_height = pdf_width;
-              pdf_width = tmp;
-          }
-
-          var scale = (pdf_width / thumb_width);
-
-          var my_x2 = tableGuesses[imageIndex][0][0] + tableGuesses[imageIndex][0][2];
-          var my_y2 = tableGuesses[imageIndex][0][1] + tableGuesses[imageIndex][0][3];
-
-          console.log("page " + pageIndex);
-          // console.log(tableGuesses[imageIndex]);
-          // console.log(scale);
-          // console.log(my_x2 / scale);
-          // console.log(my_y2 / scale);
-          // console.log("");
-
-          $('img.page-image#page-' + pageIndex).imgAreaSelect({
-            x1: tableGuesses[imageIndex][0][0] / scale,
-            y1: tableGuesses[imageIndex][0][1] / scale,
-            x2: my_x2 / scale,
-            y2: my_y2 / scale
-          });
-        });
-      }
-    });
-
-    $('img.page-image').imgAreaSelect({
+    imgAreaSelects = $.map($('img.page-image'), function(image){ 
+      return $(image).imgAreaSelect({
         handles: true,
+        instance: true,
         //minHeight: 50, minWidth: 100,
 
         onSelectStart: function(img, selection)  {
@@ -457,7 +407,66 @@ $(function () {
             };
 
             doQuery(PDF_ID, query_parameters);
-        }});
-        
+        }
+      });
+    });
+    // TODO: only run these functions if the image is loaded already.
+    // http://stackoverflow.com/questions/1743880/image-height-using-jquery-in-chrome-problem
 
+    $.getJSON("/pdfs/" + PDF_ID + "/tables.json", function(tableGuesses){ 
+
+      function updateThingHelper(e){ updateThing(e.currentTarget)}
+
+      function updateThing(e){
+        img = $(e);
+
+        console.log(img);
+
+        imageIndex = parseInt(img.attr("id").replace("page-", '')) - 1;
+
+        var thumb_width = img.width();
+        var thumb_height = img.height();
+
+        var pdf_width = parseInt(img.data('original-width'));
+        var pdf_height = parseInt(img.data('original-height'));
+        var pdf_rotation = parseInt(img.data('rotation'));
+
+        // if rotated, swap width and height
+        if (pdf_rotation == 90 || pdf_rotation == 270) {
+            var tmp = pdf_height;
+            pdf_height = pdf_width;
+            pdf_width = tmp;
+        }
+
+        var scale = (pdf_width / thumb_width);
+
+        var my_x2 = tableGuesses[imageIndex][0][0] + tableGuesses[imageIndex][0][2];
+        var my_y2 = tableGuesses[imageIndex][0][1] + tableGuesses[imageIndex][0][3];
+
+        // console.log(tableGuesses[imageIndex]);
+        // console.log(scale);
+        // console.log(my_x2 / scale);
+        // console.log(my_y2 / scale);
+        // console.log("");
+        $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
+        imgAreaSelectObj = imgAreaSelects[imageIndex];
+
+        imgAreaSelectObj.setSelection(tableGuesses[imageIndex][0][0] / scale, 
+                                      tableGuesses[imageIndex][0][0] / scale, 
+                                      my_x2 / scale, 
+                                      my_y2 / scale);
+        imgAreaSelectObj.setOptions({show: true});
+        imgAreaSelectObj.update();
+      }
+
+      for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
+        var pageIndex = imageIndex + 1;
+        if($('img#page-' + pageIndex)[0].complete){
+          updateThing($('img#page-' + pageIndex)[0]);
+        }else{
+          $('img#page-' + pageIndex).load(updateThingHelper);
+        }
+      }
+      $('img.page-image').load(function(){$.each(imgAreaSelects, function(n, q){ q.update() });});
+    });
 });
