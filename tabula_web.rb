@@ -14,6 +14,7 @@ require 'resque/job_with_status'
 
 require './lib/detect_rulings.rb'
 require './lib/tabula.rb'
+require './lib/parse_xml.rb'
 require './lib/tabula_graph.rb'
 require './lib/jobs/analyze_pdf.rb'
 require './lib/jobs/generate_thumbails.rb'
@@ -21,36 +22,6 @@ require './local_settings.rb'
 
 Cuba.plugin Cuba::Render
 Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/pdfs", "/scripts", "/swf"]
-
-########## PDF handling internal utils ##########
-# TODO: move out of this file?
-
-
-
-def parse_document_xml(file_id, page)
-  f = File.open(File.join(Dir.pwd, "static/pdfs/#{file_id}/page_#{page}.xml"))
-  xml = Nokogiri::XML(f)
-  f.close
-  xml
-end
-
-def get_text_elements(file_id, page, x1, y1, x2, y2)
-  xml = parse_document_xml(file_id, page)
-  xpath = "//page[@number=#{page}]//text[@top > #{y1} and (@top + @height) < #{y2} and @left > #{x1} and (@left + @width) < #{x2}]"
-  text_nodes = xml.xpath(xpath)
-  text_nodes.find_all { |e| e.name == 'text' }.map { |tn|
-    Tabula::TextElement.new(tn.attr('top').to_f,
-                            tn.attr('left').to_f,
-                            tn.attr('width').to_f,
-                            tn.attr('height').to_f,
-                            tn.attr('font').to_s,
-                            tn.attr('fontsize').to_f,
-                            tn.text)
-  }
-end
-
-
-########## Web ##########
 
 Cuba.define do
 
@@ -61,12 +32,12 @@ Cuba.define do
 
     ## TODO delete
     on "pdf/:file_id/whitespace" do |file_id|
-      text_elements = get_text_elements(file_id,
-                                        req.params['page'],
-                                        req.params['x1'],
-                                        req.params['y1'],
-                                        req.params['x2'],
-                                        req.params['y2'])
+      text_elements = Tabula::XML.get_text_elements(File.join(Settings::DOCUMENTS_BASEPATH, file_id),
+                                                    req.params['page'],
+                                                    req.params['x1'],
+                                                    req.params['y1'],
+                                                    req.params['x2'],
+                                                    req.params['y2'])
 
 #      text_elements = Tabula.merge_words(text_elements)
       whitespace =  Tabula.find_whitespace(text_elements,
@@ -82,12 +53,12 @@ Cuba.define do
 
     # TODO validate that file_id is /[a-f0-9]{40}/
     on "pdf/:file_id/data" do |file_id|
-      text_elements = get_text_elements(file_id,
-                                        req.params['page'],
-                                        req.params['x1'],
-                                        req.params['y1'],
-                                        req.params['x2'],
-                                        req.params['y2'])
+      text_elements = Tabula::XML.get_text_elements(File.join(Settings::DOCUMENTS_BASEPATH, file_id),
+                                                    req.params['page'],
+                                                    req.params['x1'],
+                                                    req.params['y1'],
+                                                    req.params['x2'],
+                                                    req.params['y2'])
 
       table = Tabula.make_table(text_elements)
 
@@ -116,12 +87,12 @@ Cuba.define do
     end
 
     on "pdf/:file_id/columns" do |file_id|
-      text_elements = get_text_elements(file_id,
-                                        req.params['page'],
-                                        req.params['x1'],
-                                        req.params['y1'],
-                                        req.params['x2'],
-                                        req.params['y2'])
+      text_elements = Tabula::XML.get_text_elements(File.join(Settings::DOCUMENTS_BASEPATH, file_id),
+                                                    req.params['page'],
+                                                    req.params['x1'],
+                                                    req.params['y1'],
+                                                    req.params['x2'],
+                                                    req.params['y2'])
 
       res['Content-Type'] = 'application/json'
       res.write Tabula.get_columns(text_elements, true).to_json
@@ -129,12 +100,12 @@ Cuba.define do
     end
 
     on "pdf/:file_id/rows" do |file_id|
-      text_elements = get_text_elements(file_id,
-                                        req.params['page'],
-                                        req.params['x1'],
-                                        req.params['y1'],
-                                        req.params['x2'],
-                                        req.params['y2'])
+      text_elements = Tabula::XML.get_text_elements(File.join(Settings::DOCUMENTS_BASEPATH, file_id),
+                                                    req.params['page'],
+                                                    req.params['x1'],
+                                                    req.params['y1'],
+                                                    req.params['x2'],
+                                                    req.params['y2'])
 
       rows = Tabula.get_rows(text_elements, true)
       res['Content-Type'] = 'application/json'
@@ -143,12 +114,13 @@ Cuba.define do
     end
 
     on "pdf/:file_id/characters" do |file_id|
-      text_elements = get_text_elements(file_id,
-                                        req.params['page'],
-                                        req.params['x1'],
-                                        req.params['y1'],
-                                        req.params['x2'],
-                                        req.params['y2'])
+      text_elements = Tabula::XML.get_text_elements(File.join(Settings::DOCUMENTS_BASEPATH, file_id),
+                                                    req.params['page'],
+                                                    req.params['x1'],
+                                                    req.params['y1'],
+                                                    req.params['x2'],
+                                                    req.params['y2'])
+
 
       res['Content-Type'] = 'application/json'
       res.write text_elements.map { |te|
@@ -174,12 +146,12 @@ Cuba.define do
     end
 
     on 'pdf/:file_id/graph' do |file_id|
-      text_elements = get_text_elements(file_id,
-                                        req.params['page'],
-                                        req.params['x1'],
-                                        req.params['y1'],
-                                        req.params['x2'],
-                                        req.params['y2'])
+      text_elements = Tabula::XML.get_text_elements(File.join(Settings::DOCUMENTS_BASEPATH, file_id),
+                                                    req.params['page'],
+                                                    req.params['x1'],
+                                                    req.params['y1'],
+                                                    req.params['x2'],
+                                                    req.params['y2'])
       text_elements = Tabula::Graph.merge_text_elements(text_elements)
 
       res['Content-Type'] = 'application/json'
@@ -189,7 +161,7 @@ Cuba.define do
 
     on "pdf/:file_id" do |file_id|
       # TODO validate that file_id is  /[a-f0-9]{40}/
-      document_dir = File.join(Dir.pwd, "static/pdfs/#{file_id}")
+      document_dir = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
       unless File.directory?(document_dir)
         res.status = 404
       else
@@ -250,7 +222,7 @@ Cuba.define do
   on post do
     on 'upload' do
       file_id = Digest::SHA1.hexdigest(Time.now.to_s)
-      file_path = File.join(Dir.pwd, 'static', 'pdfs', file_id)
+      file_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
       FileUtils.mkdir(file_path)
       FileUtils.cp(req.params['file'][:tempfile].path,
                    File.join(file_path, 'document.pdf'))
