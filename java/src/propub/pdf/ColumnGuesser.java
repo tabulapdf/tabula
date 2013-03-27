@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Comparator;
 
 import static com.googlecode.javacv.cpp.opencv_core.*;
 import static com.googlecode.javacv.cpp.opencv_imgproc.*;
+
 
 public class ColumnGuesser {
 	
@@ -102,7 +104,7 @@ public class ColumnGuesser {
 	        int current_try = tunable_threshold;
 	        
 	        //TODO: set higher threshold for finding columns?
-	        int minimal_lines_threshold = 20; //for finding tables, this should be very high. The cost of a false positive line is low; the cost of a false negative may be high.
+	        int minimal_lines_threshold = 10; //for finding tables, this should be very high. The cost of a false positive line is low; the cost of a false negative may be high.
 	        while (verticalLines.size() < minimal_lines_threshold || horizontalLines.size() < minimal_lines_threshold) { //
 	            current_try -= 20; //sacrifice speed for success.
 	            // we might need to give up..
@@ -151,11 +153,21 @@ public class ColumnGuesser {
 //	        System.out.println("\"columns\": " + cols.toString());
 //        }
 //        System.out.println("}");
+        class CompareRectanglesByArea implements Comparator<Rectangle2D.Double>{
+        	@Override
+        	public int compare(Rectangle2D.Double r1, Rectangle2D.Double r2){
+        		double r1area = r1.width * r1.height;
+        		double r2area = r2.width * r2.height;
+        		return (r1area > r2area ? -1 : (r1area == r2area ? 0 : 1));
+        	}
+        }
+        
         System.out.println("[");
         for(int i=0; i<tables.size(); i++){ 
 	    	List<Rectangle2D.Double> innerTables = tables.get(i);
 	    	System.out.println("  [");
 	    	for(int inner_i=0; inner_i<innerTables.size(); inner_i++){
+	    		Collections.sort(innerTables, new CompareRectanglesByArea());
 	    		Rectangle2D.Double table = innerTables.get(inner_i);
 	    		System.out.print("    [" + table.x +"," + table.y + "," + table.width + "," + table.height+"]");
 	        	if(inner_i != innerTables.size()-1){
@@ -200,6 +212,12 @@ public class ColumnGuesser {
     public static String hashRectangle(Rectangle2D.Double r){
     	return hashAPoint(r.x) + "," + hashAPoint(r.y) + "," + hashAPoint(r.height) + "," + hashAPoint(r.width);
     }
+    public static boolean isUpwardOriented(Line2D.Double l, double yValue){
+    	//return true if this line is oriented upwards, i.e. if the majority of it's length is above y_value.
+    	double topPoint = Math.min(l.getY1(), l.getY2());
+    	double bottomPoint = Math.max(l.getY1(), l.getY2());
+    	return (yValue - topPoint > bottomPoint - yValue);
+    }
     
     public static List<Rectangle2D.Double> findTables(List<Pointer> verticals, List<Pointer> horizontals){
     	/*
@@ -207,90 +225,102 @@ public class ColumnGuesser {
     	 * 
     	 * Rectangles are deduped with hashRectangle, which considers two rectangles identical if each point rounds to the same tens place as the other.
     	 * 
-    	 * TODO: alternative, raise the proximity threshold, discard rectangles contained in other rectangles. 
+    	 * TODO: generalize this.
     	 */
     	double cornerProximityThreshold = 0.10;
     	
     	HashMap<String, Rectangle2D.Double> rectangles = new HashMap<String, Rectangle2D.Double>();
     	//find rectangles with one horizontal line and two vertical lines that end within $threshold to the ends of the horizontal line.
-    	for(Pointer horizontalLinePtr : horizontals){
-    		Line2D.Double horizontalLine = pointerToLine(horizontalLinePtr);
-    		double horizontalLineLength = Math.abs(horizontalLine.x1 - horizontalLine.x2);
-    		
-    		boolean hasVerticalLineFromTheLeft = false;
-    		Line2D.Double leftVerticalLine = new Line2D.Double();
-    		//for the left of the vertical line.
-    		for(Pointer verticalLinePtr : verticals){
-        		Line2D.Double verticalLine = pointerToLine(verticalLinePtr);
-        		double verticalLineLength = Math.abs(horizontalLine.y1 - horizontalLine.y2);
-    			if((euclideanDistance(horizontalLine.getX1(), horizontalLine.getY1(), verticalLine.getX1(), verticalLine.getY1()) < (cornerProximityThreshold * Math.max(horizontalLineLength, verticalLineLength))) ||
-    				(euclideanDistance(horizontalLine.getX1(), horizontalLine.getY1(), verticalLine.getX2(), verticalLine.getY2())) < (cornerProximityThreshold * Math.max(horizontalLineLength, verticalLineLength))){
-    				if((leftVerticalLine.getX1() > verticalLine.getX1()) || ((leftVerticalLine.getY1() == 0) && (leftVerticalLine.getY2() == 0))){ //is this line is more to the left than the one we've got already. //"What's your opinion on Das Kapital?"
-    					hasVerticalLineFromTheLeft = true;
-    					leftVerticalLine = verticalLine;
-    				}
-    			}
-    		}
-    		//for the right of the vertical line.
-    		boolean hasVerticalLineFromTheRight = false;
-    		Line2D.Double rightVerticalLine = new Line2D.Double();
-    		//for the left of the vertical line.
-    		for(Pointer verticalLinePtr : verticals){
-        		Line2D.Double verticalLine = pointerToLine(verticalLinePtr);
-        		double verticalLineLength = Math.abs(horizontalLine.y1 - horizontalLine.y2);
-    			if((euclideanDistance(horizontalLine.getX2(), horizontalLine.getY2(), verticalLine.getX1(), verticalLine.getY1()) < (cornerProximityThreshold * Math.max(horizontalLineLength, verticalLineLength))) ||
-    				(euclideanDistance(horizontalLine.getX2(), horizontalLine.getY2(), verticalLine.getX2(), verticalLine.getY2())) < (cornerProximityThreshold * Math.max(horizontalLineLength, verticalLineLength))){
-    				if((rightVerticalLine.getX1() > verticalLine.getX1()) || ((rightVerticalLine.getY1() == 0) && (rightVerticalLine.getY2() == 0))){ //is this line is more to the right than the one we've got already. //"Can you recite all of John Galt's speech?"
-    					hasVerticalLineFromTheRight = true;
-    					rightVerticalLine = verticalLine;
-    				}
-    			}
-    		}
-    		if (hasVerticalLineFromTheRight && hasVerticalLineFromTheLeft){
-    			double height = Math.max( leftVerticalLine.getY1() - leftVerticalLine.getY2(), rightVerticalLine.getY1() - rightVerticalLine.getY2()  );
-    			double y = Math.min( Math.min(leftVerticalLine.getY1(), leftVerticalLine.getY2()), Math.min(rightVerticalLine.getY1(), rightVerticalLine.getY2()));
-    			Rectangle2D.Double r = new Rectangle2D.Double(horizontalLine.getX1(), y, horizontalLine.getX2() - horizontalLine.getX1(), height ); //x, y, w, h
-    			rectangles.put(hashRectangle(r), r);
-    		}
-    	}
     	
+    	boolean[] upOrDownBooleans = {true, false};
+    	
+    	for (boolean upOrDownLines : upOrDownBooleans){
+	    	for(Pointer horizontalLinePtr : horizontals){
+	    		Line2D.Double horizontalLine = pointerToLine(horizontalLinePtr);
+	    		double horizontalLineLength = Math.abs(horizontalLine.x1 - horizontalLine.x2);
+	    		
+	    		boolean hasVerticalLineFromTheLeft = false;
+	    		Line2D.Double leftVerticalLine = new Line2D.Double();
+	    		//for the left vertical line.
+	    		for(Pointer verticalLinePtr : verticals){
+	        		Line2D.Double verticalLine = pointerToLine(verticalLinePtr);
+	        		double verticalLineLength = Math.abs(horizontalLine.y1 - horizontalLine.y2);
+	        		//make this the left vertical line:
+	        	    //1. if it begins near the left vertex of the horizontal line.
+	    			if((euclideanDistance(horizontalLine.getX1(), horizontalLine.getY1(), verticalLine.getX1(), verticalLine.getY1()) < (cornerProximityThreshold * Math.max(horizontalLineLength, verticalLineLength))) ||
+	    				(euclideanDistance(horizontalLine.getX1(), horizontalLine.getY1(), verticalLine.getX2(), verticalLine.getY2())) < (cornerProximityThreshold * Math.max(horizontalLineLength, verticalLineLength))){
+	    				//2. if it is farther to the left of the line we already have.  
+	    				if((leftVerticalLine.getX1() > verticalLine.getX1()) || ((leftVerticalLine.getY1() == 0) && (leftVerticalLine.getY2() == 0))){ //is this line is more to the left than the one we've got already. //"What's your opinion on Das Kapital?"
+	    					//3. if it is correctly oriented (up or down) given the outer loop here. (We don't want a false-positive rectangle with one "arm" going down, and one going up.)
+	    					if(isUpwardOriented(verticalLine, horizontalLine.getY1()) == upOrDownLines){
+		    					hasVerticalLineFromTheLeft = true;
+		    					leftVerticalLine = verticalLine;
+	    					}
+	    				}
+	    			}
+	    		}
+	    		boolean hasVerticalLineFromTheRight = false;
+	    		Line2D.Double rightVerticalLine = new Line2D.Double();
+	    		//for the right vertical line.
+	    		for(Pointer verticalLinePtr : verticals){
+	        		Line2D.Double verticalLine = pointerToLine(verticalLinePtr);
+	        		double verticalLineLength = Math.abs(horizontalLine.y1 - horizontalLine.y2);
+	    			if((euclideanDistance(horizontalLine.getX2(), horizontalLine.getY2(), verticalLine.getX1(), verticalLine.getY1()) < (cornerProximityThreshold * Math.max(horizontalLineLength, verticalLineLength))) ||
+	    				(euclideanDistance(horizontalLine.getX2(), horizontalLine.getY2(), verticalLine.getX2(), verticalLine.getY2())) < (cornerProximityThreshold * Math.max(horizontalLineLength, verticalLineLength))){
+	    				if((rightVerticalLine.getX1() > verticalLine.getX1()) || ((rightVerticalLine.getY1() == 0) && (rightVerticalLine.getY2() == 0))){ //is this line is more to the right than the one we've got already. //"Can you recite all of John Galt's speech?"
+	    					//do two passes to guarantee we don't get a horizontal line with a upwards and downwards line coming from each of its corners.
+	    					//i.e. ensuring that both "arms" of the rectangle have the same orientation (up or down).
+	    					if(isUpwardOriented(verticalLine, horizontalLine.getY1()) == upOrDownLines){
+		    					hasVerticalLineFromTheRight = true;
+		    					rightVerticalLine = verticalLine;
+	    					}
+	    				}
+	    			}
+	    		}
+	    		if (hasVerticalLineFromTheRight && hasVerticalLineFromTheLeft){
+	    			double height = Math.max( leftVerticalLine.getY1() - leftVerticalLine.getY2(), rightVerticalLine.getY1() - rightVerticalLine.getY2()  );
+	    			double y = Math.min( Math.min(leftVerticalLine.getY1(), leftVerticalLine.getY2()), Math.min(rightVerticalLine.getY1(), rightVerticalLine.getY2()));
+	    			Rectangle2D.Double r = new Rectangle2D.Double(horizontalLine.getX1(), y, horizontalLine.getX2() - horizontalLine.getX1(), height ); //x, y, w, h
+	    			rectangles.put(hashRectangle(r), r);
+	    		}
+	    	}
+    	}
     	//find rectangles with one vertical line and two horizontal lines that end within $threshold to the ends of the vertical line.
         for(Pointer verticalLinePtr : verticals){
             Line2D.Double verticalLine = pointerToLine(verticalLinePtr);
             double verticalLineLength = Math.abs(verticalLine.x1 - verticalLine.x2);
             
-            boolean hasHorizontalLineFromTheLeft = false;
-            Line2D.Double leftHorizontalLine = new Line2D.Double();
-            //for the left of the horizontal line.
+            boolean hasHorizontalLineFromTheTop = false;
+            Line2D.Double topHorizontalLine = new Line2D.Double();
+            //for the top horizontal line.
             for(Pointer horizontalLinePtr : horizontals){
 	            Line2D.Double horizontalLine = pointerToLine(horizontalLinePtr);
 	            double horizontalLineLength = Math.abs(verticalLine.y1 - verticalLine.y2);
 	            if((euclideanDistance(verticalLine.getX1(), verticalLine.getY1(), horizontalLine.getX1(), horizontalLine.getY1()) < (cornerProximityThreshold * Math.max(verticalLineLength, horizontalLineLength))) ||
 	                (euclideanDistance(verticalLine.getX1(), verticalLine.getY1(), horizontalLine.getX2(), horizontalLine.getY2())) < (cornerProximityThreshold * Math.max(verticalLineLength, horizontalLineLength))){
-	                if((leftHorizontalLine.getX1() > horizontalLine.getX1()) || ((leftHorizontalLine.getY1() == 0) && (leftHorizontalLine.getY2() == 0))){ //is this line is more to the left than the one we've got already. //"What's your opinion on Das Kapital?"
-	                    hasHorizontalLineFromTheLeft = true;
-	                    leftHorizontalLine = horizontalLine;
+	                if((topHorizontalLine.getX1() > horizontalLine.getX1()) || ((topHorizontalLine.getY1() == 0) && (topHorizontalLine.getY2() == 0))){ //is this line is more to the top than the one we've got already.
+	                	hasHorizontalLineFromTheTop = true;
+	                	topHorizontalLine = horizontalLine;
 	                }
 	            }
             }
-            //for the right of the horizontal line.
-            boolean hasHorizontalLineFromTheRight = false;
-            Line2D.Double rightHorizontalLine = new Line2D.Double();
-            //for the left of the horizontal line.
+            boolean hasHorizontalLineFromTheBottom = false;
+            Line2D.Double bottomHorizontalLine = new Line2D.Double();
+            //for the bottom horizontal line.
             for(Pointer horizontalLinePtr : horizontals){
                 Line2D.Double horizontalLine = pointerToLine(horizontalLinePtr);
                 double horizontalLineLength = Math.abs(verticalLine.y1 - verticalLine.y2);
                 if((euclideanDistance(verticalLine.getX2(), verticalLine.getY2(), horizontalLine.getX1(), horizontalLine.getY1()) < (cornerProximityThreshold * Math.max(verticalLineLength, horizontalLineLength))) ||
                 	(euclideanDistance(verticalLine.getX2(), verticalLine.getY2(), horizontalLine.getX2(), horizontalLine.getY2())) < (cornerProximityThreshold * Math.max(verticalLineLength, horizontalLineLength))){
-                	if((rightHorizontalLine.getX1() > horizontalLine.getX1()) || ((rightHorizontalLine.getY1() == 0) && (rightHorizontalLine.getY2() == 0))){ //is this line is more to the right than the one we've got already. //"Can you recite all of John Galt's speech?"
-                		hasHorizontalLineFromTheRight = true;
-                		rightHorizontalLine = horizontalLine;
+                	if((bottomHorizontalLine.getX1() > horizontalLine.getX1()) || ((bottomHorizontalLine.getY1() == 0) && (bottomHorizontalLine.getY2() == 0))){ //is this line is more to the bottom than the one we've got already. 
+                		hasHorizontalLineFromTheBottom = true;
+                		bottomHorizontalLine = horizontalLine;
                 	}
                 }
             }
-            if (hasHorizontalLineFromTheRight && hasHorizontalLineFromTheLeft){
-            	double width = Math.abs(Math.max( leftHorizontalLine.getX1() - leftHorizontalLine.getX2(), rightHorizontalLine.getX1() - rightHorizontalLine.getX2() ));
-            	double x = Math.min( Math.min(leftHorizontalLine.getX1(), leftHorizontalLine.getX2()), Math.min(rightHorizontalLine.getX1(), rightHorizontalLine.getX2()));
+            if (hasHorizontalLineFromTheBottom && hasHorizontalLineFromTheTop){
+            	double width = Math.abs(Math.max( topHorizontalLine.getX1() - topHorizontalLine.getX2(), bottomHorizontalLine.getX1() - bottomHorizontalLine.getX2() ));
+            	double x = Math.min( Math.min(topHorizontalLine.getX1(), topHorizontalLine.getX2()), Math.min(bottomHorizontalLine.getX1(), bottomHorizontalLine.getX2()));
             	Rectangle2D.Double r = new Rectangle2D.Double(x, Math.min(verticalLine.getY1(), verticalLine.getY2()), width, Math.abs(verticalLine.getY2() - verticalLine.getY1()) ); //x, y, w, h
             	rectangles.put(hashRectangle(r), r);
             }
@@ -398,28 +428,4 @@ public class ColumnGuesser {
     	}
     	return oriented_lines;
     }
-      
-    //deprecated
-//    public static List<Integer> mapOrientedLinesToLocations(List<Pointer> lines, String orientation){
-//    	List<Integer> oriented_lines = new ArrayList<Integer>();
-//    	boolean oriented_correctly;
-//    	for(Pointer line : lines){
-//            CvPoint pt1 = new CvPoint(line).position(0);
-//            CvPoint pt2 = new CvPoint(line).position(1);
-//            if (orientation == "vertical" && pt1.x() == pt2.x()) {
-//            	oriented_correctly = true;
-//            }else if(orientation == "horizontal" && pt1.y() == pt2.y()){
-//            	oriented_correctly = true;
-//            }else{
-//            	oriented_correctly = false;
-//            }
-//            if(oriented_correctly && orientation == "horizontal"){
-//            	oriented_lines.add(pt1.y());
-//            }else if(oriented_correctly && orientation == "vertical"){
-//            	oriented_lines.add(pt1.x());
-//            }
-//    	}
-//    	return oriented_lines;
-//    }
-
 }
