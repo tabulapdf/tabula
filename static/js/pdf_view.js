@@ -351,44 +351,54 @@ $(function () {
               });
     };
 
+
+    //TODO: only run these functions if the image is loaded already.
+    //http://stackoverflow.com/questions/1743880/image-height-using-jquery-in-chrome-problem
+
+    // or,
     $.getJSON("/pdfs/" + PDF_ID + "/tables.json", function(tableGuesses){ 
       for(var imageIndex=0; imageIndex < $('img.page-image').size(); imageIndex++){ 
 
-        pageIndex = imageIndex + 1
+        var pageIndex = imageIndex + 1;
 
-        img = $('img.page-image#page-' + pageIndex);
+        $('img.page-image#page-' + pageIndex).imageLoad(function(){
+          var img = $(this);
+          var pageIndex = parseInt(img.attr('id').replace("page-", ""));
+          var imageIndex = pageIndex - 1;
 
-        var thumb_width = img.width();
-        var thumb_height = img.height();
 
-        var pdf_width = parseInt(img.data('original-width'));
-        var pdf_height = parseInt(img.data('original-height'));
-        var pdf_rotation = parseInt(img.data('rotation'));
+          var thumb_width = img.width();
+          var thumb_height = img.height();
 
-        // if rotated, swap width and height
-        if (pdf_rotation == 90 || pdf_rotation == 270) {
-            var tmp = pdf_height;
-            pdf_height = pdf_width;
-            pdf_width = tmp;
-        }
+          var pdf_width = parseInt(img.data('original-width'));
+          var pdf_height = parseInt(img.data('original-height'));
+          var pdf_rotation = parseInt(img.data('rotation'));
 
-        var scale = (pdf_width / thumb_width);
+          // if rotated, swap width and height
+          if (pdf_rotation == 90 || pdf_rotation == 270) {
+              var tmp = pdf_height;
+              pdf_height = pdf_width;
+              pdf_width = tmp;
+          }
 
-        var my_x2 = tableGuesses[imageIndex][0][0] + tableGuesses[imageIndex][0][2];
-        var my_y2 = tableGuesses[imageIndex][0][1] + tableGuesses[imageIndex][0][3];
+          var scale = (pdf_width / thumb_width);
 
-        console.log("page " + pageIndex);
-        console.log(tableGuesses);
-        console.log(scale);
-        console.log(my_x2 / scale);
-        console.log(my_y2 / scale);
-        console.log("");
+          var my_x2 = tableGuesses[imageIndex][0][0] + tableGuesses[imageIndex][0][2];
+          var my_y2 = tableGuesses[imageIndex][0][1] + tableGuesses[imageIndex][0][3];
 
-        $('img.page-image#page-' + pageIndex).imgAreaSelect({
-          x1: tableGuesses[imageIndex][0][0] / scale,
-          y1: tableGuesses[imageIndex][0][1] / scale,
-          x2: my_x2 / scale,
-          y2: my_y2 / scale
+          console.log("page " + pageIndex);
+          // console.log(tableGuesses[imageIndex]);
+          // console.log(scale);
+          // console.log(my_x2 / scale);
+          // console.log(my_y2 / scale);
+          // console.log("");
+
+          $('img.page-image#page-' + pageIndex).imgAreaSelect({
+            x1: tableGuesses[imageIndex][0][0] / scale,
+            y1: tableGuesses[imageIndex][0][1] / scale,
+            x2: my_x2 / scale,
+            y2: my_y2 / scale
+          });
         });
       }
     });
