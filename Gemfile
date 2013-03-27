@@ -12,3 +12,9 @@ group :production do
     gem "ruby-opencv"
   end
 end
+
+group :test do
+  platforms :mri_19, :mri_20 do
+    gem "minitest"
+  end
+end

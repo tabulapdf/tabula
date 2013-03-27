@@ -86,7 +86,7 @@ module Tabula
   class TextElement < ZoneEntity
     attr_accessor :font, :font_size, :text
 
-    CHARACTER_DISTANCE_THRESHOLD = 1.5
+    CHARACTER_DISTANCE_THRESHOLD = 3
 
     def initialize(top, left, width, height, font, font_size, text)
       super(top, left, width, height)
@@ -95,7 +95,6 @@ module Tabula
       self.text = text
     end
 
-    # more or less returns True if distance < tolerance
     def should_merge?(other)
       raise TypeError, "argument is not a TextElement" unless other.instance_of?(TextElement)
       overlaps = self.vertically_overlaps?(other)
@@ -108,19 +107,6 @@ module Tabula
         self.horizontal_distance(other) < tolerance
     end
 
-    # more or less returns True if (tolerance <= distance < CHARACTER_DISTANCE_THRESHOLD*tolerance)
-    def should_add_space?(other)
-      raise TypeError, "argument is not a TextElement" unless other.instance_of?(TextElement)
-      overlaps = self.vertically_overlaps?(other)
-
-      tolerance = ((self.font_size + other.font_size) / 2) * 0.25
-
-      dist = self.horizontal_distance(other)
-      overlaps or
-        (self.height == 0 and other.height != 0) or
-        (other.height == 0 and self.height != 0) and
-        ((tolerance <= dist) and (dist < tolerance*CHARACTER_DISTANCE_THRESHOLD))
-    end
 
     def merge!(other)
       raise TypeError, "argument is not a TextElement" unless other.instance_of?(TextElement)
@@ -232,10 +218,6 @@ module Tabula
         char1 = char2
         text_elements[i+1] = nil
       else
-        # is there a space? is this within `CHARACTER_DISTANCE_THRESHOLD` points of previous char?
-        if (char1.text != " ") and (char2.text != " ") and text_elements[current_word_index].should_add_space?(char2)
-          text_elements[current_word_index].text += " "
-        end
         current_word_index = i+1
       end
       i += 1
