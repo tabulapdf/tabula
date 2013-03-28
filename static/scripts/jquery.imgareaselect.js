@@ -21,7 +21,7 @@ var abs = Math.abs,
 function div(cssClass) {
     //optionally takes 
     var mydiv = $('<div/>');
-    mydiv.addClass("ias"); 
+    mydiv.addClass("imageareaselect"); 
     if(cssClass){
         mydiv.addClass(cssClass);
     }
@@ -35,10 +35,11 @@ $.imgAreaSelect = function (img, options) {
 
         imgLoaded,
 
-        $box = div("ias-box"),
-        $area = div("ias-area"),
-        $border = div("ias-border").add(div("ias-border-1")).add(div("ias-border-2")).add(div("ias-border-3")),
-        $outer = div("ias-outer").add(div("ias-outer-1")).add(div("ias-outer-2")).add(div("ias-outer-3")),
+        $box = div("imageareaselect-box"),
+        $area = div("imageareaselect-area"),
+        $border = div("imageareaselect-border").add(div("imageareaselect-border-1")).add(div("imageareaselect-border-2")).add(div("imageareaselect-border-3")),
+        $outer = div("imageareaselect-outer").add(div("imageareaselect-outer-1")).add(div("imageareaselect-outer-2")).add(div("imageareaselect-outer-3")),
+        $closeBtn = div("imageareaselect-closebtn"),
         $handles = $([]),
 
         $areaOpera,
@@ -184,6 +185,8 @@ $.imgAreaSelect = function (img, options) {
             width: imgWidth - selection.x2, height: imgHeight });
         $($outer[3]).css({ left: left + selection.x1, top: top + selection.y2,
             width: w, height: imgHeight - selection.y2 });
+
+        $closeBtn.css({left: left + selection.x2 + 4, top: top + selection.y1 - 20});
 
         w -= $handles.outerWidth();
         h -= $handles.outerHeight();
@@ -424,14 +427,14 @@ $.imgAreaSelect = function (img, options) {
         options.onSelectStart(img, getSelection());
     }
 
-    function cancelSelection() {
+    function cancelSelection(skipCallbacks) {
         $(document).unbind('mousemove', startSelection)
             .unbind('mouseup', cancelSelection);
         hide($box.add($outer));
 
         setSelection(selX(x1), selY(y1), selX(x1), selY(y1));
 
-        if (!(this instanceof $.imgAreaSelect)) {
+        if (!skipCallbacks && !(this instanceof $.imgAreaSelect)) {
             options.onSelectChange(img, getSelection());
             options.onSelectEnd(img, getSelection());
         }
@@ -609,6 +612,10 @@ $.imgAreaSelect = function (img, options) {
         if (o = options.borderColor2)
             $($border[1]).css({ borderStyle: 'dashed', borderColor: o });
 
+        $closeBtn.html("<div class='closeBtnInner'>×</div>");
+        $closeBtn.click(function(event){cancelSelection(true); event.stopPropagation(); return false; });
+        $('body').append($closeBtn);
+
         $box.append($area.add($border).add($areaOpera).add($handles));
 
         if ($.browser.msie) {
@@ -627,7 +634,7 @@ $.imgAreaSelect = function (img, options) {
         }
 
         aspectRatio = (d = (options.aspectRatio || '').split(/:/))[0] / d[1];
-
+        
         $img.add($outer).unbind('mousedown', imgMouseDown);
 
         if (options.disable || options.enable === false) {
@@ -690,8 +697,9 @@ $.imgAreaSelect = function (img, options) {
             position: 'absolute', zIndex: zIndex + 2 || 2 });
 
     $box.add($outer).css({ visibility: 'hidden', position: position,
-        overflow: 'hidden', zIndex: zIndex || '0' });
+        /*overflow: 'hidden',*/ zIndex: zIndex || '0' });
     $box.css({ zIndex: zIndex + 2 || 2 });
+    $closeBtn.css("z-index", zIndex + 3 || 3);
     $area.add($border).css({ position: 'absolute', fontSize: 0 });
 
     img.complete || img.readyState == 'complete' || !$img.is('img') ?

@@ -39,3 +39,17 @@
 
 .imgareaselect-selection {  
 }
+.imageareaselect-closebtn{
+    width: 16px;
+    color: white;
+    height: 16px;
+    z-index: 7;
+    margin: 0px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    display: inline-table;
+    position: absolute;
+}.imageareaselect-closebtn .closeBtnInner{
+}
