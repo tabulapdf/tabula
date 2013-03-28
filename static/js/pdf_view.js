@@ -43,6 +43,10 @@ var rotatePath = function(path, rot_deg) {
 
 $(function () {
 
+    $('button.close#directions').click(function(){
+      $('div.ias').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
+    })
+
     var PDF_ID = window.location.pathname.split('/')[2];
     lastQuery = {};
 
