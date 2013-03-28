@@ -447,7 +447,7 @@ $.imgAreaSelect = function (img, options) {
         startX = x1 = evX(event);
         startY = y1 = evY(event);
 
-        $(document).mousemove(startSelection).mouseup(cancelSelection);
+        $(document).mousemove(startSelection).mouseup(cancelSelection); //for multi-select, remove mouseup(); a click on the image doesn't erase the previous selection.
 
         return false;
     }
