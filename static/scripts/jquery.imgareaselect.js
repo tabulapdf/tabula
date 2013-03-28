@@ -18,8 +18,14 @@ var abs = Math.abs,
     min = Math.min,
     round = Math.round;
 
-function div() {
-    return $('<div/>');
+function div(cssClass) {
+    //optionally takes 
+    var mydiv = $('<div/>');
+    mydiv.addClass("ias"); 
+    if(cssClass){
+        mydiv.addClass(cssClass);
+    }
+    return mydiv
 }
 
 $.imgAreaSelect = function (img, options) {
@@ -29,10 +35,10 @@ $.imgAreaSelect = function (img, options) {
 
         imgLoaded,
 
-        $box = div(),
-        $area = div(),
-        $border = div().add(div()).add(div()).add(div()),
-        $outer = div().add(div()).add(div()).add(div()),
+        $box = div("ias-box"),
+        $area = div("ias-area"),
+        $border = div("ias-border").add(div("ias-border-1")).add(div("ias-border-2")).add(div("ias-border-3")),
+        $outer = div("ias-outer").add(div("ias-outer-1")).add(div("ias-outer-2")).add(div("ias-outer-3")),
         $handles = $([]),
 
         $areaOpera,
