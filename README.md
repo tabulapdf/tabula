@@ -92,4 +92,4 @@ The site instance should now be viewable at http://127.0.0.1:9292/
 
 ## Contributing
 
-Interested in helping out? See `TODO.md` for ideas.
+Interested in helping out? See [`TODO.md`](TODO.md) for ideas.
