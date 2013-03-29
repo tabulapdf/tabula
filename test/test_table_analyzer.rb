@@ -42,6 +42,18 @@ class TestTableAnalyzer < MiniTest::Unit::TestCase
     assert_equal lines_to_array(table), expected
   end
 
+  def test_bo_page24
+    run_jruby_extractor!('test_pdfs/bo_page24.pdf')
+    # Request URL:http://localhost:9393/pdf/d1bfae1be8d6b099c1b7bb7b401ca97310e61063/data?x1=50.089285714285715&x2=809.0178571428571&y1=432.5892857142857&y2=490.2678571428571&page=1
+
+    text_elements = Tabula::XML.get_text_elements(@tmp_dir, 1, 50.089, 432.589, 809.017, 490.267)
+    table = Tabula.make_table(text_elements)
+
+    expected = [["1", "UNICA", "CECILIA KANDUS", "16/12/2008", "PEDRO ALBERTO GALINDEZ", "60279/09"], ["1", "UNICA", "CECILIA KANDUS", "10/06/2009", "PASTORA FILOMENA NAVARRO", "60280/09"], ["13", "UNICA", "MIRTA S. BOTTALLO DE VILLA", "02/07/2009", "MARIO LUIS ANGELERI, DNI 4.313.138", "60198/09"], ["16", "UNICA", "LUIS PEDRO FASANELLI", "22/05/2009", "PETTER o PEDRO KAHRS", "60244/09"]]
+
+    assert_equal lines_to_array(table), expected
+  end
+
   private
 
   def lines_to_array(lines)
@@ -52,7 +64,8 @@ class TestTableAnalyzer < MiniTest::Unit::TestCase
 
   def run_jruby_extractor!(pdf_path)
     jruby_script_path = File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib/jruby_dump_characters.rb')
-    jars = 'pdfbox-app-1.8.0.jar'
-    system({'CLASSPATH' => jars}, "#{Settings::JRUBY_PATH} --1.9 --server #{jruby_script_path} #{pdf_path} #{@tmp_dir}")
+    jar_path = File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib/jars')
+    jars = File.join(jar_path, 'pdfbox-app-1.8.0.jar')
+    system({'CLASSPATH' => jars}, "#{Settings::JRUBY_PATH} --1.9 --server #{jruby_script_path} #{pdf_path} #{@tmp_dir} > /dev/null 2>&1")
   end
 end
