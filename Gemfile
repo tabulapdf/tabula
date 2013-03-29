@@ -5,6 +5,7 @@ group :production do
     gem "algorithms"
     gem "nokogiri"
     gem "cuba"
+    gem "foreman"
     gem "rake"
     gem "resque"
     gem "resque-progress"

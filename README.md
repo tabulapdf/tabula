@@ -79,14 +79,11 @@ Start `redis-server` in a separate terminal tab
 
     redis-server /usr/local/etc/redis.conf
 
-Start `resque` in a separate terminal tab (don't fret -- there may be no
-output when you run this command)
+Next, you need to start `resque` and the actual web server.  You can run both
+of those using [Foreman](http://ddollar.github.com/foreman/) by running the
+following:
 
-    COUNT=3 TERM_CHILD=1 QUEUE=* bundle exec rake resque:workers
-
-Run your server
-
-    bundle exec rackup
+    bundle exec foreman start
 
 The site instance should now be viewable at http://127.0.0.1:9292/
 
