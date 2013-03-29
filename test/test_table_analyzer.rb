@@ -51,19 +51,8 @@ class TestTableAnalyzer < MiniTest::Unit::TestCase
   end
 
   def run_jruby_extractor!(pdf_path)
-    jar_path = File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib/jars')
     jruby_script_path = File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib/jruby_dump_characters.rb')
-    jars = ['fontbox-1.7.1.jar','pdfbox-1.7.1.jar','commons-logging-1.1.1.jar','jempbox-1.7.1.jar'].map { |j| File.join(jar_path, j) }.join(':')
-
-    _stdin, _stdout, _stderr, thr = Open3.popen3(
-        {"CLASSPATH" => jars},
-        "#{Settings::JRUBY_PATH} --1.9 --server #{jruby_script_path} #{pdf_path} #{@tmp_dir}"
-    )
-    # wait for process to end
-    _stdin.close
-    _stdout.gets
-    _stdout.close
-    _stderr.gets
-    _stderr.close
+    jars = 'pdfbox-app-1.8.0.jar'
+    system({'CLASSPATH' => jars}, "#{Settings::JRUBY_PATH} --1.9 --server #{jruby_script_path} #{pdf_path} #{@tmp_dir}")
   end
 end
