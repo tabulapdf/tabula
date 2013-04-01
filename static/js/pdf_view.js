@@ -316,10 +316,10 @@ $(function () {
     };
 
 
+    $('a.tooltip-modal').tooltip();
 
-
-    $('input#split_multiline_cells').change(function() {
-        $.extend(lastQuery, { split_multiline_cells: $(this).is(':checked') });
+    $('input#use_lines').change(function() {
+        $.extend(lastQuery, { use_lines: $(this).is(':checked') });
         doQuery(PDF_ID, lastQuery);
     });
 
@@ -330,6 +330,7 @@ $(function () {
 
     query_parameters = {};
 
+
     $('#myModal').on('hide', function() {
         clip.unglue('#copy-csv-to-clipboard');
     });
@@ -338,6 +339,9 @@ $(function () {
         $('#loading').css('left', ($(window).width() - 98) + 'px').css('visibility', 'visible');
 
         lastQuery = query_parameters;
+
+        $.extend(lastQuery, { use_lines: $('#use_lines').is(':checked') });
+
         $.get('/pdf/' + pdf_id + '/data',
               query_parameters,
               function(data) {

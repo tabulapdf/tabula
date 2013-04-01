@@ -39,7 +39,6 @@ Cuba.define do
                                                     req.params['x2'],
                                                     req.params['y2'])
 
-#      text_elements = Tabula.merge_words(text_elements)
       whitespace =  Tabula.find_whitespace(text_elements,
                                            Tabula::ZoneEntity.new(req.params['y1'].to_f,
                                                                   req.params['x1'].to_f,
@@ -51,20 +50,28 @@ Cuba.define do
 
     end
 
-    # TODO validate that file_id is /[a-f0-9]{40}/
     on "pdf/:file_id/data" do |file_id|
-      text_elements = Tabula::XML.get_text_elements(File.join(Settings::DOCUMENTS_BASEPATH, file_id),
+      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
+
+      text_elements = Tabula::XML.get_text_elements(pdf_path,
                                                     req.params['page'],
                                                     req.params['x1'],
                                                     req.params['y1'],
                                                     req.params['x2'],
                                                     req.params['y2'])
+      make_table_options = {}
 
-      table = Tabula.make_table(text_elements)
+      if !req.params['use_lines'].nil? and req.params['use_lines'] != 'false'
+        page_dimensions = Tabula::XML.get_page_dimensions(pdf_path, req.params['page'])
+        rulings = Tabula::Rulings::detect_rulings(File.join(pdf_path,
+                                                            "document_2048_#{req.params['page']}.png"),
+                                                  page_dimensions[:width] / 2048.0)
 
-      if req.params['split_multiline_cells'] == 'true'
-        table = Tabula.merge_multiline_cells(table)
+        make_table_options[:horizontal_rulings] = rulings[:horizontal]
+        make_table_options[:vertical_rulings] = rulings[:vertical]
       end
+
+      table = Tabula.make_table(text_elements, make_table_options)
 
       line_texts = table.map { |line|
         line.text_elements.sort_by { |t| t.left }
@@ -133,16 +140,15 @@ Cuba.define do
     end
 
     on "pdf/:file_id/rulings" do |file_id|
-      lines = Tabula::Rulings::detect_rulings(File.join(Dir.pwd, "static/pdfs/#{file_id}/document_2048_#{req.params['page']}.png"),
-                                              req.params['x1'].to_f,
-                                              req.params['y1'].to_f,
-                                              req.params['x2'].to_f,
-                                              req.params['y2'].to_f)
-      # File.open('/tmp/rulings.marshal', 'w') do |f|
-      #   f.write(Marshal.dump(lines))
-      # end
+        lines = Tabula::Rulings::detect_rulings(File.join(Settings::DOCUMENTS_BASEPATH,
+                                                          file_id,
+                                                          "document_2048_#{req.params['page']}.png"),
+                                                req.params['x1'].to_f,
+                                                req.params['y1'].to_f,
+                                                req.params['x2'].to_f,
+                                                req.params['y2'].to_f)
       res['Content-Type'] = 'application/json'
-      res.write lines.to_json
+      res.write res.write((lines[:horizontal] + lines[:vertical]).to_json)
     end
 
     on 'pdf/:file_id/graph' do |file_id|
