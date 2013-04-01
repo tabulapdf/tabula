@@ -216,84 +216,143 @@ module Tabula
 
   end
 
-
-  def Tabula.merge_words(text_elements)
-    current_word_index = i = 0
-    char1 = text_elements[i]
-
-    while i < text_elements.size-1 do
-
-      char2 = text_elements[i+1]
-
-      next if char2.nil? or char1.nil?
-
-      if text_elements[current_word_index].should_merge?(char2)
-        text_elements[current_word_index].merge!(char2)
-        char1 = char2
-        text_elements[i+1] = nil
-      else
-        # is there a space? is this within `CHARACTER_DISTANCE_THRESHOLD` points of previous char?
-        if (char1.text != " ") and (char2.text != " ") and text_elements[current_word_index].should_add_space?(char2)
-          text_elements[current_word_index].text += " "
-        end
-        current_word_index = i+1
-      end
-      i += 1
-    end
-    return text_elements.compact
-
-  end
-
   def Tabula.group_by_columns(text_elements)
-    columns = []
-    text_elements.sort_by(&:left).each do |te|
-      if column = columns.detect { |c| te.horizontally_overlaps?(c) }
-        column << te
-      else
-        columns << Column.new(te.left, te.width, [te])
-      end
-    end
-    columns
+    TableExtractor.new(text_elements).group_by_columns
   end
 
   def Tabula.row_histogram(text_elements)
-    bins = []
-
-    text_elements.each do |te|
-      row = bins.detect { |l| l.vertically_overlaps?(te) }
-      ze = ZoneEntity.new(te.top, te.left, te.width, te.height)
-      if row.nil?
-        bins << ze
-        ze.texts << te.text
-      else
-        row.merge!(ze)
-        row.texts << te.text
-      end
-    end
-    bins
+    TableExtractor.new(text_elements).row_histogram
   end
 
   def Tabula.get_columns(text_elements, merge_words=true)
-    # second approach, inspired in pdf2table first_classifcation
-    text_elements = Tabula.merge_words(text_elements) if merge_words
-
-    Tabula.group_by_columns(text_elements).map do |c|
-      {'left' => c.left, 'right' => c.right, 'width' => c.width}
-    end
+    TableExtractor.new(text_elements).get_columns
   end
 
   def Tabula.get_rows(text_elements, merge_words=true)
-    text_elements = Tabula.merge_words(text_elements) if merge_words
-    hg = Tabula.row_histogram(text_elements)
-    hg.sort_by(&:top).map { |r| {'top' => r.top, 'bottom' => r.bottom, 'text' => r.texts} }
+    TableExtractor.new(text_elements).get_rows
   end
 
-  def Tabula.make_table(text_elements, merge_words=true, split_multiline_cells=false)
-    text_elements = Tabula.merge_words(text_elements)
+  class TableExtractor
+    attr_accessor :text_elements, :options
+
+    DEFAULT_OPTIONS = {
+      :horizontal_rulings => [],
+      :vertical_rulings => [],
+      :merge_words => true,
+      :split_multiline_cells => false
+    }
+
+    def initialize(text_elements, options = {})
+      self.text_elements = text_elements
+      self.options = DEFAULT_OPTIONS.merge(options)
+      merge_words! if self.options[:merge_words]
+    end
+
+    def get_rows
+      hg = self.row_histogram
+      hg.sort_by(&:top).map { |r| {'top' => r.top, 'bottom' => r.bottom, 'text' => r.texts} }
+    end
+
+    def group_by_columns
+      columns = []
+      self.text_elements.sort_by(&:left).each do |te|
+        if column = columns.detect { |c| te.horizontally_overlaps?(c) }
+          column << te
+        else
+          columns << Column.new(te.left, te.width, [te])
+        end
+      end
+      columns
+    end
+
+    def get_columns
+      # second approach, inspired in pdf2table first_classifcation
+      Tabula.group_by_columns(text_elements).map { |c|
+        {'left' => c.left, 'right' => c.right, 'width' => c.width}
+      }
+
+    end
+
+
+    # TODO: rename this method. 'get_line_boundaries'
+    # TODO: unless options[:horizontal_rulings].empty?, use those for calculating boundaries
+    def row_histogram
+      bins = []
+
+      if self.options[:horizontal_rulings].empty? # we don't have rulings
+        self.text_elements.each do |te|
+          row = bins.detect { |l| l.vertically_overlaps?(te) }
+          ze = ZoneEntity.new(te.top, te.left, te.width, te.height)
+          if row.nil?
+            bins << ze
+            ze.texts << te.text
+          else
+            row.merge!(ze)
+            row.texts << te.text
+          end
+        end
+      else # we got horizontal rulings
+
+        self.options[:horizontal_rulings].sort_by!(&:top)
+        1.upto(self.options[:horizontal_rulings].size - 1) do |i|
+          above = self.options[:horizontal_rulings][i - 1]
+          below = self.options[:horizontal_rulings][i]
+
+          # construct zone between a horizontal ruling and the next
+          ze = ZoneEntity.new(above.top,
+                              [above.left, below.left].min,
+                              [above.width, below.width].max,
+                              below.top - above.top)
+
+          # skip areas shorter than some threshold
+          # TODO: this should be the height of the shortest character, or something along those lines
+          next if ze.height < 2
+
+          bins << ze
+        end
+      end
+
+      bins
+    end
+
+
+    private
+
+    def merge_words!
+      current_word_index = i = 0
+      char1 = self.text_elements[i]
+
+      while i < self.text_elements.size-1 do
+
+        char2 = self.text_elements[i+1]
+
+        next if char2.nil? or char1.nil?
+
+        if self.text_elements[current_word_index].should_merge?(char2)
+          self.text_elements[current_word_index].merge!(char2)
+          char1 = char2
+          self.text_elements[i+1] = nil
+        else
+          # is there a space? is this within `CHARACTER_DISTANCE_THRESHOLD` points of previous char?
+          if (char1.text != " ") and (char2.text != " ") and self.text_elements[current_word_index].should_add_space?(char2)
+            self.text_elements[current_word_index].text += " "
+          end
+          current_word_index = i+1
+        end
+        i += 1
+      end
+      return self.text_elements.compact!
+    end
+
+  end
+
+  def Tabula.make_table(text_elements, options={})
+    extractor = TableExtractor.new(text_elements, options)
 
     # group by lines
     lines = []
-    line_boundaries = Tabula.row_histogram(text_elements)
+    line_boundaries = extractor.row_histogram
+
     line_boundaries.each { |lb|
       line = Line.new
       text_elements.find_all { |te|

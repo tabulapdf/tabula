@@ -6,6 +6,7 @@ require 'minitest/autorun'
 
 require_relative '../local_settings'
 require_relative '../lib/tabula'
+require_relative '../lib/detect_rulings'
 require_relative '../lib/parse_xml.rb'
 
 class TestTableAnalyzer < MiniTest::Unit::TestCase
@@ -15,7 +16,7 @@ class TestTableAnalyzer < MiniTest::Unit::TestCase
   end
 
   def teardown
-    FileUtils.remove_entry_secure @tmp_dir
+#    FileUtils.remove_entry_secure @tmp_dir
   end
 
   # HOW TO WRITE A TEST - EXAMPLE
@@ -45,10 +46,19 @@ class TestTableAnalyzer < MiniTest::Unit::TestCase
   end
 
   def test_pharma_spaceless
-    run_jruby_extractor!(File.join(@script_path, 'test_pdfs/ClinicalResearchDisclosureReport2012Q2.pdf'))
+    pdf_path = File.join(@script_path,
+                         'test_pdfs/ClinicalResearchDisclosureReport2012Q2.pdf')
+    run_jruby_extractor!(pdf_path)
 
     text_elements = Tabula::XML.get_text_elements(@tmp_dir, 1, 49.9375, 85, 537.625, 130.6875)
+
+    rulings = detect_rulings(pdf_path, 1)
+    # table = Tabula.make_table(text_elements,
+    #                           :horizontal_rulings => rulings[:horizontal],
+    #                           :vertical_rulings => rulings[:vertical])
+
     table = Tabula.make_table(text_elements)
+
 
     # this file does not get spaces rendered by pdfbox (so XML lacks spaces) but
     # Tabula.make_table should add spaces.
@@ -83,6 +93,26 @@ class TestTableAnalyzer < MiniTest::Unit::TestCase
     jar_path = File.join(@script_path, '..', 'lib/jars')
     jars = File.join(jar_path, 'pdfbox-app-1.8.0.jar')
     system({'CLASSPATH' => jars}, "#{Settings::JRUBY_PATH} --1.9 --server #{jruby_script_path} #{pdf_path} #{@tmp_dir} > /dev/null 2>&1")
-
   end
+
+  def detect_rulings(pdf_path, page)
+    run_mupdfdraw!(pdf_path, @tmp_dir, 2048, page)
+    page_dimensions = Tabula::XML.get_page_dimensions(@tmp_dir, page)
+    Tabula::Rulings::detect_rulings(File.join(@tmp_dir, "document_2048_#{page}.png"), page_dimensions[:width] / 2048.0)
+  end
+
+  def run_mupdfdraw!(file, output_dir, width=560, page=nil)
+    cmd = "#{Settings::MUDRAW_PATH} -w #{width} -o " \
+    + File.join(output_dir, "document_#{width}_%d.png") \
+    + " #{file}"
+
+    cmd += " #{page}" unless page.nil?
+
+    puts cmd
+
+    `#{cmd}`
+  end
+
+
+
 end

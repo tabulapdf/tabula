@@ -26,5 +26,16 @@ module Tabula
                                 tn.text)
       }
     end
+
+    def XML.get_page_dimensions(document_base_path, page)
+      root = parse_document_xml(document_base_path, page).xpath('//page')
+      width, height, rotation = ['width', 'height', 'rotation'].map { |a| root.attr(a).value.to_f }
+      if rotation == 90 || rotation == 270
+        tmp = height
+        height = width
+        width = tmp
+      end
+      { :width => width, :height => height }
+    end
   end
 end
