@@ -19,9 +19,9 @@ var abs = Math.abs,
     round = Math.round;
 
 function div(cssClass) {
-    //optionally takes 
+    //optionally takes a class. 
     var mydiv = $('<div/>');
-    mydiv.addClass("imageareaselect"); 
+    mydiv.addClass("imgareaselect"); 
     if(cssClass){
         mydiv.addClass(cssClass);
     }
@@ -29,17 +29,21 @@ function div(cssClass) {
 }
 
 $.imgAreaSelect = function (img, options) {
-    var
 
+    // variables that happen once
+    var 
         $img = $(img),
 
         imgLoaded,
 
-        $box = div("imageareaselect-box"),
-        $area = div("imageareaselect-area"),
-        $border = div("imageareaselect-border").add(div("imageareaselect-border-1")).add(div("imageareaselect-border-2")).add(div("imageareaselect-border-3")),
-        $outer = div("imageareaselect-outer").add(div("imageareaselect-outer-1")).add(div("imageareaselect-outer-2")).add(div("imageareaselect-outer-3")),
-        $closeBtn = div("imageareaselect-closebtn"),
+
+    //variables that we have once per selection.
+    var
+        $box = div("imgareaselect-box"),
+        $area = div("imgareaselect-area"),
+        $border = div("imgareaselect-border-1").add(div("imgareaselect-border-2")).add(div("imgareaselect-border-3")).add(div("imgareaselect-border-4")),
+        //$outer = div("imgareaselect-outer-1").add(div("imgareaselect-outer-2")).add(div("imgareaselect-outer-3")).add(div("imgareaselect-outer-4")),
+        $closeBtn = div("imgareaselect-closebtn"),
         $handles = $([]),
 
         $areaOpera,
@@ -177,14 +181,14 @@ $.imgAreaSelect = function (img, options) {
             .width(max(w - $border.outerWidth() + $border.innerWidth(), 0))
             .height(max(h - $border.outerHeight() + $border.innerHeight(), 0));
 
-        $($outer[0]).css({ left: left, top: top,
+        /*$($outer[0]).css({ left: left, top: top,
             width: selection.x1, height: imgHeight });
         $($outer[1]).css({ left: left + selection.x1, top: top,
             width: w, height: selection.y1 });
         $($outer[2]).css({ left: left + selection.x2, top: top,
             width: imgWidth - selection.x2, height: imgHeight });
         $($outer[3]).css({ left: left + selection.x1, top: top + selection.y2,
-            width: w, height: imgHeight - selection.y2 });
+            width: w, height: imgHeight - selection.y2 });*/
 
         $closeBtn.css({left: left + selection.x2 + 4, top: top + selection.y1 - 20});
 
@@ -263,7 +267,7 @@ $.imgAreaSelect = function (img, options) {
     function docMouseUp(event) {
         $('body').css('cursor', '');
         if (options.autoHide || selection.width * selection.height == 0)
-            hide($box.add($outer), function () { $(this).hide(); });
+            hide($box /*.add($outer) */, function () { $(this).hide(); });
 
         $(document).unbind('mousemove', selectingMouseMove);
         $box.mousemove(areaMouseMove);
@@ -415,9 +419,9 @@ $.imgAreaSelect = function (img, options) {
 
         resize = '';
 
-        if (!$outer.is(':visible'))
+        /*if (!$outer.is(':visible'))
             $box.add($outer).hide().fadeIn(options.fadeSpeed||0);
-
+        */
         shown = true;
 
         $(document).unbind('mouseup', cancelSelection)
@@ -428,9 +432,12 @@ $.imgAreaSelect = function (img, options) {
     }
 
     function cancelSelection(skipCallbacks) {
+        console.log("cancelSelection");
+
         $(document).unbind('mousemove', startSelection)
             .unbind('mouseup', cancelSelection);
-        hide($box.add($outer));
+        hide($box /*.add($outer)*/);
+        hide($closeBtn);
 
         setSelection(selX(x1), selY(y1), selX(x1), selY(y1));
 
@@ -438,16 +445,20 @@ $.imgAreaSelect = function (img, options) {
             options.onSelectChange(img, getSelection());
             options.onSelectEnd(img, getSelection());
         }
+
     }
 
     function imgMouseDown(event) {
-        if (event.which != 1 || $outer.is(':animated')) return false;
+        console.log("imgMouseDown");
+
+
+        if (event.which != 1 /*|| $outer.is(':animated') */) return false;
 
         adjust();
         startX = x1 = evX(event);
         startY = y1 = evY(event);
 
-        $(document).mousemove(startSelection).mouseup(cancelSelection); //for multi-select, remove mouseup(); a click on the image doesn't erase the previous selection.
+        $(document).mousemove(startSelection) //.mouseup(cancelSelection); //for multi-select, remove mouseup(); a click on the image doesn't erase the previous selection.
 
         return false;
     }
@@ -471,13 +482,13 @@ $.imgAreaSelect = function (img, options) {
             onSelectEnd: function () {}
         }, options));
 
-        $box.add($outer).css({ visibility: '' });
+        $box/*.add($outer)*/.css({ visibility: '' });
 
         if (options.show) {
             shown = true;
             adjust();
             update();
-            $box.add($outer).hide().fadeIn(options.fadeSpeed||0);
+            $box/*.add($outer)*/.hide().fadeIn(options.fadeSpeed||0);
         }
 
         setTimeout(function () { options.onInit(img, getSelection()); }, 0);
@@ -551,7 +562,7 @@ $.imgAreaSelect = function (img, options) {
 
     function setOptions(newOptions) {
         if (newOptions.parent)
-            ($parent = $(newOptions.parent)).append($box.add($outer));
+            ($parent = $(newOptions.parent)).append($box/*.add($outer)*/);
 
         $.extend(options, newOptions);
 
@@ -596,17 +607,17 @@ $.imgAreaSelect = function (img, options) {
             options.keys = $.extend({ shift: 1, ctrl: 'resize' },
                 newOptions.keys);
 
-        $outer.addClass(options.classPrefix + '-outer');
+        //$outer.addClass(options.classPrefix + '-outer');
         $area.addClass(options.classPrefix + '-selection');
         for (i = 0; i++ < 4;)
             $($border[i-1]).addClass(options.classPrefix + '-border' + i);
 
-        styleOptions($area, { selectionColor: 'background-color',
-            selectionOpacity: 'opacity' });
+        /*styleOptions($area, { selectionColor: 'background-color',
+            selectionOpacity: 'opacity' }); */ //removed to shade the inner area.
         styleOptions($border, { borderOpacity: 'opacity',
             borderWidth: 'border-width' });
-        styleOptions($outer, { outerColor: 'background-color',
-            outerOpacity: 'opacity' });
+        //styleOptions($outer, { outerColor: 'background-color',
+        //    outerOpacity: 'opacity' });
         if (o = options.borderColor1)
             $($border[0]).css({ borderStyle: 'solid', borderColor: o });
         if (o = options.borderColor2)
@@ -619,23 +630,23 @@ $.imgAreaSelect = function (img, options) {
         $box.append($area.add($border).add($areaOpera).add($handles));
 
         if ($.browser.msie) {
-            if (o = ($outer.css('filter')||'').match(/opacity=(\d+)/))
-                $outer.css('opacity', o[1]/100);
+            //if (o = ($outer.css('filter')||'').match(/opacity=(\d+)/))
+             //   $outer.css('opacity', o[1]/100);
             if (o = ($border.css('filter')||'').match(/opacity=(\d+)/))
                 $border.css('opacity', o[1]/100);
         }
 
         if (newOptions.hide)
-            hide($box.add($outer));
+            hide($box /*.add($outer)*/);
         else if (newOptions.show && imgLoaded) {
             shown = true;
-            $box.add($outer).fadeIn(options.fadeSpeed||0);
+            $box/*.add($outer)*/.fadeIn(options.fadeSpeed||0);
             doUpdate();
         }
 
         aspectRatio = (d = (options.aspectRatio || '').split(/:/))[0] / d[1];
         
-        $img.add($outer).unbind('mousedown', imgMouseDown);
+        $img/*.add($outer)*/.unbind('mousedown', imgMouseDown);
 
         if (options.disable || options.enable === false) {
             $box.unbind('mousemove', areaMouseMove).unbind('mousedown', areaMouseDown);
@@ -650,7 +661,7 @@ $.imgAreaSelect = function (img, options) {
             }
 
             if (!options.persistent)
-                $img.add($outer).mousedown(imgMouseDown);
+                $img/*.add($outer)*/.mousedown(imgMouseDown);
         }
 
         options.enable = options.disable = undefined;
@@ -658,7 +669,7 @@ $.imgAreaSelect = function (img, options) {
 
     this.remove = function () {
         setOptions({ disable: true });
-        $box.add($outer).remove();
+        $box/*.add($outer)*/.remove();
     };
 
     this.getOptions = function () { return options; };
@@ -696,7 +707,7 @@ $.imgAreaSelect = function (img, options) {
         $areaOpera = div().css({ width: '100%', height: '100%',
             position: 'absolute', zIndex: zIndex + 2 || 2 });
 
-    $box.add($outer).css({ visibility: 'hidden', position: position,
+    $box/*.add($outer)*/.css({ visibility: 'hidden', position: position,
         /*overflow: 'hidden',*/ zIndex: zIndex || '0' });
     $box.css({ zIndex: zIndex + 2 || 2 });
     $closeBtn.css("z-index", zIndex + 3 || 3);
