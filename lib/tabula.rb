@@ -371,11 +371,12 @@ module Tabula
 
       lines << line if line.text_elements.size > 0
     }
+
     lines.sort_by!(&:top)
 
     columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.compact.uniq)
 
-    # insert empty cells if needed
+    # # insert empty cells if needed
     lines.each_with_index { |l, line_index|
       next if l.text_elements.nil?
       l.text_elements.compact! # TODO WHY do I have to do this?

@@ -65,23 +65,17 @@ module Tabula
       return { :horizontal => horiz, :vertical => vert }
     end
 
-    def Rulings.detect_rulings(image_filename,
-                               crop_x1=0, crop_y1=0, crop_x2=0, crop_y2=0)
+    def Rulings.detect_rulings(image_filename, scale_factor=1)
 
       image = OpenCV::IplImage.load(image_filename,
                                     OpenCV::CV_LOAD_IMAGE_ANYCOLOR | OpenCV::CV_LOAD_IMAGE_ANYDEPTH)
 
-      # unless crop_x1 == 0 && crop_y1 == 0 && crop_x2 == 0 && crop_y2 == 0
-      #   image.set_roi(OpenCV::CvRect.new(crop_x1, crop_y1,
-      #                                    (crop_x2 - crop_x1).abs,
-      #                                    (crop_y2 - crop_y1).abs))
-      # end
 
       mat = image.to_CvMat
 
       mat = mat.BGR2GRAY if mat.channel == 3
 
-      mat_canny = mat.canny(50, 200, 3)
+      mat_canny = mat.canny(1, 50, 3)
 
       lines = mat_canny.hough_lines(:probabilistic,
                                     1,
@@ -92,32 +86,13 @@ module Tabula
 
       lines = lines.to_a
 
-      # filter out non vertical and non horizontal rulings
-      # TODO check if necessary. would hough even detect diagonal lines with
-      # the provided arguments, anyway?
-      lines.reject! { |line|
-        line.point1.x != line.point2.x and
-        line.point1.y != line.point2.y
-      }
-
       # rulings are returned relative to the image before cropping
       clean_rulings(lines.map { |line|
-                      Ruling.new(line.point1.y,
-                                 line.point1.x,
-                                 line.point2.x - line.point1.x,
-                                 line.point2.y - line.point1.y)
-                    }.sort_by(&:top))
-
-
-      # Hough non-probabilistic
-      # wh = mat.size.width + mat.size.height
-      # lines = mat_canny.hough_lines(:multi_scale, 1, Math::PI / 180, 100, 0, 0)
-      # lines.map do |line|
-      #   rho = line[0]; theta = line[1]
-      #   a = Math.cos(theta); b = Math.sin(theta)
-      #   x0 = a * rho; y0 = b * rho;
-      #   [x0 + wh * (-b), y0 + wh*(a), x0 - wh*(-b), y0 - wh*(a)]
-      # end
+                      Ruling.new(line.point1.y * scale_factor,
+                                 line.point1.x * scale_factor,
+                                 (line.point2.x - line.point1.x) * scale_factor,
+                                 (line.point2.y - line.point1.y) * scale_factor)
+                    })
     end
   end
 end
