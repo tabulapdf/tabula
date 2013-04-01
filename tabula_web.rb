@@ -107,14 +107,27 @@ Cuba.define do
     end
 
     on "pdf/:file_id/rows" do |file_id|
-      text_elements = Tabula::XML.get_text_elements(File.join(Settings::DOCUMENTS_BASEPATH, file_id),
+      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
+      text_elements = Tabula::XML.get_text_elements(pdf_path,
                                                     req.params['page'],
                                                     req.params['x1'],
                                                     req.params['y1'],
                                                     req.params['x2'],
                                                     req.params['y2'])
 
-      rows = Tabula.get_rows(text_elements, true)
+      page_dimensions = Tabula::XML.get_page_dimensions(pdf_path, req.params['page'])
+
+      rulings = Tabula::Rulings::detect_rulings(File.join(Settings::DOCUMENTS_BASEPATH,
+                                                          file_id,
+                                                          "document_2048_#{req.params['page']}.png"),
+                                                page_dimensions[:width] / 2048.0)
+
+
+
+      rows = Tabula::TableExtractor.new(text_elements,
+                                        :horizontal_rulings => rulings[:horizontal],
+                                        :vertical_rulings => rulings[:vertical]).get_rows
+
       res['Content-Type'] = 'application/json'
       res.write rows.to_json
 
@@ -140,15 +153,14 @@ Cuba.define do
     end
 
     on "pdf/:file_id/rulings" do |file_id|
-        lines = Tabula::Rulings::detect_rulings(File.join(Settings::DOCUMENTS_BASEPATH,
-                                                          file_id,
+      page_dimensions = Tabula::XML.get_page_dimensions(pdf_path, req.params['page'])
+      rulings = Tabula::Rulings::detect_rulings(File.join(pdf_path,
                                                           "document_2048_#{req.params['page']}.png"),
-                                                req.params['x1'].to_f,
-                                                req.params['y1'].to_f,
-                                                req.params['x2'].to_f,
-                                                req.params['y2'].to_f)
+                                                page_dimensions[:width] / 2048.0)
+
       res['Content-Type'] = 'application/json'
-      res.write res.write((lines[:horizontal] + lines[:vertical]).to_json)
+      res.write((rulings[:horizontal] + rulings[:vertical]).to_json)
+
     end
 
     on 'pdf/:file_id/graph' do |file_id|

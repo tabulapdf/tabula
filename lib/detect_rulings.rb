@@ -1,3 +1,5 @@
+require 'set'
+
 require 'opencv'
 
 require_relative './tabula.rb'
@@ -27,15 +29,6 @@ module Tabula
         top == bottom
       end
 
-      # def merge!(other)
-      #   if self.horizontal?
-      #     self.width = [self.width, other.width].max
-      #     self.left = [self.left, other.left].min
-      #   else
-
-      #   end
-      # end
-
       def to_json(arg)
         [left, top, right, bottom].to_json
       end
@@ -49,6 +42,7 @@ module Tabula
     def Rulings.clean_rulings(rulings, max_distance=4)
       horiz = rulings.select(&:horizontal?)
       vert = rulings.select(&:vertical?)
+
       # delete lines shorter than the mean
       # note: this acts as a signal-noise filter for the hough transform
       # noise lines are *much* shorter than actual rulings, so this works.
@@ -59,6 +53,7 @@ module Tabula
       # - only keep horizontal rulings that intersect with at least one vertical ruling
       # - only keep vertical rulings that intersect with at least one horizontal ruling
       # yeah, it's a naive heuristic. but hey, it works.
+
       vert.delete_if  { |v| !horiz.any? { |h| h.intersects?(v) } } unless horiz.empty?
       horiz.delete_if { |h| !vert.any?  { |v| v.intersects?(h) } } unless vert.empty?
 
@@ -69,7 +64,6 @@ module Tabula
 
       image = OpenCV::IplImage.load(image_filename,
                                     OpenCV::CV_LOAD_IMAGE_ANYCOLOR | OpenCV::CV_LOAD_IMAGE_ANYDEPTH)
-
 
       mat = image.to_CvMat
 
@@ -86,7 +80,6 @@ module Tabula
 
       lines = lines.to_a
 
-      # rulings are returned relative to the image before cropping
       clean_rulings(lines.map { |line|
                       Ruling.new(line.point1.y * scale_factor,
                                  line.point1.x * scale_factor,
