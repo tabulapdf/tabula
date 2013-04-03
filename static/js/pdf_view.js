@@ -22,25 +22,6 @@ var lastSelection;
 
 var COLORS = ['#f00', '#0f0', '#00f', '#ffff00', '#FF00FF'];
 
-var rotatePoint = function(point, rot_deg) {
-    //  x' = x cos f - y sin f
-    //  y' = y cos f + x sin f
-    var rot_rad = rot_deg * (Math.PI / 180.0);
-    var rv = [ point[0] * Math.cos(rot_rad) - point[1] * Math.sin(rot_rad),
-               point[1] * Math.cos(rot_rad) + point[0] * Math.sin(rot_rad)];
-    return rv;
-
-};
-
-var rotatePath = function(path, rot_deg) {
-    var rot_p1 = rotatePoint([path.left, path.top], rot_deg);
-    var rot_p2 = rotatePoint([path.left + path.width, path.top + path.height], rot_deg);
-    return {
-        top: rot_p1[1], left: rot_p1[0],
-        width: rot_p2[0] - rot_p1[0], height: rot_p2[1] - rot_p1[1]
-    };
-};
-
 $(function () {
 
     $('button.close#directions').click(function(){
@@ -75,7 +56,7 @@ $(function () {
 
         var scale = (thumb_width / pdf_width);
 
-        $.get('/pdf/' + PDF_ID + '/whitespace',
+        $.get('/debug/' + PDF_ID + '/whitespace',
               lastQuery,
               function(data) {
                   // whitespace
@@ -117,7 +98,7 @@ $(function () {
 
         var scale = (thumb_width / pdf_width);
 
-        $.get('/pdf/' + PDF_ID + '/graph',
+        $.get('/debug/' + PDF_ID + '/graph',
               lastQuery,
               function(data) {
                   // draw rectangles enclosing each cluster
@@ -163,7 +144,7 @@ $(function () {
                               pdf_page_width: $('img#page-' + lastQuery.page).data('original-width')
                           });
 
-        $.get('/pdf/' + PDF_ID + '/rulings',
+        $.get('/debug/' + PDF_ID + '/rulings',
               lq,
               function(data) {
                   $.each(data, function(i, ruling) {
@@ -179,7 +160,7 @@ $(function () {
     };
 
 
-    debugRows = function(image) {
+    debugRows = function(image, use_rulings) {
         image = $(image);
         var imagePos = image.offset();
         var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
@@ -202,25 +183,18 @@ $(function () {
             pdf_width = tmp;
         }
 
-        var scale_x = (thumb_width / pdf_width);
-        var scale_y = (thumb_height / pdf_height);
+        var scale = (thumb_width / pdf_width);
 
-        $.get('/pdf/' + PDF_ID + '/rows',
+        if (use_rulings !== undefined)
+            $.extend(lastQuery, { use_lines: true});
+
+        $.get('/debug/' + PDF_ID + '/rows',
               lastQuery,
               function(data) {
-                  // $("canvas").drawRect({
-                  //     strokeStyle: COLORS[i % COLORS.length],
-                  //     strokeWidth: 1,
-                  //     x: row.left * scale_x, y: row.top * scale_y,
-                  //     width: row.width * scale_x,
-                  //     height: row.height * scale_y,
-                  //     fromCenter: false
-                  // });
-
                   $.each(data, function(i, row) {
                       $(newCanvas).drawRect({
                           x: lastSelection.x1,
-                          y: row.top * scale_y,
+                          y: row.top * scale,
                           width: lastSelection.x2 - lastSelection.x1,
                           height: row.bottom - row.top,
                           strokeStyle: COLORS[i % COLORS.length],
@@ -257,7 +231,7 @@ $(function () {
         var scale_x = (thumb_width / pdf_width);
         var scale_y = (thumb_height / pdf_height);
 
-        $.get('/pdf/' + PDF_ID + '/columns',
+        $.get('/debug/' + PDF_ID + '/columns',
               lastQuery,
               function(data) {
                   $.each(data, function(i, column) {
@@ -299,7 +273,7 @@ $(function () {
         var scale_x = (thumb_width / pdf_width);
         var scale_y = (thumb_height / pdf_height);
 
-        $.get('/pdf/' + PDF_ID + '/characters',
+        $.get('/debug/' + PDF_ID + '/characters',
               lastQuery,
               function(data) {
                   $.each(data, function(i, row) {

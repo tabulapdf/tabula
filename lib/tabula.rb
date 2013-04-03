@@ -260,7 +260,6 @@ module Tabula
     # TODO finish writing this method
     def group_by_columns
       columns = []
-      vr = self.options[:vertical_rulings]
       tes = self.text_elements.sort_by(&:left)
 
       # we don't have vertical rulings
@@ -344,7 +343,8 @@ module Tabula
         end
         i += 1
       end
-      return self.text_elements.compact!
+      self.text_elements.compact!
+      self.text_elements
     end
   end
 
