@@ -1,21 +1,46 @@
 # Tabula
 
-## Quick & Dirty Setup Instructions
+Tabula helps you liberate data tables trapped inside evil PDFs.
 
-TODO: extremely incomplete and possibly incorrect
+A demo is available at: http://tabula.nerdpower.org/
 
-### Install / setup
+© 2012-2013 Manuel Aristarán. Available under MIT License. See `AUTHORS.md`
+and `LICENSE.md`.
 
-Requires jruby installed (to interface with the PDF parser), but the
-rest of the app requires the normal C-based ruby (so that opencv can
-be compiled in). Has been tested with Ruby 1.9.3 and JRuby 1.7.3.
+## Why Tabula?
 
-Check out the repo, blah blah.
+If you’ve ever tried to do anything with data provided to you in PDFs, you
+know how painful this is — you can’t easily copy-and-paste rows of data out 
+of PDF files. Tabula allows you to extract that data in CSV format, through
+a simple web interface:
 
-Install some dependencies:
+{TODO: screenshot / screencast here}
 
-    # Handle installing Python and pip.  You can skip this
-    # if you already have it.
+**Caveat**: Tabula only works on text-based PDFs, not scanned documents.
+
+
+## Installation
+
+1. Install Ruby and JRuby. Tabula been tested with Ruby 1.9.3 and JRuby 1.7.3.
+   We recommend using [rbenv](https://github.com/sstephenson/rbenv/) to manage
+   you Ruby versions. (JRuby is required to interface with `pdfbox`, but
+   native Ruby must also be used since `ruby-opencv` is a natively compiled
+   extension.)
+
+   If using rbenv:
+
+   ~~~
+   rbenv install 1.9.3-p392
+   rbenv install jruby-1.7.3
+   ~~~
+
+2. (Mac OS X only) Download and install XQuartz: https://xquartz.macosforge.org/landing/
+
+3. Install the rest of the dependencies: (TODO: instructions for non-OSX platforms.)
+
+    ~~~
+    # Install Python, setuptools, and pip.  You can skip this
+    # if you already have them.
     brew install python
     curl http://python-distribute.org/distribute_setup.py | python
     curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | python
@@ -23,44 +48,45 @@ Install some dependencies:
     # Install numpy (feel free to put it in a virtualenv); opencv dependency
     pip install numpy
 
-    # ...Install XQuartz since brew won't do it for you...
-    #      -> https://xquartz.macosforge.org/landing/
-
-    brew install mupdf
     brew install opencv --with-tbb --with-opencl --with-qt
+    brew install mupdf redis
+    ~~~
 
-    # redis; resque dependency
-    brew install redis
+4. Download Tabula and install the Ruby dependencies. (Note: ensure that
+   `rbenv` is configured for the standard Ruby interpreter, not JRuby)
 
-    # Make sure bundler is installed (skip if you have it)
+    ~~~
+    git clone git://github.com/jazzido/tabula.git
+    cd tabula
+
     gem install bundler
     bundle install
+    ~~~
 
-Install jruby and get the full path to the jruby executable.
-Instructions for rbenv:
+5. Configure Tabula: Copy `local_settings-example.rb`  to `local_settings.rb`.
+   Edit `local_settings.rb` and set `JRUBY_PATH` to the path to the `jruby`
+   executable.
 
-    rbenv install jruby-1.7.3
-    RBENV_VERSION='jruby-1.7.3' rbenv which jruby
+   If you are using rbenv, you can find the path to `jruby` by doing:
 
-Now copy `local_settings-example.rb`  to `local_settings.rb` in your
-repo root and set `JRUBY_PATH` to the path you got in the previous
-step.
+   ~~~
+   RBENV_VERSION='jruby-1.7.3' rbenv which jruby
+   ~~~
 
-Note: You shouldn't use jRuby to run or install the various gems.  Tabula just
-uses it in a few areas where Java libraries are better.
-
-### Dev Usage
+## Starting the Server (Dev)
 
 Start `redis-server` in a separate terminal tab
 
     redis-server /usr/local/etc/redis.conf
 
-Start `resque` in a separate terminal tab (there may be no output)
+Next, you need to start `resque` and the actual web server.  You can run both
+of those using [Foreman](http://ddollar.github.com/foreman/) by running the
+following:
 
-    COUNT=3 TERM_CHILD=1 QUEUE=* bundle exec rake resque:workers
-
-Run your server
-
-    bundle exec rackup
+    bundle exec foreman start
 
 The site instance should now be viewable at http://127.0.0.1:9292/
+
+## Contributing
+
+Interested in helping out? See [`TODO.md`](TODO.md) for ideas.

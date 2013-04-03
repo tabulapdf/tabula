@@ -124,8 +124,15 @@ module Tabula
 
     def merge!(other)
       raise TypeError, "argument is not a TextElement" unless other.instance_of?(TextElement)
+      # unless self.horizontally_overlaps?(other) or self.vertically_overlaps?(other)
+      #   raise ArgumentError, "won't merge TextElements that don't overlap"
+      # end
+      if self.horizontally_overlaps?(other) and other.top < self.top
+        self.text = other.text + self.text
+      else
+        self.text << other.text
+      end
       super(other)
-      self.text << other.text
     end
 
     def to_h
@@ -139,24 +146,29 @@ module Tabula
 
 
   class Line < ZoneEntity
-    # TODO clean this up
-    attr_accessor :text_elements
+     attr_accessor :text_elements
 
     def initialize
       self.text_elements = []
     end
 
     def <<(t)
-      self.text_elements << t
-      if self.text_elements.size == 1
+      if self.text_elements.size == 0
+        self.text_elements << t
         self.top = t.top
         self.left = t.left
         self.width = t.width
         self.height = t.height
       else
-        self.merge!(t)
+        if in_same_column = self.text_elements.find { |te| te.horizontally_overlaps?(t) }
+          in_same_column.merge!(t)
+        else
+          self.text_elements << t
+          self.merge!(t)
+        end
       end
     end
+
 
   end
 
@@ -216,108 +228,185 @@ module Tabula
 
   end
 
-
-  def Tabula.merge_words(text_elements)
-    current_word_index = i = 0
-    char1 = text_elements[i]
-
-    while i < text_elements.size-1 do
-
-      char2 = text_elements[i+1]
-
-      next if char2.nil? or char1.nil?
-
-      if text_elements[current_word_index].should_merge?(char2)
-        text_elements[current_word_index].merge!(char2)
-        char1 = char2
-        text_elements[i+1] = nil
-      else
-        # is there a space? is this within `CHARACTER_DISTANCE_THRESHOLD` points of previous char?
-        if (char1.text != " ") and (char2.text != " ") and text_elements[current_word_index].should_add_space?(char2)
-          text_elements[current_word_index].text += " "
-        end
-        current_word_index = i+1
-      end
-      i += 1
-    end
-    return text_elements.compact
-
+  # TODO next four module methods are deprecated
+  def Tabula.group_by_columns(text_elements, merge_words=false)
+    TableExtractor.new(text_elements, :merge_words => merge_words).group_by_columns
   end
 
-  def Tabula.group_by_columns(text_elements)
-    columns = []
-    text_elements.sort_by(&:left).each do |te|
-      if column = columns.detect { |c| te.horizontally_overlaps?(c) }
-        column << te
-      else
-        columns << Column.new(te.left, te.width, [te])
-      end
-    end
-    columns
-  end
-
-  def Tabula.row_histogram(text_elements)
-    bins = []
-
-    text_elements.each do |te|
-      row = bins.detect { |l| l.vertically_overlaps?(te) }
-      ze = ZoneEntity.new(te.top, te.left, te.width, te.height)
-      if row.nil?
-        bins << ze
-        ze.texts << te.text
-      else
-        row.merge!(ze)
-        row.texts << te.text
-      end
-    end
-    bins
+  def Tabula.get_line_boundaries(text_elements)
+    TableExtractor.new(text_elements).get_line_boundaries
   end
 
   def Tabula.get_columns(text_elements, merge_words=true)
-    # second approach, inspired in pdf2table first_classifcation
-    text_elements = Tabula.merge_words(text_elements) if merge_words
-
-    Tabula.group_by_columns(text_elements).map do |c|
-      {'left' => c.left, 'right' => c.right, 'width' => c.width}
-    end
+    TableExtractor.new(text_elements, :merge_words => merge_words).get_columns
   end
 
   def Tabula.get_rows(text_elements, merge_words=true)
-    text_elements = Tabula.merge_words(text_elements) if merge_words
-    hg = Tabula.row_histogram(text_elements)
-    hg.sort_by(&:top).map { |r| {'top' => r.top, 'bottom' => r.bottom, 'text' => r.texts} }
+    TableExtractor.new(text_elements, :merge_words => merge_words).get_rows
   end
 
-  def Tabula.make_table(text_elements, merge_words=true, split_multiline_cells=false)
-    text_elements = Tabula.merge_words(text_elements)
+  class TableExtractor
+    attr_accessor :text_elements, :options
+
+    DEFAULT_OPTIONS = {
+      :horizontal_rulings => [],
+      :vertical_rulings => [],
+      :merge_words => true,
+      :split_multiline_cells => false
+    }
+
+
+    def initialize(text_elements, options = {})
+      self.text_elements = text_elements
+      self.options = DEFAULT_OPTIONS.merge(options)
+      merge_words! if self.options[:merge_words]
+    end
+
+
+    def get_rows
+      hg = self.get_line_boundaries
+      hg.sort_by(&:top).map { |r| {'top' => r.top, 'bottom' => r.bottom, 'text' => r.texts} }
+    end
+
+
+    # TODO finish writing this method
+    # it should be analogous to get_line_boundaries
+    # (ie, take into account vertical ruling lines if available)
+    def group_by_columns
+      columns = []
+      tes = self.text_elements.sort_by(&:left)
+
+      # we don't have vertical rulings
+      tes.each do |te|
+        if column = columns.detect { |c| te.horizontally_overlaps?(c) }
+          column << te
+        else
+          columns << Column.new(te.left, te.width, [te])
+        end
+      end
+      columns
+    end
+
+    def get_columns
+      Tabula.group_by_columns(text_elements).map { |c|
+        {'left' => c.left, 'right' => c.right, 'width' => c.width}
+      }
+    end
+
+    def get_line_boundaries
+      boundaries = []
+
+      if self.options[:horizontal_rulings].empty?
+        # we don't have rulings
+        # iteratively grow boundaries to construct lines
+        self.text_elements.each do |te|
+          row = boundaries.detect { |l| l.vertically_overlaps?(te) }
+          ze = ZoneEntity.new(te.top, te.left, te.width, te.height)
+          if row.nil?
+            boundaries << ze
+            ze.texts << te.text
+          else
+            row.merge!(ze)
+            row.texts << te.text
+          end
+        end
+      else
+        self.options[:horizontal_rulings].sort_by!(&:top)
+        1.upto(self.options[:horizontal_rulings].size - 1) do |i|
+          above = self.options[:horizontal_rulings][i - 1]
+          below = self.options[:horizontal_rulings][i]
+
+          # construct zone between a horizontal ruling and the next
+          ze = ZoneEntity.new(above.top,
+                              [above.left, below.left].min,
+                              [above.width, below.width].max,
+                              below.top - above.top)
+
+          # skip areas shorter than some threshold
+          # TODO: this should be the height of the shortest character, or something like that
+          next if ze.height < 2
+
+          boundaries << ze
+        end
+      end
+      boundaries
+    end
+
+    private
+
+    def merge_words!
+      return self.text_elements if @merged # only merge once. awful hack.
+      @merged = true
+      current_word_index = i = 0
+      char1 = self.text_elements[i]
+
+      while i < self.text_elements.size-1 do
+
+        char2 = self.text_elements[i+1]
+
+        next if char2.nil? or char1.nil?
+
+        if self.text_elements[current_word_index].should_merge?(char2)
+          self.text_elements[current_word_index].merge!(char2)
+          char1 = char2
+          self.text_elements[i+1] = nil
+        else
+          # is there a space? is this within `CHARACTER_DISTANCE_THRESHOLD` points of previous char?
+          if (char1.text != " ") and (char2.text != " ") and self.text_elements[current_word_index].should_add_space?(char2)
+            self.text_elements[current_word_index].text += " "
+          end
+          current_word_index = i+1
+        end
+        i += 1
+      end
+      return self.text_elements.compact!
+    end
+  end
+
+  ONLY_SPACES_RE = Regexp.new('^\s+$')
+  def Tabula.make_table(text_elements, options={})
+    extractor = TableExtractor.new(text_elements, options)
 
     # group by lines
     lines = []
-    line_boundaries = Tabula.row_histogram(text_elements)
+    line_boundaries = extractor.get_line_boundaries
+
+    # find all the text elements
+    # contained within each detected line (table row) boundary
     line_boundaries.each { |lb|
       line = Line.new
-      text_elements.find_all { |te|
-        te.vertically_overlaps?(lb) } \
-        .sort_by(&:left).each { |te| line << te }
+
+      line_members = text_elements.find_all { |te|
+        te.vertically_overlaps?(lb)
+      }
+
+      text_elements -= line_members
+
+      line_members.sort_by(&:left).each { |te|
+        # skip text_elements that only contain spaces
+        next if te.text =~ ONLY_SPACES_RE
+        line << te
+      }
+
       lines << line if line.text_elements.size > 0
     }
+
     lines.sort_by!(&:top)
 
-    columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.compact.uniq)
+    columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.compact.uniq).sort_by(&:left)
 
-    # insert empty cells if needed
+    # # insert empty cells if needed
     lines.each_with_index { |l, line_index|
       next if l.text_elements.nil?
       l.text_elements.compact! # TODO WHY do I have to do this?
       l.text_elements.uniq!  # TODO WHY do I have to do this?
-
-      l.text_elements = l.text_elements.sort_by(&:left)
+      l.text_elements.sort_by!(&:left)
 
       # l.text_elements = Tabula.merge_words(l.text_elements)
 
       next unless l.text_elements.size < columns.size
 
-      columns.sort_by(&:left).each_with_index do |c, i|
+      columns.each_with_index do |c, i|
         if (i > l.text_elements.size - 1) or !l.text_elements(&:left)[i].nil? and !c.text_elements.include?(l.text_elements[i])
           l.text_elements.insert(i, TextElement.new(l.top, c.left, c.width, l.height, nil, 0, ''))
         end
@@ -335,7 +424,7 @@ module Tabula
 
         # if same column...
         if columns.detect { |c| c.text_elements.include? l.text_elements[t1] } \
-           == columns.detect { |c| c.text_elements.include? l.text_elements[t2] }
+          == columns.detect { |c| c.text_elements.include? l.text_elements[t2] }
           if l.text_elements[t1].bottom <= l.text_elements[t2].bottom
             l.text_elements[t1].merge!(l.text_elements[t2])
             l.text_elements[t2] = nil
@@ -440,6 +529,8 @@ module Tabula
     #puts;     puts;     puts;     puts;     puts;
     lines.compact
   end
+
+
 
 
 end
