@@ -10,9 +10,9 @@ and `LICENSE.md`.
 ## Why Tabula?
 
 If you’ve ever tried to do anything with data provided to you in PDFs, you
-know painful this is — you can’t easily copy-and-paste rows of data out of
-PDF files. Tabula allows you to extract that data in CSV format, through a
-simple web interface:
+know how painful this is — you can’t easily copy-and-paste rows of data out 
+of PDF files. Tabula allows you to extract that data in CSV format, through
+a simple web interface:
 
 {TODO: screenshot / screencast here}
 
