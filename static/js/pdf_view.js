@@ -25,7 +25,7 @@ var COLORS = ['#f00', '#0f0', '#00f', '#ffff00', '#FF00FF'];
 $(function () {
 
     $('button.close#directions').click(function(){
-      $('div.ias').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
+      $('div.imgareaselect').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
     })
 
     var PDF_ID = window.location.pathname.split('/')[2];
