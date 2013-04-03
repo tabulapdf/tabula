@@ -48,6 +48,9 @@ a simple web interface:
     # Install numpy (feel free to put it in a virtualenv); opencv dependency
     pip install numpy
 
+    # Add the "science" tap to Homebrew so it can find OpenCV (if you haven't already)
+    brew tap homebrew/science
+
     brew install opencv --with-tbb --with-opencl --with-qt
     brew install mupdf redis
     ~~~
