@@ -26,8 +26,10 @@ Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/pdfs", "/s
 
 Cuba.define do
 
-  on 'debug' do
-    run TabulaDebug
+  if Settings::ENABLE_DEBUG_METHODS
+    on 'debug' do
+      run TabulaDebug
+    end
   end
 
   on get do
