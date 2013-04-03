@@ -16,7 +16,7 @@ class TestTableAnalyzer < MiniTest::Unit::TestCase
   end
 
   def teardown
-#    FileUtils.remove_entry_secure @tmp_dir
+    FileUtils.remove_entry_secure @tmp_dir
   end
 
   # HOW TO WRITE A TEST - EXAMPLE
@@ -31,6 +31,24 @@ class TestTableAnalyzer < MiniTest::Unit::TestCase
   #
   #    assert_equal lines_to_array(table), expected # assert the equality
   #  end
+
+  def test_tabla_subsidios
+    pdf_path = File.join(@script_path,
+                         'test_pdfs/tabla_subsidios.pdf')
+    run_jruby_extractor!(pdf_path)
+
+    rulings = detect_rulings(pdf_path, 1)
+
+    text_elements = Tabula::XML.get_text_elements(@tmp_dir, 1, 26.87, 200.82, 715.62, 250.32)
+    table = Tabula.make_table(text_elements,
+                              :horizontal_rulings => rulings[:horizontal],
+                              :vertical_rulings => rulings[:vertical])
+
+    expected = [["BA 014/12", "", "BA", "DOMINGO GONZALEZ Y CIA SA", "MT", "PyME", "1.573.476,50", "1.573.476,50", "50,00%", "786.738,25"], ["BA 015/12", "", "BA", "LABORATORIO WEIZUR ARGENTINA SA", "MT", "PyME", "700.163,00", "700.163,00", "50,00%", "350.081,50"], ["BA 017/12", "NA 022/12", "BA", "RIZOBACTER ARGENTINA S.A.", "I+D", "GRANDE", "3.000.000,00", "             2.927.040,00 ", "50,00%", "969.218,54"]]
+
+    assert_equal lines_to_array(table), expected
+
+  end
 
 
   def test_argentina_diputados_voting_record
@@ -52,13 +70,7 @@ class TestTableAnalyzer < MiniTest::Unit::TestCase
 
     text_elements = Tabula::XML.get_text_elements(@tmp_dir, 1, 49.9375, 85, 537.625, 130.6875)
 
-    rulings = detect_rulings(pdf_path, 1)
-    # table = Tabula.make_table(text_elements,
-    #                           :horizontal_rulings => rulings[:horizontal],
-    #                           :vertical_rulings => rulings[:vertical])
-
     table = Tabula.make_table(text_elements)
-
 
     # this file does not get spaces rendered by pdfbox (so XML lacks spaces) but
     # Tabula.make_table should add spaces.
@@ -68,7 +80,6 @@ class TestTableAnalyzer < MiniTest::Unit::TestCase
   end
 
   def test_bo_page24
-    skip("FAILING - CHARACTERS APPEAR OUT OF ORDER")
     run_jruby_extractor!(File.join(@script_path,'test_pdfs/bo_page24.pdf'))
     # Request URL:http://localhost:9393/pdf/d1bfae1be8d6b099c1b7bb7b401ca97310e61063/data?x1=50.089285714285715&x2=809.0178571428571&y1=432.5892857142857&y2=490.2678571428571&page=1
 
@@ -107,8 +118,6 @@ class TestTableAnalyzer < MiniTest::Unit::TestCase
     + " #{file}"
 
     cmd += " #{page}" unless page.nil?
-
-    puts cmd
 
     `#{cmd}`
   end

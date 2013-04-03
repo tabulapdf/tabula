@@ -124,8 +124,15 @@ module Tabula
 
     def merge!(other)
       raise TypeError, "argument is not a TextElement" unless other.instance_of?(TextElement)
+      # unless self.horizontally_overlaps?(other) or self.vertically_overlaps?(other)
+      #   raise ArgumentError, "won't merge TextElements that don't overlap"
+      # end
+      if self.horizontally_overlaps?(other) and other.top < self.top
+        self.text = other.text + self.text
+      else
+        self.text << other.text
+      end
       super(other)
-      self.text << other.text
     end
 
     def to_h
@@ -139,24 +146,29 @@ module Tabula
 
 
   class Line < ZoneEntity
-    # TODO clean this up
-    attr_accessor :text_elements
+     attr_accessor :text_elements
 
     def initialize
       self.text_elements = []
     end
 
     def <<(t)
-      self.text_elements << t
-      if self.text_elements.size == 1
+      if self.text_elements.size == 0
+        self.text_elements << t
         self.top = t.top
         self.left = t.left
         self.width = t.width
         self.height = t.height
       else
-        self.merge!(t)
+        if in_same_column = self.text_elements.find { |te| te.horizontally_overlaps?(t) }
+          in_same_column.merge!(t)
+        else
+          self.text_elements << t
+          self.merge!(t)
+        end
       end
     end
+
 
   end
 
@@ -258,9 +270,10 @@ module Tabula
 
 
     # TODO finish writing this method
+    # it should be analogous to get_line_boundaries
+    # (ie, take into account vertical ruling lines if available)
     def group_by_columns
       columns = []
-      vr = self.options[:vertical_rulings]
       tes = self.text_elements.sort_by(&:left)
 
       # we don't have vertical rulings
@@ -350,6 +363,7 @@ module Tabula
     end
   end
 
+  ONLY_SPACES_RE = Regexp.new('^\s+$')
   def Tabula.make_table(text_elements, options={})
     extractor = TableExtractor.new(text_elements, options)
 
@@ -357,7 +371,8 @@ module Tabula
     lines = []
     line_boundaries = extractor.get_line_boundaries
 
-
+    # find all the text elements
+    # contained within each detected line (table row) boundary
     line_boundaries.each { |lb|
       line = Line.new
 
@@ -368,6 +383,8 @@ module Tabula
       text_elements -= line_members
 
       line_members.sort_by(&:left).each { |te|
+        # skip text_elements that only contain spaces
+        next if te.text =~ ONLY_SPACES_RE
         line << te
       }
 
@@ -376,21 +393,20 @@ module Tabula
 
     lines.sort_by!(&:top)
 
-    columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.compact.uniq)
+    columns = Tabula.group_by_columns(lines.map(&:text_elements).flatten.compact.uniq).sort_by(&:left)
 
     # # insert empty cells if needed
     lines.each_with_index { |l, line_index|
       next if l.text_elements.nil?
       l.text_elements.compact! # TODO WHY do I have to do this?
       l.text_elements.uniq!  # TODO WHY do I have to do this?
-
-      l.text_elements = l.text_elements.sort_by(&:left)
+      l.text_elements.sort_by!(&:left)
 
       # l.text_elements = Tabula.merge_words(l.text_elements)
 
       next unless l.text_elements.size < columns.size
 
-      columns.sort_by(&:left).each_with_index do |c, i|
+      columns.each_with_index do |c, i|
         if (i > l.text_elements.size - 1) or !l.text_elements(&:left)[i].nil? and !c.text_elements.include?(l.text_elements[i])
           l.text_elements.insert(i, TextElement.new(l.top, c.left, c.width, l.height, nil, 0, ''))
         end
