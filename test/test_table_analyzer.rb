@@ -9,6 +9,9 @@ require_relative '../lib/tabula'
 require_relative '../lib/detect_rulings'
 require_relative '../lib/parse_xml.rb'
 
+# TODO enhancement: run jruby --ng-server before starting the tests
+# and run jruby_dump_characters.rb with --ng
+
 class TestTableAnalyzer < MiniTest::Unit::TestCase
   def setup
     @tmp_dir = Dir.mktmpdir
