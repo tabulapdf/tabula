@@ -38,6 +38,8 @@ Cuba.define do
       res.write view("index.html")
     end
 
+
+    #TODO: rewrite to take a list of page/coords. (and in pdf_view.js, previews should just send one list.)
     on "pdf/:file_id/data" do |file_id|
       pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
 
