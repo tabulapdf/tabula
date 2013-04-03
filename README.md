@@ -23,7 +23,7 @@ a simple web interface:
 
 1. Install Ruby and JRuby. Tabula been tested with Ruby 1.9.3 and JRuby 1.7.3.
    We recommend using [rbenv](https://github.com/sstephenson/rbenv/) to manage
-   you Ruby versions. (JRuby is required to interface with `pdfbox`, but
+   your Ruby versions. (JRuby is required to interface with `pdfbox`, but
    native Ruby must also be used since `ruby-opencv` is a natively compiled
    extension.)
 
