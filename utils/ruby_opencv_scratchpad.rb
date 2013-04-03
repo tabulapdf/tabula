@@ -6,9 +6,13 @@ mat = OpenCV::CvMat.load(ARGV[0],
 
 # TODO if mat is not 3-channel, don't do BGR2GRAY
 mat = mat.BGR2GRAY
-mat_canny = mat.canny(1, 50, 3)
+#mat = mat.smooth(1, 3,3)
+#mat.save_image '/tmp/blur.jpg'
+mat_canny = mat.canny(50, 200, 3)
+mat_canny.save_image '/tmp/canny.jpg'
+
 mat = mat.GRAY2BGR
-lines = mat_canny.hough_lines(:probabilistic, 1, Math::PI / 180, 100, 200, 10)
+lines = mat_canny.hough_lines(:probabilistic, 1, Math::PI / 180, 500, 20, 10)
 
 # puts lines.map do |line|
 #   [line.point1.x, line.point1.y, line.point2.x, line.point2.y]

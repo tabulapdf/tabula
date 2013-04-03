@@ -6,19 +6,56 @@ require 'minitest/autorun'
 
 require_relative '../local_settings'
 require_relative '../lib/tabula'
+require_relative '../lib/detect_rulings'
 require_relative '../lib/parse_xml.rb'
+
+# TODO enhancement: run jruby --ng-server before starting the tests
+# and run jruby_dump_characters.rb with --ng
 
 class TestTableAnalyzer < MiniTest::Unit::TestCase
   def setup
     @tmp_dir = Dir.mktmpdir
+    @script_path = File.expand_path(File.dirname(__FILE__))
   end
 
   def teardown
     FileUtils.remove_entry_secure @tmp_dir
   end
 
+  # HOW TO WRITE A TEST - EXAMPLE
+  #  def test_some_pdf
+  #    run_jruby_extractor!(File.join(@script_path,'test_pdfs/some_file.pdf'))
+  #    # get the coordinates from the web app (URL that gets requested when you do a lasso)
+  #    text_elements = Tabula::XML.get_text_elements(@tmp_dir, 1, 12.75, 269.875, 561, 790.5)
+  #    table = Tabula.make_table(text_elements) # table is an array of Tabula::Line
+  #    table = lines_to_array(table) # you can convert it to a list of lists of strings, for convenience
+  #
+  #    expected = [['foo', 'bar'], ['quuxor', 'wat?']] # what you expect from the table analyzer
+  #
+  #    assert_equal lines_to_array(table), expected # assert the equality
+  #  end
+
+  def test_tabla_subsidios
+    pdf_path = File.join(@script_path,
+                         'test_pdfs/tabla_subsidios.pdf')
+    run_jruby_extractor!(pdf_path)
+
+    rulings = detect_rulings(pdf_path, 1)
+
+    text_elements = Tabula::XML.get_text_elements(@tmp_dir, 1, 26.87, 200.82, 715.62, 250.32)
+    table = Tabula.make_table(text_elements,
+                              :horizontal_rulings => rulings[:horizontal],
+                              :vertical_rulings => rulings[:vertical])
+
+    expected = [["BA 014/12", "", "BA", "DOMINGO GONZALEZ Y CIA SA", "MT", "PyME", "1.573.476,50", "1.573.476,50", "50,00%", "786.738,25"], ["BA 015/12", "", "BA", "LABORATORIO WEIZUR ARGENTINA SA", "MT", "PyME", "700.163,00", "700.163,00", "50,00%", "350.081,50"], ["BA 017/12", "NA 022/12", "BA", "RIZOBACTER ARGENTINA S.A.", "I+D", "GRANDE", "3.000.000,00", "             2.927.040,00 ", "50,00%", "969.218,54"]]
+
+    assert_equal lines_to_array(table), expected
+
+  end
+
+
   def test_argentina_diputados_voting_record
-    run_jruby_extractor!('test_pdfs/argentina_diputados_voting_record.pdf')
+    run_jruby_extractor!(File.join(@script_path,'test_pdfs/argentina_diputados_voting_record.pdf'))
 
     text_elements = Tabula::XML.get_text_elements(@tmp_dir, 1, 12.75, 269.875, 561, 790.5)
     table = Tabula.make_table(text_elements)
@@ -30,9 +67,12 @@ class TestTableAnalyzer < MiniTest::Unit::TestCase
   end
 
   def test_pharma_spaceless
-    run_jruby_extractor!('test_pdfs/ClinicalResearchDisclosureReport2012Q2.pdf')
+    pdf_path = File.join(@script_path,
+                         'test_pdfs/ClinicalResearchDisclosureReport2012Q2.pdf')
+    run_jruby_extractor!(pdf_path)
 
     text_elements = Tabula::XML.get_text_elements(@tmp_dir, 1, 49.9375, 85, 537.625, 130.6875)
+
     table = Tabula.make_table(text_elements)
 
     # this file does not get spaces rendered by pdfbox (so XML lacks spaces) but
@@ -43,7 +83,7 @@ class TestTableAnalyzer < MiniTest::Unit::TestCase
   end
 
   def test_bo_page24
-    run_jruby_extractor!('test_pdfs/bo_page24.pdf')
+    run_jruby_extractor!(File.join(@script_path,'test_pdfs/bo_page24.pdf'))
     # Request URL:http://localhost:9393/pdf/d1bfae1be8d6b099c1b7bb7b401ca97310e61063/data?x1=50.089285714285715&x2=809.0178571428571&y1=432.5892857142857&y2=490.2678571428571&page=1
 
     text_elements = Tabula::XML.get_text_elements(@tmp_dir, 1, 50.089, 432.589, 809.017, 490.267)
@@ -63,9 +103,28 @@ class TestTableAnalyzer < MiniTest::Unit::TestCase
   end
 
   def run_jruby_extractor!(pdf_path)
-    jruby_script_path = File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib/jruby_dump_characters.rb')
-    jar_path = File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib/jars')
+    jruby_script_path = File.join(@script_path, '..', 'lib/jruby_dump_characters.rb')
+    jar_path = File.join(@script_path, '..', 'lib/jars')
     jars = File.join(jar_path, 'pdfbox-app-1.8.0.jar')
     system({'CLASSPATH' => jars}, "#{Settings::JRUBY_PATH} --1.9 --server #{jruby_script_path} #{pdf_path} #{@tmp_dir} > /dev/null 2>&1")
   end
+
+  def detect_rulings(pdf_path, page)
+    run_mupdfdraw!(pdf_path, @tmp_dir, 2048, page)
+    page_dimensions = Tabula::XML.get_page_dimensions(@tmp_dir, page)
+    Tabula::Rulings::detect_rulings(File.join(@tmp_dir, "document_2048_#{page}.png"), page_dimensions[:width] / 2048.0)
+  end
+
+  def run_mupdfdraw!(file, output_dir, width=560, page=nil)
+    cmd = "#{Settings::MUDRAW_PATH} -w #{width} -o " \
+    + File.join(output_dir, "document_#{width}_%d.png") \
+    + " #{file}"
+
+    cmd += " #{page}" unless page.nil?
+
+    `#{cmd}`
+  end
+
+
+
 end
