@@ -217,8 +217,8 @@ module Tabula
   end
 
   # TODO next four module methods are deprecated
-  def Tabula.group_by_columns(text_elements)
-    TableExtractor.new(text_elements).group_by_columns
+  def Tabula.group_by_columns(text_elements, merge_words=false)
+    TableExtractor.new(text_elements, :merge_words => merge_words).group_by_columns
   end
 
   def Tabula.get_line_boundaries(text_elements)
@@ -226,11 +226,11 @@ module Tabula
   end
 
   def Tabula.get_columns(text_elements, merge_words=true)
-    TableExtractor.new(text_elements).get_columns
+    TableExtractor.new(text_elements, :merge_words => merge_words).get_columns
   end
 
   def Tabula.get_rows(text_elements, merge_words=true)
-    TableExtractor.new(text_elements).get_rows
+    TableExtractor.new(text_elements, :merge_words => merge_words).get_rows
   end
 
   class TableExtractor
@@ -260,6 +260,7 @@ module Tabula
     # TODO finish writing this method
     def group_by_columns
       columns = []
+      vr = self.options[:vertical_rulings]
       tes = self.text_elements.sort_by(&:left)
 
       # we don't have vertical rulings
@@ -321,6 +322,8 @@ module Tabula
     private
 
     def merge_words!
+      return self.text_elements if @merged # only merge once. awful hack.
+      @merged = true
       current_word_index = i = 0
       char1 = self.text_elements[i]
 
@@ -343,8 +346,7 @@ module Tabula
         end
         i += 1
       end
-      self.text_elements.compact!
-      self.text_elements
+      return self.text_elements.compact!
     end
   end
 
