@@ -1,8 +1,9 @@
 # Tabula
 
-Tabula helps you liberate data tables trapped inside evil PDFs.
+Tabula helps you liberate data tables trapped inside PDF files.
 
-A demo is available at: http://tabula.nerdpower.org/
+* [Read more about Tabula on OpenNews Source](http://source.mozillaopennews.org/en-US/articles/introducing-tabula/)
+* [Check out the (feature-limited) demo](http://tabula.nerdpower.org/)
 
 © 2012-2013 Manuel Aristarán. Available under MIT License. See `AUTHORS.md`
 and `LICENSE.md`.
