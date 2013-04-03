@@ -374,6 +374,8 @@ $(function () {
 
         },
         onSelectEnd: function(img, selection) {
+            console.log(selection);
+
             if (selection.width == 0 && selection.height == 0) {
                 $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'none');
             }
@@ -401,6 +403,7 @@ $(function () {
             // }
 
             var scale = (pdf_width / thumb_width);
+
 
             var query_parameters = {
                 x1: selection.x1 * scale,
@@ -442,24 +445,30 @@ $(function () {
 
         var scale = (pdf_width / thumb_width);
 
-        var my_x2 = tableGuesses[imageIndex][0][0] + tableGuesses[imageIndex][0][2];
-        var my_y2 = tableGuesses[imageIndex][0][1] + tableGuesses[imageIndex][0][3];
+        console.log(tableGuesses);
 
-        console.log("page: " + imageIndex + 1);
-        console.log(tableGuesses[imageIndex]);
-        console.log(scale);
-        console.log(my_x2 / scale);
-        console.log(my_y2 / scale);
-        console.log("");
-        $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
-        imgAreaSelectObj = imgAreaSelects[imageIndex];
+        _(tableGuesses[imageIndex]).each(function(tableGuess){ 
 
-        imgAreaSelectObj.setSelection(tableGuesses[imageIndex][0][0] / scale, 
-                                      tableGuesses[imageIndex][0][1] / scale, 
-                                      my_x2 / scale, 
-                                      my_y2 / scale);
-        imgAreaSelectObj.setOptions({show: true});
-        imgAreaSelectObj.update();
+          var my_x2 = tableGuess[0] + tableGuess[2];
+          var my_y2 = tableGuess[1] + tableGuess[3];
+
+          console.log("page: " + imageIndex + 1);
+          console.log(tableGuess);
+          console.log(scale);
+          console.log(my_x2 / scale);
+          console.log(my_y2 / scale);
+          console.log("");
+          $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
+          imgAreaSelectAPIObj = imgAreaSelects[imageIndex];
+
+          //setSelection on an imgAreaSelectAPIObj really just creates a new selection.
+          imgAreaSelectAPIObj.setSelection(tableGuess[0] / scale, 
+                                        tableGuess[1] / scale, 
+                                        my_x2 / scale, 
+                                        my_y2 / scale);
+          imgAreaSelectAPIObj.setOptions({show: true});
+          imgAreaSelectAPIObj.update();
+        })
       }
 
       for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
