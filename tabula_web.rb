@@ -44,7 +44,7 @@ Cuba.define do
 
       #sort these in order first, by page, then by y coordinates (truncated), then by x coordinates
       # so that data comes out in reading order even if there are multiple tables on a page.
-      coords.sort_by{|coord| [coord['page'], [coord['y1'], coord['y2']].min.to_i / 10, [coord['page'], [coord['x1'], coord['x2']].min] }.each do |coord|
+      coords.sort_by{|coord| [ coord['page'], [coord['y1'], coord['y2']].min.to_i / 10, [coord['x1'], coord['x2']].min ] }.each do |coord|
 
         text_elements = Tabula::XML.get_text_elements(pdf_path,
                                                       coord['page'],
