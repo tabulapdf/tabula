@@ -22,23 +22,16 @@ $(document).ready(function() {
       var topOffset = this.offset().top;
       var elHeight = this.height();
 
-      console.log(topOffset)
-
       if (windowTop > topOffset && windowTop < footerTop) {
         this
           .css("position", "fixed")
           .css("top", 70)
           .css("box-shadow", "rgba(0, 0, 0, 0.1) 0px 4px 5px 0px")
-      } else if (windowTop > footerTop - bottomOffset) {
+      } else if (windowTop > footerTop) {
         this
         .css("position", "absolute")
         .css("top", 70)
         .css("box-shadow", "rgba(0, 0, 0, 0) 0px 4px 5px 0px")
-      } else {
-        this
-          .css("position", "relative")
-          .css("top", 70)
-          .css("box-shadow", "rgba(0, 0, 0, 0) 0px 4px 5px 0px")
       }
     }
 
@@ -325,7 +318,9 @@ $(function () {
     $('a.tooltip-modal').tooltip();
 
     $('input#use_lines').change(function() {
-        $.extend(lastQuery, { use_lines: $(this).is(':checked') });
+        _(lastQuery).map(function(selection_params){
+          $.extend(selection_params, { use_lines: $(this).is(':checked') });
+        });
         doQuery(PDF_ID, lastQuery);
     });
 
@@ -334,7 +329,7 @@ $(function () {
                         { class: 'selection-show'}));
     });
 
-    query_parameters = {};
+    //query_parameters = {}; //uhh.
 
 
     $('#myModal').on('hide', function() {
@@ -344,12 +339,16 @@ $(function () {
     var doQuery = function(pdf_id, query_parameters) {
         $('#loading').css('left', ($(window).width() - 98) + 'px').css('visibility', 'visible');
 
-        lastQuery = query_parameters;
+        lastQuery = _(query_parameters).map(function(selection_params){
+          $.extend(selection_params, { use_lines: $('#use_lines').is(':checked') });
+        })
 
-        $.extend(lastQuery, { use_lines: $('#use_lines').is(':checked') });
+        var real_query_parameters = {coords: JSON.stringify(query_parameters) ,
+                use_lines :  $('#use_lines').is(':checked')
+              };
 
         $.get('/pdf/' + pdf_id + '/data',
-              query_parameters,
+              real_query_parameters,
               function(data) {
                   var tableHTML = '<table contenteditable="true" class="table table-condensed table-bordered">';
                   $.each(data, function(i, row) {
@@ -358,7 +357,16 @@ $(function () {
                   tableHTML += '</table>';
 
                   $('.modal-body').html(tableHTML);
-                  $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(query_parameters));
+                  $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(real_query_parameters));
+                  // $('#download-csv').click(function(){ 
+                  //                       $.post('/pdf/' + pdf_id + '/data',
+                  //                         {coords: JSON.stringify(query_parameters) ,
+                  //                           use_lines :  $('#use_lines').is(':checked'),
+                  //                           format : 'csv'
+                  //                         },
+                  //                         function(data){ window.open(data);}
+                  //                         )
+                  //                     });
                   $('#myModal').modal();
                   clip.glue('#copy-csv-to-clipboard');
                   $('#loading').css('visibility', 'hidden');
@@ -423,7 +431,7 @@ $(function () {
                 page: $(img).data('page')
             };
 
-            doQuery(PDF_ID, query_parameters);
+            doQuery(PDF_ID, [query_parameters]);
         }
       });
     });
@@ -432,6 +440,7 @@ $(function () {
 
     $.getJSON("/pdfs/" + PDF_ID + "/tables.json", function(tableGuesses){ 
 
+      //TODO: rename these because man am i bad at computers.
       function updateThingHelper(e){ updateThing(e.currentTarget)}
 
       function updateThing(e){
@@ -493,6 +502,40 @@ $(function () {
     });
 
     $('#all-data').on("click", function(){
-      
+      query_parameters = [];
+      _(imgAreaSelects).each(function(imgAreaSelectAPIObj){
+
+          var thumb_width = imgAreaSelectAPIObj.getImg().width();
+          var thumb_height = imgAreaSelectAPIObj.getImg().height();
+
+          var pdf_width = parseInt(imgAreaSelectAPIObj.getImg().data('original-width'));
+          var pdf_height = parseInt(imgAreaSelectAPIObj.getImg().data('original-height'));
+          var pdf_rotation = parseInt(imgAreaSelectAPIObj.getImg().data('rotation'));
+
+          // if rotated, swap width and height
+          if (pdf_rotation == 90 || pdf_rotation == 270) {
+              var tmp = pdf_height;
+              pdf_height = pdf_width;
+              pdf_width = tmp;
+          }
+
+          var scale = (pdf_width / thumb_width);
+
+
+
+        _(imgAreaSelectAPIObj.getSelections()).each(function(selection){
+
+          new_query = {
+                x1: selection.x1 * scale,
+                x2: selection.x2 * scale,
+                y1: selection.y1 * scale,
+                y2: selection.y2 * scale,
+                page: imgAreaSelectAPIObj.getImg().data('page')
+              }
+          query_parameters.push(new_query);
+        });
+      });
+
+      doQuery(PDF_ID, query_parameters);
     })
 });

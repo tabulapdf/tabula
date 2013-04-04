@@ -1190,6 +1190,10 @@ $.imgAreaSelect = function (img, options) {
      * Public API
      */
     
+
+    this.getImg = function(){
+        return $img;
+    }
     /**
      * Get current options
      * 
