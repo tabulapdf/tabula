@@ -41,10 +41,11 @@ not recommended.
 OS X users that normally don't do Ruby development but are interested bootstrapping
 Tabula on their own computer: [`docs/osx-simple-bootstrap.md`](docs/osx-simple-bootstrap.md))</i>
 
-1. Install Ruby and JRuby. Tabula been tested with Ruby 1.9.3 and JRuby 1.7.3.
-   We *highly* recommend using [rbenv](https://github.com/sstephenson/rbenv/)
-   to manage your Ruby versions, as rvm is a bit finicky. (JRuby is required
-   to interface with `pdfbox`, but native Ruby must also be used since
+1. Install Ruby and JRuby. Tabula been tested with Ruby 1.9.3 and JRuby 1.7.3. 
+   We use and *highly* recommend [rbenv](https://github.com/sstephenson/rbenv/) 
+   to manage your Ruby versions. Users of other Ruby version managers will need 
+   to alter the installation commands to work with their preferred tool. (JRuby 
+   is required to interface with `pdfbox`, but native Ruby must also be used since 
    `ruby-opencv` is a natively compiled extension.)
 
    If using rbenv:
