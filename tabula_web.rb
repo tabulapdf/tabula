@@ -70,7 +70,7 @@ Cuba.define do
         output_data += table.map { |line|
           line.text_elements.sort_by { |t| t.left }
         }
-        output_data += [[],[]]
+        output_data += [[],[]] unless coord == coords.last
       end
 
       if req.params['format'] == 'csv'
