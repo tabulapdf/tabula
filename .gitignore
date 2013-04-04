@@ -2,6 +2,7 @@ static/pdfs
 local_settings.rb
 
 .ruby-version
+.ruby-gemset
 
 # Based on https://github.com/github/gitignore/blob/master/Ruby.gitignore
 *.gem
