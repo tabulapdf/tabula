@@ -427,13 +427,13 @@ $.imgAreaSelect = function (img, options) {
             
             $(document).on('mousemove.imgareaselect', _.bind(this.selectingMouseMove, this))
                 .one('mouseup', docMouseUp);
-            this.$box.unbind('mousemove', this.areaMouseMove);
+            this.$box.unbind('mousemove.imgareaselect');
         }
         else if (options.movable) {
             this.startX = left + this.selection.x1 - evX(event);
             this.startY = top + this.selection.y1 - evY(event);
 
-            this.$box.unbind('mousemove', this.areaMouseMove);
+            this.$box.unbind('mousemove.imgareaselect');
 
             $(document).on('mousemove.imgareaselect', _.bind(this.movingMouseMove, this))
                 .one('mouseup', _.bind(function () {
