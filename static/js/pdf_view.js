@@ -435,15 +435,15 @@ $(function () {
         }
       });
     });
-    // TODO: only run these functions if the image is loaded already.
+    // only run these functions if the image is loaded already. 
+    // TODO: this works better than it used to, but still fails sometimes.
+    // clearly a race condition.
     // http://stackoverflow.com/questions/1743880/image-height-using-jquery-in-chrome-problem
-
     $.getJSON("/pdfs/" + PDF_ID + "/tables.json", function(tableGuesses){ 
 
-      //TODO: rename these because man am i bad at computers.
-      function updateThingHelper(e){ updateThing(e.currentTarget)}
+      function drawDetectedTablesHelper(e){ drawDetectedTables(e.currentTarget)}
 
-      function updateThing(e){
+      function drawDetectedTables(e){
         img = $(e);
 
         imageIndex = parseInt(img.attr("id").replace("page-", '')) - 1;
@@ -471,13 +471,12 @@ $(function () {
           var my_x2 = tableGuess[0] + tableGuess[2];
           var my_y2 = tableGuess[1] + tableGuess[3];
 
-          console.log("page: " + imageIndex + 1);
-          console.log(tableGuess);
-          console.log(scale);
-          console.log(my_x2 / scale);
-          console.log(my_y2 / scale);
-          console.log("");
-          $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
+          // console.log("page: " + imageIndex + 1);
+          // console.log(tableGuess);
+          // console.log(scale);
+          // console.log(my_x2 / scale);
+          // console.log(my_y2 / scale);
+          // console.log("");
           imgAreaSelectAPIObj = imgAreaSelects[imageIndex];
 
           //setSelection on an imgAreaSelectAPIObj really just creates a new selection.
@@ -487,15 +486,28 @@ $(function () {
                                         my_y2 / scale);
           imgAreaSelectAPIObj.setOptions({show: true});
           imgAreaSelectAPIObj.update();
+
+
+          //draw red boxes on the thumbnails on teh left. currently broken.
+          //need to rewrite to create a new .selection-show element.
+          //need to link up .selection-shows with imgAreaSelect cancels (probably with a new onSelectCancel function)
+          $('#thumb-' + img.attr('id') + ' .selection-show').css('display', 'block');
+          var sshow = $('#thumb-' + img.attr('id') + ' .selection-show');
+          var thumbScale = $('#thumb-' + img.attr('id') + ' img').width() / img.width();
+          $(sshow).css('top', tableGuess[1] * thumbScale + 'px')
+              .css('left', tableGuess[0] * thumbScale + 'px')
+              .css('width', ((tableGuess[2] - tableGuess[0]) * thumbScale) + 'px')
+              .css('height', ((tableGuess[3] - tableGuess[1]) * thumbScale) + 'px');
+
         })
       }
 
       for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
         var pageIndex = imageIndex + 1;
         if($('img#page-' + pageIndex)[0].complete){
-          updateThing($('img#page-' + pageIndex)[0]);
+          drawDetectedTables($('img#page-' + pageIndex)[0]);
         }else{
-          $('img#page-' + pageIndex).load(updateThingHelper);
+          $('img#page-' + pageIndex).load(drawDetectedTablesHelper);
         }
       }
       $('img.page-image').load(function(){$.each(imgAreaSelects, function(n, q){ q.update() });});
