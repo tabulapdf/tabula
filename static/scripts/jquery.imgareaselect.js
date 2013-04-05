@@ -492,6 +492,74 @@ $.imgAreaSelect = function (img, options) {
             }
     }
 
+    Selection.prototype.doesOverlap = function(otherSelection){
+        var x_axis_properly_oriented = this.x2 > this.x1;
+        var y_axis_properly_oriented = this.y2 > this.y1;
+
+        if(this.x1 > otherSelection.x1 && this.x1 < otherSelection.x2){
+            if(y_axis_properly_oriented ? (this.y2 > otherSelection.y1 && this.y1 < otherSelection.y2) : (this.y2 < otherSelection.y2 && this.y1 > otherSelection.y1)){
+                // set this.y2 to the top point if the current selection is oriented upright, (i.e. such that y2 > y1), bottom otherwise.
+                return true;
+            }
+        //if the non-moving point is "inside" the bounds of another selection on only the y axis
+        }else if(this.y1 > otherSelection.y1 && this.y1 < otherSelection.y2){
+            if(x_axis_properly_oriented ? (this.x2 > otherSelection.x1 && this.x1 < otherSelection.x1) : (this.x2 < otherSelection.x2 && this.x1 > otherSelection.x2 )){
+                // set this.x2 to the rightmost point if the current selection is oriented correctly, (i.e. such that x2 > x1), leftmost otherwise.
+                return true;
+            }
+        }else{
+            if (   //if the non-moving point is not within the bounds of another selection on any axis
+                ((y_axis_properly_oriented ? (this.y2 > otherSelection.y1 && this.y1 < otherSelection.y2) : (this.y2 < otherSelection.y2 && this.y1 > otherSelection.y1)) && 
+                 (x_axis_properly_oriented ? (this.x2 > otherSelection.x1 && this.x1 < otherSelection.x1) : (this.x2 < otherSelection.x2 && this.x1 > otherSelection.x2 ))) 
+                   //or if this selection wholly contains another selection.
+              || (this.x1 < otherSelection.x1 && this.y1 < otherSelection.y1 && this.x2 > otherSelection.x2 && this.y2 > otherSelection.y2) //if this is properly oriented
+              || (this.x2 < otherSelection.x1 && this.y2 < otherSelection.y1 && this.x1 > otherSelection.x2 && this.y1 > otherSelection.y2) //if this is improperly oriented
+            ){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Selection.prototype.fixOverlaps = function(otherSelection){
+        //if the non-moving point is "inside" the bounds of another selection on only the x axis
+        var x_axis_properly_oriented = this.x2 > this.x1;
+        var y_axis_properly_oriented = this.y2 > this.y1;
+
+        if(this.x1 > otherSelection.x1 && this.x1 < otherSelection.x2){
+            if(y_axis_properly_oriented ? (this.y2 > otherSelection.y1 && this.y1 < otherSelection.y2) : (this.y2 < otherSelection.y2 && this.y1 > otherSelection.y1)){
+                console.log("disallowing overlap on y-axis");
+                // set this.y2 to the top point if the current selection is oriented upright, (i.e. such that y2 > y1), bottom otherwise.
+                this.y2 = y_axis_properly_oriented ? otherSelection.y1 : otherSelection.y2;
+            }
+        //if the non-moving point is "inside" the bounds of another selection on only the y axis
+        }else if(this.y1 > otherSelection.y1 && this.y1 < otherSelection.y2){
+            if(x_axis_properly_oriented ? (this.x2 > otherSelection.x1 && this.x1 < otherSelection.x1) : (this.x2 < otherSelection.x2 && this.x1 > otherSelection.x2 )){
+                console.log("disallowing overlap on x-axis");
+                // set this.x2 to the rightmost point if the current selection is oriented correctly, (i.e. such that x2 > x1), leftmost otherwise.
+                this.x2 = x_axis_properly_oriented ? otherSelection.x1 : otherSelection.x2;
+            }
+        }else{
+            if (   //if the non-moving point is not within the bounds of another selection on any axis
+                ((y_axis_properly_oriented ? (this.y2 > otherSelection.y1 && this.y1 < otherSelection.y2) : (this.y2 < otherSelection.y2 && this.y1 > otherSelection.y1)) && 
+                 (x_axis_properly_oriented ? (this.x2 > otherSelection.x1 && this.x1 < otherSelection.x1) : (this.x2 < otherSelection.x2 && this.x1 > otherSelection.x2 ))) 
+                   //or if this selection wholly contains another selection.
+              || (this.x1 < otherSelection.x1 && this.y1 < otherSelection.y1 && this.x2 > otherSelection.x2 && this.y2 > otherSelection.y2) //if this is properly oriented
+              || (this.x2 < otherSelection.x1 && this.y2 < otherSelection.y1 && this.x1 > otherSelection.x2 && this.y1 > otherSelection.y2) //if this is improperly oriented
+            ){
+                console.log("disallowing overlap on both axes");
+                //reset the "less-infringing" amount.
+                var x_infringement_distance = x_axis_properly_oriented ? this.x2 - otherSelection.x1 : otherSelection.x2 - this.x2;
+                var y_infringement_distance = y_axis_properly_oriented ? this.y2 - otherSelection.y1 : otherSelection.y2 - this.y2;
+                if(x_infringement_distance > y_infringement_distance){
+                    this.y2 = y_axis_properly_oriented ? otherSelection.y1 : otherSelection.y2;
+                }else{
+                    this.x2 = x_axis_properly_oriented ? otherSelection.x1 : otherSelection.x2;
+                }
+            }
+        }
+    }
+
     /**
      * Resize the selection area respecting the minimum/maximum dimensions and
      * aspect ratio
@@ -536,44 +604,7 @@ $.imgAreaSelect = function (img, options) {
              * It's not possible for a selection to begin inside another one (except via the API).
              *
              */
-            _(_(selections).filter(function(s){ return s})).each(_.bind(function(otherSelection){
-                //if the non-moving point is "inside" the bounds of another selection on only the x axis
-                var x_axis_properly_oriented = this.x2 > this.x1;
-                var y_axis_properly_oriented = this.y2 > this.y1;
-
-                if(this.x1 > otherSelection.x1 && this.x1 < otherSelection.x2){
-                    if(y_axis_properly_oriented ? (this.y2 > otherSelection.y1 && this.y1 < otherSelection.y2) : (this.y2 < otherSelection.y2 && this.y1 > otherSelection.y1)){
-                        console.log("disallowing overlap on y-axis");
-                        // set this.y2 to the top point if the current selection is oriented upright, (i.e. such that y2 > y1), bottom otherwise.
-                        this.y2 = y_axis_properly_oriented ? otherSelection.y1 : otherSelection.y2;
-                    }
-                //if the non-moving point is "inside" the bounds of another selection on only the y axis
-                }else if(this.y1 > otherSelection.y1 && this.y1 < otherSelection.y2){
-                    if(x_axis_properly_oriented ? (this.x2 > otherSelection.x1 && this.x1 < otherSelection.x1) : (this.x2 < otherSelection.x2 && this.x1 > otherSelection.x2 )){
-                        console.log("disallowing overlap on x-axis");
-                        // set this.x2 to the rightmost point if the current selection is oriented correctly, (i.e. such that x2 > x1), leftmost otherwise.
-                        this.x2 = x_axis_properly_oriented ? otherSelection.x1 : otherSelection.x2;
-                    }
-                }else{
-                    if (   //if the non-moving point is not within the bounds of another selection on any axis
-                        ((y_axis_properly_oriented ? (this.y2 > otherSelection.y1 && this.y1 < otherSelection.y2) : (this.y2 < otherSelection.y2 && this.y1 > otherSelection.y1)) && 
-                         (x_axis_properly_oriented ? (this.x2 > otherSelection.x1 && this.x1 < otherSelection.x1) : (this.x2 < otherSelection.x2 && this.x1 > otherSelection.x2 ))) 
-                           //or if this selection wholly contains another selection.
-                      || (this.x1 < otherSelection.x1 && this.y1 < otherSelection.y1 && this.x2 > otherSelection.x2 && this.y2 > otherSelection.y2) //if this is properly oriented
-                      || (this.x2 < otherSelection.x1 && this.y2 < otherSelection.y1 && this.x1 > otherSelection.x2 && this.y1 > otherSelection.y2) //if this is improperly oriented
-                    ){
-                        console.log("disallowing overlap on both axes");
-                        //reset the "less-infringing" amount.
-                        var x_infringement_distance = x_axis_properly_oriented ? this.x2 - otherSelection.x1 : otherSelection.x2 - this.x2;
-                        var y_infringement_distance = y_axis_properly_oriented ? this.y2 - otherSelection.y1 : otherSelection.y2 - this.y2;
-                        if(x_infringement_distance > y_infringement_distance){
-                            this.y2 = y_axis_properly_oriented ? otherSelection.y1 : otherSelection.y2;
-                        }else{
-                            this.x2 = x_axis_properly_oriented ? otherSelection.x1 : otherSelection.x2;
-                        }
-                    }
-                }
-            }, this));
+            _(_(selections).filter(function(s){ return s})).each(_.bind(function(otherSelection){ this.fixOverlaps(otherSelection) }, this) );
         }
 
         this.x2 = max(left, min(this.x2, left + imgWidth));
@@ -1269,6 +1300,8 @@ $.imgAreaSelect = function (img, options) {
 
     this.createNewSelection = function(x1, y1, x2, y2){ 
         var s = new Selection(x1, y1, x2, y2);
+        if(_(selections).map(function(otherSelection){ return s ? s.overlaps(otherSelection) : false }).indexOf(true) > -1)
+            throw "Error: New selection overlaps existing selection."
         selections.push(s);
         return s.getSelection();
     };
