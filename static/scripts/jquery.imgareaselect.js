@@ -176,7 +176,7 @@ $.imgAreaSelect = function (img, options) {
 
         if (options.disable || options.enable === false) {
             /* Disable the plugin */
-            this.$box.unbind('mousemove.imgareaselect', areaMouseMove).unbind('mousedown.imgareaselect', areaMouseDown);
+            this.$box.unbind('mousemove.imgareaselect').unbind('mousedown.imgareaselect', areaMouseDown);
         }else {
             /* Enable the plugin */
             if (options.resizable || options.movable){
@@ -224,7 +224,7 @@ $.imgAreaSelect = function (img, options) {
         var sx = noScale || scaleX || 1; //TODO: the options version should override this, but it doesnt'. Fix.
         var sy = noScale || scaleY || 1;
 
-        console.log(1, this.selection);
+        //console.log(1, this.selection);
 
         this.selection = {
             x1: round(x1 / sx || 0),
@@ -235,7 +235,7 @@ $.imgAreaSelect = function (img, options) {
 
         this.selection.width = this.selection.x2 - this.selection.x1;
         this.selection.height = this.selection.y2 - this.selection.y1;
-        console.log(2, this.selection);
+        //console.log(2, this.selection);
     }
 
 
@@ -451,6 +451,7 @@ $.imgAreaSelect = function (img, options) {
     /**
      * TODO: documentation goes here lol.
      *
+     * id is guaranteed to be unique only within this API object.
      */
 
     Selection.prototype.getSelection = function(noScale){
@@ -461,7 +462,9 @@ $.imgAreaSelect = function (img, options) {
             x2: round(this.selection.x2 * sx),
             y2: round(this.selection.y2 * sy),
             width: round(this.selection.x2 * sx) - round(this.selection.x1 * sx),
-            height: round(this.selection.y2 * sy) - round(this.selection.y1 * sy) };
+            height: round(this.selection.y2 * sy) - round(this.selection.y1 * sy) ,
+            id: selections.indexOf(this)
+        };
     }
 
     /**
@@ -608,21 +611,20 @@ $.imgAreaSelect = function (img, options) {
     }
 
     Selection.prototype.cancelSelection = function(skipCallbacks) {
-        $(document).unbind('mousemove', this.startSelection)
+        $(document).unbind('mousemove.imgareaselect')
             .unbind('mouseup', this.cancelSelection);
         this.hide(this.$box /*.add(this.$outer)*/);
         this.hide(this.$closeBtn);
-
-        var index_of_this = selections.indexOf(this);
-        selections.splice(index_of_this);
-
-        //TODO: this needs to remove itself from (global) selections.
 
         if (!skipCallbacks && !(this instanceof $.imgAreaSelect)) {
             options.onSelectChange(img, this.getSelection()); //TODO: probly oughta change this to give all of the active selections
             options.onSelectEnd(img, this.getSelection()); //TODO: probly oughta change this to give all of the active selections
         }
+        options.onSelectCancel(img, this.getSelection());
 
+        //remove this selection from the closure-global `selections` list.
+        var index_of_this = selections.indexOf(this);
+        selections.splice(index_of_this, 1, null);
     }
 
 
@@ -674,7 +676,7 @@ $.imgAreaSelect = function (img, options) {
 
         $(document).unbind('mouseup.nozerosize')
             .on('mousemove.imgareaselect', _.bind(s.selectingMouseMove, s)).one('mouseup', docMouseUp);
-        s.$box.unbind('mousemove', _.bind(s.areaMouseMove, s));
+        s.$box.unbind('mousemove.imgareaselect');
 
         options.onSelectStart(img, s.getSelection());
     }
@@ -721,7 +723,7 @@ $.imgAreaSelect = function (img, options) {
         
         /*
          * Get image offset. The .offset() method returns float values, so they
-         * need to be rounded.
+         * need to be rounded.f
          */
         imgOfs = { left: round($img.offset().left), top: round($img.offset().top) };
         
@@ -765,7 +767,7 @@ $.imgAreaSelect = function (img, options) {
          * necessary
          */
         _(selections).each(function(s){
-            if (s.selection.x2 > imgWidth || s.selection.y2 > imgHeight){
+            if (s && (s.selection.x2 > imgWidth || s.selection.y2 > imgHeight)){
                 s.doResize();
             }
         });
@@ -854,27 +856,6 @@ $.imgAreaSelect = function (img, options) {
     }
 
     /**
-     * Get all of the current selections.
-     * 
-     * @param noScale
-     *            If set to <code>true</code>, scaling is not applied to the
-     *            returned selection
-     * @return An array of selection objects.
-     */
-    function getSelections(noScale) {
-        return _(selections).each(function(s){
-            var sx = noScale || scaleX, sy = noScale || scaleY;
-
-            return { x1: round(selection.x1 * sx),
-                y1: round(selection.y1 * sy),
-                x2: round(selection.x2 * sx),
-                y2: round(selection.y2 * sy),
-                width: round(selection.x2 * sx) - round(selection.x1 * sx),
-                height: round(selection.y2 * sy) - round(selection.y1 * sy) };
-        });
-    }
-
-    /**
      * Image mousedown event handler
      * 
      * @param event
@@ -928,15 +909,16 @@ $.imgAreaSelect = function (img, options) {
         }, options));
 
         _(selections).each(function(s){ 
-            s.$box/*.add(s.$outer)*/.css({ visibility: '' });
+            if(s){
+                s.$box/*.add(s.$outer)*/.css({ visibility: '' });
 
-            if (options.show) {
-                shown = true;
-                adjust();
-                s.update();
-                s.$box/*.add(s.$outer)*/.hide().fadeIn(options.fadeSpeed||0);
+                if (options.show) {
+                    shown = true;
+                    adjust();
+                    s.update();
+                    s.$box/*.add(s.$outer)*/.hide().fadeIn(options.fadeSpeed||0);
+                }
             }
-
         });
 
         /*
@@ -1042,7 +1024,7 @@ $.imgAreaSelect = function (img, options) {
      */
     function setOptions(newOptions) {
         if (newOptions.parent){
-            _(selections).each(function(s){
+            _(_(selections).filter(function(s){ return s})).each(function(s){
                 ($parent = $(newOptions.parent)).append(s.$box)/*.append($outer)*/;
             });
         }
@@ -1054,7 +1036,7 @@ $.imgAreaSelect = function (img, options) {
 
         if (newOptions.handles != null) {
             /* Recreate selection area handles */
-            _(selections).each(function(s){ 
+            _(_(selections).filter(function(s){ return s})).each(function(s){ 
                 s.$handles.remove();
                 s.$handles = $([]);
 
@@ -1113,7 +1095,7 @@ $.imgAreaSelect = function (img, options) {
 
         /* Add classes to plugin elements */
         //$outer.addClass(options.classPrefix + '-outer');
-        _(selections).each(function(s){
+        _(_(selections).filter(function(s){ return s})).each(function(s){
             s.$area.addClass(options.classPrefix + '-selection');
             for (i = 0; i++ < 4;)
                 $(s.$border[i-1]).addClass(options.classPrefix + '-border' + i);
@@ -1156,7 +1138,7 @@ $.imgAreaSelect = function (img, options) {
             
             if (options.disable || options.enable === false) {
                 /* Disable the plugin */
-                s.$box.unbind('mousemove', areaMouseMove).unbind('mousedown', areaMouseDown);
+                s.$box.unbind('mousemove.imgareaselect').unbind('mousedown', areaMouseDown);
                 $(window).unbind('resize', windowResize);
             }
             else {
@@ -1207,18 +1189,23 @@ $.imgAreaSelect = function (img, options) {
      * @param newOptions
      *            The new options object
      */
-    this.setOptions = setOptions;
-    
+    this.setOptions = setOptions;    
+
     /**
-     * Get the current selection
+     * Get all of the current selections.
      * 
      * @param noScale
      *            If set to <code>true</code>, scaling is not applied to the
      *            returned selection
-     * @return Selection object
+     * @return An array of selection objects.
      */
-    this.getSelections = function(){ return _(selections).map(function(s){ return s.getSelection() })};
-    
+     this.getSelections = function(noScale) {
+        // filter out the nulls.
+        return _( _(selections).filter(function(s){ return !!s; }) ).map(function(s){
+            return s.getSelection(noScale);
+        });
+    }
+
     /**
      * Set the current selection
      * 
@@ -1234,17 +1221,30 @@ $.imgAreaSelect = function (img, options) {
      *            If set to <code>true</code>, scaling is not applied to the
      *            new selection
      */
-    this.setSelection = function(x1, y1, x2, y2){ 
+
+    this.createNewSelection = function(x1, y1, x2, y2){ 
         var s = new Selection(x1, y1, x2, y2);
         selections.push(s);
+        return s.getSelection();
     };
+    //TODO: create a setSelection method that modifies all selection objects. (maybe?)
+    //TODO: ensure Selections returned from API are guaranteed to be in creation order.
+    //TODO: option to disallow overlapping selections.
     
-    this.update = function(){ _(selections).each(function(s){ s.update }); };
+    this.update = function(){ _(_(selections).filter(function(s){ return s})).each(function(s){ s.update }); };
 
     /**
      * Cancel selection
      */
-    this.cancelSelection = function(){ _(selections).each(function(s){ s.cancelSelection }); };
+    this.cancelSelections = function(){ 
+            // I can't simply do `_(selections).each(function(s){ s.cancelSelection(true); });` because cancelSelection modifies `selections` concurrently with iterating over `selections`, so some selections get skipped.
+            var selectionsLength = selections.length
+            while(selectionsLength > 0){
+                if(selections[0]) //skip the nulls.
+                    selections[0].cancelSelection(true);
+                selectionsLength--;
+            }
+        };
     
     /**
      * Update plugin elements
