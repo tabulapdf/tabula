@@ -73,3 +73,10 @@ img.page-image {
     width: 40px;
     left: 1058px;
 }
+
+.followyouaroundbar button{
+  margin-bottom: 5px;
+}
+.followyouaroundbar label#multiselect-label{
+  display: inline;
+}
