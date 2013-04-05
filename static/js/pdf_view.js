@@ -25,6 +25,7 @@ $(document).ready(function() {
       if (windowTop > topOffset && windowTop < footerTop) {
         this
           .css("position", "fixed")
+          .css("width", "15%")
           .css("top", 70)
           .css("box-shadow", "rgba(0, 0, 0, 0.1) 0px 4px 5px 0px")
       } else if (windowTop > footerTop) {
@@ -47,10 +48,16 @@ var lastSelection;
 
 var COLORS = ['#f00', '#0f0', '#00f', '#ffff00', '#FF00FF'];
 
+var noModalAfterSelect = false;
+
 $(function () {
 
     $('button.close#directions').click(function(){
       $('div.imgareaselect').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
+    })
+
+    $('#multiselect-checkbox').click(function(){
+      noModalAfterSelect = $('#multiselect-checkbox').is(':checked');
     })
 
     var PDF_ID = window.location.pathname.split('/')[2];
@@ -324,11 +331,6 @@ $(function () {
         doQuery(PDF_ID, lastQuery);
     });
 
-    $('.thumbnail-list li img').load(function() {
-        $(this).after($('<div />',
-                        { class: 'selection-show'}));
-    });
-
     //query_parameters = {}; //uhh.
 
 
@@ -380,10 +382,11 @@ $(function () {
         //minHeight: 50, minWidth: 100,
 
         onSelectStart: function(img, selection)  {
-            $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
+            //$('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
+            $('#thumb-' + $(img).attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
         },
         onSelectChange: function(img, selection) {
-            var sshow = $('#thumb-' + $(img).attr('id') + ' .selection-show');
+            var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
             var scale = $('#thumb-' + $(img).attr('id') + ' img').width() / $(img).width();
             $(sshow).css('top', selection.y1 * scale + 'px')
                 .css('left', selection.x1 * scale + 'px')
@@ -392,10 +395,8 @@ $(function () {
 
         },
         onSelectEnd: function(img, selection) {
-            console.log(selection);
-
             if (selection.width == 0 && selection.height == 0) {
-                $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'none');
+                $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id).css('display', 'none');
             }
             if (selection.height * selection.width < 5000) return;
             lastSelection = selection;
@@ -422,7 +423,6 @@ $(function () {
 
             var scale = (pdf_width / thumb_width);
 
-
             var query_parameters = {
                 x1: selection.x1 * scale,
                 x2: selection.x2 * scale,
@@ -430,8 +430,12 @@ $(function () {
                 y2: selection.y2 * scale,
                 page: $(img).data('page')
             };
-
-            doQuery(PDF_ID, [query_parameters]);
+            if(!noModalAfterSelect){
+              doQuery(PDF_ID, [query_parameters]);
+            }
+        },
+        onSelectCancel: function(img, selection){
+          $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id).remove();
         }
       });
     });
@@ -466,7 +470,7 @@ $(function () {
 
         console.log(tableGuesses);
 
-        _(tableGuesses[imageIndex]).each(function(tableGuess){ 
+        $(tableGuesses[imageIndex]).each(function(tableGuessIndex, tableGuess){ 
 
           var my_x2 = tableGuess[0] + tableGuess[2];
           var my_y2 = tableGuess[1] + tableGuess[3];
@@ -479,25 +483,22 @@ $(function () {
           // console.log("");
           imgAreaSelectAPIObj = imgAreaSelects[imageIndex];
 
-          //setSelection on an imgAreaSelectAPIObj really just creates a new selection.
-          imgAreaSelectAPIObj.setSelection(tableGuess[0] / scale, 
+          selection = imgAreaSelectAPIObj.createNewSelection(tableGuess[0] / scale, 
                                         tableGuess[1] / scale, 
                                         my_x2 / scale, 
                                         my_y2 / scale);
           imgAreaSelectAPIObj.setOptions({show: true});
           imgAreaSelectAPIObj.update();
 
-
-          //draw red boxes on the thumbnails on teh left. currently broken.
-          //need to rewrite to create a new .selection-show element.
-          //need to link up .selection-shows with imgAreaSelect cancels (probably with a new onSelectCancel function)
-          $('#thumb-' + img.attr('id') + ' .selection-show').css('display', 'block');
-          var sshow = $('#thumb-' + img.attr('id') + ' .selection-show');
+         
+          //create a red box for this selection.
+          $('#thumb-' + $(img).attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
+          var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
           var thumbScale = $('#thumb-' + img.attr('id') + ' img').width() / img.width();
-          $(sshow).css('top', tableGuess[1] * thumbScale + 'px')
-              .css('left', tableGuess[0] * thumbScale + 'px')
-              .css('width', ((tableGuess[2] - tableGuess[0]) * thumbScale) + 'px')
-              .css('height', ((tableGuess[3] - tableGuess[1]) * thumbScale) + 'px');
+          $(sshow).css('top', selection.y1 * thumbScale + 'px')
+              .css('left', selection.x1 * thumbScale + 'px')
+              .css('width', ((selection.x2 - selection.x1) * thumbScale) + 'px')
+              .css('height', ((selection.y2 - selection.y1) * thumbScale) + 'px');
 
         })
       }
@@ -512,6 +513,14 @@ $(function () {
       }
       $('img.page-image').load(function(){$.each(imgAreaSelects, function(n, q){ q.update() });});
     });
+
+    $('#clear-all-selections').on("click", function(){
+      _(imgAreaSelects).each(function(imgAreaSelectAPIObj){
+        imgAreaSelectAPIObj.cancelSelections();
+      });
+    });
+
+    $('#repeat-lassos').on("click", function(){ alert("not yet implemented")});
 
     $('#all-data').on("click", function(){
       query_parameters = [];
@@ -534,6 +543,7 @@ $(function () {
           var scale = (pdf_width / thumb_width);
 
 
+          console.log(imgAreaSelectAPIObj.getSelections());
 
         _(imgAreaSelectAPIObj.getSelections()).each(function(selection){
 
