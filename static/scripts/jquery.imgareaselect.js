@@ -493,6 +493,7 @@ $.imgAreaSelect = function (img, options) {
     }
 
     Selection.prototype.doesOverlap = function(otherSelection){
+        //TODO: refactor doesOverlap and fixOverlapsHelper to not repeat themselves.
         var x_axis_properly_oriented = this.x2 > this.x1;
         var y_axis_properly_oriented = this.y2 > this.y1;
 
@@ -521,7 +522,9 @@ $.imgAreaSelect = function (img, options) {
         return false;
     }
 
-    Selection.prototype.fixOverlaps = function(otherSelection){
+    Selection.prototype.fixOverlapsHelper = function(otherSelection){
+        //TODO: for API's/moving's sake, deal with if `this` is entirely contained within `otherSelection`
+
         //if the non-moving point is "inside" the bounds of another selection on only the x axis
         var x_axis_properly_oriented = this.x2 > this.x1;
         var y_axis_properly_oriented = this.y2 > this.y1;
@@ -560,6 +563,18 @@ $.imgAreaSelect = function (img, options) {
         }
     }
 
+    Selection.prototype.fixOverlaps = function(otherSelection){
+        //TODO: this doesn't respect minHeight, minWidth
+        //TODO: call this when a selection is moved. (but restore selection to where it started?)
+        this.fixOverlapsHelper(otherSelection); //fixes x1, x2
+        this.x2 = max(left, min(this.x2, left + imgWidth));
+        this.y2 = max(top, min(this.y2, top + imgHeight));
+        this.selection = { x1: selX(min(this.x1, this.x2)), x2: selX(max(this.x1, this.x2)),
+            y1: selY(min(this.y1, this.y2)), y2: selY(max(this.y1, this.y2)),
+            width: abs(this.x2 - this.x1), height: abs(this.y2 - this.y1) };
+        this.update();
+    }
+
     /**
      * Resize the selection area respecting the minimum/maximum dimensions and
      * aspect ratio
@@ -576,8 +591,6 @@ $.imgAreaSelect = function (img, options) {
          */
         this.x1 = min(this.x1, left + imgWidth);
         this.y1 = min(this.y1, top + imgHeight);
-
-
 
         if (abs(this.x2 - this.x1) < minWidth) {
             /* Selection width is smaller than minWidth */
@@ -601,10 +614,10 @@ $.imgAreaSelect = function (img, options) {
 
         if(!options.allowOverlaps){
             /* Restrict the dimensions of the selection based on the other selections that already exist. 
-             * It's not possible for a selection to begin inside another one (except via the API).
+             * It's not possible for a selection to begin inside another one (except via the API, moving).
              *
              */
-            _(_(selections).filter(function(s){ return s})).each(_.bind(function(otherSelection){ this.fixOverlaps(otherSelection) }, this) );
+            _(_(selections).filter(function(s){ return s})).each(_.bind(function(otherSelection){ this.fixOverlapsHelper(otherSelection) }, this) );
         }
 
         this.x2 = max(left, min(this.x2, left + imgWidth));
@@ -661,6 +674,14 @@ $.imgAreaSelect = function (img, options) {
         this.x2 = (this.x1 = newX1) + this.selection.width;
         this.y2 = (this.y1 = newY1) + this.selection.height;
 
+        if(!options.allowOverlaps){
+            /* Restrict the dimensions of the selection based on the other selections that already exist. 
+             * It's not possible for a selection to begin inside another one (except via the API).
+             */
+            _(_(selections).filter(function(s){ return s})).each(_.bind(function(otherSelection){ this.fixOverlapsHelper(otherSelection) }, this) );
+        }
+
+
         $.extend(this.selection, { x1: selX(this.x1), y1: selY(this.y1), x2: selX(this.x2),
             y2: selY(this.y2) });
 
@@ -692,15 +713,16 @@ $.imgAreaSelect = function (img, options) {
         this.hide(this.$box /*.add(this.$outer)*/);
         this.hide(this.$closeBtn);
 
+        //remove this selection from the closure-global `selections` list.
+        var index_of_this = selections.indexOf(this);
+        selections.splice(index_of_this, 1, null);
+
         if (!skipCallbacks && !(this instanceof $.imgAreaSelect)) {
             options.onSelectChange(img, this.getSelection()); //TODO: probly oughta change this to give all of the active selections
             options.onSelectEnd(img, this.getSelection()); //TODO: probly oughta change this to give all of the active selections
         }
-        options.onSelectCancel(img, this.getSelection());
+        options.onSelectCancel(img, this.getSelection(), index_of_this);
 
-        //remove this selection from the closure-global `selections` list.
-        var index_of_this = selections.indexOf(this);
-        selections.splice(index_of_this, 1, null);
     }
 
 
@@ -1283,7 +1305,7 @@ $.imgAreaSelect = function (img, options) {
     }
 
     /**
-     * Set the current selection
+     * Create a new selection
      * 
      * @param x1
      *            X coordinate of the upper left corner of the selection area
@@ -1296,13 +1318,15 @@ $.imgAreaSelect = function (img, options) {
      * @param noScale
      *            If set to <code>true</code>, scaling is not applied to the
      *            new selection
+     * @return selection object from the newly-created Selection. May be
+     *            different from given coordinates if they overlap.
      */
 
     this.createNewSelection = function(x1, y1, x2, y2){ 
         var s = new Selection(x1, y1, x2, y2);
-        if(_(selections).map(function(otherSelection){ return s ? s.overlaps(otherSelection) : false }).indexOf(true) > -1)
-            throw "Error: New selection overlaps existing selection."
         selections.push(s);
+        if(!options.allowOverlaps)
+            _(selections).map(function(otherSelection){ return s ? s.fixOverlaps(otherSelection) : false }).indexOf(true) > -1;
         return s.getSelection();
     };
     //TODO: create a setSelection method that modifies all selection objects. (maybe?)
@@ -1316,11 +1340,12 @@ $.imgAreaSelect = function (img, options) {
      */
     this.cancelSelections = function(){ 
             // I can't simply do `_(selections).each(function(s){ s.cancelSelection(true); });` because cancelSelection modifies `selections` concurrently with iterating over `selections`, so some selections get skipped.
-            var selectionsLength = selections.length
-            while(selectionsLength > 0){
+            var selectionsIndex = selections.length
+            while(selectionsIndex >= 1){
                 if(selections[0]) //skip the nulls.
-                    selections[0].cancelSelection(true);
-                selectionsLength--;
+                    selections[selectionsIndex - 1].cancelSelection(true);
+                selectionsIndex--;
+                //console.log(selectionsIndex, selections);
             }
         };
     
