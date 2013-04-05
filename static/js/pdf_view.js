@@ -435,8 +435,11 @@ $(function () {
               doQuery(PDF_ID, [query_parameters]);
             }
         },
-        onSelectCancel: function(img, selection){
-          $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id).remove();
+        onSelectCancel: function(img, selection, selectionId){
+          $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selectionId).remove();
+          console.log("selections on page: " + totalSelections() ); // this one hasn't been deleted yet.
+          toggleClearAllAndRestorePredetectedTablesButtons(totalSelections());
+          //TODO, if there are no selections, activate the restore detected tables button.
         }
       });
     });
@@ -501,7 +504,8 @@ $(function () {
               .css('width', ((selection.x2 - selection.x1) * thumbScale) + 'px')
               .css('height', ((selection.y2 - selection.y1) * thumbScale) + 'px');
 
-        })
+        });
+        //imgAreaSelectAPIObj.createNewSelection(50, 50, 300, 300); //for testing overlaps from API.
       }
 
       for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
@@ -561,4 +565,18 @@ $(function () {
 
       doQuery(PDF_ID, query_parameters);
     })
+  function totalSelections(){
+    return _.reduce(imgAreaSelects, function(memo, s){ return memo + s.getSelections().length; }, 0);
+  }
+  function toggleClearAllAndRestorePredetectedTablesButtons(numOfSelectionsOnPage){
+    console.log("num: " + numOfSelectionsOnPage);
+    if(numOfSelectionsOnPage <= 0){
+      $("#clear-all-selections").hide();
+      $("#restore-detected-tables").show();
+    }else{
+      $("#clear-all-selections").show();
+      $("#restore-detected-tables").hide();
+    }
+  }
+
 });
