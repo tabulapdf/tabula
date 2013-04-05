@@ -379,6 +379,7 @@ $(function () {
       return $(image).imgAreaSelect({
         handles: true,
         instance: true,
+        allowOverlaps: false,
         //minHeight: 50, minWidth: 100,
 
         onSelectStart: function(img, selection)  {
@@ -416,7 +417,7 @@ $(function () {
             // var tmp;
             // switch(pdf_rotation) {
             // case 180:
-            //     console.log('180 carajo!');
+            //     console.log('180 carajo!'); //yesssssss -Jeremy
             //     tmp = selection.x1; selection.x1 = selection.x2; selection.x2 = tmp;
             //     tmp = selection.y1; selection.y1 = selection.y2; selection.y2 = tmp;
             // }
