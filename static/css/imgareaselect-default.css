@@ -24,6 +24,13 @@
 	opacity: 0.5;
 }
 
+.imgareaselect-box{
+    /* placeholder */
+    background-color: #000;
+    filter: alpha(opacity=50);
+    opacity: 0.3;
+}
+
 .imgareaselect-handle {
     background-color: #fff;
     border: solid 1px #000;
@@ -38,4 +45,19 @@
 }
 
 .imgareaselect-selection {  
+}
+.imgareaselect-closebtn{
+    width: 16px;
+    color: black;
+    height: 16px;
+    z-index: 7;
+    margin: 0px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    display: inline-table;
+    position: absolute;
+}
+.imgareaselect-closebtn .closeBtnInner{
 }

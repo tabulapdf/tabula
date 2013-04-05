@@ -13,6 +13,31 @@ $(document).ready(function() {
 
 });
 
+$(document).ready(function() {
+    elem = $(".followyouaroundbar");
+
+    stick = function() {
+      var windowTop = $(window).scrollTop();
+      var footerTop = 50000; // this.jFooter.offset().top;
+      var topOffset = this.offset().top;
+      var elHeight = this.height();
+
+      if (windowTop > topOffset && windowTop < footerTop) {
+        this
+          .css("position", "fixed")
+          .css("top", 70)
+          .css("box-shadow", "rgba(0, 0, 0, 0.1) 0px 4px 5px 0px")
+      } else if (windowTop > footerTop) {
+        this
+        .css("position", "absolute")
+        .css("top", 70)
+        .css("box-shadow", "rgba(0, 0, 0, 0) 0px 4px 5px 0px")
+      }
+    }
+
+    $(window).scroll(_.throttle(_.bind(stick, elem), 100));
+});
+
 var debugRulings;
 var debugColumns;
 var debugRows;
@@ -25,7 +50,7 @@ var COLORS = ['#f00', '#0f0', '#00f', '#ffff00', '#FF00FF'];
 $(function () {
 
     $('button.close#directions').click(function(){
-      $('div.ias').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
+      $('div.imgareaselect').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
     })
 
     var PDF_ID = window.location.pathname.split('/')[2];
@@ -293,7 +318,9 @@ $(function () {
     $('a.tooltip-modal').tooltip();
 
     $('input#use_lines').change(function() {
-        $.extend(lastQuery, { use_lines: $(this).is(':checked') });
+        _(lastQuery).map(function(selection_params){
+          $.extend(selection_params, { use_lines: $(this).is(':checked') });
+        });
         doQuery(PDF_ID, lastQuery);
     });
 
@@ -302,7 +329,7 @@ $(function () {
                         { class: 'selection-show'}));
     });
 
-    query_parameters = {};
+    //query_parameters = {}; //uhh.
 
 
     $('#myModal').on('hide', function() {
@@ -312,12 +339,16 @@ $(function () {
     var doQuery = function(pdf_id, query_parameters) {
         $('#loading').css('left', ($(window).width() - 98) + 'px').css('visibility', 'visible');
 
-        lastQuery = query_parameters;
+        lastQuery = _(query_parameters).map(function(selection_params){
+          $.extend(selection_params, { use_lines: $('#use_lines').is(':checked') });
+        })
 
-        $.extend(lastQuery, { use_lines: $('#use_lines').is(':checked') });
+        var real_query_parameters = {coords: JSON.stringify(query_parameters) ,
+                use_lines :  $('#use_lines').is(':checked')
+              };
 
         $.get('/pdf/' + pdf_id + '/data',
-              query_parameters,
+              real_query_parameters,
               function(data) {
                   var tableHTML = '<table contenteditable="true" class="table table-condensed table-bordered">';
                   $.each(data, function(i, row) {
@@ -326,16 +357,28 @@ $(function () {
                   tableHTML += '</table>';
 
                   $('.modal-body').html(tableHTML);
-                  $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(query_parameters));
+                  $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(real_query_parameters));
+                  // $('#download-csv').click(function(){ 
+                  //                       $.post('/pdf/' + pdf_id + '/data',
+                  //                         {coords: JSON.stringify(query_parameters) ,
+                  //                           use_lines :  $('#use_lines').is(':checked'),
+                  //                           format : 'csv'
+                  //                         },
+                  //                         function(data){ window.open(data);}
+                  //                         )
+                  //                     });
                   $('#myModal').modal();
                   clip.glue('#copy-csv-to-clipboard');
                   $('#loading').css('visibility', 'hidden');
               });
     };
 
-    $('img.page-image').imgAreaSelect({
+    imgAreaSelects = $.map($('img.page-image'), function(image){ 
+      return $(image).imgAreaSelect({
         handles: true,
+        instance: true,
         //minHeight: 50, minWidth: 100,
+
         onSelectStart: function(img, selection)  {
             $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
         },
@@ -349,6 +392,8 @@ $(function () {
 
         },
         onSelectEnd: function(img, selection) {
+            console.log(selection);
+
             if (selection.width == 0 && selection.height == 0) {
                 $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'none');
             }
@@ -377,6 +422,7 @@ $(function () {
 
             var scale = (pdf_width / thumb_width);
 
+
             var query_parameters = {
                 x1: selection.x1 * scale,
                 x2: selection.x2 * scale,
@@ -385,7 +431,123 @@ $(function () {
                 page: $(img).data('page')
             };
 
-            doQuery(PDF_ID, query_parameters);
-        }});
+            doQuery(PDF_ID, [query_parameters]);
+        }
+      });
+    });
+    // only run these functions if the image is loaded already. 
+    // TODO: this works better than it used to, but still fails sometimes.
+    // clearly a race condition.
+    // http://stackoverflow.com/questions/1743880/image-height-using-jquery-in-chrome-problem
+    $.getJSON("/pdfs/" + PDF_ID + "/tables.json", function(tableGuesses){ 
 
+      function drawDetectedTablesHelper(e){ drawDetectedTables(e.currentTarget)}
+
+      function drawDetectedTables(e){
+        img = $(e);
+
+        imageIndex = parseInt(img.attr("id").replace("page-", '')) - 1;
+
+        var thumb_width = img.width();
+        var thumb_height = img.height();
+
+        var pdf_width = parseInt(img.data('original-width'));
+        var pdf_height = parseInt(img.data('original-height'));
+        var pdf_rotation = parseInt(img.data('rotation'));
+
+        // if rotated, swap width and height
+        if (pdf_rotation == 90 || pdf_rotation == 270) {
+            var tmp = pdf_height;
+            pdf_height = pdf_width;
+            pdf_width = tmp;
+        }
+
+        var scale = (pdf_width / thumb_width);
+
+        console.log(tableGuesses);
+
+        _(tableGuesses[imageIndex]).each(function(tableGuess){ 
+
+          var my_x2 = tableGuess[0] + tableGuess[2];
+          var my_y2 = tableGuess[1] + tableGuess[3];
+
+          // console.log("page: " + imageIndex + 1);
+          // console.log(tableGuess);
+          // console.log(scale);
+          // console.log(my_x2 / scale);
+          // console.log(my_y2 / scale);
+          // console.log("");
+          imgAreaSelectAPIObj = imgAreaSelects[imageIndex];
+
+          //setSelection on an imgAreaSelectAPIObj really just creates a new selection.
+          imgAreaSelectAPIObj.setSelection(tableGuess[0] / scale, 
+                                        tableGuess[1] / scale, 
+                                        my_x2 / scale, 
+                                        my_y2 / scale);
+          imgAreaSelectAPIObj.setOptions({show: true});
+          imgAreaSelectAPIObj.update();
+
+
+          //draw red boxes on the thumbnails on teh left. currently broken.
+          //need to rewrite to create a new .selection-show element.
+          //need to link up .selection-shows with imgAreaSelect cancels (probably with a new onSelectCancel function)
+          $('#thumb-' + img.attr('id') + ' .selection-show').css('display', 'block');
+          var sshow = $('#thumb-' + img.attr('id') + ' .selection-show');
+          var thumbScale = $('#thumb-' + img.attr('id') + ' img').width() / img.width();
+          $(sshow).css('top', tableGuess[1] * thumbScale + 'px')
+              .css('left', tableGuess[0] * thumbScale + 'px')
+              .css('width', ((tableGuess[2] - tableGuess[0]) * thumbScale) + 'px')
+              .css('height', ((tableGuess[3] - tableGuess[1]) * thumbScale) + 'px');
+
+        })
+      }
+
+      for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
+        var pageIndex = imageIndex + 1;
+        if($('img#page-' + pageIndex)[0].complete){
+          drawDetectedTables($('img#page-' + pageIndex)[0]);
+        }else{
+          $('img#page-' + pageIndex).load(drawDetectedTablesHelper);
+        }
+      }
+      $('img.page-image').load(function(){$.each(imgAreaSelects, function(n, q){ q.update() });});
+    });
+
+    $('#all-data').on("click", function(){
+      query_parameters = [];
+      _(imgAreaSelects).each(function(imgAreaSelectAPIObj){
+
+          var thumb_width = imgAreaSelectAPIObj.getImg().width();
+          var thumb_height = imgAreaSelectAPIObj.getImg().height();
+
+          var pdf_width = parseInt(imgAreaSelectAPIObj.getImg().data('original-width'));
+          var pdf_height = parseInt(imgAreaSelectAPIObj.getImg().data('original-height'));
+          var pdf_rotation = parseInt(imgAreaSelectAPIObj.getImg().data('rotation'));
+
+          // if rotated, swap width and height
+          if (pdf_rotation == 90 || pdf_rotation == 270) {
+              var tmp = pdf_height;
+              pdf_height = pdf_width;
+              pdf_width = tmp;
+          }
+
+          var scale = (pdf_width / thumb_width);
+
+
+
+        _(imgAreaSelectAPIObj.getSelections()).each(function(selection){
+
+          new_query = {
+                x1: selection.x1 * scale,
+                x2: selection.x2 * scale,
+                y1: selection.y1 * scale,
+                y2: selection.y2 * scale,
+                page: imgAreaSelectAPIObj.getImg().data('page')
+              }
+          query_parameters.push(new_query);
+        });
+      });
+
+      doQuery(PDF_ID, query_parameters);
+    })
 });

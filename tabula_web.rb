@@ -19,6 +19,7 @@ require './lib/parse_xml.rb'
 require './lib/tabula_graph.rb'
 require './lib/jobs/analyze_pdf.rb'
 require './lib/jobs/generate_thumbails.rb'
+require './lib/jobs/detect_tables.rb'
 require './local_settings.rb'
 
 Cuba.plugin Cuba::Render
@@ -32,50 +33,69 @@ Cuba.define do
     end
   end
 
-  on get do
-    on root do
-      res.write view("index.html")
-    end
+  #this has to respond to both GET and POST (since some requests' params are too long for a URL and thus have to be a POST)
+  #so I put this here to be DRY.
+  respond_to_data = Proc.new do |file_id|
+    pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
 
-    on "pdf/:file_id/data" do |file_id|
-      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
+      coords = JSON.load(req.params['coords'])
 
-      text_elements = Tabula::XML.get_text_elements(pdf_path,
-                                                    req.params['page'],
-                                                    req.params['x1'],
-                                                    req.params['y1'],
-                                                    req.params['x2'],
-                                                    req.params['y2'])
-      make_table_options = {}
+      output_data = []
 
-      if !req.params['use_lines'].nil? and req.params['use_lines'] != 'false'
-        page_dimensions = Tabula::XML.get_page_dimensions(pdf_path, req.params['page'])
-        rulings = Tabula::Rulings::detect_rulings(File.join(pdf_path,
-                                                            "document_2048_#{req.params['page']}.png"),
-                                                  page_dimensions[:width] / 2048.0)
+      #sort these in order first, by page, then by y coordinates (truncated), then by x coordinates
+      # so that data comes out in reading order even if there are multiple tables on a page.
+      coords.sort_by{|coord| [ coord['page'], [coord['y1'], coord['y2']].min.to_i / 10, [coord['x1'], coord['x2']].min ] }.each do |coord|
 
-        make_table_options[:horizontal_rulings] = rulings[:horizontal]
-        make_table_options[:vertical_rulings] = rulings[:vertical]
+        text_elements = Tabula::XML.get_text_elements(pdf_path,
+                                                      coord['page'],
+                                                      coord['x1'],
+                                                      coord['y1'],
+                                                      coord['x2'],
+                                                      coord['y2'])
+        make_table_options = {}
+
+
+        if !req.params['use_lines'].nil? and req.params['use_lines'] != 'false'
+          page_dimensions = Tabula::XML.get_page_dimensions(pdf_path, req.params['page'])
+          rulings = Tabula::Rulings::detect_rulings(File.join(pdf_path,
+                                                              "document_2048_#{req.params['page']}.png"),
+                                                    page_dimensions[:width] / 2048.0)
+
+          make_table_options[:horizontal_rulings] = rulings[:horizontal]
+          make_table_options[:vertical_rulings] = rulings[:vertical]
+        end
+
+        table = Tabula.make_table(text_elements, make_table_options)
+
+        output_data += table.map { |line|
+          line.text_elements.sort_by { |t| t.left }
+        }
+        output_data += [[],[]] unless coord == coords.last
       end
 
-      table = Tabula.make_table(text_elements, make_table_options)
-
-      line_texts = table.map { |line|
-        line.text_elements.sort_by { |t| t.left }
-      }
-
       if req.params['format'] == 'csv'
-        res['Content-Type'] = 'text/csv'
+        res['Content-Type'] = 'application/force-download' #'text/csv'
+        res['Content-disposition'] = "attachment; filename=download.csv"
         csv_string = CSV.generate { |csv|
-          line_texts.each { |l|
+          output_data.each { |l|
             csv << l.map { |c| c.text }
           }
         }
         res.write csv_string
       else
         res['Content-Type'] = 'application/json'
-        res.write line_texts.to_json
+        res.write output_data.to_json
       end
+    end
+
+
+  on get do
+    on root do
+      res.write view("index.html")
+    end
+
+    on "pdf/:file_id/data" do |file_id|
+      respond_to_data.call(file_id)
     end
 
     on "pdf/:file_id" do |file_id|
@@ -84,6 +104,7 @@ Cuba.define do
         res.status = 404
       else
         res.write view("pdf_view.html",
+                       file_id: file_id,
                        page_images: Dir.glob(File.join(document_dir, "document_560_*.png"))
                          .sort_by { |f| f.gsub(/[^\d]/, '').to_i }
                          .map { |f| f.gsub(Dir.pwd + '/static', '') },
@@ -154,7 +175,12 @@ Cuba.define do
         res.write view("upload_error.html",
             :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
       else
-        # fire off thumbnail jobs
+        # fire off thumbnail and table detection jobs; table detection goes first, since it often takes longer.
+        table_detector = DetectTablesJob.create(
+          :file_id => file_id,
+          :file => file,
+          :output_dir => file_path
+        )
         sm_thumbnail_job = GenerateThumbnailJob.create(
           :file => file,
           :output_dir => file_path,
@@ -170,10 +196,14 @@ Cuba.define do
           :file => file,
           :output_dir => file_path,
           :sm_thumbnail_job => sm_thumbnail_job,
-          :lg_thumbnail_job => lg_thumbnail_job
+          :lg_thumbnail_job => lg_thumbnail_job,
+          :table_detection_job => table_detector
         )
         res.redirect "/queue/#{upload_id}"
       end
+    end
+    on "pdf/:file_id/data" do |file_id|
+      respond_to_data.call(file_id)
     end
   end
 
