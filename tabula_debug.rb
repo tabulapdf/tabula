@@ -9,11 +9,11 @@ class TabulaDebug < Cuba
                                                     req.params['x2'],
                                                     req.params['y2'])
 
-      whitespace =  Tabula.find_whitespace(text_elements,
-                                           Tabula::ZoneEntity.new(req.params['y1'].to_f,
-                                                                  req.params['x1'].to_f,
-                                                                  req.params['x2'].to_f - req.params['x1'].to_f,
-                                                                  req.params['y2'].to_f - req.params['y1'].to_f))
+      whitespace =  Tabula::Whitespace.find_whitespace(text_elements,
+                                                       Tabula::ZoneEntity.new(req.params['y1'].to_f,
+                                                                              req.params['x1'].to_f,
+                                                                              req.params['x2'].to_f - req.params['x1'].to_f,
+                                                                              req.params['y2'].to_f - req.params['y1'].to_f))
 
       res['Content-Type'] = 'application/json'
       res.write whitespace.to_json

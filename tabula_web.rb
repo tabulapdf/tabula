@@ -12,12 +12,12 @@ require 'resque/status_server'
 require 'resque/job_with_status'
 
 require './tabula_debug.rb'
-require './lib/detect_rulings.rb'
-require './lib/tabula.rb'
-require './lib/parse_xml.rb'
-require './lib/tabula_graph.rb'
+
+require './tabula_extractor/tabula.rb'
+
 require './lib/jobs/analyze_pdf.rb'
 require './lib/jobs/generate_thumbails.rb'
+
 require './local_settings.rb'
 
 Cuba.plugin Cuba::Render

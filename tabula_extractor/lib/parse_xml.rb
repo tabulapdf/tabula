@@ -1,7 +1,5 @@
 require 'nokogiri'
 
-require_relative './tabula'
-
 module Tabula
   module XML
 

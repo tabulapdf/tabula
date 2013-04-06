@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-require 'open3'
 require 'tmpdir'
 
 require 'minitest/autorun'
 
 require_relative '../local_settings'
-require_relative '../lib/tabula'
-require_relative '../lib/detect_rulings'
-require_relative '../lib/parse_xml.rb'
+require_relative '../tabula_extractor/tabula.rb'
 
 # TODO enhancement: run jruby --ng-server before starting the tests
 # and run jruby_dump_characters.rb with --ng
