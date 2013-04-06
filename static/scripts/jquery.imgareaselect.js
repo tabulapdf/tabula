@@ -325,9 +325,9 @@ $.imgAreaSelect = function (img, options) {
          * borderOpacity, borderColor1, and borderColor2 options (which are now
          * deprecated). Borders created with GIF background images are fine.
          */ 
-        if ($.browser.msie && $border.outerWidth() - $border.innerWidth() == 2) {
-            $border.css('margin', 0);
-            setTimeout(function () { $border.css('margin', 'auto'); }, 0);
+        if ($.browser.msie && this.$border.outerWidth() - this.$border.innerWidth() == 2) {
+            this.$border.css('margin', 0);
+            setTimeout(function () { this.$border.css('margin', 'auto'); }, 0);
         }
     }
 
