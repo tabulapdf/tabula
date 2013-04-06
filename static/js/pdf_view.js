@@ -327,6 +327,7 @@ $(function () {
 
                   $('.modal-body').html(tableHTML);
                   $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(query_parameters));
+                  $('#download-tsv').attr('href', '/pdf/' + pdf_id + '/data?format=tsv&' + $.param(query_parameters));
                   $('#myModal').modal();
                   clip.glue('#copy-csv-to-clipboard');
                   $('#loading').css('visibility', 'hidden');

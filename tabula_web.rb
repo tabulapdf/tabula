@@ -64,7 +64,8 @@ Cuba.define do
         line.text_elements.sort_by { |t| t.left }
       }
 
-      if req.params['format'] == 'csv'
+      case req.params['format'] 
+      when 'csv'
         res['Content-Type'] = 'text/csv'
         csv_string = CSV.generate { |csv|
           line_texts.each { |l|
@@ -72,6 +73,12 @@ Cuba.define do
           }
         }
         res.write csv_string
+      when 'tsv'
+        res['Content-Type'] = 'text/tab-separated-values'
+        tsv_string = line_texts.collect { |l|
+            l.collect { |c| c.text }.join("\t")
+          }.join("\n")
+        res.write tsv_string
       else
         res['Content-Type'] = 'application/json'
         res.write line_texts.to_json
