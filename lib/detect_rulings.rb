@@ -1,5 +1,3 @@
-require 'set'
-
 require 'opencv'
 
 require_relative './tabula.rb'
