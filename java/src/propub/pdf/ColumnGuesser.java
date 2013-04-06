@@ -207,7 +207,7 @@ public class ColumnGuesser {
     }
     
     public static String hashAPoint(double point ){
-    	return String.valueOf(Math.round(point / 10.0));
+    	return String.valueOf(Math.round(point / 20.0));
     }
     public static String hashRectangle(Rectangle2D.Double r){
     	return hashAPoint(r.x) + "," + hashAPoint(r.y) + "," + hashAPoint(r.height) + "," + hashAPoint(r.width);
