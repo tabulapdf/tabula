@@ -1,8 +1,9 @@
 # Tabula
 
-Tabula helps you liberate data tables trapped inside evil PDFs.
+Tabula helps you liberate data tables trapped inside PDF files.
 
-A demo is available at: http://tabula.nerdpower.org/
+* [Read more about Tabula on OpenNews Source](http://source.mozillaopennews.org/en-US/articles/introducing-tabula/)
+* [Check out the (feature-limited) demo](http://tabula.nerdpower.org/)
 
 © 2012-2013 Manuel Aristarán. Available under MIT License. See `AUTHORS.md`
 and `LICENSE.md`.
@@ -18,17 +19,35 @@ a simple web interface:
 
 **Caveat**: Tabula only works on text-based PDFs, not scanned documents.
 
+## Amazon EC2 AMI
 
-## Installation
+An Amazon EC2 AMI image is provided to give you a chance to boot up a quick test server: `ami-e895f081`
+
+You can find a simple how-to [in `docs/ami-install.md`](docs/ami-install.md).
+
+### Caveats
+
+Note the [EC2 instance types](https://aws.amazon.com/ec2/instance-types/)
+and [EC2 pricing](https://aws.amazon.com/ec2/pricing/). We’re not responsible
+for any costs this may incur.
+
+Also, please note that this image is a development demo image and may not be
+secure. Using this AMI for mission-critical or sensitive documents is currently
+not recommended.
+
+## Manual Installation (OS X or Linux)
+
+<i>(<b>Note:</b> A comprehensive, mostly copy-and-paste set of instructions is available for
+OS X users that normally don't do Ruby development but are interested bootstrapping
+Tabula on their own computer: [`docs/osx-simple-bootstrap.md`](docs/osx-simple-bootstrap.md))</i>
 
 1. Install Ruby and JRuby. Tabula been tested with Ruby 1.9.3 and JRuby 1.7.3.
-   We recommend using [rbenv](https://github.com/sstephenson/rbenv/) to manage
-   your Ruby versions. (JRuby is required to interface with `pdfbox`, but
-   native Ruby must also be used since `ruby-opencv` is a natively compiled
-   extension.)
+   We *highly* recommend using [rbenv](https://github.com/sstephenson/rbenv/)
+   to manage your Ruby versions, as rvm is a bit finicky. (JRuby is required
+   to interface with `pdfbox`, but native Ruby must also be used since
+   `ruby-opencv` is a natively compiled extension.)
 
    If using rbenv:
-
    ~~~
    rbenv install 1.9.3-p392
    rbenv install jruby-1.7.3
