@@ -4,7 +4,6 @@ require 'cuba/render'
 
 raise Errno::ENOENT, "'./local_settings.rb' could not be found. See README.md for more info." unless File.exists?('./local_settings.rb')
 
-require 'nokogiri'
 require 'digest/sha1'
 require 'json'
 require 'csv'
@@ -64,7 +63,7 @@ Cuba.define do
         line.text_elements.sort_by { |t| t.left }
       }
 
-      case req.params['format'] 
+      case req.params['format']
       when 'csv'
         res['Content-Type'] = 'text/csv'
         csv_string = CSV.generate { |csv|
@@ -94,10 +93,8 @@ Cuba.define do
                        page_images: Dir.glob(File.join(document_dir, "document_560_*.png"))
                          .sort_by { |f| f.gsub(/[^\d]/, '').to_i }
                          .map { |f| f.gsub(Dir.pwd + '/static', '') },
-                       pages: File.open(File.join(Dir.pwd,
-                                                  "static/pdfs/#{file_id}/pages.xml")) { |index_file|
-                         Nokogiri::XML(index_file).xpath('//page')
-                       })
+                       pages: Tabula::XML.get_pages(File.join(Settings::DOCUMENTS_BASEPATH,
+                                                               file_id)))
       end
     end
 

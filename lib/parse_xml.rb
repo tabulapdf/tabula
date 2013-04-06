@@ -37,5 +37,11 @@ module Tabula
       end
       { :width => width, :height => height }
     end
+
+    def XML.get_pages(document_base_path)
+      index_file = File.open(File.join(document_base_path, 'pages.xml'))
+      Nokogiri::XML(index_file).xpath('//page')
+    end
+
   end
 end
