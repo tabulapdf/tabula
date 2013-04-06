@@ -47,16 +47,12 @@
     <button id="close-modal" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
     <button class="btn btn-primary" id="copy-csv-to-clipboard">Copy to clipboard as CSV</button>
     <div class="btn-group">
-        <button class="btn btn-primary" >Download data as...</button>
-        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-          <li><a id="download-csv">CSV</a></li>
-          <li><a id="download-tsv">TSV</a></li>
-        </ul>
-    </a>
-  </div>
+      <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Download data <span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li><a id="download-csv">CSV</a></li>
+        <li><a id="download-tsv">TSV</a></li>
+      </ul>
+    </div>
 </div>
 <script type="text/javascript" src="/js/ZeroClipboard.js"></script>
 <script type="text/javascript" src="/js/table2CSV.js"></script>
