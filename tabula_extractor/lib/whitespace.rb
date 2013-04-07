@@ -2,6 +2,10 @@ require 'algorithms'
 module Tabula
   module Whitespace
 
+    # Detect whitespace in a document (not yet used in Tabula)
+    # Described in "Two Geometric Algorithms for layout analysis" (Thomas Breuer)
+    # http://pdf.aminer.org/000/140/219/two_geometric_algorithms_for_layout_analysis.pdf
+
     def self.find_closest(text_elements, x, y)
       text_elements.sort_by { |te|
         Math.sqrt((x - te.midpoint[0]) ** 2 + (y - te.midpoint[1]) ** 2)
