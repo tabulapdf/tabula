@@ -137,8 +137,7 @@ end
 def print_text_locations(pdf_filename, output_directory)
   xg = XMLGenerator.new(pdf_filename, output_directory)
   xg.add_observer(STDERRProgressReporter.new)
-  thr = Thread.new { xg.generate_xml! }
-  thr.join
+  xg.generate_xml!
 end
 
 if __FILE__ == $0
