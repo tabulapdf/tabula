@@ -7,17 +7,17 @@ raise Errno::ENOENT, "'./local_settings.rb' could not be found. See README.md fo
 require 'digest/sha1'
 require 'json'
 require 'csv'
-require 'resque'
-require 'resque/status_server'
-require 'resque/job_with_status'
 
-require './tabula_debug.rb'
+if RUBY_PLATFORM !~ /java/
+  require 'resque'
+  require 'resque/status_server'
+  require 'resque/job_with_status'
+  require './lib/jobs/analyze_pdf.rb'
+  require './lib/jobs/generate_thumbails.rb'
+end
+
 
 require './tabula_extractor/tabula.rb'
-
-require './lib/jobs/analyze_pdf.rb'
-require './lib/jobs/generate_thumbails.rb'
-
 require './local_settings.rb'
 
 Cuba.plugin Cuba::Render
@@ -26,10 +26,19 @@ Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/pdfs", "/s
 Cuba.define do
 
   if Settings::ENABLE_DEBUG_METHODS
+    require './tabula_debug.rb'
     on 'debug' do
       run TabulaDebug
     end
   end
+
+  if Settings::ASYNC_UPLOADS
+    require './tabula_job_progress.rb'
+    on 'queue' do
+      run TabulaJobProgress
+    end
+  end
+
 
   on get do
     on root do
@@ -98,47 +107,6 @@ Cuba.define do
       end
     end
 
-    on "queue/:upload_id/json" do |upload_id|
-      # upload_id is the "job id" uuid that resque-status provides
-      status = Resque::Plugins::Status::Hash.get(upload_id)
-      res['Content-Type'] = 'application/json'
-      message = {}
-      if status.nil?
-        res.status = 404
-        message[:status] = "error"
-        message[:message] = "No such job"
-        message[:pct_complete] = 0
-      elsif status.failed?
-        message[:status] = "error"
-        message[:message] = "Sorry, your file upload could not be processed. Please double-check that the file you uploaded is a valid PDF file and try again."
-        message[:pct_complete] = 99
-        res.write message.to_json
-      else
-        message[:status] = status.status
-        message[:message] = status.message
-        message[:pct_complete] = status.pct_complete
-        message[:thumbnails_complete] = status['thumbnails_complete']
-        message[:file_id] = status['file_id']
-        message[:upload_id] = status['upload_id']
-        res.write message.to_json
-      end
-    end
-
-    on "queue/:upload_id" do |upload_id|
-      # upload_id is the "job id" uuid that resque-status provides
-      status = Resque::Plugins::Status::Hash.get(upload_id)
-      if status.nil?
-        res.status = 404
-        res.write ""
-        res.write view("upload_error.html",
-            :message => "invalid upload_id (TODO: make this generic 404)")
-      elsif status.failed?
-        res.write view("upload_error.html",
-            :message => "Sorry, your file upload could not be processed. Please double-check that the file you uploaded is a valid PDF file and try again.")
-      else
-        res.write view("upload_status.html", :status => status, :upload_id => upload_id)
-      end
-    end
   end # /get
 
   on post do
@@ -153,6 +121,7 @@ Cuba.define do
 
       # Make sure this is a PDF.
       # TODO: cleaner way to do this without blindly relying on file extension (which we provided)?
+      # TODO: this won't work on Windows. Fix.
       mime = `file -b --mime-type #{file}`
       if !mime.include? "application/pdf"
         res.write view("upload_error.html",

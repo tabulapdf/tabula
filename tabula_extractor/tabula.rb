@@ -23,7 +23,6 @@ module Tabula
     TableExtractor.new(text_elements, :merge_words => merge_words).get_rows
   end
 
-
   ONLY_SPACES_RE = Regexp.new('^\s+$')
   def Tabula.make_table(text_elements, options={})
     extractor = TableExtractor.new(text_elements, options)
