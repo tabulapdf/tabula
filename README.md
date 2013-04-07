@@ -82,6 +82,14 @@ Tabula on their own computer: [`docs/osx-simple-bootstrap.md`](docs/osx-simple-b
     brew install mupdf redis
     ~~~
 
+    On Ubuntu, 12.10 Quantal:
+
+    ~~~
+    sudo apt-get install opencv opencv-dev
+    sudo add-apt-repository ppa:mupdf/daily    sudo apt-get install mupdf mupdf-tools
+    sudo apt-get install redis-server
+    ~~~
+
 4. Download Tabula and install the Ruby dependencies. (Note: ensure that
    `rbenv` is configured for the standard Ruby interpreter, not JRuby)
 
@@ -97,10 +105,18 @@ Tabula on their own computer: [`docs/osx-simple-bootstrap.md`](docs/osx-simple-b
    Edit `local_settings.rb` and set `JRUBY_PATH` to the path to the `jruby`
    executable.
 
-   If you are using rbenv, you can find the path to `jruby` by doing:
+   If you are using `rbenv`, you can find the path to `jruby` by doing:
 
    ~~~
    RBENV_VERSION='jruby-1.7.3' rbenv which jruby
+   ~~~
+
+   If you are using `rvm`, you can find the `jruby` path with:
+
+   ~~~
+   rvm use jruby
+   which ruby
+   rvm use 1.9.3 #(or your choice of default ruby)
    ~~~
 
 ## Starting the Server (Dev)
