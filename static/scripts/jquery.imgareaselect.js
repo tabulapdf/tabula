@@ -858,8 +858,6 @@ $.imgAreaSelect = function (img, options) {
          * hide the selection and the outer area
          */
 
-         //TODO: make a "last edited selection" variable to keep track of the selection to rebind stuff to.
-
         if (options.autoHide /*|| selection.width * selection.height == 0*/)
             hide(most_recent_selection.$box/*.add($outer)*/, function () { $(most_recent_selection).hide(); });
 
