@@ -136,8 +136,9 @@ $(function () {
             .css('top', imagePos.top + 'px')
             .css('left', imagePos.left + 'px');
         $('body').append(newCanvas);
+        var pdf_width = parseInt($(image).data('original-width'));
 
-        var scaleFactor = image.width() / 2048.0;
+        var scaleFactor = image.width() / pdf_width ;
 
         var lq = $.extend(lastQuery,
                           {
@@ -148,7 +149,6 @@ $(function () {
               lq,
               function(data) {
                   $.each(data, function(i, ruling) {
-                      console.log(ruling);
                       $("canvas").drawLine({
                           strokeStyle: COLORS[i % COLORS.length],
                           strokeWidth: 1,
