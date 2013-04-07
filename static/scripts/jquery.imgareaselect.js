@@ -78,6 +78,9 @@ $.imgAreaSelect = function (img, options) {
         /* Parent element offset (as returned by .offset()) */
         parOfs = { left: 0, top: 0 },
 
+        /* keeps track of the most recently edited selection, for proper event binding/unbinding. */
+        most_recent_selection, 
+
         /*
          * jQuery object representing the parent element that the plugin
          * elements are appended to. 
@@ -418,6 +421,8 @@ $.imgAreaSelect = function (img, options) {
 
         adjust();
 
+        most_recent_selection = this;
+
         if (this.resize) {
             /* Resize mode is in effect */
             $('body').css('cursor', this.resize + '-resize');
@@ -623,7 +628,6 @@ $.imgAreaSelect = function (img, options) {
 
     Selection.prototype.fixOverlaps = function(otherSelection){
         //TODO: this doesn't respect minHeight, minWidth
-        //TODO: call this when a selection is moved. (but restore selection to where it started?)
         console.log("fixOverlaps");
         this.fixResizeOverlaps(otherSelection); //fixes x1, x2
         this.x2 = max(left, min(this.x2, left + imgWidth));
@@ -813,6 +817,7 @@ $.imgAreaSelect = function (img, options) {
 
         s = new Selection();
         selections.push(s);
+        most_recent_selection = s;
 
         adjust();
         //TODO: move most of this to the constructor?
@@ -854,15 +859,14 @@ $.imgAreaSelect = function (img, options) {
          */
 
          //TODO: make a "last edited selection" variable to keep track of the selection to rebind stuff to.
-        s = selections[selections.length - 1];
 
         if (options.autoHide /*|| selection.width * selection.height == 0*/)
-            hide(s.$box/*.add($outer)*/, function () { $(this).hide(); });
+            hide(most_recent_selection.$box/*.add($outer)*/, function () { $(most_recent_selection).hide(); });
 
         $(document).unbind('mousemove.imgareaselect');
-        s.$box.mousemove(_.bind(s.areaMouseMove, s));
+        most_recent_selection.$box.mousemove(_.bind(most_recent_selection.areaMouseMove, most_recent_selection));
         
-        options.onSelectEnd(img, s.getSelection());
+        options.onSelectEnd(img, most_recent_selection.getSelection());
     }
 
 
@@ -1031,7 +1035,7 @@ $.imgAreaSelect = function (img, options) {
         $(document).mousemove(startSelection).on('mouseup.nozerosize.imgareaselect', function(){
             most_recent_selection = selections[selections.length - 1];
             most_recent_selection.cancelSelection();
-        }); 
+        });
         //for multi-select, remove mouseup(); a click on the image doesn't erase the previous selection.
         // on second thought, I'm not sure that's what's going on. I think mouseup just erases the selection if you didn't move the mouse.
         // on third thought, I need to reengineer this so that I have a cancelSelection fucntion.
