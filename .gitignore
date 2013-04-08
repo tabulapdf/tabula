@@ -1,5 +1,6 @@
 static/pdfs
 local_settings.rb
+tabula.war
 
 .ruby-version
 .ruby-gemset
