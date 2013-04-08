@@ -8,6 +8,7 @@
   * Convert ColumnGuesser.java into JRuby or jruby_dump_characters into Java. (This will save significant startup time by not having to start the JVM repeatedly. Or implement Nailgun.)
   * Ability to apply a lasso to all subsequent pages in a document.
   * Modify imgAreaSelect (or replace it with another JS library) to allow multiple selects. (The data should probably be concatenated, then made available for viewing/download/clipboard.)
+  * Save a lasso (or set of lassos) for repeated use. Use case: I need to process a document that's published in the same format each month. It'd be quicker for me to set the lasso once and rerun it automatically than to have to set the lasso each month de novo.
   * Get rid of XML representation of PDF files.
 
 ## How to contribute

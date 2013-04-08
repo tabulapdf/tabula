@@ -483,7 +483,6 @@ $(function () {
 
         var scale = (pdf_width / thumb_width);
 
-
         $(tableGuesses[imageIndex]).each(function(tableGuessIndex, tableGuess){ 
 
           var my_x2 = tableGuess[0] + tableGuess[2];
