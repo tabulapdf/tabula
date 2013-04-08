@@ -1,4 +1,5 @@
 require_relative '../../local_settings.rb'
+require 'time'
 
 class GenerateThumbnailJob
   # args: (:file, :output_dir, :thumbnail_size)

@@ -2,26 +2,70 @@
 require 'cuba'
 require 'cuba/render'
 
-raise Errno::ENOENT, "'./local_settings.rb' could not be found. See README.md for more info." unless File.exists?('./local_settings.rb')
-
 require 'digest/sha1'
 require 'json'
 require 'csv'
 
-if RUBY_PLATFORM !~ /java/
-  require 'resque'
-  require 'resque/status_server'
-  require 'resque/job_with_status'
-  require './lib/jobs/analyze_pdf.rb'
-  require './lib/jobs/generate_thumbails.rb'
+# are we running on JRuby?
+IS_JRUBY = RUBY_PLATFORM =~ /java/
+
+begin
+  require ENV['TABULA_SETTINGS'] || './local_settings.rb'
+rescue LoadError
+  puts "'./local_settings.rb' could not be found. See README.md for more info."
+  raise
+end
+
+if Settings::ASYNC_PROCESSING
+  if !IS_JRUBY
+    require 'resque'
+    require 'resque/status_server'
+    require 'resque/job_with_status'
+    require './lib/jobs/analyze_pdf.rb'
+    require './lib/jobs/generate_thumbnails.rb'
+  else # we're inside the JVM
+    # this thread will be the background worker for PDF processing, etc
+    Thread.new do
+      loop do
+        puts "I'm a background thread and I am OK / I sleep all night and I work all day - #{Time.now}"
+        sleep 10
+      end
+    end
+  end
+end
+
+require './lib/jruby_dump_characters.rb' if IS_JRUBY
+
+require './tabula_extractor/tabula.rb'
+
+
+def is_valid_pdf?(path)
+  # TODO: probabaly not entirely correct - check.
+  File.open(path, 'r') { |f| f.read(4) } == '%PDF'
+end
+
+# TODO: move this elsewhere
+def run_mupdfdraw(file, output_dir, width=560, page=nil)
+
+  cmd = "#{Settings::MUDRAW_PATH} -w #{width} -o " \
+  + File.join(output_dir, "document_#{width}_%d.png") \
+  + " #{file}"
+
+  cmd += " #{page}" unless page.nil?
+
+  `#{cmd}`
+end
+
+# TODO: move this elsewhere
+def run_jrubypdftohtml(file, output_dir)
+  puts "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}"
+  system({"CLASSPATH" => "lib/jars/pdfbox-app-1.8.0.jar"},
+         "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}")
 end
 
 
-require './tabula_extractor/tabula.rb'
-require './local_settings.rb'
-
 Cuba.plugin Cuba::Render
-Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/pdfs", "/scripts", "/swf"]
+Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/scripts", "/swf"]
 
 Cuba.define do
 
@@ -32,7 +76,7 @@ Cuba.define do
     end
   end
 
-  if Settings::ASYNC_UPLOADS
+  if !IS_JRUBY and Settings::ASYNC_PROCESSING
     require './tabula_job_progress.rb'
     on 'queue' do
       run TabulaJobProgress
@@ -93,6 +137,10 @@ Cuba.define do
       end
     end
 
+    on 'pdfs' do
+      run Rack::File.new(Settings::DOCUMENTS_BASEPATH)
+    end
+
     on "pdf/:file_id" do |file_id|
       document_dir = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
       unless File.directory?(document_dir)
@@ -101,7 +149,7 @@ Cuba.define do
         res.write view("pdf_view.html",
                        page_images: Dir.glob(File.join(document_dir, "document_560_*.png"))
                          .sort_by { |f| f.gsub(/[^\d]/, '').to_i }
-                         .map { |f| f.gsub(Dir.pwd + '/static', '') },
+                         .map { |f| f.gsub(Settings::DOCUMENTS_BASEPATH, '/pdfs') },
                        pages: Tabula::XML.get_pages(File.join(Settings::DOCUMENTS_BASEPATH,
                                                                file_id)))
       end
@@ -111,43 +159,53 @@ Cuba.define do
 
   on post do
     on 'upload' do
+
+      # Make sure this is a PDF, before doing anything
+      unless is_valid_pdf?(req.params['file'][:tempfile].path)
+        res.status = 400
+        res.write view("upload_error.html",
+                       :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
+        FileUtils.rm(req.params['file'][:tempfile].path)
+        next # halt this handler
+      end
+
       file_id = Digest::SHA1.hexdigest(Time.now.to_s)
       file_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
       FileUtils.mkdir(file_path)
-      FileUtils.cp(req.params['file'][:tempfile].path,
+      FileUtils.mv(req.params['file'][:tempfile].path,
                    File.join(file_path, 'document.pdf'))
 
       file = File.join(file_path, 'document.pdf')
 
-      # Make sure this is a PDF.
-      # TODO: cleaner way to do this without blindly relying on file extension (which we provided)?
-      # TODO: this won't work on Windows. Fix.
-      mime = `file -b --mime-type #{file}`
-      if !mime.include? "application/pdf"
-        res.write view("upload_error.html",
-            :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
+
+      if Settings::ASYNC_PROCESSING
+        if !IS_JRUBY
+          # fire off thumbnail jobs
+          sm_thumbnail_job = GenerateThumbnailJob.create(:file => file,
+                                                         :output_dir => file_path,
+                                                         :thumbnail_size => 560)
+          lg_thumbnail_job = GenerateThumbnailJob.create(:file => file,
+                                                         :output_dir => file_path,
+                                                         :thumbnail_size => 2048)
+          upload_id = AnalyzePDFJob.create(:file_id => file_id,
+                                           :file => file,
+                                           :output_dir => file_path,
+                                           :sm_thumbnail_job => sm_thumbnail_job,
+                                           :lg_thumbnail_job => lg_thumbnail_job)
+          res.redirect "/queue/#{upload_id}"
+        else
+          raise "Not Implemented!"
+        end
       else
-        # fire off thumbnail jobs
-        sm_thumbnail_job = GenerateThumbnailJob.create(
-          :file => file,
-          :output_dir => file_path,
-          :thumbnail_size => 560
-        )
-        lg_thumbnail_job = GenerateThumbnailJob.create(
-          :file => file,
-          :output_dir => file_path,
-          :thumbnail_size => 2048
-        )
-        upload_id = AnalyzePDFJob.create(
-          :file_id => file_id,
-          :file => file,
-          :output_dir => file_path,
-          :sm_thumbnail_job => sm_thumbnail_job,
-          :lg_thumbnail_job => lg_thumbnail_job
-        )
-        res.redirect "/queue/#{upload_id}"
+        run_mupdfdraw(File.join(file_path, 'document.pdf'), file_path, 560) # 560 width
+        run_mupdfdraw(File.join(file_path, 'document.pdf'), file_path, 2048) # 2048 width
+        if !IS_JRUBY
+          run_jrubypdftohtml(File.join(file_path, 'document.pdf'), file_path)
+        else
+          XMLGenerator.new(File.join(file_path, 'document.pdf'), file_path).generate_xml!
+        end
+        res.redirect "/pdf/#{file_id}"
       end
     end
   end
-
 end

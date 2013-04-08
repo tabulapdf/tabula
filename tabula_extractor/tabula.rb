@@ -1,6 +1,9 @@
 require_relative './lib/entities.rb'
 require_relative './lib/table_extractor.rb'
-require_relative './lib/detect_rulings.rb'
+if RUBY_PLATFORM !~ /java/
+  # TODO still no OpenCV if running on JRuby
+  require_relative './lib/detect_rulings.rb'
+end
 require_relative './lib/graph.rb'
 require_relative './lib/parse_xml.rb'
 require_relative './lib/whitespace.rb'

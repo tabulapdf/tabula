@@ -68,28 +68,29 @@ class AnalyzePDFJob
     # TODO: if fail, should clean up upload directory
     exit_status = thr.value.exitstatus
     if exit_status != 0
-        failed(
-           'file_id' => file_id,
-           'upload_id' => upload_id
-        )
-        return nil
-    else
-      # If thumbnail jobs haven't finished, wait up for them
-      while (!Resque::Plugins::Status::Hash.get(sm_thumbnail_job).completed? || !Resque::Plugins::Status::Hash.get(lg_thumbnail_job).completed?) do
-        at(99, 100, "generating thumbnails...",
-          'file_id' => file_id,
-          'upload_id' => upload_id
-        )
-        sleep 0.25
-      end
-
-      at(100, 100, "complete",
-         'file_id' => file_id,
-         'upload_id' => upload_id,
-         'thumbnails_complete' => true
-         )
-
+      failed(
+             'file_id' => file_id,
+             'upload_id' => upload_id
+             )
       return nil
     end
+
+    # If thumbnail jobs haven't finished, wait up for them
+    while (!Resque::Plugins::Status::Hash.get(sm_thumbnail_job).completed? || !Resque::Plugins::Status::Hash.get(lg_thumbnail_job).completed?) do
+      at(99, 100, "generating thumbnails...",
+         'file_id' => file_id,
+         'upload_id' => upload_id
+         )
+      sleep 0.25
+    end
+
+    at(100, 100, "complete",
+       'file_id' => file_id,
+       'upload_id' => upload_id,
+       'thumbnails_complete' => true
+       )
+
+    return nil
+
   end
 end

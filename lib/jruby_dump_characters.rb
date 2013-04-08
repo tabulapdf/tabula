@@ -1,4 +1,4 @@
-# VERY DIRTY SCRIPT
+# encoding 'utf-8'
 # TODO refactor. we should get rid of the XML intermediate step, anyway.
 
 require 'erb'
@@ -51,7 +51,7 @@ class TextExtractor < org.apache.pdfbox.util.PDFTextStripper
 
     c = text.getCharacter
     # probably not the fastest way of detecting printable chars
-    self.characters << text if c =~ PRINTABLE_RE
+    self.characters << text  if c =~ PRINTABLE_RE
 
   end
 end
@@ -61,10 +61,7 @@ def prec(n, decimals=2)
 end
 
 PT = <<-EOT
-<% def prec(n, decimals=2)
-  "%.\#{decimals}f" % n
-end
-%>
+<%# -*- coding: UTF-8 -*- %>
 <?xml version="1.0" encoding="UTF-8"?>
 <pdf2xml producer="pdfbox" version="1.7.5">
 <page number="<%= page_number %>" top="0" left="0" height="<%= page.findCropBox.getHeight %>" width="<%= page.findCropBox.getWidth %>" rotation="<%= page.getRotation %>">
@@ -77,10 +74,6 @@ EOT
 PAGE_TEMPLATE = ERB.new(PT, nil, '>-')
 
 IT = <<-EOT
-<% def prec(n, decimals=2)
-  "%.\#{decimals}f" % n
-end
-%>
 <?xml version="1.0" encoding="UTF-8"?>
 <index>
 <% pages.each_with_index do |page, page_number| %>
@@ -141,7 +134,5 @@ def print_text_locations(pdf_filename, output_directory)
 end
 
 if __FILE__ == $0
-
   print_text_locations(ARGV[0], ARGV[1])
-
 end

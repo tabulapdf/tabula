@@ -1,18 +1,20 @@
 source "https://rubygems.org"
+  gem "algorithms"
+  gem "nokogiri"
+  gem "cuba"
+  gem "rake"
+  gem "rack"
 
-group :production do
   platforms :mri_19, :mri_20 do
-    gem "algorithms"
-    gem "nokogiri"
-    gem "cuba"
+    gem "resque", "~>1.24.1"
     gem "foreman"
-    gem "rake"
-    gem "resque"
-    gem "resque-progress"
     gem "resque-status"
     gem "ruby-opencv"
   end
-end
+
+  platforms :jruby do
+    gem "warbler"
+  end
 
 group :test do
   platforms :mri_19, :mri_20 do
