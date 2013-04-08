@@ -60,4 +60,5 @@ DEPENDENCIES
   resque (~> 1.24.1)
   resque-status
   ruby-opencv
+  tilt
   warbler

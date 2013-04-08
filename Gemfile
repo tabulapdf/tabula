@@ -14,6 +14,7 @@ source "https://rubygems.org"
 
   platforms :jruby do
     gem "warbler"
+    gem "tilt"
   end
 
 group :test do
