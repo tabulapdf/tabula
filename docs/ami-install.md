@@ -32,7 +32,7 @@ boot up an instance with our AMI:
 3. Select the SSH keypair you want to use, and make sure you have "More Amazon
    Machine Images" selected, then click "Continue".
 
-4. Under the "Public AMIs" tab, type `ami-e895f081` into the search box.
+4. Under the "Public AMIs" tab, type `ami-e895f081` into the search box. If no AMIs are found, make sure your region is set to US East (N. Virginia).
 
     ![search for the Tabula AMI](https://d2p12wh0p3fo1n.cloudfront.net/files/20130403/aws3.png)
 
