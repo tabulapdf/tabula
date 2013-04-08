@@ -4,7 +4,7 @@ if IS_JRUBY
   require 'warbler'
   Warbler::Task.new("war",
                     Warbler::Config.new { |config|
-                      config.features = %w(executable)
+                      config.features = %w(executable compiled)
                       config.webserver = "jetty"
                       config.webxml.jruby.compat.version = "1.9"
                       config.webxml.jruby.rack.logging = "stdout"
