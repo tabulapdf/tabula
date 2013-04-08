@@ -375,81 +375,92 @@ $(function () {
               });
     };
 
-    imgAreaSelects = $.map($('img.page-image'), function(image){ 
-      return $(image).imgAreaSelect({
-        handles: true,
-        instance: true,
-        allowOverlaps: false,
-        //minHeight: 50, minWidth: 100,
-
-        onSelectStart: function(img, selection)  {
-            //$('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
-            $('#thumb-' + $(img).attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
-        },
-        onSelectChange: function(img, selection) {
-            var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
-            var scale = $('#thumb-' + $(img).attr('id') + ' img').width() / $(img).width();
-            $(sshow).css('top', selection.y1 * scale + 'px')
-                .css('left', selection.x1 * scale + 'px')
-                .css('width', ((selection.x2 - selection.x1) * scale) + 'px')
-                .css('height', ((selection.y2 - selection.y1) * scale) + 'px');
-
-        },
-        onSelectEnd: function(img, selection) {
-            if (selection.width == 0 && selection.height == 0) {
-                $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id).css('display', 'none');
-            }
-            if (selection.height * selection.width < 5000) return;
-            lastSelection = selection;
-            var thumb_width = $(img).width();
-            var thumb_height = $(img).height();
-
-            var pdf_width = parseInt($(img).data('original-width'));
-            var pdf_height = parseInt($(img).data('original-height'));
-            var pdf_rotation = parseInt($(img).data('rotation'));
-
-            // if rotated, swap width and height
-            if (pdf_rotation == 90 || pdf_rotation == 270) {
-                var tmp = pdf_height;
-                pdf_height = pdf_width;
-                pdf_width = tmp;
-            }
-            // var tmp;
-            // switch(pdf_rotation) {
-            // case 180:
-            //     console.log('180 carajo!'); //yesssssss -Jeremy
-            //     tmp = selection.x1; selection.x1 = selection.x2; selection.x2 = tmp;
-            //     tmp = selection.y1; selection.y1 = selection.y2; selection.y2 = tmp;
-            // }
-
-            var scale = (pdf_width / thumb_width);
-
-            var query_parameters = {
-                x1: selection.x1 * scale,
-                x2: selection.x2 * scale,
-                y1: selection.y1 * scale,
-                y2: selection.y2 * scale,
-                page: $(img).data('page')
-            };
-            if(!noModalAfterSelect){
-              doQuery(PDF_ID, [query_parameters]);
-            }
-        },
-        onSelectCancel: function(img, selection, selectionId){
-          $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selectionId).remove();
-          console.log("selections on page: " + totalSelections() ); // this one hasn't been deleted yet.
-          toggleClearAllAndRestorePredetectedTablesButtons(totalSelections());
-          //TODO, if there are no selections, activate the restore detected tables button.
-        }
-      });
-    });
     // only run these functions if the image is loaded already. 
     // TODO: this works better than it used to, but still fails sometimes.
     // clearly a race condition.
     // http://stackoverflow.com/questions/1743880/image-height-using-jquery-in-chrome-problem
     $.getJSON("/pdfs/" + PDF_ID + "/tables.json", function(tableGuesses){ 
+      var selectsNotYetLoaded = tableGuesses.length;
 
-      function drawDetectedTablesHelper(e){ drawDetectedTables(e.currentTarget)}
+      imgAreaSelects = $.map($('img.page-image'), function(image){ 
+        return $(image).imgAreaSelect({
+          handles: true,
+          instance: true,
+          allowOverlaps: false,
+          //minHeight: 50, minWidth: 100,
+
+          onSelectStart: function(img, selection)  {
+              //$('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
+              $('#thumb-' + $(img).attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
+          },
+          onSelectChange: function(img, selection) {
+              var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
+              var scale = $('#thumb-' + $(img).attr('id') + ' img').width() / $(img).width();
+              $(sshow).css('top', selection.y1 * scale + 'px')
+                  .css('left', selection.x1 * scale + 'px')
+                  .css('width', ((selection.x2 - selection.x1) * scale) + 'px')
+                  .css('height', ((selection.y2 - selection.y1) * scale) + 'px');
+
+          },
+          onSelectEnd: function(img, selection) {
+              if (selection.width == 0 && selection.height == 0) {
+                  $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id).css('display', 'none');
+              }
+              if (selection.height * selection.width < 5000) return;
+              lastSelection = selection;
+              var thumb_width = $(img).width();
+              var thumb_height = $(img).height();
+
+              var pdf_width = parseInt($(img).data('original-width'));
+              var pdf_height = parseInt($(img).data('original-height'));
+              var pdf_rotation = parseInt($(img).data('rotation'));
+
+              // if rotated, swap width and height
+              if (pdf_rotation == 90 || pdf_rotation == 270) {
+                  var tmp = pdf_height;
+                  pdf_height = pdf_width;
+                  pdf_width = tmp;
+              }
+              // var tmp;
+              // switch(pdf_rotation) {
+              // case 180:
+              //     console.log('180 carajo!'); //yesssssss -Jeremy
+              //     tmp = selection.x1; selection.x1 = selection.x2; selection.x2 = tmp;
+              //     tmp = selection.y1; selection.y1 = selection.y2; selection.y2 = tmp;
+              // }
+
+              var scale = (pdf_width / thumb_width);
+
+              var query_parameters = {
+                  x1: selection.x1 * scale,
+                  x2: selection.x2 * scale,
+                  y1: selection.y1 * scale,
+                  y2: selection.y2 * scale,
+                  page: $(img).data('page')
+              };
+              if(!noModalAfterSelect){
+                doQuery(PDF_ID, [query_parameters]);
+              }
+          },
+          onSelectCancel: function(img, selection, selectionId){
+            $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selectionId).remove();
+            console.log("selections on page: " + totalSelections() ); // this one hasn't been deleted yet.
+            toggleClearAllAndRestorePredetectedTablesButtons(totalSelections());
+            //TODO, if there are no selections, activate the restore detected tables button.
+          },
+          onInit: drawDetectedTablesIfAllAreLoaded
+        });
+      });
+
+      function drawDetectedTablesIfAllAreLoaded(){
+        selectsNotYetLoaded--;
+        if(selectsNotYetLoaded == 0){
+          for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
+            var pageIndex = imageIndex + 1;
+            drawDetectedTables( $('img#page-' + pageIndex)[0] );
+          }
+        }
+      }
 
       function drawDetectedTables(e){
         img = $(e);
@@ -472,7 +483,6 @@ $(function () {
 
         var scale = (pdf_width / thumb_width);
 
-        console.log(tableGuesses);
 
         $(tableGuesses[imageIndex]).each(function(tableGuessIndex, tableGuess){ 
 
@@ -486,6 +496,9 @@ $(function () {
           // console.log(my_y2 / scale);
           // console.log("");
           imgAreaSelectAPIObj = imgAreaSelects[imageIndex];
+
+          /* nothing is set yet, when race condition manifests */
+          console.log(tableGuess, imageIndex);
 
           selection = imgAreaSelectAPIObj.createNewSelection(tableGuess[0] / scale, 
                                         tableGuess[1] / scale, 
@@ -507,16 +520,6 @@ $(function () {
         });
         //imgAreaSelectAPIObj.createNewSelection(50, 50, 300, 300); //for testing overlaps from API.
       }
-
-      for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
-        var pageIndex = imageIndex + 1;
-        if($('img#page-' + pageIndex)[0].complete){
-          drawDetectedTables($('img#page-' + pageIndex)[0]);
-        }else{
-          $('img#page-' + pageIndex).load(drawDetectedTablesHelper);
-        }
-      }
-      $('img.page-image').load(function(){$.each(imgAreaSelects, function(n, q){ q.update() });});
     });
 
     $('#clear-all-selections').on("click", function(){

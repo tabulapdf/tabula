@@ -224,8 +224,6 @@ $.imgAreaSelect = function (img, options) {
         var sx = noScale || scaleX || 1; //TODO: the options version should override this, but it doesnt'. Fix.
         var sy = noScale || scaleY || 1;
 
-        //console.log(1, this.selection);
-
         this.selection = {
             x1: round(x1 / sx || 0),
             y1: round(y1 / sy || 0),
@@ -235,7 +233,6 @@ $.imgAreaSelect = function (img, options) {
 
         this.selection.width = this.selection.x2 - this.selection.x1;
         this.selection.height = this.selection.y2 - this.selection.y1;
-        //console.log(2, this.selection);
     }
 
 
@@ -249,7 +246,6 @@ $.imgAreaSelect = function (img, options) {
     Selection.prototype.update = function(resetKeyPress) {
         /* If plugin elements are hidden, do nothing */
         if (!this.shown) return;
-
         /*
          * Set the position and size of the container box and the selection area
          * inside it
@@ -395,7 +391,6 @@ $.imgAreaSelect = function (img, options) {
             else if (x >= this.selection.width - options.resizeMargin)
                 this.resize += 'e';
         }
-        //console.log(x, y, this.selection.width, this.selection.height, this.resize);
 
         this.$box.css('cursor', this.resize ? this.resize + '-resize' :
             options.movable ? 'move' : '');
@@ -413,8 +408,6 @@ $.imgAreaSelect = function (img, options) {
      */
     Selection.prototype.areaMouseDown = function(event) {
         if (event.which != 1) return false;
-
-        console.log("areaMouseDown", this);
 
         adjust();
 
@@ -681,7 +674,6 @@ $.imgAreaSelect = function (img, options) {
             _(_(selections).filter(function(s){ return s})).each(_.bind(function(otherSelection){ this.fixOverlapsHelper(otherSelection) }, this) );
         }
 
-
         $.extend(this.selection, { x1: selX(this.x1), y1: selY(this.y1), x2: selX(this.x2),
             y2: selY(this.y2) });
 
@@ -818,7 +810,7 @@ $.imgAreaSelect = function (img, options) {
          */
         if (!imgLoaded || !$img.width())
             return;
-        
+
         /*
          * Get image offset. The .offset() method returns float values, so they
          * need to be rounded.f
@@ -969,6 +961,8 @@ $.imgAreaSelect = function (img, options) {
         startX = /*x1 =*/ evX(event);
         startY = /*y1 =*/ evY(event);
 
+        console.log("imgMouseDown");
+
         $(document).mousemove(startSelection).on('mouseup.nozerosize.imgareaselect', function(){
             most_recent_selection = selections[selections.length - 1];
             most_recent_selection.cancelSelection();
@@ -1012,7 +1006,7 @@ $.imgAreaSelect = function (img, options) {
 
                 if (options.show) {
                     shown = true;
-                    adjust();
+                    s.adjust();
                     s.update();
                     s.$box/*.add(s.$outer)*/.hide().fadeIn(options.fadeSpeed||0);
                 }
@@ -1024,7 +1018,7 @@ $.imgAreaSelect = function (img, options) {
          * that the plugin has been fully initialized and the object instance is
          * available (so that it can be obtained in the callback).
          */
-        setTimeout(function () { options.onInit(img, _(selections).map(function(s){ return s.getSelection() })) }, 0); //disabled for now.
+        setTimeout(function () { options.onInit(img, _(selections).map(function(s){ return s.getSelection() })) }, 0); 
     }
 
     var docKeyPress = function(event) {
@@ -1243,7 +1237,7 @@ $.imgAreaSelect = function (img, options) {
                 if (options.enable || options.disable === false) {
                     /* Enable the plugin */
                     if (options.resizable || options.movable)
-                        s.$box.mousemove(areaMouseMove).on('mousedown.imgareaselect', _bind(s.areaMouseDown, s));
+                        s.$box.mousemove(_.bind(s.areaMouseMove,s)).on('mousedown.imgareaselect', _.bind(s.areaMouseDown, s));
         
                     $(window).resize(windowResize);
                 }
@@ -1270,10 +1264,22 @@ $.imgAreaSelect = function (img, options) {
      * Public API
      */
     
-
+     /*
+      *
+      *
+      *
+      */
     this.getImg = function(){
         return $img;
     }
+
+    this.getDebugPositioning = function(){
+        return {left: left, 
+        top: top,
+        imgWidth: imgWidth, 
+        imgHeight: imgHeight};
+    }
+
     /**
      * Get current options
      * 
@@ -1330,10 +1336,9 @@ $.imgAreaSelect = function (img, options) {
         return s.getSelection();
     };
     //TODO: create a setSelection method that modifies all selection objects. (maybe?)
-    //TODO: ensure Selections returned from API are guaranteed to be in creation order.
-    //TODO: option to disallow overlapping selections.
     
-    this.update = function(){ _(_(selections).filter(function(s){ return s})).each(function(s){ s.update }); };
+
+    this.update = function(){ _(_(selections).filter(function(s){ return s})).each(function(s){ s.doUpdate() }); };
 
     /**
      * Cancel selection
@@ -1419,6 +1424,8 @@ $.imgAreaSelect = function (img, options) {
     //     s.$closeBtn.css({ zIndex: zIndex + 3 || 3 });
     //     s.$area.add($border).css({ position: 'absolute', fontSize: 0 });
     // })
+
+
     /*
      * If the image has been fully loaded, or if it is not really an image (eg.
      * a div), call imgLoad() immediately; otherwise, bind it to be called once
