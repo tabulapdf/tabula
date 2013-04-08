@@ -375,11 +375,11 @@ $(function () {
               });
     };
 
-    // only run these functions if the image is loaded already. 
-    // TODO: this works better than it used to, but still fails sometimes.
-    // clearly a race condition.
-    // http://stackoverflow.com/questions/1743880/image-height-using-jquery-in-chrome-problem
-    $.getJSON("/pdfs/" + PDF_ID + "/tables.json", function(tableGuesses){ 
+    var tableGuesses, imgAreaSelects;
+
+    $.getJSON("/pdfs/" + PDF_ID + "/tables.json", function(tableGuessesTmp){ 
+
+      tableGuesses = tableGuessesTmp;
       var selectsNotYetLoaded = tableGuesses.length;
 
       imgAreaSelects = $.map($('img.page-image'), function(image){ 
@@ -457,75 +457,84 @@ $(function () {
         if(selectsNotYetLoaded == 0){
           for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
             var pageIndex = imageIndex + 1;
-            drawDetectedTables( $('img#page-' + pageIndex)[0] );
+            drawDetectedTables( $('img#page-' + pageIndex)[0], tableGuesses );
           }
         }
       }
-
-      function drawDetectedTables(e){
-        img = $(e);
-
-        imageIndex = parseInt(img.attr("id").replace("page-", '')) - 1;
-
-        var thumb_width = img.width();
-        var thumb_height = img.height();
-
-        var pdf_width = parseInt(img.data('original-width'));
-        var pdf_height = parseInt(img.data('original-height'));
-        var pdf_rotation = parseInt(img.data('rotation'));
-
-        // if rotated, swap width and height
-        if (pdf_rotation == 90 || pdf_rotation == 270) {
-            var tmp = pdf_height;
-            pdf_height = pdf_width;
-            pdf_width = tmp;
-        }
-
-        var scale = (pdf_width / thumb_width);
-
-        $(tableGuesses[imageIndex]).each(function(tableGuessIndex, tableGuess){ 
-
-          var my_x2 = tableGuess[0] + tableGuess[2];
-          var my_y2 = tableGuess[1] + tableGuess[3];
-
-          // console.log("page: " + imageIndex + 1);
-          // console.log(tableGuess);
-          // console.log(scale);
-          // console.log(my_x2 / scale);
-          // console.log(my_y2 / scale);
-          // console.log("");
-          imgAreaSelectAPIObj = imgAreaSelects[imageIndex];
-
-          /* nothing is set yet, when race condition manifests */
-          console.log(tableGuess, imageIndex);
-
-          selection = imgAreaSelectAPIObj.createNewSelection(tableGuess[0] / scale, 
-                                        tableGuess[1] / scale, 
-                                        my_x2 / scale, 
-                                        my_y2 / scale);
-          imgAreaSelectAPIObj.setOptions({show: true});
-          imgAreaSelectAPIObj.update();
-
-         
-          //create a red box for this selection.
-          $('#thumb-' + $(img).attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
-          var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
-          var thumbScale = $('#thumb-' + img.attr('id') + ' img').width() / img.width();
-          $(sshow).css('top', selection.y1 * thumbScale + 'px')
-              .css('left', selection.x1 * thumbScale + 'px')
-              .css('width', ((selection.x2 - selection.x1) * thumbScale) + 'px')
-              .css('height', ((selection.y2 - selection.y1) * thumbScale) + 'px');
-
-        });
-        //imgAreaSelectAPIObj.createNewSelection(50, 50, 300, 300); //for testing overlaps from API.
-      }
     });
+
+    function drawDetectedTables(e, tableGuesses){
+      img = $(e);
+
+      imageIndex = parseInt(img.attr("id").replace("page-", '')) - 1;
+
+      var thumb_width = img.width();
+      var thumb_height = img.height();
+
+      var pdf_width = parseInt(img.data('original-width'));
+      var pdf_height = parseInt(img.data('original-height'));
+      var pdf_rotation = parseInt(img.data('rotation'));
+
+      // if rotated, swap width and height
+      if (pdf_rotation == 90 || pdf_rotation == 270) {
+          var tmp = pdf_height;
+          pdf_height = pdf_width;
+          pdf_width = tmp;
+      }
+
+      var scale = (pdf_width / thumb_width);
+
+      $(tableGuesses[imageIndex]).each(function(tableGuessIndex, tableGuess){ 
+
+        var my_x2 = tableGuess[0] + tableGuess[2];
+        var my_y2 = tableGuess[1] + tableGuess[3];
+
+        // console.log("page: " + imageIndex + 1);
+        // console.log(tableGuess);
+        // console.log(scale);
+        // console.log(my_x2 / scale);
+        // console.log(my_y2 / scale);
+        // console.log("");
+        imgAreaSelectAPIObj = imgAreaSelects[imageIndex];
+
+        /* nothing is set yet, when race condition manifests */
+        console.log(tableGuess, imageIndex);
+
+        selection = imgAreaSelectAPIObj.createNewSelection(tableGuess[0] / scale, 
+                                      tableGuess[1] / scale, 
+                                      my_x2 / scale, 
+                                      my_y2 / scale);
+        imgAreaSelectAPIObj.setOptions({show: true});
+        imgAreaSelectAPIObj.update();
+
+       
+        //create a red box for this selection.
+        $('#thumb-' + $(img).attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
+        var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
+        var thumbScale = $('#thumb-' + img.attr('id') + ' img').width() / img.width();
+        $(sshow).css('top', selection.y1 * thumbScale + 'px')
+            .css('left', selection.x1 * thumbScale + 'px')
+            .css('width', ((selection.x2 - selection.x1) * thumbScale) + 'px')
+            .css('height', ((selection.y2 - selection.y1) * thumbScale) + 'px');
+
+      });
+      //imgAreaSelectAPIObj.createNewSelection(50, 50, 300, 300); //for testing overlaps from API.
+    }
+
 
     $('#clear-all-selections').on("click", function(){
       _(imgAreaSelects).each(function(imgAreaSelectAPIObj){
         imgAreaSelectAPIObj.cancelSelections();
       });
     });
+
+    $('#restore-detected-tables').on("click", function(){
+      for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
+        var pageIndex = imageIndex + 1;
+        drawDetectedTables( $('img#page-' + pageIndex)[0], tableGuesses );
+      }
+      toggleClearAllAndRestorePredetectedTablesButtons(totalSelections());
+    })
 
     $('#repeat-lassos').on("click", function(){ alert("not yet implemented")});
 
@@ -571,7 +580,6 @@ $(function () {
     return _.reduce(imgAreaSelects, function(memo, s){ return memo + s.getSelections().length; }, 0);
   }
   function toggleClearAllAndRestorePredetectedTablesButtons(numOfSelectionsOnPage){
-    console.log("num: " + numOfSelectionsOnPage);
     if(numOfSelectionsOnPage <= 0){
       $("#clear-all-selections").hide();
       $("#restore-detected-tables").show();

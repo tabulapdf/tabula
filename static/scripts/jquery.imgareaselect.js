@@ -690,7 +690,7 @@ $.imgAreaSelect = function (img, options) {
              * It's not possible for a selection to begin inside another one (except via the API, moving).
              *
              */
-            _(_(selections).filter(function(s){ return s})).each(_.bind(function(otherSelection){ this.fixResizeOverlaps(otherSelection) }, this) );
+            _(_(selections).filter(function(s){ return s})).each(_.bind(function(otherSelection){ _.bind(this.fixResizeOverlaps, this)(otherSelection) }, this) );
         }
 
         this.selection = { x1: selX(min(this.x1, this.x2)), x2: selX(max(this.x1, this.x2)),
@@ -1393,7 +1393,7 @@ $.imgAreaSelect = function (img, options) {
         var s = new Selection(x1, y1, x2, y2);
         selections.push(s);
         if(!options.allowOverlaps)
-            _(selections).map(function(otherSelection){ return s ? s.fixOverlaps(otherSelection) : false }).indexOf(true) > -1;
+            _(_(selections).filter(function(s){ return s})).map(function(otherSelection){ return s ? _.bind(s.fixOverlaps, s)(otherSelection) : false }).indexOf(true) > -1;
         return s.getSelection();
     };
 
@@ -1409,7 +1409,7 @@ $.imgAreaSelect = function (img, options) {
             // I can't simply do `_(selections).each(function(s){ s.cancelSelection(true); });` because cancelSelection modifies `selections` concurrently with iterating over `selections`, so some selections get skipped.
             var selectionsIndex = selections.length
             while(selectionsIndex >= 1){
-                if(selections[0]) //skip the nulls.
+                if(selections[selectionsIndex - 1]) //skip the nulls.
                     selections[selectionsIndex - 1].cancelSelection(true);
                 selectionsIndex--;
                 //console.log(selectionsIndex, selections);
