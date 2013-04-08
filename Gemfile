@@ -4,6 +4,7 @@ source "https://rubygems.org"
   gem "cuba"
   gem "rake"
   gem "rack"
+  gem "tilt"
 
   platforms :mri_19, :mri_20 do
     gem "resque", "~>1.24.1"
