@@ -53,9 +53,10 @@ var noModalAfterSelect = false;
 $(function () {
 
     $('button.close#directions').click(function(){
-      $('div.imgareaselect').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
+      $('div.imgareaselect-box').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
     })
 
+    noModalAfterSelect = $('#multiselect-checkbox').is(':checked');
     $('#multiselect-checkbox').click(function(){
       noModalAfterSelect = $('#multiselect-checkbox').is(':checked');
     })
