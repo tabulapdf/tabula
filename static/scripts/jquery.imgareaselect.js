@@ -865,7 +865,8 @@ $.imgAreaSelect = function (img, options) {
 
         //remove this selection from the closure-global `selections` list.
         var index_of_this = selections.indexOf(this);
-        selections.splice(index_of_this, 1, null);
+        if(index_of_this >= 0)
+            selections.splice(index_of_this, 1, null);
 
         if (!skipCallbacks && !(this instanceof $.imgAreaSelect)) {
             options.onSelectChange(img, this.getSelection()); 
