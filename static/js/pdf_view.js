@@ -370,8 +370,8 @@ $(function () {
                   //                         function(data){ window.open(data);}
                   //                         )
                   //                     });
-                  $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(real_query_parameters));
-                  $('#download-tsv').attr('href', '/pdf/' + pdf_id + '/data?format=tsv&' + $.param(real_query_parameters));
+                  $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(query_parameters));
+                  $('#download-tsv').attr('href', '/pdf/' + pdf_id + '/data?format=tsv&' + $.param(query_parameters));
                   $('#myModal').modal();
                   clip.glue('#copy-csv-to-clipboard');
                   $('#loading').css('visibility', 'hidden');
@@ -512,13 +512,15 @@ $(function () {
 
        
         //create a red box for this selection.
-        $('#thumb-' + $(img).attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
-        var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
-        var thumbScale = $('#thumb-' + img.attr('id') + ' img').width() / img.width();
-        $(sshow).css('top', selection.y1 * thumbScale + 'px')
-            .css('left', selection.x1 * thumbScale + 'px')
-            .css('width', ((selection.x2 - selection.x1) * thumbScale) + 'px')
-            .css('height', ((selection.y2 - selection.y1) * thumbScale) + 'px');
+        if(selection){ //selection is undefined if it overlaps an existing selection.
+          $('#thumb-' + $(img).attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
+          var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
+          var thumbScale = $('#thumb-' + img.attr('id') + ' img').width() / img.width();
+          $(sshow).css('top', selection.y1 * thumbScale + 'px')
+              .css('left', selection.x1 * thumbScale + 'px')
+              .css('width', ((selection.x2 - selection.x1) * thumbScale) + 'px')
+              .css('height', ((selection.y2 - selection.y1) * thumbScale) + 'px');
+        }
 
       });
       //imgAreaSelectAPIObj.createNewSelection(50, 50, 300, 300); //for testing overlaps from API.

@@ -1484,10 +1484,33 @@ $.imgAreaSelect = function (img, options) {
 
     this.createNewSelection = function(x1, y1, x2, y2){ 
         var s = new Selection(x1, y1, x2, y2);
-        selections.push(s);
-        if(!options.allowOverlaps)
-            _(_(selections).filter(function(otherSelection){ return otherSelection && s != otherSelection})).map(function(otherSelection){ return s ? _.bind(s.fixResizeOverlaps, s)(otherSelection) : false }).indexOf(true) > -1;
-        return s.getSelection();
+        if(!options.allowOverlaps){
+            var overlaps = _(_(selections).filter(function(otherSelection){ return otherSelection; }))
+                .map(_.bind(function(otherSelection){ return s.doesOverlap(otherSelection)}, s) );
+            var legal = (_(overlaps).map(function(o){ return !o; }).indexOf(false) == -1);
+        }
+        if(options.allowOverlaps || legal){
+            //if the selection is illegal, don't create it.
+            selections.push(s);
+            return s.getSelection();
+        }else{
+            //but if the selection is illegal and overlaps only one other thing, change that other one
+            if (_(overlaps).reject(function(v){ return v; }).length == 1){
+                //return their union.
+                var overlap_index = _(overlaps).map(function(v){ return !!v; }).indexOf(true);
+                var overlap = selections[overlap_index];
+                overlap.setSelection( min(overlap.selection.x1, x1, overlap.selection.x2, x2),
+                                      min(overlap.selection.y1, y1, overlap.selection.y2, y2),
+                                      max(overlap.selection.x1, x1, overlap.selection.x2, x2),
+                                      max(overlap.selection.y1, y1, overlap.selection.y2, y2) );
+                overlap.update();
+                s.cancelSelection(true);
+                return false;
+            }else{
+                s.cancelSelection(true);
+                return false;
+            }
+        }
     };
 
     //TODO: create a setSelection method that modifies all selection objects. (maybe?)
