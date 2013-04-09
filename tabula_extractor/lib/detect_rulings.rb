@@ -1,14 +1,9 @@
-require 'set'
-
 require 'opencv'
-
-require_relative './tabula.rb'
 
 module Tabula
   module Rulings
 
     class Ruling < ZoneEntity
-      attr_accessor :x1, :y1, :x2, :y2
 
       # 2D line intersection test taken from comp.graphics.algorithms FAQ
       def intersects?(other)

@@ -4,7 +4,6 @@ require 'cuba/render'
 
 raise Errno::ENOENT, "'./local_settings.rb' could not be found. See README.md for more info." unless File.exists?('./local_settings.rb')
 
-require 'nokogiri'
 require 'digest/sha1'
 require 'json'
 require 'csv'
@@ -13,13 +12,16 @@ require 'resque/status_server'
 require 'resque/job_with_status'
 
 require './tabula_debug.rb'
-require './lib/detect_rulings.rb'
-require './lib/tabula.rb'
-require './lib/parse_xml.rb'
-require './lib/tabula_graph.rb'
+
+require './tabula_extractor/tabula.rb'
+
 require './lib/jobs/analyze_pdf.rb'
 require './lib/jobs/generate_thumbails.rb'
+<<<<<<< HEAD
 require './lib/jobs/detect_tables.rb'
+=======
+
+>>>>>>> 39e5bf9c1709e52eed9c0e62d18a88752afe39f6
 require './local_settings.rb'
 
 Cuba.plugin Cuba::Render
@@ -73,15 +75,23 @@ Cuba.define do
         output_data += [[],[]] unless coord == coords.last
       end
 
-      if req.params['format'] == 'csv'
-        res['Content-Type'] = 'application/force-download' #'text/csv'
-        res['Content-disposition'] = "attachment; filename=download.csv"
+      case req.params['format']
+      when 'csv'
+        res['Content-Type'] = 'text/csv'
+        # res['Content-Type'] = 'application/force-download' #'text/csv'
+        # res['Content-disposition'] = "attachment; filename=download.csv"
         csv_string = CSV.generate { |csv|
           output_data.each { |l|
             csv << l.map { |c| c.text }
           }
         }
         res.write csv_string
+      when 'tsv'
+        res['Content-Type'] = 'text/tab-separated-values'
+        tsv_string = line_texts.collect { |l|
+            l.collect { |c| c.text }.join("\t")
+          }.join("\n")
+        res.write tsv_string
       else
         res['Content-Type'] = 'application/json'
         res.write output_data.to_json
@@ -108,10 +118,8 @@ Cuba.define do
                        page_images: Dir.glob(File.join(document_dir, "document_560_*.png"))
                          .sort_by { |f| f.gsub(/[^\d]/, '').to_i }
                          .map { |f| f.gsub(Dir.pwd + '/static', '') },
-                       pages: File.open(File.join(Dir.pwd,
-                                                  "static/pdfs/#{file_id}/pages.xml")) { |index_file|
-                         Nokogiri::XML(index_file).xpath('//page')
-                       })
+                       pages: Tabula::XML.get_pages(File.join(Settings::DOCUMENTS_BASEPATH,
+                                                               file_id)))
       end
     end
 
