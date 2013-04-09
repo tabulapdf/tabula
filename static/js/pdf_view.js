@@ -62,7 +62,7 @@ $(function () {
     })
 
     var PDF_ID = window.location.pathname.split('/')[2];
-    lastQuery = {};
+    lastQuery = [{}];
 
     debugWhitespace = function(image) {
         image = $(image);
@@ -326,10 +326,7 @@ $(function () {
     $('a.tooltip-modal').tooltip();
 
     $('input#use_lines').change(function() {
-        _(lastQuery).map(function(selection_params){
-          $.extend(selection_params, { use_lines: $(this).is(':checked') });
-        });
-        doQuery(PDF_ID, lastQuery);
+        doQuery(PDF_ID, JSON.parse(lastQuery['coords']));
     });
 
     //query_parameters = {}; //uhh.
@@ -339,19 +336,15 @@ $(function () {
         clip.unglue('#copy-csv-to-clipboard');
     });
 
-    var doQuery = function(pdf_id, query_parameters) {
+    var doQuery = function(pdf_id, coords) {
         $('#loading').css('left', ($(window).width() - 98) + 'px').css('visibility', 'visible');
 
-        lastQuery = _(query_parameters).map(function(selection_params){
-          $.extend(selection_params, { use_lines: $('#use_lines').is(':checked') });
-        })
-
-        var real_query_parameters = {coords: JSON.stringify(query_parameters) ,
+        lastQuery = {coords: JSON.stringify(coords) ,
                 use_lines :  $('#use_lines').is(':checked')
               };
 
         $.get('/pdf/' + pdf_id + '/data',
-              real_query_parameters,
+              lastQuery,
               function(data) {
                   var tableHTML = '<table contenteditable="true" class="table table-condensed table-bordered">';
                   $.each(data, function(i, row) {
@@ -360,7 +353,6 @@ $(function () {
                   tableHTML += '</table>';
 
                   $('.modal-body').html(tableHTML);
-                  $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(real_query_parameters));
                   // $('#download-csv').click(function(){ 
                   //                       $.post('/pdf/' + pdf_id + '/data',
                   //                         {coords: JSON.stringify(query_parameters) ,
@@ -370,8 +362,8 @@ $(function () {
                   //                         function(data){ window.open(data);}
                   //                         )
                   //                     });
-                  $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(query_parameters));
-                  $('#download-tsv').attr('href', '/pdf/' + pdf_id + '/data?format=tsv&' + $.param(query_parameters));
+                  $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(lastQuery));
+                  $('#download-tsv').attr('href', '/pdf/' + pdf_id + '/data?format=tsv&' + $.param(lastQuery));
                   $('#myModal').modal();
                   clip.glue('#copy-csv-to-clipboard');
                   $('#loading').css('visibility', 'hidden');

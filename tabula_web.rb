@@ -17,11 +17,7 @@ require './tabula_extractor/tabula.rb'
 
 require './lib/jobs/analyze_pdf.rb'
 require './lib/jobs/generate_thumbails.rb'
-<<<<<<< HEAD
 require './lib/jobs/detect_tables.rb'
-=======
-
->>>>>>> 39e5bf9c1709e52eed9c0e62d18a88752afe39f6
 require './local_settings.rb'
 
 Cuba.plugin Cuba::Render
@@ -58,9 +54,9 @@ Cuba.define do
 
 
         if !req.params['use_lines'].nil? and req.params['use_lines'] != 'false'
-          page_dimensions = Tabula::XML.get_page_dimensions(pdf_path, req.params['page'])
+          page_dimensions = Tabula::XML.get_page_dimensions(pdf_path, coord['page'])
           rulings = Tabula::Rulings::detect_rulings(File.join(pdf_path,
-                                                              "document_2048_#{req.params['page']}.png"),
+                                                              "document_2048_#{coord['page']}.png"),
                                                     page_dimensions[:width] / 2048.0)
 
           make_table_options[:horizontal_rulings] = rulings[:horizontal]
@@ -75,6 +71,8 @@ Cuba.define do
         output_data += [[],[]] unless coord == coords.last
       end
 
+
+
       case req.params['format']
       when 'csv'
         res['Content-Type'] = 'text/csv'
@@ -88,7 +86,7 @@ Cuba.define do
         res.write csv_string
       when 'tsv'
         res['Content-Type'] = 'text/tab-separated-values'
-        tsv_string = line_texts.collect { |l|
+        tsv_string = output_data.collect { |l|
             l.collect { |c| c.text }.join("\t")
           }.join("\n")
         res.write tsv_string

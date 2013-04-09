@@ -80,3 +80,6 @@ img.page-image {
 .followyouaroundbar label#multiselect-label{
   display: inline;
 }
+label#use-lines-label{
+  display: inline;
+}
