@@ -780,6 +780,8 @@ $.imgAreaSelect = function (img, options) {
         this.oldX2 = this.x2;
         this.oldY2 = this.y2;
 
+        $('.imgareaselect-closebtn').css("cursor", "default");
+
         this.x2 = (/w|e|^$/.test(this.resize) || this.aspectRatio) ? evX(event) : viewX(this.selection.x2);
         this.y2 = (/n|s|^$/.test(this.resize) || this.aspectRatio) ? evY(event) : viewY(this.selection.y2);
 
@@ -939,6 +941,7 @@ $.imgAreaSelect = function (img, options) {
     function docMouseUp(event) {
         /* Set back the default cursor */
         $('body').css('cursor', '');
+        $('.imgareaselect-closebtn').css("cursor", "pointer");
         /*
          * If autoHide is enabled, or if the selection has zero width/height,
          * hide the selection and the outer area
