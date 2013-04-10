@@ -46,7 +46,6 @@ module Tabula
           instance.job_statuses[id]
         end
       end
-
     end
 
     class Job
@@ -61,7 +60,6 @@ module Tabula
       end
 
       def run
-
         perform
       end
 

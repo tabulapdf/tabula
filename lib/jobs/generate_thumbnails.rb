@@ -1,4 +1,3 @@
-require_relative '../../local_settings.rb'
 require_relative '../../tabula_job_executor/executor.rb'
 
 class GenerateThumbnailJob < Tabula::Background::Job

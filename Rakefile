@@ -10,7 +10,7 @@ if IS_JRUBY
                       config.webxml.jruby.rack.logging = "stdout"
                       config.dirs = ['lib', 'static', 'views', 'tabula_extractor',
                                      'tabula_job_executor']
-                      config.includes = ['tabula_debug.rb', 'tabula_web.rb']
+                      config.includes = ['tabula_debug.rb', 'tabula_web.rb', 'tabula_job_progress.rb']
                     })
 else
 
