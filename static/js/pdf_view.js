@@ -366,7 +366,6 @@ $(function () {
                   $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv');
 
                     $('div#hidden-fields').empty();
-                    console.log("lastQuery", lastQuery);
                     _(_(lastQuery).pairs()).each(function(key_val){
                       //<input type="hidden" class="data-query" name="lastQuery" value="" >
                       var new_hidden_field = $("<input type='hidden' class='data-query' value='' >");
@@ -396,6 +395,7 @@ $(function () {
           handles: true,
           instance: true,
           allowOverlaps: false,
+          show: true,
           //minHeight: 50, minWidth: 100,
 
           onSelectStart: function(img, selection)  {
@@ -475,7 +475,8 @@ $(function () {
     function drawDetectedTables(e, tableGuesses){
       img = $(e);
 
-      imageIndex = parseInt(img.attr("id").replace("page-", '')) - 1;
+      var imageIndex = parseInt(img.attr("id").replace("page-", '')) - 1;
+      var imgAreaSelectAPIObj = imgAreaSelects[imageIndex];
 
       var thumb_width = img.width();
       var thumb_height = img.height();
@@ -504,15 +505,14 @@ $(function () {
         // console.log(my_x2 / scale);
         // console.log(my_y2 / scale);
         // console.log("");
-        imgAreaSelectAPIObj = imgAreaSelects[imageIndex];
 
         /* nothing is set yet, when race condition manifests */
-        console.log(tableGuess, imageIndex);
+        //console.log(tableGuess, imageIndex);
 
         selection = imgAreaSelectAPIObj.createNewSelection(tableGuess[0] / scale, 
                                       tableGuess[1] / scale, 
                                       my_x2 / scale, 
-                                      my_y2 / scale);
+                                      my_y2 / scale);      
         imgAreaSelectAPIObj.setOptions({show: true});
         imgAreaSelectAPIObj.update();
 
@@ -530,6 +530,8 @@ $(function () {
 
       });
       //imgAreaSelectAPIObj.createNewSelection(50, 50, 300, 300); //for testing overlaps from API.
+      imgAreaSelectAPIObj.setOptions({show: true});
+      imgAreaSelectAPIObj.update();
     }
 
 

@@ -113,9 +113,9 @@ $.imgAreaSelect = function (img, options) {
             this.$handles.remove();
             this.$handles = $([]);
 
-            i = options.handles ? options.handles == 'corners' ? 4 : 8 : 0;
+            this.i = options.handles ? options.handles == 'corners' ? 4 : 8 : 0;
 
-            while (i--)
+            while (this.i--)
                 this.$handles = this.$handles.add(div());
             
             /* Add a class to handles and set the CSS properties */
@@ -140,7 +140,7 @@ $.imgAreaSelect = function (img, options) {
              * If the borderWidth option is in use, add a solid border to
              * handles
              */
-            if (o = options.borderWidth)
+            if (this.o = options.borderWidth)
                 this.$handles.css({ borderWidth: o, borderStyle: 'solid' });
 
             /* Apply other style options */
@@ -195,7 +195,6 @@ $.imgAreaSelect = function (img, options) {
             this.shown = true;
             this.doUpdate();
         }
-
 
         $parent.append(this.$box);
         this.$box/*.add($outer)*/.css({ position: this.position,
@@ -1019,7 +1018,6 @@ $.imgAreaSelect = function (img, options) {
         });
     }
 
-
     //"static" lol
     /*
      * Translate selection coordinates (relative to scaled image) to viewport
@@ -1117,7 +1115,7 @@ $.imgAreaSelect = function (img, options) {
         startX = /*x1 =*/ evX(event);
         startY = /*y1 =*/ evY(event);
 
-       //console.log("imgMouseDown");
+       console.log("imgMouseDown");
 
         $(document).on("mousemove.imgareaselect", startSelection).on('mouseup.nozerosize.imgareaselect', function(){
             $(document).unbind("mousemove.imgareaselect");
@@ -1373,34 +1371,44 @@ $.imgAreaSelect = function (img, options) {
             if (newOptions.hide)
                 hide(s.$box/*.add(s.$outer)*/);
             else if (newOptions.show && imgLoaded) {
-                shown = true;
+                s.shown = true;
                 s.$box/*.add(s.$outer)*/.fadeIn(options.fadeSpeed||0);
                 s.doUpdate();
             }
-
-            /* Calculate the aspect ratio factor */
-            aspectRatio = (d = (options.aspectRatio || '').split(/:/))[0] / d[1];
 
             $img/*.add($outer)*/.unbind('mousedown', imgMouseDown);
             
             if (options.disable || options.enable === false) {
                 /* Disable the plugin */
                 s.$box.unbind('mousemove.imgareaselect').unbind('mousedown', areaMouseDown);
-                $(window).unbind('resize', windowResize);
             }
             else {
                 if (options.enable || options.disable === false) {
                     /* Enable the plugin */
                     if (options.resizable || options.movable)
                         s.$box.mousemove(_.bind(s.areaMouseMove,s)).on('mousedown.imgareaselect', _.bind(s.areaMouseDown, s));
-        
-                    $(window).resize(windowResize);
                 }
-
-                if (!options.persistent)
-                    $img/*.add($outer)*/.mousedown(imgMouseDown);
             }
         });
+
+        /* Calculate the aspect ratio factor */
+        aspectRatio = (d = (options.aspectRatio || '').split(/:/))[0] / d[1];
+
+        $img.unbind('mousedown', imgMouseDown);
+        
+        if (options.disable || options.enable === false) {
+            /* Disable the plugin */
+            $(window).unbind('resize', windowResize);
+        }
+        else {
+            if (options.enable || options.disable === false) {  
+                $(window).resize(windowResize);
+            }
+            if (!options.persistent)
+                $img/*.add($outer)*/.mousedown(imgMouseDown);
+        }
+
+
         options.enable = options.disable = undefined;
     }
     
@@ -1411,8 +1419,11 @@ $.imgAreaSelect = function (img, options) {
         /*
          * Call setOptions with { disable: true } to unbind the event handlers
          */
-        setOptions({ disable: true });
-        $box/*.add($outer)*/.remove();
+        this.setOptions({ disable: true });
+        _(selections).each(function(s){
+            if(s)
+                s.$box/*.add($outer)*/.remove();
+        })
     };
 
     /*
@@ -1516,7 +1527,6 @@ $.imgAreaSelect = function (img, options) {
 
     //TODO: create a setSelection method that modifies all selection objects. (maybe?)
     
-
     this.update = function(){ _(_(selections).filter(function(s){ return s})).each(function(s){ s.doUpdate() }); };
 
     /**
