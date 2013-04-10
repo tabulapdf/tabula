@@ -8,7 +8,8 @@ if IS_JRUBY
                       config.webserver = "jetty"
                       config.webxml.jruby.compat.version = "1.9"
                       config.webxml.jruby.rack.logging = "stdout"
-                      config.dirs = ['lib', 'static', 'views', 'tabula_extractor']
+                      config.dirs = ['lib', 'static', 'views', 'tabula_extractor',
+                                     'tabula_job_executor']
                       config.includes = ['tabula_debug.rb', 'tabula_web.rb']
                     })
 else

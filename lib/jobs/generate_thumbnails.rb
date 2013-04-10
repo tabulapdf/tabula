@@ -1,11 +1,8 @@
 require_relative '../../local_settings.rb'
-require 'time'
+require_relative '../../tabula_job_executor/executor.rb'
 
-class GenerateThumbnailJob
+class GenerateThumbnailJob < Tabula::Background::Job
   # args: (:file, :output_dir, :thumbnail_size)
-  include Resque::Plugins::Status
-  Resque::Plugins::Status::Hash.expire_in = (30 * 60) # 30min
-  @queue = :pdftohtml
 
   def perform
     file = options['file']

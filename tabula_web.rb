@@ -17,21 +17,9 @@ rescue LoadError
 end
 
 if Settings::ASYNC_PROCESSING
-  if !IS_JRUBY
-    require 'resque'
-    require 'resque/status_server'
-    require 'resque/job_with_status'
-    require './lib/jobs/analyze_pdf.rb'
-    require './lib/jobs/generate_thumbnails.rb'
-  else # we're inside the JVM
-    # this thread will be the background worker for PDF processing, etc
-    Thread.new do
-      loop do
-        puts "I'm a background thread and I am OK / I sleep all night and I work all day - #{Time.now}"
-        sleep 10
-      end
-    end
-  end
+  require './tabula_job_executor/executor.rb'
+  require './lib/jobs/analyze_pdf.rb'
+  require './lib/jobs/generate_thumbnails.rb'
 end
 
 require './lib/jruby_dump_characters.rb' if IS_JRUBY
@@ -76,7 +64,7 @@ Cuba.define do
     end
   end
 
-  if !IS_JRUBY and Settings::ASYNC_PROCESSING
+  if Settings::ASYNC_PROCESSING
     require './tabula_job_progress.rb'
     on 'queue' do
       run TabulaJobProgress
@@ -179,23 +167,19 @@ Cuba.define do
 
 
       if Settings::ASYNC_PROCESSING
-        if !IS_JRUBY
-          # fire off thumbnail jobs
-          sm_thumbnail_job = GenerateThumbnailJob.create(:file => file,
-                                                         :output_dir => file_path,
-                                                         :thumbnail_size => 560)
-          lg_thumbnail_job = GenerateThumbnailJob.create(:file => file,
-                                                         :output_dir => file_path,
-                                                         :thumbnail_size => 2048)
-          upload_id = AnalyzePDFJob.create(:file_id => file_id,
-                                           :file => file,
-                                           :output_dir => file_path,
-                                           :sm_thumbnail_job => sm_thumbnail_job,
-                                           :lg_thumbnail_job => lg_thumbnail_job)
-          res.redirect "/queue/#{upload_id}"
-        else
-          raise "Not Implemented!"
-        end
+        # fire off thumbnail jobs
+        sm_thumbnail_job = GenerateThumbnailJob.create(:file => file,
+                                                       :output_dir => file_path,
+                                                       :thumbnail_size => 560)
+        lg_thumbnail_job = GenerateThumbnailJob.create(:file => file,
+                                                       :output_dir => file_path,
+                                                       :thumbnail_size => 2048)
+        upload_id = AnalyzePDFJob.create(:file_id => file_id,
+                                         :file => file,
+                                         :output_dir => file_path,
+                                         :sm_thumbnail_job => sm_thumbnail_job,
+                                         :lg_thumbnail_job => lg_thumbnail_job)
+        res.redirect "/queue/#{upload_id}"
       else
         run_mupdfdraw(File.join(file_path, 'document.pdf'), file_path, 560) # 560 width
         run_mupdfdraw(File.join(file_path, 'document.pdf'), file_path, 2048) # 2048 width

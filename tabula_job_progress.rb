@@ -1,8 +1,10 @@
+require './tabula_job_executor/executor.rb'
+
 class TabulaJobProgress < Cuba
   define do
     on ":upload_id/json" do |upload_id|
       # upload_id is the "job id" uuid that resque-status provides
-      status = Resque::Plugins::Status::Hash.get(upload_id)
+      status = Tabula::Background::JobExecutor.get(upload_id)
       res['Content-Type'] = 'application/json'
       message = {}
       if status.nil?
@@ -28,7 +30,7 @@ class TabulaJobProgress < Cuba
 
     on ":upload_id" do |upload_id|
       # upload_id is the "job id" uuid that resque-status provides
-      status = Resque::Plugins::Status::Hash.get(upload_id)
+      status = Tabula::Background::JobExecutor.get(upload_id)
       if status.nil?
         res.status = 404
         res.write ""

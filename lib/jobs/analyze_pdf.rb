@@ -1,30 +1,22 @@
 require 'open3'
+require_relative '../../tabula_job_executor/executor.rb'
 
-class AnalyzePDFJob
+require_relative '../jruby_dump_characters.rb'
+
+module JRubyProgressObserver
+  def update(*args)
+    self.at(*args)
+  end
+end
+
+class AnalyzePDFJob < Tabula::Background::Job
   # args: (:file_id, :file, :output_dir, :sm_thumbnail_job, :lg_thumbnail_job)
   # Runs the jruby PDF analyzer on the uploaded file.
-  include Resque::Plugins::Status
-  Resque::Plugins::Status::Hash.expire_in = (30 * 60) # 30min
-  @queue = :pdftohtml
 
-  def perform
+  def perform_in_mri
     file_id = options['file_id']
     file = options['file']
     output_dir = options['output_dir']
-    # not a good idea to spawn these from within this job (in case we are
-    # on an env with just one workier -- if we spawn from here, the thumbnail
-    # jobs would wait for this one). so spawn from main first and have *that*
-    # pass the IDs to here.
-    sm_thumbnail_job = options['sm_thumbnail_job']
-    lg_thumbnail_job = options['lg_thumbnail_job']
-    upload_id = self.uuid
-
-    # return some status to browser
-    at(0, 100, "analyzing PDF text...",
-      'file_id' => file_id,
-      'upload_id' => upload_id,
-      'thumbnails_complete' => true
-    )
 
     # open a subprocess and catch input/output/stderr (and a reference
     # to our thread that watches it). this opens asynchronously
@@ -74,9 +66,37 @@ class AnalyzePDFJob
              )
       return nil
     end
+  end
+
+  def perform_in_jruby
+    Thread.new {
+      xg = XMLGenerator.new(options['file'],
+                            options['output_dir'])
+      xg.add_observer(self, :at)
+    }.join
+  end
+
+  def perform
+    file_id = options['file_id']
+    sm_thumbnail_job = options['sm_thumbnail_job']
+    lg_thumbnail_job = options['lg_thumbnail_job']
+    upload_id = self.uuid
+
+    # return some status to browser
+    at(0, 100, "analyzing PDF text...",
+      'file_id' => file_id,
+      'upload_id' => upload_id,
+      'thumbnails_complete' => true
+    )
+
+    unless defined? JRUBY_VERSION
+      perform_in_mri
+    else
+      perform_in_jruby
+    end
 
     # If thumbnail jobs haven't finished, wait up for them
-    while (!Resque::Plugins::Status::Hash.get(sm_thumbnail_job).completed? || !Resque::Plugins::Status::Hash.get(lg_thumbnail_job).completed?) do
+    while (!Tabula::Background::JobExecutor.get(sm_thumbnail_job).completed? || !Tabula::Background::JobExecutor.get(lg_thumbnail_job).completed?) do
       at(99, 100, "generating thumbnails...",
          'file_id' => file_id,
          'upload_id' => upload_id
