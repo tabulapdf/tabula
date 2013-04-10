@@ -115,4 +115,4 @@ Also set the path to `mudraw`:
 
     MUDRAW_PATH = '/usr/local/mupdf/bin/mudraw'
 
-Follow the instructions detailed in the README to start the Tabula server. Make sure you have permissions set on to open HTTP/Port 80 for your instance.
+Follow the instructions detailed in the README to start the Tabula server. Make sure you have permissions set on to open HTTP/Port 80 for your instance, as well as port 9292 for the dev server.
