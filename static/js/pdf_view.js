@@ -61,6 +61,23 @@ $(function () {
       noModalAfterSelect = $('#multiselect-checkbox').is(':checked');
     })
 
+    $('a#chardin-help').click(function(){
+      if($('a#chardin-help').text() == "Help"){
+        $('body').chardinJs('start');
+      }else{
+        $('body').chardinJs('stop');
+      }
+    })
+    $('body').on('chardinJs:stop', function(){
+      $('a#chardin-help').text("Help");
+      $("#multiselect-label").css("color", "black");
+    });
+    $('body').on('chardinJs:start', function(){
+      $('a#chardin-help').text("Close Help");
+      $("#multiselect-label").css("color", "black");
+    });
+
+
     var PDF_ID = window.location.pathname.split('/')[2];
     lastQuery = [{}];
 
