@@ -343,7 +343,7 @@ $(function () {
                 use_lines :  $('#use_lines').is(':checked')
               };
 
-        $.get('/pdf/' + pdf_id + '/data',
+        $.post('/pdf/' + pdf_id + '/data',
               lastQuery,
               function(data) {
                   var tableHTML = '<table contenteditable="true" class="table table-condensed table-bordered">';
@@ -362,15 +362,29 @@ $(function () {
                   //                         function(data){ window.open(data);}
                   //                         )
                   //                     });
-                  $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(lastQuery));
-                  $('#download-tsv').attr('href', '/pdf/' + pdf_id + '/data?format=tsv&' + $.param(lastQuery));
+
+                  $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv');
+
+                    $('div#hidden-fields').empty();
+                    console.log("lastQuery", lastQuery);
+                    _(_(lastQuery).pairs()).each(function(key_val){
+                      //<input type="hidden" class="data-query" name="lastQuery" value="" >
+                      var new_hidden_field = $("<input type='hidden' class='data-query' value='' >");
+                      new_hidden_field.attr("name", key_val[0]);
+                      new_hidden_field.attr("value", key_val[1]);
+                      $('div#hidden-fields').append(new_hidden_field)
+                    });
+                  $('#download-csv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv'); });
+                  $('#download-tsv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=tsv'); });
+                  // $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(lastQuery));
+                  // $('#download-tsv').attr('href', '/pdf/' + pdf_id + '/data?format=tsv&' + $.param(lastQuery));
                   $('#myModal').modal();
                   clip.glue('#copy-csv-to-clipboard');
                   $('#loading').css('visibility', 'hidden');
               });
     };
 
-    var tableGuesses, imgAreaSelects;
+    //var tableGuesses, imgAreaSelects;
 
     $.getJSON("/pdfs/" + PDF_ID + "/tables.json", function(tableGuessesTmp){ 
 
