@@ -101,7 +101,13 @@ Tabula on their own computer: [`docs/osx-simple-bootstrap.md`](docs/osx-simple-b
     bundle install
     ~~~
 
-5. Configure Tabula: Copy `local_settings-example.rb`  to `local_settings.rb`.
+5. Download JavaCV binaries and place them in ./lib/jars. Use the downloader script below, or download, unzip and move manually.
+
+   ~~~
+   ruby javacv_downloader.rb
+   ~~~
+
+6. Configure Tabula: Copy `local_settings-example.rb`  to `local_settings.rb`.
    Edit `local_settings.rb` and set `JRUBY_PATH` to the path to the `jruby`
    executable.
 
