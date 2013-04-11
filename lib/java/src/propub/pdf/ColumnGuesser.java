@@ -77,7 +77,7 @@ public class ColumnGuesser {
         	max_pages = Integer.MAX_VALUE;
         	individual_guesses = false;
         }
-        System.err.println("pages: " + max_pages);
+        System.err.println("pages: " + Math.min(max_pages, newfile.getNumPages()));
         
         
         List<List<Rectangle2D.Double>> tables = new ArrayList<List<Rectangle2D.Double>>();
