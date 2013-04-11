@@ -29,15 +29,29 @@ class DetectTablesJob
   def create_column_guesser_command(filename)
     #return bash string to convert clean PDF to TSV via Java converter
     java_class = "propub.pdf.ColumnGuesser"
-    #@class = "propub.pdf.ColumnGuesser"
     guess_columns_individually = false
-    # on unix, this should be : separated, on win32 ; separated...
+
+    #TODO: check if javacv jars exist, if not, raise error instructing people to use javacv_downloader.rb
+
+    # on unixes, this should be : separated, on win32 ; separated...
     if RUBY_PLATFORM.downcase.include?("mswin")
-      classpath = "./java/bin/;./java/lib/PDFRenderer-0.9.1.jar;./java/lib/javacpp.jar;./java/lib/javacv.jar;./java/lib/javacv-windows-x86.jar"
+      if RUBY_PLATFORM.downcase.include?("x86_64")
+        classpath = "./lib/java/bin/;./lib/jars/PDFRenderer-0.9.1.jar;./lib/jars/javacpp.jar;./lib/jars/javacv.jar;./lib/jars/javacv-windows-x86_64.jar"
+      elsif RUBY_PLATFORM.downcase.include?("i386") #may the Lord help you if you're running Windows on a platform other than i386 or x86_64.
+        classpath = "./lib/java/bin/;./lib/jars/PDFRenderer-0.9.1.jar;./lib/jars/javacpp.jar;./lib/jars/javacv.jar;./lib/jars/javacv-windows-x86.jar"
+      end
     elsif RUBY_PLATFORM.downcase.include?("linux")
-      classpath = "./java/bin/:./java/lib/PDFRenderer-0.9.1.jar:./java/lib/javacpp.jar:./java/lib/javacv.jar:./java/lib/javacv-linux-x86.jar"
+      if RUBY_PLATFORM.downcase.include?("x86_64")
+        classpath = "./lib/java/bin/:./lib/jars/PDFRenderer-0.9.1.jar:./lib/jars/javacpp.jar:./lib/jars/javacv.jar:./lib/jars/javacv-linux-x86_64.jar.jar"
+      elsif RUBY_PLATFORM.downcase.include?("i386")
+        classpath = "./lib/java/bin/:./lib/jars/PDFRenderer-0.9.1.jar:./lib/jars/javacpp.jar:./lib/jars/javacv.jar:./lib/jars/javacv-linux-x86.jar"
+      elsif RUBY_PLATFORM.downcase.include?("arm")
+        raise NotYetImplementedError, "You're gonna have to find your own jars for JavaCV on ARM. Rumor has it that they exist. :)"
+      end
+    elsif RUBY_PLATFORM.downcase.include?("darwin")
+      classpath = "./lib/java/bin/:./lib/jars/PDFRenderer-0.9.1.jar:./lib/jars/javacpp.jar:./lib/jars/javacv.jar:./lib/jars/lib/javacv-macosx-x86_64.jar"
     else
-      classpath = "./java/bin/:./java/lib/PDFRenderer-0.9.1.jar:./java/lib/javacpp.jar:./java/lib/javacv.jar:./java/lib/javacv-macosx-x86_64.jar"
+      raise NotYetImplementedError, "Wasn't able to determine your platform for setting the right javacv binary in classpath."
     end
 
     source_basename = File.basename(filename)

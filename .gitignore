@@ -1,6 +1,6 @@
 static/pdfs
 local_settings.rb
-
+lib/jars/javacv*
 .ruby-version
 .ruby-gemset
 
@@ -9,6 +9,7 @@ local_settings.rb
 *.rbc
 .bundle
 .config
+.DS_store
 coverage
 InstalledFiles
 lib/bundler/man
