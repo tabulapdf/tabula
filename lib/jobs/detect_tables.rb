@@ -33,7 +33,7 @@ class DetectTablesJob
 
     #TODO: check if javacv jars exist, if not, raise error instructing people to use javacv_downloader.rb
 
-    # on unixes, this should be : separated, on win32 ; separated...
+    # on unixes, this should be : separated, on win32 ; separated.
     if RUBY_PLATFORM.downcase.include?("mswin")
       if RUBY_PLATFORM.downcase.include?("x86_64")
         classpath = "./lib/java/bin/;./lib/jars/PDFRenderer-0.9.1.jar;./lib/jars/javacpp.jar;./lib/jars/javacv.jar;./lib/jars/javacv-windows-x86_64.jar"
