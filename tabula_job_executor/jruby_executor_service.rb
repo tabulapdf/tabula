@@ -8,6 +8,7 @@ require 'jruby/synchronized'
 require 'securerandom'
 require 'singleton'
 
+# API and implementation inspired in resque-status (https://github.com/quirkey/resque-status)
 module Tabula
   module Background
 
@@ -41,9 +42,12 @@ module Tabula
       end
 
       class << self
-        def get(id)
-          puts "GET #{instance.job_statuses.inspect}"
-          instance.job_statuses[id]
+        def get(uuid)
+          instance.job_statuses[uuid]
+        end
+
+        def set(uuid, new_status)
+          instance.job_statuses[uuid] = new_status
         end
       end
     end
@@ -57,6 +61,10 @@ module Tabula
       def initialize(options={})
         @uuid = SecureRandom.uuid
         self.options = options
+      end
+
+      def name
+        "#{self.class.name}(#{options.inspect unless options.empty?})"
       end
 
       def run
@@ -79,6 +87,10 @@ module Tabula
 
       def status
         JobExecutor.get(@uuid)
+      end
+
+      def status=(new_status)
+        JobExecutor.set(@uuid, new_status)
       end
 
       STATUSES = %w{queued working completed failed killed}.freeze
