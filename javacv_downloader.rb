@@ -10,17 +10,17 @@ module JavaCVDownloader
   JAVACV_BIN_URL = URI('http://javacv.googlecode.com/files/javacv-0.5-bin.zip')
   JAVACV_BIN_SHA1 = "05631c8543ea4de93e31dfbcf4b97417f8696a51"
 
-  def present?
+  def self.present?
     File.exist?(JARS_PATH + JAVACV_FILENAME) &&
       ARCH_SPECIFIC_FILENAMES.map{|f| File.exist?(JARS_PATH + f)}.include?(true)
   end
 
-  def download
+  def self.download
     return if present?
 
 
     puts "downloading JavaCV binaries..."
-    open("javacv-bin.zip", "w") do |f| 
+    open("javacv-bin.zip", "w") do |f|
       javacv_bin = Net::HTTP.get(JAVACV_BIN_URL)
       sig = Digest::SHA1.hexdigest(javacv_bin)
       raise IOError, "Downloaded javacv zip has the wrong signature. Uh oh." unless sig == JAVACV_BIN_SHA1
@@ -37,5 +37,6 @@ module JavaCVDownloader
   end
 end
 
-include JavaCVDownloader
-download
+if __FILE__ == $0
+  JavaCVDownloader::download
+end
