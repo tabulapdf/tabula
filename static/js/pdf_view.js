@@ -413,6 +413,7 @@ $(function () {
           instance: true,
           allowOverlaps: false,
           show: true,
+          multipleSelections: true,
           //minHeight: 50, minWidth: 100,
 
           onSelectStart: function(img, selection)  {

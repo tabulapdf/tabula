@@ -1496,37 +1496,52 @@ $.imgAreaSelect = function (img, options) {
      * @return selection object from the newly-created Selection. May be
      *            different from given coordinates if they overlap.
      */
-
     this.createNewSelection = function(x1, y1, x2, y2){ 
-        var s = new Selection(x1, y1, x2, y2);
-        if(!options.allowOverlaps){
-            var overlaps = _(_(selections).filter(function(otherSelection){ return otherSelection; }))
-                .map(_.bind(function(otherSelection){ return s.doesOverlap(otherSelection)}, s) );
-            var legal = (_(overlaps).map(function(o){ return !o; }).indexOf(false) == -1);
-        }
-        if(options.allowOverlaps || legal){
-            //if the selection is illegal, don't create it.
-            selections.push(s);
-            return s.getSelection();
+        if(!options.multipleSelections){
+            selections[0].setSelection(x1, y2, x2, y2, noScale)
         }else{
-            //but if the selection is illegal and overlaps only one other thing, change that other one
-            if (_(overlaps).reject(function(v){ return v; }).length == 1){
-                //return their union.
-                var overlap_index = _(overlaps).map(function(v){ return !!v; }).indexOf(true);
-                var overlap = selections[overlap_index];
-                overlap.setSelection( min(overlap.selection.x1, x1, overlap.selection.x2, x2),
-                                      min(overlap.selection.y1, y1, overlap.selection.y2, y2),
-                                      max(overlap.selection.x1, x1, overlap.selection.x2, x2),
-                                      max(overlap.selection.y1, y1, overlap.selection.y2, y2) );
-                overlap.update();
-                s.cancelSelection(true);
-                return false;
+            var s = new Selection(x1, y1, x2, y2);
+            if(!options.allowOverlaps){
+                var overlaps = _(_(selections).filter(function(otherSelection){ return otherSelection; }))
+                    .map(_.bind(function(otherSelection){ return s.doesOverlap(otherSelection)}, s) );
+                var legal = (_(overlaps).map(function(o){ return !o; }).indexOf(false) == -1);
+            }
+            if(options.allowOverlaps || legal){
+                //if the selection is illegal, don't create it.
+                selections.push(s);
+                return s.getSelection();
             }else{
-                s.cancelSelection(true);
-                return false;
+                //but if the selection is illegal and overlaps only one other thing, change that other one
+                if (_(overlaps).reject(function(v){ return v; }).length == 1){
+                    //return their union.
+                    var overlap_index = _(overlaps).map(function(v){ return !!v; }).indexOf(true);
+                    var overlap = selections[overlap_index];
+                    overlap.setSelection( min(overlap.selection.x1, x1, overlap.selection.x2, x2),
+                                          min(overlap.selection.y1, y1, overlap.selection.y2, y2),
+                                          max(overlap.selection.x1, x1, overlap.selection.x2, x2),
+                                          max(overlap.selection.y1, y1, overlap.selection.y2, y2) );
+                    overlap.update();
+                    s.cancelSelection(true);
+                    return false;
+                }else{
+                    s.cancelSelection(true);
+                    return false;
+                }
             }
         }
     };
+
+    this.setSelection = function (x1, y2, x2, y2, noScale){
+        if(!options.multipleSelections){
+            selections[0].setSelection(x1, y2, x2, y2, noScale)
+            return true;
+        }else{
+            //this method makes no sense with multiple selections.
+            return false;
+        }
+    }
+
+
 
     //TODO: create a setSelection method that modifies all selection objects. (maybe?)
     
@@ -1536,16 +1551,25 @@ $.imgAreaSelect = function (img, options) {
      * Cancel selection
      */
     this.cancelSelections = function(){ 
-            // I can't simply do `_(selections).each(function(s){ s.cancelSelection(true); });` because cancelSelection modifies `selections` concurrently with iterating over `selections`, so some selections get skipped.
-            var selectionsIndex = selections.length
-            while(selectionsIndex >= 1){
-                if(selections[selectionsIndex - 1]) //skip the nulls.
-                    selections[selectionsIndex - 1].cancelSelection(true);
-                selectionsIndex--;
-                //console.log(selectionsIndex, selections);
-            }
-        };
+        //shoudl work fine as is for !options.multipleSelections
+        // I can't simply do `_(selections).each(function(s){ s.cancelSelection(true); });` because cancelSelection modifies `selections` concurrently with iterating over `selections`, so some selections get skipped.
+        var selectionsIndex = selections.length
+        while(selectionsIndex >= 1){
+            if(selections[selectionsIndex - 1]) //skip the nulls.
+                selections[selectionsIndex - 1].cancelSelection(true);
+            selectionsIndex--;
+            //console.log(selectionsIndex, selections);
+        }
+    };
     
+    this.cancelSelection = function(){
+        if(!options.multipleSelections){
+            selections[0].cancelSelection(true);
+        }else{
+            return false;
+        }
+    }
+
     /**
      * Update plugin elements
      * 
