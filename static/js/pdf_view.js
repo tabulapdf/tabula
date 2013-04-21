@@ -370,7 +370,7 @@ Tabula.PDFView = Backbone.View.extend({
         $.get('/pdf/' + pdf_id + '/data',
               query_parameters,
               function(data) {
-                  var tableHTML = '<table contenteditable="true" class="table table-condensed table-bordered">';
+                  var tableHTML = '<table class="table table-condensed table-bordered">';
                   $.each(data, function(i, row) {
                       tableHTML += '<tr><td>' + $.map(row, function(cell, j) { return cell.text; }).join('</td><td>') + '</td></tr>';
                   });
