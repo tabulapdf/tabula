@@ -26,13 +26,11 @@ $(document).ready(function() {
         this
           .css("position", "fixed")
           .css("width", "15%")
-          .css("top", 70)
-          .css("box-shadow", "rgba(0, 0, 0, 0.1) 0px 4px 5px 0px")
+          .css("top", 70);
       } else if (windowTop > footerTop) {
         this
         .css("position", "absolute")
-        .css("top", 70)
-        .css("box-shadow", "rgba(0, 0, 0, 0) 0px 4px 5px 0px")
+        .css("top", 70);
       }
     }
 
