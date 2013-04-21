@@ -1,7 +1,10 @@
 # Tabula EC2 AMI
 
 An Amazon EC2 AMI image is provided to give you a chance to boot up a quick
-test server: `ami-e895f081`
+test server:
+
+* `ami-96d6b2ff` (US East - N. Virginia)
+* `ami-feb3a68a` (EU - Ireland)
 
 ## Caveats
 
@@ -9,9 +12,9 @@ Note the [EC2 instance types](https://aws.amazon.com/ec2/instance-types/)
 and [EC2 pricing](https://aws.amazon.com/ec2/pricing/). We’re not responsible
 for any costs this may incur.
 
-Also, please note that this image is a development demo image and may not be
-secure. Using this AMI for mission-critical or sensitive documents is currently
-not recommended.
+These images automatically update to tabula `master` branch. Please note that this
+image is a development demo image and may not be secure. Using this AMI for
+mission-critical or sensitive documents is currently not recommended.
 
 ## Quick Start
 
@@ -32,10 +35,13 @@ boot up an instance with our AMI:
 3. Select the SSH keypair you want to use, and make sure you have "More Amazon
    Machine Images" selected, then click "Continue".
 
-4. Under the "Public AMIs" tab, type `ami-e895f081` into the search box.
+4. Under the "Public AMIs" tab, type `ami-96d6b2ff` (if you are in the US East AWS region)
+   or `ami-feb3a68a` (EU AWS region) into the search box. If no AMIs are found, make sure your
+   region is set to US East (N. Virginia) or EU (Ireland). (Note the ID in the image below will
+   be different from the one you will type in.)
 
     ![search for the Tabula AMI](https://d2p12wh0p3fo1n.cloudfront.net/files/20130403/aws3.png)
-
+    
 5. Click "Continue". Optionally change the server type by clicking "Edit
    details". (Note the [EC2 instance types](https://aws.amazon.com/ec2/instance-types/)
    and [EC2 pricing](https://aws.amazon.com/ec2/pricing/).
@@ -64,3 +70,24 @@ boot up an instance with our AMI:
    Open that web address in your browser. If it doesn’t come up right away,
    try again in a minute ro so. (If you continue to have issues, double-check
    the status of that instance in your "Instances" page.)
+
+## Maintenance
+
+[this section is a work-in-progress]
+
+Note that the image uses an instance store and all data will be lost if the server is "Terminated".
+
+As with other Ubuntu-based AWS servers, you can SSH into the server by using user `ubuntu` and
+the private key you provided in step 3 above. (You may have to open the SSH port — see step 7 above,
+but select port 22 instead.)
+
+The easiest way to update Tabula to the latest `master` copy:
+
+* SSH into the server (`ssh ubuntu@ec2-xxxxxxxxxxxx.xxxxxx.amazonaws.com`), pull the latest code,
+  then reboot the server.
+
+  ~~~
+  cd ~/tabula
+  git pull origin master
+  sudo reboot
+  ~~~
