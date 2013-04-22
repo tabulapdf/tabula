@@ -25,7 +25,7 @@
       </div>
       <div class="row">
         <% page_images.each_with_index do |pi, i| %>
-        <img class="page-image" id="page-<%= i + 1 %>" src="<%= pi.sub(/^static/, '') %>" data-page="<%= i + 1 %>" data-original-width="<%= pages[i].attr('width') %>" data-original-height="<%= pages[i].attr('height') %>" data-rotation="<%= pages[i].attr('rotation') %>" <% if i == 0 %> data-position="right" data-intro="Click and drag to select each table in your document. Once you've selected it, a window to preview your data will appear, along with options to download it as a spreadsheet."> <% end %><br>
+        <img class="page-image" id="page-<%= i + 1 %>" src="<%= pi.sub(/^static/, '') %>" data-page="<%= i + 1 %>" data-original-width="<%= pages[i].attr('width') %>" data-original-height="<%= pages[i].attr('height') %>" data-rotation="<%= pages[i].attr('rotation') %>" <% if i == 0 %> data-position="right" data-intro="Click and drag to select each table in your document. Once you've selected it, a window to preview your data will appear, along with options to download it as a spreadsheet."<% end %>><br>
         <% end %>
       </div>
     </div> <!-- /main container -->
@@ -37,7 +37,7 @@
         <!-- <button id="repeat-lassos" type="button" class="btn btn-primary">Repeat Page 1 Lassos</button> -->
         <button id="clear-all-selections" type="button" class="btn btn-danger">Clear All Selections</button>
         <button id="restore-detected-tables" type="button" class="btn btn-warning" style="display: none;">Autodetect Tables</button>
-        <br /><input type="checkbox" id="multiselect-checkbox"> <label id="multiselect-label" for="multiselect-checkbox" data-position="bottom" data-intro="By default, a data preview window appears after you select each table on the page. If you want to select multiple tables, check this box to suppress the preview window. You can always uncheck the box and click a selection to preview its data.">Multi-Select Mode <a class="tooltip-modal" href="#" data-placement="left" data-toggle="tooltip" title="Check this to select multiple tables without their extracted data appearing afterwards." ><i class="icon-question-sign" ></i></a></label>
+        <br /><input type="checkbox" id="multiselect-checkbox" checked> <label id="multiselect-label" for="multiselect-checkbox" data-position="bottom" data-intro="After you select each table on the page, a data preview window appears. If you want to select multiple tables without interruption, check this box to suppress the preview window.">Multi-Select Mode <a class="tooltip-modal" href="#" data-placement="left" data-toggle="tooltip" title="Check this to select multiple tables without their extracted data appearing afterwards." ><i class="icon-question-sign" ></i></a></label>
         <br />
         <a href="#" id="chardin-help">Help</a>
       </div>
