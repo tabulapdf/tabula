@@ -2,9 +2,6 @@
 
 require 'java'
 require 'json'
-require 'rubygems'
-STDERR.puts $:
-
 require './lib/point'
 require './lib/segment'
 require './lib/rectangle'
@@ -43,7 +40,6 @@ module ColumnGuesser
   def ColumnGuesser.find_and_write_rects(filename, output_dir)
     #writes to JSON the rectangles on each page in the specified PDF.
     open(File.join(output_dir, "tables.json"), 'w') do |f|
-      STDERR.puts File.join(output_dir, "tables.json")
       f.write( JSON.dump(find_rects(filename).map{|a| a.map &:dims} ))
     end
   end
