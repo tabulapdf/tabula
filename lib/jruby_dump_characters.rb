@@ -84,7 +84,7 @@ end
 <?xml version="1.0" encoding="UTF-8"?>
 <index>
 <% pages.each_with_index do |page, page_number| %>
-<page number="<%= page_number + 1 %>" top="0" left="0" height="<%= prec(page.findCropBox.getHeight) %>" width="<%= prec(page.findCropBox.getWidth) %>" rotation="<%= page.getRotation.to_i %>">
+<page number="<%= page_number + 1 %>" top="0" left="0" height="<%= prec(page.findCropBox.getHeight) %>" width="<%= prec(page.findCropBox.getWidth) %>" rotation="<%= page.getRotation.to_i %>" />
 <% end %>
 </index>
 EOT
