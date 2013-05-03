@@ -87,8 +87,11 @@ module ColumnGuesser
             
       tables = []
 
-      newfile.getNumPages.times do |i|
-        page_index = i + 1         
+      newfile.getNumPages.times do |i|          
+        page_index = i + 1 
+        if newfile.getNumPages > 100
+          STDERR.puts("detecting tables on page #{page_index}")
+        end
         #gotcha: with PDFView, PDF pages are 1-indexed. If you ask for page 0 and then page 1, you'll get the first page twice. So start with index 1.
         apage = newfile.getPage(page_index, true)
         box = apage.getPageBox()
