@@ -3,7 +3,7 @@ require './local_settings'
 class DetectTablesJob
   # args: (:file, :output_dir, :thumbnail_size)
   include Resque::Plugins::Status
-  Resque::Plugins::Status::Hash.expire_in = (30 * 60) # 30min
+  Resque::Plugins::Status::Hash.expire_in = (90 * 60) # 30min
   @queue = :pdftohtml
 
   def perform
