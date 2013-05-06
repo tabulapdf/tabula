@@ -29,11 +29,7 @@ $(document).ready(function() {
           .css("position", "fixed")
           .css("width", "15%")
           .css("top", 70);
-      } else if (windowTop > footerTop) {
-        this
-        .css("position", "absolute")
-        .css("top", 70);
-      }
+      } 
     }
 
     $(window).scroll(_.throttle(_.bind(stick, elem), 100));
@@ -377,7 +373,7 @@ Tabula.PDFView = Backbone.View.extend({
     restore_detected_tables: function(){
       for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
         var pageIndex = imageIndex + 1;
-        drawDetectedTables( $('img#page-' + pageIndex)[0], tableGuesses );
+        this.drawDetectedTables( $('img#page-' + pageIndex)[0], tableGuesses );
       }
       this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
     },
