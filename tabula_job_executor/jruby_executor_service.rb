@@ -1,34 +1,58 @@
 require 'java'
 java_import java.util.concurrent.ThreadPoolExecutor
 java_import java.util.concurrent.TimeUnit
-java_import java.util.concurrent.ArrayBlockingQueue
+java_import java.util.concurrent.LinkedBlockingQueue
 
 require 'jruby/synchronized'
 
 require 'securerandom'
 require 'singleton'
 
-# API and implementation inspired in resque-status (https://github.com/quirkey/resque-status)
 module Tabula
   module Background
 
     class JobExecutor < java.util.concurrent.ThreadPoolExecutor
       include Singleton
 
-      attr_reader :job_statuses
+      attr_reader :job_statuses, :futures_jobs
 
       def initialize
-        @job_statuses = Hash.new.extend(JRuby::Synchronized)
-        super(3, # core PoolSize
-              3, # Max pool size
-              1, # keep alive
-              TimeUnit::MINUTES, # unit
-              ArrayBlockingQueue.new(1, true), # work queue
-              ThreadPoolExecutor::CallerRunsPolicy.new) # handler
+        @jobs = Hash.new.extend(JRuby::Synchronized)
+        @futures_jobs = Hash.new.extend(JRuby::Synchronized)
+
+        super(3, # core pool size
+              5, # max pool size
+              300, # keep idle threads 5 minutes
+              TimeUnit::SECONDS, 
+              LinkedBlockingQueue.new)
 
         at_exit do
           self.shutdown
           self.shutdownNow
+        end
+      end
+
+      def afterExecute(runnable, throwable)
+        super(runnable, throwable)
+        if throwable.nil? and runnable.instance_of?(Java::JavaUtilConcurrent::FutureTask)
+          begin
+            if runnable.isDone
+              runnable.get # 'get' the Future, so it rethrows exceptions if any
+            end
+          rescue Java::JavaUtilConcurrent::ExecutionException => e
+            throwable = e
+          rescue Java::JavaUtilConcurrent::CancellationException => e
+            throwable = e.getCause
+          rescue Java::JavaLang::InterruptedException => e
+            Java::JavaLang::Thread.currentThread.interrupt
+          end
+          if throwable.nil?
+            # task finished OK
+            @futures_jobs[runnable].completed
+          else
+            # finished with exception
+            @futures_jobs[runnable].failed(throwable.toString)
+          end
         end
       end
 
@@ -37,8 +61,9 @@ module Tabula
       end
 
       def submit(job)
-        # TODO LOGGING
-        super(job)
+        @jobs[job.uuid] = job
+        future = super(job)
+        @futures_jobs[future] = job
       end
 
       class << self
@@ -53,13 +78,14 @@ module Tabula
     end
 
     class Job
-      include java.lang.Runnable
+      include java.util.concurrent.Callable
 
-      attr_accessor :options
+      attr_accessor :options, :status
       attr_reader :uuid
 
       def initialize(options={})
         @uuid = SecureRandom.uuid
+        @status = {}
         self.options = options
       end
 
@@ -67,30 +93,21 @@ module Tabula
         "#{self.class.name}(#{options.inspect unless options.empty?})"
       end
 
-      def run
+      def call
         perform
+        @uuid
       end
 
       def at(num, total, *messages)
-        puts "AT!! #{num}, #{total}, #{messages.inspect}"
-        set_status({ 'status' => 'working', 'num' => num, 'total' => total }, *messages)
+        self.status = { 'status' => 'working', 'num' => num, 'total' => total, 'messages' => messages }
       end
 
       def failed(*messages)
-        set_status({'status' => 'failed'}, *messages)
+        self.status = { 'status' => 'failed', 'messages' => messages }
       end
 
-      def completed(*messages)
-        set_status({'status' => 'failed', 'message' => "Completed at #{Time.now}"},
-                   *messages)
-      end
-
-      def status
-        JobExecutor.get(@uuid)
-      end
-
-      def status=(new_status)
-        JobExecutor.set(@uuid, new_status)
+      def completed
+        self.status['status'] = 'completed'
       end
 
       STATUSES = %w{queued working completed failed killed}.freeze
@@ -108,11 +125,6 @@ module Tabula
         end
       end
 
-      private
-
-      def set_status(*args)
-        @executor.job_statuses[@uuid] = args.flatten
-      end
     end
   end
 end
@@ -122,10 +134,21 @@ if __FILE__ == $0
 
   class K < Tabula::Background::Job
     def perform
-      puts self.inspect
       options[:start].upto(options[:end]) do |i|
-        at(i, options[:end])
         puts "I'm #{@uuid}: #{i}/#{options[:end]}"
+        at(i, options[:end])
+        sleep 1
+      end
+      @uuid
+    end
+  end
+
+  class J < Tabula::Background::Job
+    def perform
+      options[:start].upto(options[:end]) do |i|
+        puts "I'm #{@uuid}: #{i}/#{options[:end]}"
+        at(i, options[:end])
+        raise 'caca'
         sleep 1
       end
     end
@@ -133,13 +156,19 @@ if __FILE__ == $0
 
   j1 = K.create(:start => 1, :end => 20)
   j2 = K.create(:start => 25, :end => 40)
+  j3 = J.create(:start => 1, :end => 6)
 
   Thread.new do
     loop {
-      puts "STATUS OF J1 IN EXECUTOR: #{Tabula::Background::JobExecutor.get(j1)}"
-      puts "STATUS OF J2 IN EXECUTOR: #{Tabula::Background::JobExecutor.get(j2)}"
-      sleep 2
+      puts "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+
+      # puts "STATUS OF J1 IN EXECUTOR: #{Tabula::Background::JobExecutor.get(j1)}"
+      # puts "STATUS OF J2 IN EXECUTOR: #{Tabula::Background::JobExecutor.get(j2)}"
+      # puts "STATUS OF J3 IN EXECUTOR: #{Tabula::Background::JobExecutor.get(j3)}"
+      puts Tabula::Background::JobExecutor.instance.futures_jobs.inspect
+      sleep 1
     }
+
   end
 
 
