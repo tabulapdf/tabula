@@ -21,9 +21,9 @@ class TabulaJobProgress < Cuba
         message[:status] = status.status
         message[:message] = status.message
         message[:pct_complete] = status.pct_complete
-        message[:thumbnails_complete] = status['thumbnails_complete']
-        message[:file_id] = status['file_id']
-        message[:upload_id] = status['upload_id']
+        message[:thumbnails_complete] = status[:thumbnails_complete]
+        message[:file_id] = status[:file_id]
+        message[:upload_id] = status[:upload_id]
         res.write message.to_json
       end
     end

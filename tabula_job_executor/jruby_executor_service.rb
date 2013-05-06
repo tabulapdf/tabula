@@ -23,7 +23,7 @@ module Tabula
         super(3, # core pool size
               5, # max pool size
               300, # keep idle threads 5 minutes
-              TimeUnit::SECONDS, 
+              TimeUnit::SECONDS,
               LinkedBlockingQueue.new)
 
         at_exit do
@@ -51,6 +51,7 @@ module Tabula
             @futures_jobs[runnable].completed
           else
             # finished with exception
+            throwable.printStackTrace # XXX TODO better exception logging
             @futures_jobs[runnable].failed(throwable.toString)
           end
         end
@@ -81,6 +82,10 @@ module Tabula
         self.options = options
       end
 
+      def [](k)
+        self.options[k]
+      end
+
       def name
         "#{self.class.name}(#{options.inspect unless options.empty?})"
       end
@@ -106,6 +111,21 @@ module Tabula
       def completed
         self.status.merge!({ 'status' => 'completed', 'completed_on' => Time.now })
       end
+
+      def pct_complete
+        case status['status']
+          when 'completed' then 100
+          when 'queued' then 0
+          else
+          t = (status['total'] == 0 || status['total'].nil?) ? 1 : status['total']
+          (((status['num'] || 0).to_f / t.to_f) * 100).to_i
+        end
+      end
+
+      def message
+        status['message']
+      end
+      alias_method :message?, :message
 
       STATUSES = %w{queued working completed failed killed}.freeze
       STATUSES.each do |status|
