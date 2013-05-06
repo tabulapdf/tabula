@@ -1,29 +1,16 @@
 require_relative '../../tabula_job_executor/executor.rb'
+require_relative '../thumbnail_generator.rb'
 
 class GenerateThumbnailJob < Tabula::Background::Job
-  # args: (:file, :output_dir, :thumbnail_size)
+  # args: (:file, :output_dir, :thumbnail_sizes)
 
   def perform
     file = options['file']
     output_dir = options['output_dir']
-    thumbnail_size = options['thumbnail_size']
+    thumbnail_sizes = options['thumbnail_sizes']
 
-    run_mupdfdraw(file, output_dir, thumbnail_size)
+    generator = PDFThumbnailGenerator.new(file, output_dir,)
+    generator.add_observer(self, :at)
+    generator.generate_thumbnails!
   end
-
-  private
-
-  def run_mupdfdraw(file, output_dir, width=560, page=nil)
-
-    cmd = "#{Settings::MUDRAW_PATH} -w #{width} -o " \
-    + File.join(output_dir, "document_#{width}_%d.png") \
-    + " #{file}"
-
-    cmd += " #{page}" unless page.nil?
-
-    `#{cmd}`
-
-  end
-
-
 end

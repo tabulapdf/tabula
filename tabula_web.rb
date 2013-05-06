@@ -23,7 +23,6 @@ if Settings::ASYNC_PROCESSING
 end
 
 require './lib/jruby_dump_characters.rb' if IS_JRUBY
-
 require './tabula_extractor/tabula.rb'
 
 
@@ -54,6 +53,7 @@ end
 
 Cuba.plugin Cuba::Render
 Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/scripts", "/swf"]
+Cuba.use Rack::Reloader
 
 Cuba.define do
 
@@ -168,17 +168,13 @@ Cuba.define do
 
       if Settings::ASYNC_PROCESSING
         # fire off thumbnail jobs
-        sm_thumbnail_job = GenerateThumbnailJob.create(:file => file,
+        thumbnail_job = GenerateThumbnailJob.create(:file => file,
                                                        :output_dir => file_path,
-                                                       :thumbnail_size => 560)
-        lg_thumbnail_job = GenerateThumbnailJob.create(:file => file,
-                                                       :output_dir => file_path,
-                                                       :thumbnail_size => 2048)
+                                                       :thumbnail_sizes => [2048, 560])
         upload_id = AnalyzePDFJob.create(:file_id => file_id,
                                          :file => file,
                                          :output_dir => file_path,
-                                         :sm_thumbnail_job => sm_thumbnail_job,
-                                         :lg_thumbnail_job => lg_thumbnail_job)
+                                         :thumbnail_job => thumbnail_job)
         res.redirect "/queue/#{upload_id}"
       else
         run_mupdfdraw(File.join(file_path, 'document.pdf'), file_path, 560) # 560 width

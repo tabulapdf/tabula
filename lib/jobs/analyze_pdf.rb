@@ -10,7 +10,7 @@ module JRubyProgressObserver
 end
 
 class AnalyzePDFJob < Tabula::Background::Job
-  # args: (:file_id, :file, :output_dir, :sm_thumbnail_job, :lg_thumbnail_job)
+  # args: (:file_id, :file, :output_dir, :thumbnail_job)
   # Runs the jruby PDF analyzer on the uploaded file.
 
   def perform_in_mri
@@ -69,17 +69,14 @@ class AnalyzePDFJob < Tabula::Background::Job
   end
 
   def perform_in_jruby
-    Thread.new {
-      xg = XMLGenerator.new(options['file'],
-                            options['output_dir'])
-      xg.add_observer(self, :at)
-    }.join
+    xg = XMLGenerator.new(options['file'],
+                          options['output_dir'])
+    xg.add_observer(self, :at)
   end
 
   def perform
     file_id = options['file_id']
-    sm_thumbnail_job = options['sm_thumbnail_job']
-    lg_thumbnail_job = options['lg_thumbnail_job']
+    thumbnail_job = options['thumbnail_job']
     upload_id = self.uuid
 
     # return some status to browser
@@ -96,7 +93,7 @@ class AnalyzePDFJob < Tabula::Background::Job
     end
 
     # If thumbnail jobs haven't finished, wait up for them
-    while (!Tabula::Background::JobExecutor.get(sm_thumbnail_job).completed? || !Tabula::Background::JobExecutor.get(lg_thumbnail_job).completed?) do
+    while !Tabula::Background::JobExecutor.get(thumbnail_job).completed? do
       at(99, 100, "generating thumbnails...",
          'file_id' => file_id,
          'upload_id' => upload_id

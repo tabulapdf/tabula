@@ -14,7 +14,7 @@ module Tabula
     class JobExecutor < java.util.concurrent.ThreadPoolExecutor
       include Singleton
 
-      attr_reader :job_statuses, :futures_jobs
+      attr_reader :jobs, :futures_jobs
 
       def initialize
         @jobs = Hash.new.extend(JRuby::Synchronized)
@@ -56,10 +56,6 @@ module Tabula
         end
       end
 
-      def get_job_status(id)
-        job_statuses[id]
-      end
-
       def submit(job)
         @jobs[job.uuid] = job
         future = super(job)
@@ -68,11 +64,7 @@ module Tabula
 
       class << self
         def get(uuid)
-          instance.job_statuses[uuid]
-        end
-
-        def set(uuid, new_status)
-          instance.job_statuses[uuid] = new_status
+          instance.jobs[uuid]
         end
       end
     end
@@ -94,20 +86,25 @@ module Tabula
       end
 
       def call
+        self.status.merge!({ 'status' => 'working', 'started_on' => Time.now })
         perform
         @uuid
       end
 
       def at(num, total, *messages)
-        self.status = { 'status' => 'working', 'num' => num, 'total' => total, 'messages' => messages }
+        self.status.merge!({ 'status' => 'working', 'num' => num, 'total' => total, 'messages' => messages })
+      end
+
+      def queued
+        self.status.merge!({ 'status' => 'queued', 'queued_on' => Time.now })
       end
 
       def failed(*messages)
-        self.status = { 'status' => 'failed', 'messages' => messages }
+        self.status.merge!({ 'status' => 'failed', 'messages' => messages})
       end
 
       def completed
-        self.status['status'] = 'completed'
+        self.status.merge!({ 'status' => 'completed', 'completed_on' => Time.now })
       end
 
       STATUSES = %w{queued working completed failed killed}.freeze
@@ -168,8 +165,5 @@ if __FILE__ == $0
       puts Tabula::Background::JobExecutor.instance.futures_jobs.inspect
       sleep 1
     }
-
   end
-
-
 end
