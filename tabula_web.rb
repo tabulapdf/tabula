@@ -34,9 +34,14 @@ def is_valid_pdf?(path)
   File.open(path, 'r') { |f| f.read(4) } == '%PDF'
 end
 
+
+STATIC_ROOT = defined?($servlet_context) ? \
+                File.join($servlet_context.getRealPath('/'), 'WEB-INF/static') : \
+                'static'
+
 Cuba.plugin Cuba::Render
-Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/scripts", "/swf"]
-Cuba.use Rack::Reloader
+Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/scripts", "/swf"]
+#Cuba.use Rack::Reloader
 
 Cuba.define do
 
