@@ -5,6 +5,7 @@ require 'cuba/render'
 require 'digest/sha1'
 require 'json'
 require 'csv'
+require 'tabula' # tabula-extractor gem
 
 # are we running on JRuby?
 IS_JRUBY = RUBY_PLATFORM =~ /java/
@@ -18,38 +19,14 @@ end
 
 if Settings::ASYNC_PROCESSING
   require './tabula_job_executor/executor.rb'
-  require './lib/jobs/analyze_pdf.rb'
   require './lib/jobs/generate_thumbnails.rb'
+  require './lib/jobs/generate_page_index.rb'
 end
-
-require './lib/jruby_dump_characters.rb' if IS_JRUBY
-require './tabula_extractor/tabula.rb'
-
 
 def is_valid_pdf?(path)
   # TODO: probabaly not entirely correct - check.
   File.open(path, 'r') { |f| f.read(4) } == '%PDF'
 end
-
-# TODO: move this elsewhere
-def run_mupdfdraw(file, output_dir, width=560, page=nil)
-
-  cmd = "#{Settings::MUDRAW_PATH} -w #{width} -o " \
-  + File.join(output_dir, "document_#{width}_%d.png") \
-  + " #{file}"
-
-  cmd += " #{page}" unless page.nil?
-
-  `#{cmd}`
-end
-
-# TODO: move this elsewhere
-def run_jrubypdftohtml(file, output_dir)
-  puts "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}"
-  system({"CLASSPATH" => "lib/jars/pdfbox-app-1.8.0.jar"},
-         "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}")
-end
-
 
 Cuba.plugin Cuba::Render
 Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/scripts", "/swf"]
@@ -78,51 +55,39 @@ Cuba.define do
     end
 
     on "pdf/:file_id/data" do |file_id|
-      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
+      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
 
-      text_elements = Tabula::XML.get_text_elements(pdf_path,
-                                                    req.params['page'],
-                                                    req.params['x1'],
-                                                    req.params['y1'],
-                                                    req.params['x2'],
-                                                    req.params['y2'])
-      make_table_options = {}
+      # make_table_options = {}
 
-      if !req.params['use_lines'].nil? and req.params['use_lines'] != 'false'
-        page_dimensions = Tabula::XML.get_page_dimensions(pdf_path, req.params['page'])
-        rulings = Tabula::Rulings::detect_rulings(File.join(pdf_path,
-                                                            "document_2048_#{req.params['page']}.png"),
-                                                  page_dimensions[:width] / 2048.0)
+      # if !req.params['use_lines'].nil? and req.params['use_lines'] != 'false'
+      #   page_dimensions = Tabula::XML.get_page_dimensions(pdf_path, req.params['page'])
+      #   rulings = Tabula::Rulings::detect_rulings(File.join(pdf_path,
+      #                                                       "document_2048_#{req.params['page']}.png"),
+      #                                             page_dimensions[:width] / 2048.0)
 
-        make_table_options[:horizontal_rulings] = rulings[:horizontal]
-        make_table_options[:vertical_rulings] = rulings[:vertical]
-      end
+      #   make_table_options[:horizontal_rulings] = rulings[:horizontal]
+      #   make_table_options[:vertical_rulings] = rulings[:vertical]
+      # end
 
-      table = Tabula.make_table(text_elements, make_table_options)
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
 
-      line_texts = table.map { |line|
-        line.text_elements.sort_by { |t| t.left }
-      }
-
+      table = Tabula.make_table(extractor.extract.next.get_text([req.params['y1'].to_f,
+                                                                req.params['x1'].to_f,
+                                                                req.params['y2'].to_f,
+                                                                req.params['x2'].to_f]))
+      
       case req.params['format']
       when 'csv'
         res['Content-Type'] = 'text/csv'
-        csv_string = CSV.generate { |csv|
-          line_texts.each { |l|
-            csv << l.map { |c| c.text }
-          }
-        }
-        res.write csv_string
+        Tabula::Writers.CSV(table, res)
       when 'tsv'
         res['Content-Type'] = 'text/tab-separated-values'
-        tsv_string = line_texts.collect { |l|
-            l.collect { |c| c.text }.join("\t")
-          }.join("\n")
-        res.write tsv_string
+        Tabula::Writers.TSV(table, res)
       else
         res['Content-Type'] = 'application/json'
-        res.write line_texts.to_json
+        Tabula::Writers.JSON(table, res)
       end
+
     end
 
     on 'pdfs' do
@@ -138,8 +103,9 @@ Cuba.define do
                        page_images: Dir.glob(File.join(document_dir, "document_560_*.png"))
                          .sort_by { |f| f.gsub(/[^\d]/, '').to_i }
                          .map { |f| f.gsub(Settings::DOCUMENTS_BASEPATH, '/pdfs') },
-                       pages: Tabula::XML.get_pages(File.join(Settings::DOCUMENTS_BASEPATH,
-                                                               file_id)))
+                       pages: File.open(File.join(document_dir, 'pages.json')) { |f| 
+                         JSON.parse(f.read)
+                       })
       end
     end
 
@@ -168,13 +134,13 @@ Cuba.define do
 
       if Settings::ASYNC_PROCESSING
         # fire off thumbnail jobs
-        thumbnail_job = GenerateThumbnailJob.create(:file => file,
-                                                       :output_dir => file_path,
-                                                       :thumbnail_sizes => [2048, 560])
-        upload_id = AnalyzePDFJob.create(:file_id => file_id,
-                                         :file => file,
-                                         :output_dir => file_path,
-                                         :thumbnail_job => thumbnail_job)
+        page_index_job = GeneratePageIndexJob.create(:file => file,
+                                                :output_dir => file_path)
+        upload_id = GenerateThumbnailJob.create(:file_id => file_id,
+                                                :file => file,
+                                                :page_index_job => page_index_job,
+                                                :output_dir => file_path,
+                                                :thumbnail_sizes => [2048, 560])
         res.redirect "/queue/#{upload_id}"
       else
         run_mupdfdraw(File.join(file_path, 'document.pdf'), file_path, 560) # 560 width

@@ -50,6 +50,7 @@ module Tabula
             # task finished OK
             @futures_jobs[runnable].completed
           else
+            throwable.printStackTrace(java.lang.System.out)
             # finished with exception
             @futures_jobs[runnable].failed(throwable.toString)
           end
@@ -91,6 +92,10 @@ module Tabula
         @uuid
       end
 
+      def [](k)
+        options[k] 
+      end
+
       def at(num, total, *messages)
         self.status.merge!({ 'status' => 'working', 'num' => num, 'total' => total, 'messages' => messages })
       end
@@ -106,6 +111,22 @@ module Tabula
       def completed
         self.status.merge!({ 'status' => 'completed', 'completed_on' => Time.now })
       end
+
+      def pct_complete
+        if status['status'] == 'working' && status['num']
+          (status['num'] / status['total'].to_f) * 100
+        elsif status['status'] == 'completed'
+          100
+        else
+          0
+        end
+      end
+
+      def message
+        self.status['message']
+      end
+
+      def message?; !message.nil?; end
 
       STATUSES = %w{queued working completed failed killed}.freeze
       STATUSES.each do |status|

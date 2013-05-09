@@ -21,9 +21,8 @@ class TabulaJobProgress < Cuba
         message[:status] = status.status
         message[:message] = status.message
         message[:pct_complete] = status.pct_complete
-        message[:thumbnails_complete] = status['thumbnails_complete']
-        message[:file_id] = status['file_id']
-        message[:upload_id] = status['upload_id']
+        message[:file_id] = status[:file_id]
+        message[:upload_id] = status[:upload_id]
         res.write message.to_json
       end
     end
@@ -31,6 +30,7 @@ class TabulaJobProgress < Cuba
     on ":upload_id" do |upload_id|
       # upload_id is the "job id" uuid that resque-status provides
       status = Tabula::Background::JobExecutor.get(upload_id)
+      puts Tabula::Background::JobExecutor.instance.jobs.inspect
       if status.nil?
         res.status = 404
         res.write ""

@@ -5,6 +5,7 @@ source "https://rubygems.org"
   gem "rake"
   gem "rack"
   gem "tilt"
+  gem "tabula-extractor", '>=0.0.1'
 
   platforms :mri_19, :mri_20 do
     gem "resque", "~>1.24.1"

@@ -23,7 +23,7 @@
       </div>
       <div class="row">
         <% page_images.each_with_index do |pi, i| %>
-        <img class="page-image" id="page-<%= i + 1 %>" src="<%= pi.sub(/^static/, '') %>" data-page="<%= i + 1 %>" data-original-width="<%= pages[i].attr('width') %>" data-original-height="<%= pages[i].attr('height') %>" data-rotation="<%= pages[i].attr('rotation') %>"><br>
+        <img class="page-image" id="page-<%= i + 1 %>" src="<%= pi.sub(/^static/, '') %>" data-page="<%= i + 1 %>" data-original-width="<%= pages[i]['width'] %>" data-original-height="<%= pages[i]['height'] %>" data-rotation="<%= pages[i]['rotation'] %>"><br>
         <% end %>
       </div>
     </div> <!-- /main container -->
