@@ -12,15 +12,26 @@ java_import java.awt.Image
 java_import com.sun.pdfview.PDFFile
 java_import com.sun.pdfview.PDFPage
 
-class PDFThumbnailGenerator
+class AbstractThumbnailGenerator
   include Observable
-  
+
   def initialize(pdf_filename, output_directory, sizes=[2048, 560], pages=[])
     raise Errno::ENOENT unless File.directory?(output_directory)
     raise ArgumentError if sizes.empty?
     @sizes = sizes.sort.reverse
     @output_directory = output_directory
+  end
 
+  def generate_thumbnails!
+    raise 'NotImplemented'
+  end
+
+end
+
+class PDFThumbnailGenerator < AbstractThumbnailGenerator
+
+  def initialize(pdf_filename, output_directory, sizes=[2048, 560], pages=[])
+    super(pdf_filename, output_directory, sizes, pages)
     raf = RandomAccessFile.new(pdf_filename, 'r')
     @pdf = Java::ComSunPdfview::PDFFile.new(raf.channel.map(MapMode::READ_ONLY, 0, raf.channel.size))
   end
@@ -36,8 +47,8 @@ class PDFThumbnailGenerator
       # generate the biggest thumbnail
       w, h = page.getWidth, page.getHeight
       image = page.getImage(size, h * (size / w), nil, nil, true, true)
-      ImageIO.write(image, 'png', 
-                    java.io.File.new(File.join(@output_directory, 
+      ImageIO.write(image, 'png',
+                    java.io.File.new(File.join(@output_directory,
                                                "document_#{size}_#{page_index}.png")))
 
       # rescale the already generated image for each specified size
@@ -46,7 +57,7 @@ class PDFThumbnailGenerator
         bi = BufferedImage.new(s, h * (size / w) * scale, image.getType)
         bi.getGraphics.drawImage(image.getScaledInstance(s, h * (size / w) * scale, Image::SCALE_SMOOTH),
                                  0, 0, nil)
-        ImageIO.write(bi, 
+        ImageIO.write(bi,
                       'png',
                       java.io.File.new(File.join(@output_directory,
                                                  "document_#{s}_#{page_index}.png")))

@@ -23,7 +23,7 @@ module Tabula
         super(3, # core pool size
               5, # max pool size
               300, # keep idle threads 5 minutes
-              TimeUnit::SECONDS, 
+              TimeUnit::SECONDS,
               LinkedBlockingQueue.new)
 
         at_exit do
@@ -52,6 +52,7 @@ module Tabula
           else
             throwable.printStackTrace(java.lang.System.out)
             # finished with exception
+            throwable.printStackTrace # XXX TODO better exception logging
             @futures_jobs[runnable].failed(throwable.toString)
           end
         end
@@ -80,6 +81,10 @@ module Tabula
         @uuid = SecureRandom.uuid
         @status = {}
         self.options = options
+      end
+
+      def [](k)
+        self.options[k]
       end
 
       def name
@@ -113,12 +118,12 @@ module Tabula
       end
 
       def pct_complete
-        if status['status'] == 'working' && status['num']
-          (status['num'] / status['total'].to_f) * 100
-        elsif status['status'] == 'completed'
-          100
-        else
-          0
+        case status['status']
+          when 'completed' then 100
+          when 'queued' then 0
+          else
+          t = (status['total'] == 0 || status['total'].nil?) ? 1 : status['total']
+          (((status['num'] || 0).to_f / t.to_f) * 100).to_i
         end
       end
 
@@ -126,7 +131,7 @@ module Tabula
         self.status['message']
       end
 
-      def message?; !message.nil?; end
+      alias_method :message?, :message
 
       STATUSES = %w{queued working completed failed killed}.freeze
       STATUSES.each do |status|

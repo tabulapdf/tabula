@@ -5,6 +5,7 @@ class GenerateThumbnailJob < Tabula::Background::Job
   # args: (:file, :output_dir, :thumbnail_sizes, :page_index_job)
 
   def perform
+
     file_id = options[:file_id]
     upload_id = self.uuid
     file = options[:file]

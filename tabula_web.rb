@@ -7,14 +7,15 @@ require 'json'
 require 'csv'
 require 'tabula' # tabula-extractor gem
 
-# are we running on JRuby?
-IS_JRUBY = RUBY_PLATFORM =~ /java/
-
 begin
   require ENV['TABULA_SETTINGS'] || './local_settings.rb'
 rescue LoadError
   puts "'./local_settings.rb' could not be found. See README.md for more info."
   raise
+end
+
+unless File.directory?(Settings::DOCUMENTS_BASEPATH)
+  raise "DOCUMENTS_BASEPATH does not exist or is not a directory."
 end
 
 if Settings::ASYNC_PROCESSING
@@ -23,14 +24,29 @@ if Settings::ASYNC_PROCESSING
   require './lib/jobs/generate_page_index.rb'
 end
 
+else
+  require './lib/jruby_dump_characters.rb'
+  require './lib/thumbnail_generator.rb'
+end
+
+require './tabula_extractor/tabula.rb'
+
+
+
 def is_valid_pdf?(path)
   # TODO: probabaly not entirely correct - check.
   File.open(path, 'r') { |f| f.read(4) } == '%PDF'
 end
 
+
+STATIC_ROOT = defined?($servlet_context) ? \
+                File.join($servlet_context.getRealPath('/'), 'WEB-INF/static') : \
+                'static'
+
+
 Cuba.plugin Cuba::Render
-Cuba.use Rack::Static, root: "static", urls: ["/css","/js", "/img", "/scripts", "/swf"]
-Cuba.use Rack::Reloader
+Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/scripts", "/swf"]
+#Cuba.use Rack::Reloader
 
 Cuba.define do
 
@@ -131,25 +147,20 @@ Cuba.define do
 
       file = File.join(file_path, 'document.pdf')
 
-
       if Settings::ASYNC_PROCESSING
         # fire off thumbnail jobs
-        page_index_job = GeneratePageIndexJob.create(:file => file,
-                                                :output_dir => file_path)
-        upload_id = GenerateThumbnailJob.create(:file_id => file_id,
-                                                :file => file,
-                                                :page_index_job => page_index_job,
-                                                :output_dir => file_path,
-                                                :thumbnail_sizes => [2048, 560])
+        thumbnail_job = GenerateThumbnailJob.create(:file => file,
+                                                       :output_dir => file_path,
+                                                       :thumbnail_sizes => [560])
+        upload_id = AnalyzePDFJob.create(:file_id => file_id,
+                                         :file => file,
+                                         :output_dir => file_path,
+                                         :thumbnail_job => thumbnail_job)
+
         res.redirect "/queue/#{upload_id}"
       else
-        run_mupdfdraw(File.join(file_path, 'document.pdf'), file_path, 560) # 560 width
-        run_mupdfdraw(File.join(file_path, 'document.pdf'), file_path, 2048) # 2048 width
-        if !IS_JRUBY
-          run_jrubypdftohtml(File.join(file_path, 'document.pdf'), file_path)
-        else
-          XMLGenerator.new(File.join(file_path, 'document.pdf'), file_path).generate_xml!
-        end
+        PDFThumbnailGenerator.new(file, file_path, [560]).generate_thumbnails!
+        XMLGenerator.new(File.join(file_path, 'document.pdf'), file_path).generate_xml!
         res.redirect "/pdf/#{file_id}"
       end
     end
