@@ -7,6 +7,8 @@ require 'json'
 require 'csv'
 require 'tabula' # tabula-extractor gem
 
+require './tabula_job_progress.rb'
+
 begin
   require ENV['TABULA_SETTINGS'] || './local_settings.rb'
 rescue LoadError
@@ -24,15 +26,6 @@ if Settings::ASYNC_PROCESSING
   require './lib/jobs/generate_page_index.rb'
 end
 
-else
-  require './lib/jruby_dump_characters.rb'
-  require './lib/thumbnail_generator.rb'
-end
-
-require './tabula_extractor/tabula.rb'
-
-
-
 def is_valid_pdf?(path)
   # TODO: probabaly not entirely correct - check.
   File.open(path, 'r') { |f| f.read(4) } == '%PDF'
@@ -42,7 +35,6 @@ end
 STATIC_ROOT = defined?($servlet_context) ? \
                 File.join($servlet_context.getRealPath('/'), 'WEB-INF/static') : \
                 'static'
-
 
 Cuba.plugin Cuba::Render
 Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/scripts", "/swf"]
@@ -57,13 +49,10 @@ Cuba.define do
     end
   end
 
-  if Settings::ASYNC_PROCESSING
-    require './tabula_job_progress.rb'
-    on 'queue' do
-      run TabulaJobProgress
-    end
-  end
 
+  on 'queue' do
+    run TabulaJobProgress
+  end
 
   on get do
     on root do
@@ -72,18 +61,6 @@ Cuba.define do
 
     on "pdf/:file_id/data" do |file_id|
       pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
-
-      # make_table_options = {}
-
-      # if !req.params['use_lines'].nil? and req.params['use_lines'] != 'false'
-      #   page_dimensions = Tabula::XML.get_page_dimensions(pdf_path, req.params['page'])
-      #   rulings = Tabula::Rulings::detect_rulings(File.join(pdf_path,
-      #                                                       "document_2048_#{req.params['page']}.png"),
-      #                                             page_dimensions[:width] / 2048.0)
-
-      #   make_table_options[:horizontal_rulings] = rulings[:horizontal]
-      #   make_table_options[:vertical_rulings] = rulings[:vertical]
-      # end
 
       extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
 
@@ -147,22 +124,15 @@ Cuba.define do
 
       file = File.join(file_path, 'document.pdf')
 
-      if Settings::ASYNC_PROCESSING
-        # fire off thumbnail jobs
-        thumbnail_job = GenerateThumbnailJob.create(:file => file,
-                                                       :output_dir => file_path,
-                                                       :thumbnail_sizes => [560])
-        upload_id = AnalyzePDFJob.create(:file_id => file_id,
-                                         :file => file,
-                                         :output_dir => file_path,
-                                         :thumbnail_job => thumbnail_job)
-
-        res.redirect "/queue/#{upload_id}"
-      else
-        PDFThumbnailGenerator.new(file, file_path, [560]).generate_thumbnails!
-        XMLGenerator.new(File.join(file_path, 'document.pdf'), file_path).generate_xml!
-        res.redirect "/pdf/#{file_id}"
-      end
+      # fire off background jobs
+      page_index_job = GeneratePageIndexJob.create(:file => file,
+                                                   :output_dir => file_path)
+      upload_id = GenerateThumbnailJob.create(:file_id => file_id,
+                                              :file => file,
+                                              :page_index_job => page_index_job,
+                                              :output_dir => file_path,
+                                              :thumbnail_sizes => [2048, 560])
+      res.redirect "/queue/#{upload_id}"
     end
   end
 end

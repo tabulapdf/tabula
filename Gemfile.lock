@@ -6,7 +6,6 @@ GEM
       rack
     jruby-jars (1.7.3)
     jruby-rack (1.1.13.2)
-    nokogiri (1.5.9-java)
     rack (1.5.2)
     rake (10.0.4)
     rubyzip (0.9.9)
@@ -26,14 +25,8 @@ PLATFORMS
 DEPENDENCIES
   algorithms
   cuba
-  foreman
-  minitest
-  nokogiri
   rack
   rake
-  resque (~> 1.24.1)
-  resque-status
-  ruby-opencv
   tabula-extractor (>= 0.0.1)
   tilt
   warbler
