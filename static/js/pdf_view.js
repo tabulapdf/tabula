@@ -624,7 +624,7 @@ Tabula.PDFView = Backbone.View.extend({
           }, this),
           onSelectCancel: _.bind( function(img, selection, selectionId){
             $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selectionId).remove();
-            console.log("selections on page: " + this.total_selections() ); // this one hasn't been deleted yet.
+            //console.log("selections on page: " + this.total_selections() ); // this one hasn't been deleted yet.
             this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
             //TODO, if there are no selections, activate the restore detected tables button.
           }, this),

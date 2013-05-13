@@ -910,7 +910,6 @@ $.imgAreaSelect = function (img, options) {
         //remove this selection from the closure-global `selections` list.
         var index_of_this = selections.indexOf(this);
         if(index_of_this >= 0){
-            console.log("cancel")
             selections.splice(index_of_this, 1, null);
         }
 
@@ -1545,7 +1544,6 @@ $.imgAreaSelect = function (img, options) {
             }
             if(options.allowOverlaps || legal){
                 //if the selection is illegal, don't create it.
-                console.log("legal", x1, y1, x2, y2);
                 selections.push(s);
                 return s.getSelection();
             }else{
@@ -1559,7 +1557,6 @@ $.imgAreaSelect = function (img, options) {
                                           max(overlap.selection.x1, x1, overlap.selection.x2, x2),
                                           max(overlap.selection.y1, y1, overlap.selection.y2, y2) );
                     overlap.update();
-                    console.log(overlap.selection.x1, overlap.selection.y1, overlap.selection.x2, overlap.selection.y2)
                     s.cancelSelection(true);
                     return false;
                 }else{
