@@ -510,6 +510,7 @@ Tabula.PDFView = Backbone.View.extend({
 
       var scale = (pdf_width / thumb_width);
 
+
       $(tableGuesses[imageIndex]).each(function(tableGuessIndex, tableGuess){ 
 
         var my_x2 = tableGuess[0] + tableGuess[2];
@@ -525,10 +526,10 @@ Tabula.PDFView = Backbone.View.extend({
         /* nothing is set yet, when race condition manifests */
         //console.log(tableGuess, imageIndex);
 
-        selection = imgAreaSelectAPIObj.createNewSelection(tableGuess[0] / scale, 
-                                      tableGuess[1] / scale, 
-                                      my_x2 / scale, 
-                                      my_y2 / scale);      
+        selection = imgAreaSelectAPIObj.createNewSelection( Math.floor(tableGuess[0] / scale), 
+                                      Math.floor(tableGuess[1] / scale), 
+                                      Math.floor(my_x2 / scale), 
+                                      Math.floor(my_y2 / scale));      
         imgAreaSelectAPIObj.setOptions({show: true});
         imgAreaSelectAPIObj.update();
 

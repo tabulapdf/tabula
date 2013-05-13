@@ -147,7 +147,7 @@ $.imgAreaSelect = function (img, options) {
             styleOptions(this.$handles, { borderColor1: 'border-color',
                 borderColor2: 'background-color',
                 borderOpacity: 'opacity' });
-        }
+        };
 
         /*
          * Additional element to work around a cursor problem in Opera
@@ -205,7 +205,7 @@ $.imgAreaSelect = function (img, options) {
         
         $parent.append(this.$closeBtn);
         this.$box.append(this.$area.add(this.$border).add(this.$areaOpera)).append(this.$handles);
-    } //ends the object
+    }; //ends the object
 
     /**
      * Set the current selection
@@ -235,7 +235,7 @@ $.imgAreaSelect = function (img, options) {
 
         this.selection.width = this.selection.x2 - this.selection.x1;
         this.selection.height = this.selection.y2 - this.selection.y1;
-    }
+    };
 
 
     /**
@@ -327,7 +327,7 @@ $.imgAreaSelect = function (img, options) {
             this.$border.css('margin', 0);
             setTimeout(function () { this.$border.css('margin', 'auto'); }, 0);
         }
-    }
+    };
 
     /**
      * Do the complete update sequence: recalculate offsets, update the
@@ -345,7 +345,7 @@ $.imgAreaSelect = function (img, options) {
         this.y1 = viewY(this.selection.y1);
         this.x2 = viewX(this.selection.x2); 
         this.y2 = viewY(this.selection.y2);
-    }
+    };
     
     /**
      * Hide or fade out an element (or multiple elements)
@@ -357,7 +357,7 @@ $.imgAreaSelect = function (img, options) {
      */
     Selection.prototype.hide = function($elem, fn) {
         options.fadeSpeed ? $elem.fadeOut(options.fadeSpeed, fn) : $elem.hide(); 
-    }
+    };
 
     /**
      * Selection area mousemove event handler
@@ -398,7 +398,7 @@ $.imgAreaSelect = function (img, options) {
             options.movable ? 'move' : '');
         if (this.$areaOpera)
             this.$areaOpera.toggle();
-    }
+    };
 
 
     /**
@@ -443,7 +443,7 @@ $.imgAreaSelect = function (img, options) {
             $img.mousedown(event);
         }
         return false;
-    }
+    };
 
     /**
      * TODO: documentation goes here lol.
@@ -462,7 +462,7 @@ $.imgAreaSelect = function (img, options) {
             height: round(this.selection.y2 * sy) - round(this.selection.y1 * sy) ,
             id: selections.indexOf(this)
         };
-    }
+    };
 
     /**
      * Adjust the x2/y2 coordinates to maintain aspect ratio (if defined)
@@ -487,7 +487,7 @@ $.imgAreaSelect = function (img, options) {
                     x1 + abs(this.y2 - this.y1) * this.aspectRatio * (this.x2 > this.x1 || -1))));
                 this.y2 = round(this.y2);
             }
-    }
+    };
 
     /**
      * Selection area mousedown event handler
@@ -497,6 +497,48 @@ $.imgAreaSelect = function (img, options) {
      * @return "" whether the
      *            '' otherwise.
      */
+
+    Selection.prototype.overlapsOrAbuts = function(otherSelection){
+        var left_infringement_amount = 0;
+        var right_infringement_amount = 0;
+        var top_infringement_amount = 0;
+        var bottom_infringement_amount = 0;
+
+        if( (this.x2 > otherSelection.x1 && this.x1 < otherSelection.x2) && //infringe from the left
+                ((this.y1 >= otherSelection.y1 && this.y1 <= otherSelection.y2) ||
+                (this.y2 >= otherSelection.y1 && this.y2 <= otherSelection.y2)||
+                (this.y1 <= otherSelection.y1 && this.y2 >= otherSelection.y2))){ 
+           //console.log("infringes on the left");
+            left_infringement_amount = this.x2 - otherSelection.x1;
+        }
+        if((this.x1 < otherSelection.x2 && this.x2 > otherSelection.x1) && //infringe from the right
+                ((this.y1 >= otherSelection.y1 && this.y1 <= otherSelection.y2) ||
+                (this.y2 >= otherSelection.y1 && this.y2 <= otherSelection.y2)||
+                (this.y1 <= otherSelection.y1 && this.y2 >= otherSelection.y2))){ 
+           //console.log("infringes on the right");
+            right_infringement_amount = otherSelection.x2 - this.x1;
+        }
+        if( (this.y2 > otherSelection.y1 && this.y1 < otherSelection.y2)  && //infringe from the top
+                ((this.x1 >= otherSelection.x1 && this.x1 <= otherSelection.x2) ||
+                (this.x2 >= otherSelection.x1 && this.x2 <= otherSelection.x2) ||
+                (this.x1 <= otherSelection.x1 && this.x2 >= otherSelection.x2))){
+           //console.log("infringes on the top");
+            top_infringement_amount = this.y2 - otherSelection.y1;
+        }
+        if((this.y1 < otherSelection.y2 && this.y2 > otherSelection.y1) && //infringe from the bottom
+                ((this.x1 >= otherSelection.x1 && this.x1 <= otherSelection.x2) ||
+                (this.x2 >= otherSelection.x1 && this.x2 <= otherSelection.x2)||
+                (this.x1 <= otherSelection.x1 && this.x2 >= otherSelection.x2))){
+           //console.log("infringes on the bottom");
+            bottom_infringement_amount = otherSelection.y2 - this.y1;
+        }
+        if (top_infringement_amount == 0 && bottom_infringement_amount == 0 && left_infringement_amount == 0 && right_infringement_amount == 0){
+            return false;
+        }else{
+            return true;
+        }
+    };
+
     Selection.prototype.doesOverlap = function(otherSelection){
         var left_infringement_amount = 0;
         var right_infringement_amount = 0;
@@ -540,7 +582,7 @@ $.imgAreaSelect = function (img, options) {
                     right: right_infringement_amount,
                     otherSelection: otherSelection};
         }
-    }
+    };
 
     Selection.prototype.fixMoveOverlaps = function(infringements){
         var otherSelection = infringements.otherSelection;
@@ -583,7 +625,7 @@ $.imgAreaSelect = function (img, options) {
                 }
             }
         }
-    }
+    };
 
     Selection.prototype.fixResizeOverlaps = function(otherSelection){
         //assume proper orientation.
@@ -601,7 +643,7 @@ $.imgAreaSelect = function (img, options) {
                 y1: selY(min(this.y1, this.y2)), y2: selY(max(this.y1, this.y2)),
                 width: abs(this.x2 - this.x1), height: abs(this.y2 - this.y1) };
         }
-    }
+    };
 
     Selection.prototype.fixOneAxisResizeOverlaps = function(infringements){
        //console.log("fix 1 axis");
@@ -863,11 +905,14 @@ $.imgAreaSelect = function (img, options) {
             .unbind('mouseup', this.cancelSelection);
         this.hide(this.$box /*.add(this.$outer)*/);
         this.hide(this.$closeBtn);
+        this.shown = false;
 
         //remove this selection from the closure-global `selections` list.
         var index_of_this = selections.indexOf(this);
-        if(index_of_this >= 0)
+        if(index_of_this >= 0){
+            console.log("cancel")
             selections.splice(index_of_this, 1, null);
+        }
 
         if (!skipCallbacks && !(this instanceof $.imgAreaSelect)) {
             options.onSelectChange(img, this.getSelection()); 
@@ -1118,8 +1163,6 @@ $.imgAreaSelect = function (img, options) {
         startX = /*x1 =*/ evX(event);
         startY = /*y1 =*/ evY(event);
 
-       console.log("imgMouseDown");
-
         $(document).on("mousemove.imgareaselect", startSelection).on('mouseup.nozerosize.imgareaselect', function(){
             $(document).unbind("mousemove.imgareaselect");
         });
@@ -1129,13 +1172,6 @@ $.imgAreaSelect = function (img, options) {
         return false;
     }
 
-    
-    /**
-     * Window resize event handler
-     */
-    function windowResize() {
-        doUpdate(false);
-    }
 
     /**
      * Image load event handler. This is the final part of the initialization
@@ -1401,11 +1437,11 @@ $.imgAreaSelect = function (img, options) {
         
         if (options.disable || options.enable === false) {
             /* Disable the plugin */
-            $(window).unbind('resize', windowResize);
+            $(window).unbind('resize', this.windowResize);
         }
         else {
             if (options.enable || options.disable === false) {  
-                $(window).resize(windowResize);
+                $(window).resize(this.windowResize);
             }
             if (!options.persistent)
                 $img/*.add($outer)*/.mousedown(imgMouseDown);
@@ -1496,31 +1532,34 @@ $.imgAreaSelect = function (img, options) {
      * @return selection object from the newly-created Selection. May be
      *            different from given coordinates if they overlap.
      */
-    this.createNewSelection = function(x1, y1, x2, y2){ 
+    this.createNewSelection = function(x1, y1, x2, y2){
         if(!options.multipleSelections){
             selections[0].setSelection(x1, y2, x2, y2, noScale)
         }else{
             var s = new Selection(x1, y1, x2, y2);
             if(!options.allowOverlaps){
+                //this selection is guaranteed not to be in `selections` yet.
                 var overlaps = _(_(selections).filter(function(otherSelection){ return otherSelection; }))
-                    .map(_.bind(function(otherSelection){ return s.doesOverlap(otherSelection)}, s) );
+                    .map(function(otherSelection){ return s.overlapsOrAbuts(otherSelection)} );
                 var legal = (_(overlaps).map(function(o){ return !o; }).indexOf(false) == -1);
             }
             if(options.allowOverlaps || legal){
                 //if the selection is illegal, don't create it.
+                console.log("legal", x1, y1, x2, y2);
                 selections.push(s);
                 return s.getSelection();
             }else{
                 //but if the selection is illegal and overlaps only one other thing, change that other one
-                if (_(overlaps).reject(function(v){ return v; }).length == 1){
+                if (_(overlaps).reject(function(v){ return v; }).length <= 1){
                     //return their union.
-                    var overlap_index = _(overlaps).map(function(v){ return !!v; }).indexOf(true);
+                    var overlap_index = _(overlaps).map(function(v){ return v; }).indexOf(true);
                     var overlap = selections[overlap_index];
                     overlap.setSelection( min(overlap.selection.x1, x1, overlap.selection.x2, x2),
                                           min(overlap.selection.y1, y1, overlap.selection.y2, y2),
                                           max(overlap.selection.x1, x1, overlap.selection.x2, x2),
                                           max(overlap.selection.y1, y1, overlap.selection.y2, y2) );
                     overlap.update();
+                    console.log(overlap.selection.x1, overlap.selection.y1, overlap.selection.x2, overlap.selection.y2)
                     s.cancelSelection(true);
                     return false;
                 }else{
@@ -1539,13 +1578,22 @@ $.imgAreaSelect = function (img, options) {
             //this method makes no sense with multiple selections.
             return false;
         }
-    }
+    };
 
 
 
     //TODO: create a setSelection method that modifies all selection objects. (maybe?)
     
     this.update = function(){ _(_(selections).filter(function(s){ return s})).each(function(s){ s.doUpdate() }); };
+
+    
+    /**
+     * Window resize event handler
+     */
+    this.windowResize = function() {
+        this.update();
+    };
+
 
     /**
      * Cancel selection
@@ -1568,7 +1616,7 @@ $.imgAreaSelect = function (img, options) {
         }else{
             return false;
         }
-    }
+    };
 
     /**
      * Update plugin elements

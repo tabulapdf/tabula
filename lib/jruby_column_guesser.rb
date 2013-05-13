@@ -40,7 +40,7 @@ module ColumnGuesser
   def ColumnGuesser.find_and_write_rects(filename, output_dir)
     #writes to JSON the rectangles on each page in the specified PDF.
     open(File.join(output_dir, "tables.json"), 'w') do |f|
-      f.write( JSON.dump(find_rects(filename).map{|a| a.map &:dims} ))
+      f.write( JSON.dump(find_rects(filename).map{|a| a.map{|r| r.dims.map &:to_i }} ))
     end
   end
 
