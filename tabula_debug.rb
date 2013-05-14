@@ -1,3 +1,5 @@
+require 'json'
+
 class TabulaDebug < Cuba
   define do
     ## TODO delete
@@ -84,10 +86,16 @@ class TabulaDebug < Cuba
 
     on ":file_id/rulings" do |file_id|
       pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
-      page_dimensions = Tabula::XML.get_page_dimensions(pdf_path, req.params['page'])
-      rulings = Tabula::Rulings::detect_rulings(File.join(pdf_path,
-                                                          "document_2048_#{req.params['page']}.png"),
-                                                page_dimensions[:width] / 2048.0)
+      page_dimensions = File.open(File.join(pdf_path, 'pages.json')) { |f|
+        JSON.parse(f.read, :symbolize_names => true)
+      }[req.params['page'].to_i - 1]
+
+      rulings = Tabula::LSD.detect_lines(File.join(pdf_path,
+                                                   "document_2048_#{req.params['page']}.png"),
+                                         page_dimensions[:width] / 2048.0)
+
+
+      rulings = Tabula::Ruling.clean_rulings(rulings)
 
       res['Content-Type'] = 'application/json'
       res.write((rulings[:horizontal] + rulings[:vertical]).to_json)
