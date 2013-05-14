@@ -12,7 +12,7 @@ class DetectTablesJob
     output_dir = options['output_dir']
     _stdin, _stdout, _stderr, thr = Open3.popen3(
         {"CLASSPATH" => "./lib/jars/javacpp.jar:./lib/jars/javacv.jar:./lib/jars/javacv-macosx-x86_64.jar:./lib/jars/PDFRenderer-0.9.1.jar"},
-        "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_column_guesser.rb #{file} #{output_dir}"
+        "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_table_guesser.rb #{file} #{output_dir}"
     )
     _stderr.each { |line|  STDERR.puts(line) }
     _stdin.close

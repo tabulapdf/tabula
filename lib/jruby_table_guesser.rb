@@ -38,49 +38,47 @@ module TableGuesser
     end
   end
 
-  def TableGuesser.find_rects(filename="nbsps.pdf")
-      tunable_threshold = 500;
+  def TableGuesser.find_rects(filename)
+      pdf = loadPDF(filename)
 
-      raf = RandomAccessFile.new(filename, "r")
-      channel = raf.channel
-      buf = channel.map(MapMode::READ_ONLY, 0, channel.size())
-      newfile = PDFFile.new(buf)
-
-      if newfile.getNumPages == 0
+      if pdf.getNumPages == 0
         puts "not a pdf!"
         exit
       end
 
-      #int max_pages
       guess_columns_per_page = false
       
-      list_of_cols = []
-      cols = []
-
-      puts "pages: " + newfile.getNumPages.to_s
+      puts "pages: " + pdf.getNumPages.to_s
             
       tables = []
+      pdf.getNumPages.times do |i|
+        #gotcha: with PDFView, PDF pages are 1-indexed. If you ask for page 0 and then page 1, you'll get the first page twice. So start with index 1.
+        tables << find_rects_on_page(pdf, i + 1, guess_columns_per_page)
+      end
+      tables.each{|t| t.sort_by(&:area).reverse } #biggest first
+    end
 
-      newfile.getNumPages.times do |i|          
-        page_index = i + 1 
-        if newfile.getNumPages > 100
+    def TableGuesser.find_rects_on_page(pdf, page_index, guess_columns_per_page=false)
+      # list_of_cols = []
+      # cols = []
+        tunable_threshold = 500;
+
+
+        if pdf.getNumPages > 100
           STDERR.puts("detecting tables on page #{page_index}")
         end
-        #gotcha: with PDFView, PDF pages are 1-indexed. If you ask for page 0 and then page 1, you'll get the first page twice. So start with index 1.
-        apage = newfile.getPage(page_index, true)
+        apage = pdf.getPage(page_index, true)
         box = apage.getPageBox()
 
         #Note: sometimes calling getWidth() and getHeight() on apage gives the right result; this used to be called on box, in what DF wrote. Does that ever work better?.
         image = apage.getImage(apage.getWidth().to_i, apage.getHeight().to_i , nil ,nil ,true ,true )
 
-       #   CanvasFrame source = new CanvasFrame("Source");
-       #   source.showImage(image);
         iplImage = Opencv_core::IplImage.createFrom(image)
         lines = cvFindLines(iplImage, tunable_threshold, page_index)
         vertical_lines = lines.select &:vertical?
         horizontal_lines = lines.select &:horizontal?
 
-        temp_cols = lines.map{|l| l.point1.x} #mapOrientedLinesToLocations(lines, "vertical")
+        # temp_cols = lines.map{|l| l.point1.x} #mapOrientedLinesToLocations(lines, "vertical")
       
         current_try = tunable_threshold
         
@@ -92,36 +90,33 @@ module TableGuesser
           # we might need to give up..
           break if current_try < 10
           
-          lines = cvFindLines(iplImage, current_try, filename + page_index.to_s)
+          lines = cvFindLines(iplImage, current_try, page_index.to_s)
           vertical_lines = lines.select &:vertical?
           horizontal_lines = lines.select &:horizontal?
-          temp_cols = lines.map{|l| l.point1.x}
+          # temp_cols = lines.map{|l| l.point1.x}
         end
 
-        temp_cols.sort!
+        # temp_cols.sort!
 
-        if guess_columns_per_page
-          temp_cols.each do |col_item|
-            if !cols.include? col_item
-              cols << col_item;
-            end
-          end
-        else
-          list_of_cols << temp_cols
-        end
+        # if guess_columns_per_page
+        #   temp_cols.each do |col_item|
+        #     if !cols.include? col_item
+        #       cols << col_item;
+        #     end
+        #   end
+        # else
+        #   list_of_cols << temp_cols
+        # end
 
-        temp_rows = lines.map{|l| l.point1.y}
-        temp_rows.sort!
-        tables << findTables(vertical_lines, horizontal_lines)
-      end
-      tables.each{|t| t.sort_by(&:area).reverse } #biggest first
+        # temp_rows = lines.map{|l| l.point1.y}
+        # temp_rows.sort!
+        findTables(vertical_lines, horizontal_lines)
     end
 
     def TableGuesser.cvFindLines(src, threshold, name) 
       dst = Opencv_core::cvCreateImage(Opencv_core::cvGetSize(src), src.depth, 1)
       colorDst = Opencv_core::cvCreateImage(Opencv_core::cvGetSize(src), src.depth(), 3)
 
-      
       Opencv_imgproc::cvCanny(src, dst, 50, 200, 3)
       Opencv_imgproc::cvCvtColor(dst, colorDst, Opencv_imgproc::CV_GRAY2BGR)
 
@@ -155,7 +150,12 @@ module TableGuesser
       return lines_list
     end
 
-
+    def TableGuesser.loadPDF(filename)
+      raf = RandomAccessFile.new(filename, "r")
+      channel = raf.channel
+      buf = channel.map(MapMode::READ_ONLY, 0, channel.size())
+      PDFFile.new(buf)
+    end
 
     def TableGuesser.euclideanDistanceHelper(x1, y1, x2, y2)
       return Math.sqrt( ((x1 - x2) ** 2) + ((y1 - y2) ** 2) )
