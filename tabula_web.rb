@@ -7,8 +7,6 @@ require 'json'
 require 'csv'
 require 'tabula' # tabula-extractor gem
 
-require './tabula_job_progress.rb'
-
 begin
   require ENV['TABULA_SETTINGS'] || './local_settings.rb'
 rescue LoadError
@@ -27,7 +25,6 @@ if Settings::ASYNC_PROCESSING
 end
 
 def is_valid_pdf?(path)
-  # TODO: probabaly not entirely correct - check.
   File.open(path, 'r') { |f| f.read(4) } == '%PDF'
 end
 
@@ -38,7 +35,6 @@ STATIC_ROOT = defined?($servlet_context) ? \
 
 Cuba.plugin Cuba::Render
 Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/scripts", "/swf"]
-#Cuba.use Rack::Reloader
 
 Cuba.define do
 
@@ -51,6 +47,7 @@ Cuba.define do
 
 
   on 'queue' do
+    require './tabula_job_progress.rb'
     run TabulaJobProgress
   end
 
