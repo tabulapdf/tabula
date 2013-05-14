@@ -110,7 +110,7 @@ module TableGuesser
 
         # temp_rows = lines.map{|l| l.point1.y}
         # temp_rows.sort!
-        findTables(vertical_lines, horizontal_lines)
+        findTables(vertical_lines, horizontal_lines).sort_by(&:area).reverse
     end
 
     def TableGuesser.cvFindLines(src, threshold, name) 
