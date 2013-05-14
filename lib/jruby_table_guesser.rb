@@ -10,17 +10,13 @@ require './lib/rectangle'
 
 java_import com.googlecode.javacpp.Pointer
 java_import com.googlecode.javacv.CanvasFrame
-java_import(com.googlecode.javacv.cpp.opencv_core){'Opencv_core'} #lord help us all.
-java_import(com.googlecode.javacv.cpp.opencv_imgproc){'Opencv_imgproc'} #lord help us all.
+java_import(com.googlecode.javacv.cpp.opencv_core){'Opencv_core'}
+java_import(com.googlecode.javacv.cpp.opencv_imgproc){'Opencv_imgproc'}
 
 java_import(com.googlecode.javacv.cpp.opencv_highgui){'Opencv_highgui'}
-java_import com.sun.pdfview.PDFFile #eventually, replace these with another library for generating images.
+java_import com.sun.pdfview.PDFFile
 java_import com.sun.pdfview.PDFPage
 
-#java_import java.awt.geom.Rectangle2D
-#java_import("java.awt.geom.Rectangle2D.Double"){"Rectangle2D_Double"}
-#java_import java.awt.geom.Line2D;
-#java_import java.awt.Rectangle;
 java_import java.awt.image.BufferedImage;
 java_import(java.io.File){'JavaFile'};
 java_import java.io.RandomAccessFile;
@@ -32,19 +28,17 @@ java_import java.util.List;
 java_import java.util.HashMap;
 java_import java.util.Comparator;
 
-# java_import com.googlecode.javacv.cpp.opencv_core.*;
-# java_import com.googlecode.javacv.cpp.opencv_imgproc.*;
 
-module ColumnGuesser
+module TableGuesser
 
-  def ColumnGuesser.find_and_write_rects(filename, output_dir)
+  def TableGuesser.find_and_write_rects(filename, output_dir)
     #writes to JSON the rectangles on each page in the specified PDF.
     open(File.join(output_dir, "tables.json"), 'w') do |f|
       f.write( JSON.dump(find_rects(filename).map{|a| a.map{|r| r.dims.map &:to_i }} ))
     end
   end
 
-  def ColumnGuesser.find_rects(filename="nbsps.pdf")
+  def TableGuesser.find_rects(filename="nbsps.pdf")
       tunable_threshold = 500;
 
       raf = RandomAccessFile.new(filename, "r")
@@ -56,32 +50,12 @@ module ColumnGuesser
         puts "not a pdf!"
         exit
       end
-      
-      #ArrayList<Integer> cols = new ArrayList<Integer>();
 
       #int max_pages
       guess_columns_per_page = false
       
       list_of_cols = []
       cols = []
-
-      # if(ARGV.size > 2)
-      #   if(ARGV[2].include?("indiv"))
-      #     max_pages = 1000000 #a rly big number, chosen arbitrarily.
-      #     guess_columns_per_page = false = true
-      #   else
-      #     #specify the number of pages from which to deduce column values as second argument.
-      #     if(ARGV[2] != "")
-      #       max_pages = Integer.parseInt(ARGV[2])
-      #     else
-      #       max_pages = 5
-      #     end
-      #     guess_columns_per_page = false = false
-      #   end
-      # else
-      #   max_pages = 1000000 #a rly big number, chosen arbitrarily.
-      #   guess_columns_per_page = false = false
-      # end
 
       puts "pages: " + newfile.getNumPages.to_s
             
@@ -141,63 +115,13 @@ module ColumnGuesser
         tables << findTables(vertical_lines, horizontal_lines)
       end
       tables.each{|t| t.sort_by(&:area).reverse } #biggest first
-
-    # class CompareRectanglesByArea implements Comparator<Rectangle2D.Double>{
-    #   @Override
-    #   public int compare(Rectangle2D.Double r1, Rectangle2D.Double r2){
-    #     double r1area = r1.width * r1.height;
-    #     double r2area = r2.width * r2.height;
-    #     return (r1area > r2area ? -1 : (r1area == r2area ? 0 : 1));
-    #   }
-    # end
-        
-    #     System.out.println("[");
-    #     for(int i=0; i<tables.size(); i++){ 
-    #     List<Rectangle2D.Double> innerTables = tables.get(i);
-    #     System.out.println("  [");
-    #     for(int inner_i=0; inner_i<innerTables.size(); inner_i++){
-    #       Collections.sort(innerTables, new CompareRectanglesByArea());
-    #       Rectangle2D.Double table = innerTables.get(inner_i);
-    #       System.out.print("    [" + table.x +"," + table.y + "," + table.width + "," + table.height+"]");
-    #         if(inner_i != innerTables.size()-1){
-    #           System.out.print(",");
-    #         }
-    #         System.out.print("\n");
-    #     }
-    #     System.out.print("  ]");
-    #     if(i != tables.size()-1){
-    #       System.out.print(",");
-    #     }
-    #     System.out.print("\n");
-    #   }
-    #     System.out.println("]");
-    # }
     end
 
-    # static int counter = 0;
-    
-    # public static Rectangle findSquare(List<Integer> cols, List<Integer> rows){
-    #   #System.err.println("sq: " + cols);
-    #   #System.err.println("sq: " + rows);
-    #   int x = cols.get(0);
-    #   int y = rows.get(0);
-    #   int h = rows.get(rows.size() - 1) - y;
-    #   int w = cols.get(cols.size() - 1) - x;
-    #   return new Rectangle(x, y, w, h );
-    # }
-    
-    # public static double euclideanDistance(double x1, double y1, double x2, double y2){
-    #   return Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
-    # }
-    def ColumnGuesser.cvFindLines(src, threshold, name) 
-      # opencv_core.IplImage dst;
-      # opencv_core.IplImage colorDst;
-
+    def TableGuesser.cvFindLines(src, threshold, name) 
       dst = Opencv_core::cvCreateImage(Opencv_core::cvGetSize(src), src.depth, 1)
       colorDst = Opencv_core::cvCreateImage(Opencv_core::cvGetSize(src), src.depth(), 3)
 
       
-      #cvSmooth(src, src, CV_GAUSSIAN, 3); #Jeremy added this: Gaussian 1 appears to do nothing.
       Opencv_imgproc::cvCanny(src, dst, 50, 200, 3)
       Opencv_imgproc::cvCvtColor(dst, colorDst, Opencv_imgproc::CV_GRAY2BGR)
 
@@ -233,34 +157,22 @@ module ColumnGuesser
 
 
 
-    def ColumnGuesser.euclideanDistanceHelper(x1, y1, x2, y2)
+    def TableGuesser.euclideanDistanceHelper(x1, y1, x2, y2)
       return Math.sqrt( ((x1 - x2) ** 2) + ((y1 - y2) ** 2) )
     end
 
-    def ColumnGuesser.euclideanDistance(p1, p2)
+    def TableGuesser.euclideanDistance(p1, p2)
       euclideanDistanceHelper(p1.x, p1.y, p2.x, p2.y)
     end
     
-    # public static Line2D.Double pointerToLine(Pointer line){
-    #   CvPoint pt0 = new CvPoint(line).position(0);
-    #   CvPoint pt1 = new CvPoint(line).position(1);
-    #   return new Line2D.Double(pt0.x(), pt0.y(), pt1.x(), pt1.y());
-    # }
-    
-    # public static String hashAPoint(double point ){
-    #   return String.valueOf(Math.round(point / 20.0));
-    # }
-    # public static String hashRectangle(Rectangle2D.Double r){
-    #   return hashAPoint(r.x) + "," + hashAPoint(r.y) + "," + hashAPoint(r.height) + "," + hashAPoint(r.width);
-    # }
-    def ColumnGuesser.isUpwardOriented(line, y_value)
+    def TableGuesser.isUpwardOriented(line, y_value)
       #return true if this line is oriented upwards, i.e. if the majority of it's length is above y_value.
       topPoint = line.topmost_endpoint.y
       bottomPoint = line.bottommost_endpoint.y
       return (y_value - topPoint > bottomPoint - y_value);
     end
     
-    def ColumnGuesser.findTables(verticals, horizontals)
+    def TableGuesser.findTables(verticals, horizontals)
       # /*
       #  * Find all the rectangles in the vertical and horizontal lines given.
       #  * 
@@ -380,37 +292,10 @@ module ColumnGuesser
         end
       end
       return rectangles.uniq &:similarity_hash 
-    end
-    
-    # public static List<Rectangle2D.Double> dedupeRectangles(List<Rectangle2D.Double> duplicated_rectangles){
-    #   ArrayList<Rectangle2D.Double> rectangles = new ArrayList<Rectangle2D.Double>();
-      
-    #   for(Rectangle2D.Double maybe_dupe_rectangle : duplicated_rectangles){
-    #     boolean is_a_dupe = false;
-    #     ArrayList<Rectangle2D.Double> to_remove = new ArrayList<Rectangle2D.Double>();
-    #     for(Rectangle2D.Double non_dupe_rectangle : rectangles){
-    #       if (non_dupe_rectangle.contains(maybe_dupe_rectangle)){
-    #         is_a_dupe = true;
-    #       }
-    #       if (maybe_dupe_rectangle.contains(non_dupe_rectangle)){
-    #         to_remove.add(non_dupe_rectangle);
-    #       }
-    #     }
-        
-    #     for(Rectangle2D.Double dupe : to_remove){
-    #       rectangles.remove(dupe);
-    #     }
-        
-    #     if (!is_a_dupe){
-    #       rectangles.add(maybe_dupe_rectangle); #maybe_dupe_rectangle isn't a dupe (at least so far), so add it to rectangles.
-    #     }
-    #   }
-    #   return rectangles;
-    # }
-    
+    end    
       
 end
 
 if __FILE__ == $0
-  ColumnGuesser::find_and_write_rects(ARGV[0], ARGV[1])
+  TableGuesser::find_and_write_rects(ARGV[0], ARGV[1])
 end
