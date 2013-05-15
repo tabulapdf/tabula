@@ -90,10 +90,12 @@ class TabulaDebug < Cuba
         JSON.parse(f.read, :symbolize_names => true)
       }[req.params['page'].to_i - 1]
 
-      rulings = Tabula::LSD.detect_lines(File.join(pdf_path,
-                                                   "document_2048_#{req.params['page']}.png"),
-                                         page_dimensions[:width] / 2048.0)
-
+      # rulings = Tabula::LSD.detect_lines(File.join(pdf_path,
+      #                                              "document_2048_#{req.params['page']}.png"),
+      #                                    page_dimensions[:width] / 2048.0)
+      rulings = Tabula::LSD.detect_lines_in_pdf_page(File.join(pdf_path, 'document.pdf'), 
+                                                     req.params['page'].to_i,
+                                                     page_dimensions[:width] / 2048.0)
 
       rulings = Tabula::Ruling.clean_rulings(rulings)
 
