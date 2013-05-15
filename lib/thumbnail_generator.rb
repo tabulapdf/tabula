@@ -1,7 +1,7 @@
 require 'java'
 require 'observer'
 
-require_relative './jars/PDFRenderer-0.9.1.jar'
+require_relative './jars/PDFrenderer.jar'
 
 java_import java.io.RandomAccessFile
 java_import java.nio.channels.FileChannel::MapMode
