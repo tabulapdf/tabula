@@ -4,12 +4,14 @@ class TabulaDebug < Cuba
   define do
     ## TODO delete
     on ":file_id/whitespace" do |file_id|
-      text_elements = Tabula::XML.get_text_elements(File.join(Settings::DOCUMENTS_BASEPATH, file_id),
-                                                    req.params['page'],
-                                                    req.params['x1'],
-                                                    req.params['y1'],
-                                                    req.params['x2'],
-                                                    req.params['y2'])
+      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
+
+      text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
+                                                       req.params['x1'].to_f,
+                                                       req.params['y2'].to_f,
+                                                       req.params['x2'].to_f])
+
 
       whitespace =  Tabula::Whitespace.find_whitespace(text_elements,
                                                        Tabula::ZoneEntity.new(req.params['y1'].to_f,
@@ -24,12 +26,13 @@ class TabulaDebug < Cuba
 
 
     on ":file_id/columns" do |file_id|
-      text_elements = Tabula::XML.get_text_elements(File.join(Settings::DOCUMENTS_BASEPATH, file_id),
-                                                    req.params['page'],
-                                                    req.params['x1'],
-                                                    req.params['y1'],
-                                                    req.params['x2'],
-                                                    req.params['y2'])
+      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
+
+      text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
+                                                       req.params['x1'].to_f,
+                                                       req.params['y2'].to_f,
+                                                       req.params['x2'].to_f])
 
       res['Content-Type'] = 'application/json'
       res.write Tabula.get_columns(text_elements, true).to_json
@@ -37,14 +40,13 @@ class TabulaDebug < Cuba
     end
 
     on ":file_id/rows" do |file_id|
-      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
+      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
 
-      text_elements = Tabula::XML.get_text_elements(pdf_path,
-                                                    req.params['page'],
-                                                    req.params['x1'],
-                                                    req.params['y1'],
-                                                    req.params['x2'],
-                                                    req.params['y2'])
+      text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
+                                                       req.params['x1'].to_f,
+                                                       req.params['y2'].to_f,
+                                                       req.params['x2'].to_f])
       make_table_options = {}
 
       if !req.params['use_lines'].nil? and req.params['use_lines'] != 'false'
@@ -66,13 +68,13 @@ class TabulaDebug < Cuba
     end
 
     on ":file_id/characters" do |file_id|
-      text_elements = Tabula::XML.get_text_elements(File.join(Settings::DOCUMENTS_BASEPATH, file_id),
-                                                    req.params['page'],
-                                                    req.params['x1'],
-                                                    req.params['y1'],
-                                                    req.params['x2'],
-                                                    req.params['y2'])
+      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
 
+      text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
+                                                       req.params['x1'].to_f,
+                                                       req.params['y2'].to_f,
+                                                       req.params['x2'].to_f])
 
       res['Content-Type'] = 'application/json'
       res.write text_elements.map { |te|
@@ -105,12 +107,15 @@ class TabulaDebug < Cuba
     end
 
     on 'pdf/:file_id/graph' do |file_id|
-      text_elements = Tabula::XML.get_text_elements(File.join(Settings::DOCUMENTS_BASEPATH, file_id),
-                                                    req.params['page'],
-                                                    req.params['x1'],
-                                                    req.params['y1'],
-                                                    req.params['x2'],
-                                                    req.params['y2'])
+
+      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
+
+      text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
+                                                       req.params['x1'].to_f,
+                                                       req.params['y2'].to_f,
+                                                       req.params['x2'].to_f])
+
       text_elements = Tabula::Graph.merge_text_elements(text_elements)
 
       res['Content-Type'] = 'application/json'
