@@ -116,8 +116,15 @@ Cuba.define do
       file_id = Digest::SHA1.hexdigest(Time.now.to_s)
       file_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
       FileUtils.mkdir(file_path)
-      FileUtils.mv(req.params['file'][:tempfile].path,
-                   File.join(file_path, 'document.pdf'))
+      begin
+        FileUtils.mv(req.params['file'][:tempfile].path,
+                     File.join(file_path, 'document.pdf'))
+      rescue Errno::EACCES # move fails on windows sometimes
+        FileUtils.cp_r(req.params['file'][:tempfile].path, 
+                       File.join(file_path, 'document.pdf'))
+        FileUtils.rm_rf(req.params['file'][:tempfile].path)
+
+      end
 
       file = File.join(file_path, 'document.pdf')
 
