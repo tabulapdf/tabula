@@ -128,7 +128,7 @@ Cuba.define do
                                               :file => file,
                                               :page_index_job => page_index_job,
                                               :output_dir => file_path,
-                                              :thumbnail_sizes => [2048, 560])
+                                              :thumbnail_sizes => [560])
       res.redirect "/queue/#{upload_id}"
     end
   end
