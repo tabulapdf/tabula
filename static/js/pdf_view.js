@@ -553,7 +553,8 @@ Tabula.PDFView = Backbone.View.extend({
 
     //var tableGuesses, imgAreaSelects;
     get_tables_json : function(){
-      $.getJSON("/pdfs/" + this.PDF_ID + "/tables.json", _.bind(function(tableGuesses){ this.create_imgareaselects(tableGuesses) }, this) );
+      $.getJSON("/pdfs/" + this.PDF_ID + "/tables.json", _.bind(function(tableGuesses){ this.create_imgareaselects(tableGuesses) }, this) ).
+          error( _.bind(function(){ this.create_imgareaselects([]) }, this));
     },
 
     create_imgareaselects : function(tableGuessesTmp){ 
