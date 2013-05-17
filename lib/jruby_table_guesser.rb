@@ -39,7 +39,7 @@ module TableGuesser
   end
 
   def TableGuesser.find_rects(filename)
-      pdf = loadPDF(filename)
+      pdf = load_pdf(filename)
 
       if pdf.getNumPages == 0
         puts "not a pdf!"
@@ -74,7 +74,7 @@ module TableGuesser
         image = apage.getImage(apage.getWidth().to_i, apage.getHeight().to_i , nil ,nil ,true ,true )
 
         iplImage = Opencv_core::IplImage.createFrom(image)
-        lines = cvFindLines(iplImage, tunable_threshold, page_index)
+        lines = cv_find_lines(iplImage, tunable_threshold, page_index)
         vertical_lines = lines.select &:vertical?
         horizontal_lines = lines.select &:horizontal?
 
@@ -90,7 +90,7 @@ module TableGuesser
           # we might need to give up..
           break if current_try < 10
           
-          lines = cvFindLines(iplImage, current_try, page_index.to_s)
+          lines = cv_find_lines(iplImage, current_try, page_index.to_s)
           vertical_lines = lines.select &:vertical?
           horizontal_lines = lines.select &:horizontal?
           # temp_cols = lines.map{|l| l.point1.x}
@@ -113,7 +113,7 @@ module TableGuesser
         findTables(vertical_lines, horizontal_lines).sort_by(&:area).reverse
     end
 
-    def TableGuesser.cvFindLines(src, threshold, name) 
+    def TableGuesser.cv_find_lines(src, threshold, name) 
       dst = Opencv_core::cvCreateImage(Opencv_core::cvGetSize(src), src.depth, 1)
       colorDst = Opencv_core::cvCreateImage(Opencv_core::cvGetSize(src), src.depth(), 3)
 
@@ -150,22 +150,22 @@ module TableGuesser
       return lines_list
     end
 
-    def TableGuesser.loadPDF(filename)
+    def TableGuesser.load_pdf(filename)
       raf = RandomAccessFile.new(filename, "r")
       channel = raf.channel
       buf = channel.map(MapMode::READ_ONLY, 0, channel.size())
       PDFFile.new(buf)
     end
 
-    def TableGuesser.euclideanDistanceHelper(x1, y1, x2, y2)
+    def TableGuesser.euclidean_distance_helper(x1, y1, x2, y2)
       return Math.sqrt( ((x1 - x2) ** 2) + ((y1 - y2) ** 2) )
     end
 
-    def TableGuesser.euclideanDistance(p1, p2)
-      euclideanDistanceHelper(p1.x, p1.y, p2.x, p2.y)
+    def TableGuesser.euclidean_distance(p1, p2)
+      euclidean_distance_helper(p1.x, p1.y, p2.x, p2.y)
     end
     
-    def TableGuesser.isUpwardOriented(line, y_value)
+    def TableGuesser.is_upward_oriented(line, y_value)
       #return true if this line is oriented upwards, i.e. if the majority of it's length is above y_value.
       topPoint = line.topmost_endpoint.y
       bottomPoint = line.bottommost_endpoint.y
@@ -194,15 +194,15 @@ module TableGuesser
           #for the left vertical line.
           verticals.each do |vertical_line|
             #1. if it is correctly oriented (up or down) given the outer loop here. (We don't want a false-positive rectangle with one "arm" going down, and one going up.)
-            next unless isUpwardOriented(vertical_line, horizontal_line.leftmost_endpoint.y) == up_or_down_lines
+            next unless is_upward_oriented(vertical_line, horizontal_line.leftmost_endpoint.y) == up_or_down_lines
             
             vertical_line_length = vertical_line.length
             longer_line_length = [horizontal_line_length, vertical_line_length].max
             corner_proximity = corner_proximity_threshold * longer_line_length
             #make this the left vertical line:
             #2. if it begins near the left vertex of the horizontal line.
-            if euclideanDistance(horizontal_line.leftmost_endpoint, vertical_line.topmost_endpoint) < corner_proximity || 
-               euclideanDistance(horizontal_line.leftmost_endpoint, vertical_line.bottommost_endpoint) < corner_proximity
+            if euclidean_distance(horizontal_line.leftmost_endpoint, vertical_line.topmost_endpoint) < corner_proximity || 
+               euclidean_distance(horizontal_line.leftmost_endpoint, vertical_line.bottommost_endpoint) < corner_proximity
               #3. if it is farther to the left of the line we already have.  
               if left_vertical_line.nil? || left_vertical_line.leftmost_endpoint.x > vertical_line.leftmost_endpoint.x #is this line is more to the left than left_vertical_line. #"What's your opinion on Das Kapital?"
                 has_vertical_line_from_the_left = true
@@ -215,12 +215,12 @@ module TableGuesser
           right_vertical_line = nil
           #for the right vertical line.
           verticals.each do |vertical_line|
-            next unless isUpwardOriented(vertical_line, horizontal_line.leftmost_endpoint.y) == up_or_down_lines
+            next unless is_upward_oriented(vertical_line, horizontal_line.leftmost_endpoint.y) == up_or_down_lines
             vertical_line_length = vertical_line.length
             longer_line_length = [horizontal_line_length, vertical_line_length].max
             corner_proximity = corner_proximity_threshold * longer_line_length
-            if euclideanDistance(horizontal_line.rightmost_endpoint, vertical_line.topmost_endpoint) < corner_proximity ||
-              euclideanDistance(horizontal_line.rightmost_endpoint, vertical_line.bottommost_endpoint) < corner_proximity
+            if euclidean_distance(horizontal_line.rightmost_endpoint, vertical_line.topmost_endpoint) < corner_proximity ||
+              euclidean_distance(horizontal_line.rightmost_endpoint, vertical_line.bottommost_endpoint) < corner_proximity
 
               if right_vertical_line.nil? || right_vertical_line.rightmost_endpoint.x > vertical_line.rightmost_endpoint.x  #is this line is more to the right than right_vertical_line. #"Can you recite all of John Galt's speech?"
                 #do two passes to guarantee we don't get a horizontal line with a upwards and downwards line coming from each of its corners.
@@ -255,8 +255,8 @@ module TableGuesser
             longer_line_length = [horizontal_line_length, vertical_line_length].max
             corner_proximity = corner_proximity_threshold * longer_line_length
 
-            if euclideanDistance(vertical_line.topmost_endpoint, horizontal_line.leftmost_endpoint) < corner_proximity ||
-                euclideanDistance(vertical_line.topmost_endpoint, horizontal_line.rightmost_endpoint) < corner_proximity
+            if euclidean_distance(vertical_line.topmost_endpoint, horizontal_line.leftmost_endpoint) < corner_proximity ||
+                euclidean_distance(vertical_line.topmost_endpoint, horizontal_line.rightmost_endpoint) < corner_proximity
                 if top_horizontal_line.nil? || top_horizontal_line.topmost_endpoint.y > horizontal_line.topmost_endpoint.y #is this line is more to the top than the one we've got already.
                   has_horizontal_line_from_the_top = true;
                   top_horizontal_line = horizontal_line;
@@ -271,8 +271,8 @@ module TableGuesser
             longer_line_length = [horizontal_line_length, vertical_line_length].max
             corner_proximity = corner_proximity_threshold * longer_line_length
 
-            if euclideanDistance(vertical_line.bottommost_endpoint, horizontal_line.leftmost_endpoint) < corner_proximity ||
-              euclideanDistance(vertical_line.bottommost_endpoint, horizontal_line.rightmost_endpoint) < corner_proximity
+            if euclidean_distance(vertical_line.bottommost_endpoint, horizontal_line.leftmost_endpoint) < corner_proximity ||
+              euclidean_distance(vertical_line.bottommost_endpoint, horizontal_line.rightmost_endpoint) < corner_proximity
               if bottom_horizontal_line.nil? || bottom_horizontal_line.bottommost_endpoint.y > horizontal_line.bottommost_endpoint.y  #is this line is more to the bottom than the one we've got already. 
                 has_horizontal_line_from_the_bottom = true;
                 bottom_horizontal_line = horizontal_line;
