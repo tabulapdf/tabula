@@ -102,7 +102,7 @@ class TabulaDebug < Cuba
       rulings = Tabula::Ruling.clean_rulings(rulings)
 
       res['Content-Type'] = 'application/json'
-      res.write((rulings[:horizontal] + rulings[:vertical]).to_json)
+      res.write(rulings.to_json)
 
     end
 
