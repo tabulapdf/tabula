@@ -1,2 +1,3 @@
-require './tabula_web.rb'
+require_relative './webapp/tabula_web.rb'
 run Cuba
+

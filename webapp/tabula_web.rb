@@ -8,7 +8,7 @@ require 'csv'
 require 'tabula' # tabula-extractor gem
 
 begin
-  require ENV['TABULA_SETTINGS'] || './local_settings.rb'
+  require ENV['TABULA_SETTINGS'] || '../local_settings.rb'
 rescue LoadError
   puts "'./local_settings.rb' could not be found. See README.md for more info."
   raise
@@ -19,9 +19,9 @@ unless File.directory?(Settings::DOCUMENTS_BASEPATH)
 end
 
 if Settings::ASYNC_PROCESSING
-  require './tabula_job_executor/executor.rb'
-  require './lib/jobs/generate_thumbnails.rb'
-  require './lib/jobs/generate_page_index.rb'
+  require_relative '../tabula_job_executor/executor.rb'
+  require_relative '../lib/jobs/generate_thumbnails.rb'
+  require_relative '../lib/jobs/generate_page_index.rb'
 end
 
 def is_valid_pdf?(path)
@@ -39,7 +39,7 @@ Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/scripts
 Cuba.define do
 
   if Settings::ENABLE_DEBUG_METHODS
-    require './tabula_debug.rb'
+    require_relative './tabula_debug.rb'
     on 'debug' do
       run TabulaDebug
     end
@@ -47,7 +47,7 @@ Cuba.define do
 
 
   on 'queue' do
-    require './tabula_job_progress.rb'
+    require_relative './tabula_job_progress.rb'
     run TabulaJobProgress
   end
 
@@ -109,7 +109,7 @@ Cuba.define do
         res.status = 400
         res.write view("upload_error.html",
                        :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
-        FileUtils.rm(req.params['file'][:tempfile].path)
+        # FileUtils.rm(req.params['file'][:tempfile].path)
         next # halt this handler
       end
 
