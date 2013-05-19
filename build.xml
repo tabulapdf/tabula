@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="tabula" default="build" basedir=".">
+
+  <property name="build.dir" value="build"/>
+
+  <target name="macbundle">
+  <taskdef
+      name="jarbundler"
+      classname="net.sourceforge.jarbundler.JarBundler"
+      classpath="${build.dir}/jarbundler-2.2.0.jar"
+      />
+
+  <jarbundler
+      dir="${build.dir}"
+      name="Tabula"
+      shortname="Tabula"
+      mainclass="WarMain"
+      version="0.1"
+      infostring="© 2012-2013 Manuel Aristarán"
+      aboutmenuname="Tabula"
+      icon="${build.dir}/icons/tabula.icns"
+      workingdirectory="$APP_PACKAGE/Contents/Resources"
+      jvmversion="1.6+"
+      bundleid="org.nerdpower.tabula.Tabula"
+      vmoptions="-Xms256M -Xmx1024M -Dfile.encoding=utf-8"
+      antialiasedgraphics="true"
+      antialiasedtext="true"
+      liveresize="true"
+      growboxintrudes="true"
+      screenmenu="true">
+    <jarfilelist dir="${build.dir}" files="tabula.war" />
+  </jarbundler>
+  </target>
+
+
+</project>
