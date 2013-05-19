@@ -19,9 +19,9 @@ unless File.directory?(Settings::DOCUMENTS_BASEPATH)
 end
 
 if Settings::ASYNC_PROCESSING
-  require_relative '../tabula_job_executor/executor.rb'
-  require_relative '../lib/jobs/generate_thumbnails.rb'
-  require_relative '../lib/jobs/generate_page_index.rb'
+  require_relative '../lib/tabula_job_executor/executor.rb'
+  require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
+  require_relative '../lib/tabula_job_executor/jobs/generate_page_index.rb'
 end
 
 def is_valid_pdf?(path)

@@ -1,6 +1,6 @@
 require 'tabula'
 
-require_relative '../../tabula_job_executor/executor.rb'
+require_relative '../executor.rb'
 
 class GeneratePageIndexJob < Tabula::Background::Job
   # args: (:file, :output_dir)

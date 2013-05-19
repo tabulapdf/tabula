@@ -1,5 +1,5 @@
-require_relative '../../tabula_job_executor/executor.rb'
-require_relative '../thumbnail_generator.rb'
+require_relative '../executor.rb'
+require_relative '../../thumbnail_generator.rb'
 
 class GenerateThumbnailJob < Tabula::Background::Job
   # args: (:file, :output_dir, :thumbnail_sizes, :page_index_job)

@@ -1,4 +1,4 @@
-require './tabula_job_executor/executor.rb'
+require_relative '../lib/tabula_job_executor/executor.rb'
 
 class TabulaJobProgress < Cuba
   define do
