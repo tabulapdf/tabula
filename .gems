@@ -1,4 +1,0 @@
-nokogiri -v 1.5.6
-cuba -v 3.1.0
-resque -v 1.23.0
-resque-progress -v 1.0.1
