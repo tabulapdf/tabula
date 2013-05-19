@@ -8,7 +8,7 @@ require 'csv'
 require 'tabula' # tabula-extractor gem
 
 begin
-  require ENV['TABULA_SETTINGS'] || '../local_settings.rb'
+  require ENV['TABULA_SETTINGS'] || './local_settings.rb'
 rescue LoadError
   puts "'./local_settings.rb' could not be found. See README.md for more info."
   raise
@@ -18,11 +18,10 @@ unless File.directory?(Settings::DOCUMENTS_BASEPATH)
   raise "DOCUMENTS_BASEPATH does not exist or is not a directory."
 end
 
-if Settings::ASYNC_PROCESSING
-  require_relative '../lib/tabula_job_executor/executor.rb'
-  require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
-  require_relative '../lib/tabula_job_executor/jobs/generate_page_index.rb'
-end
+require_relative '../lib/tabula_job_executor/executor.rb'
+require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
+require_relative '../lib/tabula_job_executor/jobs/generate_page_index.rb'
+
 
 def is_valid_pdf?(path)
   File.open(path, 'r') { |f| f.read(4) } == '%PDF'

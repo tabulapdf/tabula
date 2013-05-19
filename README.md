@@ -37,8 +37,8 @@ a simple web interface:
     bundle install
     ~~~
 
-3. If you want to change the default settings, edit `local_settings.rb`
-
+3. Copy `local_settings-example.rb` to `local_settings.rb`
+   If you want to change the defaults, edit `local_settings.rb`
 
 ## Starting the Server (Dev)
 
