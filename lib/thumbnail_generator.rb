@@ -2,6 +2,7 @@ require 'java'
 require 'observer'
 
 require_relative './jars/PDFrenderer.jar'
+require_relative './jars/jbig2.jar'
 
 java_import java.io.RandomAccessFile
 java_import java.nio.channels.FileChannel::MapMode
@@ -76,7 +77,7 @@ if __FILE__ == $0
     end
   end
 
-  pdftg = PDFThumbnailGenerator.new(ARGV[0], '/tmp', [2048, 560])
+  pdftg = PDFThumbnailGenerator.new(ARGV[0], '/tmp', [560])
   pdftg.add_observer(STDERRProgressReporter.new)
   pdftg.generate_thumbnails!
 end
