@@ -30,7 +30,7 @@ class AnalyzePDFJob
     # to our thread that watches it). this opens asynchronously
     # so we can continually handle the output stream.
     _stdin, _stdout, _stderr, thr = Open3.popen3(
-        {"CLASSPATH" => "lib/jars/pdfbox-app-1.8.0-plus-r1484277.jar"},
+                                                 {"CLASSPATH" => "lib/jars/pdfbox-app-2.0.0-SNAPSHOT.jar"},
         "#{Settings::JRUBY_PATH} --1.9 --server lib/jruby_dump_characters.rb #{file} #{output_dir}"
     )
 
