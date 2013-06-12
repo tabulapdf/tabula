@@ -37,14 +37,18 @@ a simple web interface:
     bundle install
     ~~~
 
-3. Copy `local_settings-example.rb` to `local_settings.rb`
-   If you want to change the defaults, edit `local_settings.rb`
-
 ## Starting the Server (Dev)
 
     bundle exec rackup
 
 The site instance should now be viewable at http://127.0.0.1:9292/
+
+You can a couple some options when executing the server in this manner:
+
+    TABULA_DATA_DIR="/tmp/tabula" \
+    TABULA_ASYNC=1 \
+    TABULA_DEBUG=1 \
+    bundle exec rackup
 
 ## Contributing
 

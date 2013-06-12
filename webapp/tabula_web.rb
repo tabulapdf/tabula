@@ -7,12 +7,7 @@ require 'json'
 require 'csv'
 require 'tabula' # tabula-extractor gem
 
-begin
-  require ENV['TABULA_SETTINGS'] || './local_settings.rb'
-rescue LoadError
-  puts "'./local_settings.rb' could not be found. See README.md for more info."
-  raise
-end
+require_relative './tabula_settings.rb'
 
 unless File.directory?(TabulaSettings::DOCUMENTS_BASEPATH)
   raise "DOCUMENTS_BASEPATH does not exist or is not a directory."
