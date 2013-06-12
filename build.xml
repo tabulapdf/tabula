@@ -1,36 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="tabula" default="build" basedir=".">
 
+  <property file="build.properties"/>
   <property name="build.dir" value="build"/>
+  <property name="mac.dir" value="${build.dir}/mac" />
+  <property name="windows.dir" value="${build.dir}/windows" />
+  <property name="full_version" value="0.1.0.0"/>
+  <property name="launch4j.dir" location="/Users/manuel/Work/tabula/launch4j"  />
+  <property name="launch4j.bindir" location="/Users/manuel/Work/tabula/launch4j/bin" />
+
+
+  <echo>${launch4j.bindir}</echo>
 
   <target name="macbundle">
-  <taskdef
-      name="jarbundler"
-      classname="net.sourceforge.jarbundler.JarBundler"
-      classpath="${build.dir}/jarbundler-2.2.0.jar"
-      />
+    <mkdir dir="${mac.dir}"/>
+    <taskdef
+        name="jarbundler"
+        classname="net.sourceforge.jarbundler.JarBundler"
+        classpath="${build.dir}/jarbundler-2.2.0.jar"
+        />
 
-  <jarbundler
-      dir="${build.dir}"
-      name="Tabula"
-      shortname="Tabula"
-      mainclass="WarMain"
-      version="0.1"
-      infostring="© 2012-2013 Manuel Aristarán"
-      aboutmenuname="Tabula"
-      icon="${build.dir}/icons/tabula.icns"
-      workingdirectory="$APP_PACKAGE/Contents/Resources"
-      jvmversion="1.6+"
-      bundleid="org.nerdpower.tabula.Tabula"
-      vmoptions="-Xms256M -Xmx1024M -Dfile.encoding=utf-8"
-      antialiasedgraphics="true"
-      antialiasedtext="true"
-      liveresize="true"
-      growboxintrudes="true"
-      screenmenu="true">
-    <jarfilelist dir="${build.dir}" files="tabula.war" />
-  </jarbundler>
+    <jarbundler
+        dir="${build.dir}/mac"
+        name="Tabula"
+        shortname="Tabula"
+        mainclass="WarMain"
+        version="${full_version}"
+        infostring="© 2012-2013 Manuel Aristarán"
+        aboutmenuname="Tabula"
+        icon="${build.dir}/icons/tabula.icns"
+        workingdirectory="$APP_PACKAGE/Contents/Resources"
+        jvmversion="1.6+"
+        bundleid="org.nerdpower.tabula.Tabula"
+        vmoptions="-Xms256M -Xmx1024M -Dfile.encoding=utf-8"
+        antialiasedgraphics="true"
+        antialiasedtext="true"
+        liveresize="true"
+        growboxintrudes="true"
+        screenmenu="true">
+      <jarfilelist dir="${build.dir}" files="tabula.jar" />
+    </jarbundler>
   </target>
 
-
+  <target name="windows">
+    <mkdir dir="${windows.dir}"/>
+    <taskdef
+        name="launch4j"
+        classname="net.sf.launch4j.ant.Launch4jTask"
+        classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar"
+        />
+    <launch4j bindir="${launch4j.bindir}">
+      <config
+          headerType="console"
+          outfile="${windows.dir}/tabula.exe"
+          jarPath="${build.dir}/tabula.jar"
+          dontWrapJar="true"
+          icon="${build.dir}/icons/tabula.ico">
+        <classPath mainClass="WarMain">
+          <cp>tabula.jar</cp>
+        </classPath>
+        <jre minVersion="1.6.0" jdkPreference="preferJre" initialHeapSize="256" maxHeapSize="1024">
+          <opt>-Xms256M -Xmx1024M -Dfile.encoding=utf-8</opt>
+        </jre>
+        <versionInfo
+            fileVersion="${full_version}"
+            txtFileVersion="${full_version}"
+            fileDescription="tabula"
+            copyright="© 2012-2013 Manuel Aristarán"
+            productVersion="${full_version}"
+            txtProductVersion="${full_version}"
+            productName="Tabula"
+            companyName="Tabula team"
+            internalName="tabula"
+            originalFilename="tabula.exe"
+            />
+      </config>
+    </launch4j>
+  </target>
 </project>
