@@ -340,8 +340,7 @@ Tabula.PDFView = Backbone.View.extend({
           pdf_width = tmp;
       }
 
-      var scale_x = (thumb_width / pdf_width);
-      var scale_y = (thumb_height / pdf_height);
+      var scale = (thumb_width / pdf_width);
 
       $.get('/debug/' + this.PDF_ID + '/characters',
             this.lastQuery,
@@ -350,9 +349,9 @@ Tabula.PDFView = Backbone.View.extend({
                     $("canvas").drawRect({
                         strokeStyle: this.colors[i % this.colors.length],
                         strokeWidth: 1,
-                        x: row.left * scale_x, y: row.top * scale_y,
-                        width: row.width * scale_x,
-                        height: row.height * scale_y,
+                        x: row.left * scale, y: row.top * scale,
+                        width: row.width * scale,
+                        height: row.height * scale,
                         fromCenter: false
                     });
                 }, this));

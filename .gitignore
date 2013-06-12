@@ -6,8 +6,6 @@ tabula.war
 .ruby-gemset
 
 TEST_PDFS
-build/jarbundler*
-build/launch4j
 .DS_Store
 
 # Based on https://github.com/github/gitignore/blob/master/Ruby.gitignore

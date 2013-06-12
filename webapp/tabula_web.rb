@@ -14,7 +14,7 @@ rescue LoadError
   raise
 end
 
-unless File.directory?(Settings::DOCUMENTS_BASEPATH)
+unless File.directory?(TabulaSettings::DOCUMENTS_BASEPATH)
   raise "DOCUMENTS_BASEPATH does not exist or is not a directory."
 end
 
@@ -29,15 +29,16 @@ end
 
 
 STATIC_ROOT = defined?($servlet_context) ? \
-                File.join($servlet_context.getRealPath('/'), 'WEB-INF/static') : \
-                'static'
+                File.join($servlet_context.getRealPath('/'), 'WEB-INF/webapp/static') : \
+                File.join(File.dirname(__FILE__), 'static')
 
 Cuba.plugin Cuba::Render
+Cuba.settings[:render].store(:views, File.expand_path("views", File.dirname(__FILE__)))
 Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/scripts", "/swf"]
 
 Cuba.define do
 
-  if Settings::ENABLE_DEBUG_METHODS
+  if TabulaSettings::ENABLE_DEBUG_METHODS
     require_relative './tabula_debug.rb'
     on 'debug' do
       run TabulaDebug
@@ -56,7 +57,7 @@ Cuba.define do
     end
 
     on "pdf/:file_id/data" do |file_id|
-      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
 
       extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
 
@@ -64,7 +65,7 @@ Cuba.define do
                                                                 req.params['x1'].to_f,
                                                                 req.params['y2'].to_f,
                                                                 req.params['x2'].to_f]))
-      
+
       case req.params['format']
       when 'csv'
         res['Content-Type'] = 'text/csv'
@@ -80,19 +81,19 @@ Cuba.define do
     end
 
     on 'pdfs' do
-      run Rack::File.new(Settings::DOCUMENTS_BASEPATH)
+      run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
     end
 
     on "pdf/:file_id" do |file_id|
-      document_dir = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
+      document_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
       unless File.directory?(document_dir)
         res.status = 404
       else
         res.write view("pdf_view.html",
                        page_images: Dir.glob(File.join(document_dir, "document_560_*.png"))
                          .sort_by { |f| f.gsub(/[^\d]/, '').to_i }
-                         .map { |f| f.gsub(Settings::DOCUMENTS_BASEPATH, '/pdfs') },
-                       pages: File.open(File.join(document_dir, 'pages.json')) { |f| 
+                         .map { |f| f.gsub(TabulaSettings::DOCUMENTS_BASEPATH, '/pdfs') },
+                       pages: File.open(File.join(document_dir, 'pages.json')) { |f|
                          JSON.parse(f.read)
                        })
       end
@@ -113,13 +114,13 @@ Cuba.define do
       end
 
       file_id = Digest::SHA1.hexdigest(Time.now.to_s)
-      file_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
+      file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
       FileUtils.mkdir(file_path)
       begin
         FileUtils.mv(req.params['file'][:tempfile].path,
                      File.join(file_path, 'document.pdf'))
       rescue Errno::EACCES # move fails on windows sometimes
-        FileUtils.cp_r(req.params['file'][:tempfile].path, 
+        FileUtils.cp_r(req.params['file'][:tempfile].path,
                        File.join(file_path, 'document.pdf'))
         FileUtils.rm_rf(req.params['file'][:tempfile].path)
 

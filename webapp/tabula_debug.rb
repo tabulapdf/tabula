@@ -4,7 +4,7 @@ class TabulaDebug < Cuba
   define do
     ## TODO delete
     on ":file_id/whitespace" do |file_id|
-      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
       extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
 
       text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
@@ -26,7 +26,7 @@ class TabulaDebug < Cuba
 
 
     on ":file_id/columns" do |file_id|
-      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
       extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
 
       text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
@@ -40,7 +40,7 @@ class TabulaDebug < Cuba
     end
 
     on ":file_id/rows" do |file_id|
-      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
       extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
 
       text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
@@ -68,7 +68,7 @@ class TabulaDebug < Cuba
     end
 
     on ":file_id/characters" do |file_id|
-      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
       extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
 
       text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
@@ -87,7 +87,7 @@ class TabulaDebug < Cuba
     end
 
     on ":file_id/rulings" do |file_id|
-      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id)
+      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
       page_dimensions = File.open(File.join(pdf_path, 'pages.json')) { |f|
         JSON.parse(f.read, :symbolize_names => true)
       }[req.params['page'].to_i - 1]
@@ -95,7 +95,7 @@ class TabulaDebug < Cuba
       # rulings = Tabula::LSD.detect_lines(File.join(pdf_path,
       #                                              "document_2048_#{req.params['page']}.png"),
       #                                    page_dimensions[:width] / 2048.0)
-      rulings = Tabula::LSD.detect_lines_in_pdf_page(File.join(pdf_path, 'document.pdf'), 
+      rulings = Tabula::LSD.detect_lines_in_pdf_page(File.join(pdf_path, 'document.pdf'),
                                                      req.params['page'].to_i,
                                                      page_dimensions[:width] / 2048.0)
 
@@ -108,7 +108,7 @@ class TabulaDebug < Cuba
 
     on 'pdf/:file_id/graph' do |file_id|
 
-      pdf_path = File.join(Settings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
       extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
 
       text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
