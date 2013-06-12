@@ -9,10 +9,11 @@
   <property name="launch4j.dir" location="/Users/manuel/Work/tabula/launch4j"  />
   <property name="launch4j.bindir" location="/Users/manuel/Work/tabula/launch4j/bin" />
 
+  <target name="check-jar-exists">
+    <available file="${build.dir}/tabula.jar" property="jar.exists"/>
+  </target>
 
-  <echo>${launch4j.bindir}</echo>
-
-  <target name="macbundle">
+  <target name="macbundle" depends="check-jar-exists" if="jar.exists">
     <mkdir dir="${mac.dir}"/>
     <taskdef
         name="jarbundler"
