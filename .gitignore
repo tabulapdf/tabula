@@ -7,10 +7,12 @@ tabula.war
 
 TEST_PDFS
 .DS_Store
+build/Tabula.app
 
 # Based on https://github.com/github/gitignore/blob/master/Ruby.gitignore
 *.gem
 *.rbc
+*.swp
 .bundle
 .config
 coverage
