@@ -21,9 +21,11 @@ a simple web interface:
 
 ## Running Tabula
 
-{TODO: write instructions for downloading and running the packaged versions}
+### Running a packaged version
 
-## Running Tabula from source (for developers)
+(TODO)
+
+### Running Tabula from source (for developers)
 
 1. Download JRuby. You can install it from its website, or using tools like `rvm` or `rbenv`
 
@@ -37,7 +39,7 @@ a simple web interface:
     bundle install
     ~~~
 
-## Starting the Server (Dev)
+**Then, start the development server:**
 
     bundle exec rackup
 
@@ -55,6 +57,19 @@ You can a couple some options when executing the server in this manner:
   `~/Library/Application Support/Tabula` on Mac, `~/.tabula` on Linux/UNIX)
 * `TABULA_DEBUG` prints out extra status data when PDF files are being processed.
    (`false` by default.)
+
+#### Building a packaged application version
+
+After performing the above steps ("Running Tabula from source"), you can compile
+Tabula into a standalone application:
+
+**Mac OS X**
+
+    rake war
+    ant macbundle
+
+Then, you will find a "Tabula.app" file in the `build/mac` directory. You can
+double-click this to run a hidden Tabula server that is viewble at http://127.0.0.1:8080/ .
 
 ## Contributing
 

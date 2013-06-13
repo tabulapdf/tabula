@@ -7,7 +7,9 @@ tabula.war
 
 TEST_PDFS
 .DS_Store
+build/tabula.jar
 build/Tabula.app
+build/mac
 
 # Based on https://github.com/github/gitignore/blob/master/Ruby.gitignore
 *.gem
