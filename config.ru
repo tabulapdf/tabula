@@ -12,7 +12,7 @@ if "#{$PROGRAM_NAME}".include? "tabula.jar"
   # makes Cuba/Rack really really upset. just call "java.*" classes
   # directly.
 
-  url = "http:/127.0.0.1:8080"
+  url = "http://127.0.0.1:8080"
 
   puts "\n======================================================"
   puts "Launching web browser to #{url}\n\n"
