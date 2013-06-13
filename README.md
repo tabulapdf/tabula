@@ -43,7 +43,7 @@ a simple web interface:
 
     bundle exec rackup
 
-The site instance should now be viewable at http://127.0.0.1:9292/
+The site instance should now be viewable at http://127.0.0.1:9292/ .
 
 You can a couple some options when executing the server in this manner:
 
@@ -70,6 +70,39 @@ Tabula into a standalone application:
 
 Then, you will find a "Tabula.app" file in the `build/mac` directory. You can
 double-click this to run a hidden Tabula server that is viewble at http://127.0.0.1:8080/ .
+You will notice the Tabula server running in your Dock -- simply Quit that application to end
+the Tabula server.
+
+**Windows**
+
+You can build .exe files for the Windows target on any platform.
+
+Download a [3.1.X (beta) copy of Launch4J][1].
+
+Unzip it into the Tabula repo so that "launch4j" (with subdirectories "bin", etc.)
+is in the repository root.
+
+Then (these commands are for OS X/Linux and may need to be adjusted for Windows users):
+
+    rake war
+    cd launch4j
+    ant -f ../build.xml windows
+
+A "tabula.exe" file will be generated in "build/windows". To run, the exe file
+needs "tabula.jar" (contained in "build") in the same directory. You can create a
+.zip archive by doing:
+
+    # (from the root directory of the repo)
+    cd build/windows
+    mkdir tabula
+    cp tabula.exe ./tabula/
+    cp ../tabula.jar ./tabula/
+    zip -9 tabula.zip tabula/*
+    rm -fr tabula
+
+This will result in a portable "tabula.zip" archive for Windows users.
+
+[1]: http://sourceforge.net/projects/launch4j/files/launch4j-3/3.1.0-beta1/
 
 ## Contributing
 

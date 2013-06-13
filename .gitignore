@@ -10,6 +10,8 @@ TEST_PDFS
 build/tabula.jar
 build/Tabula.app
 build/mac
+build/windows
+launch4j/
 
 # Based on https://github.com/github/gitignore/blob/master/Ruby.gitignore
 *.gem

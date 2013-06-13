@@ -6,8 +6,8 @@
   <property name="mac.dir" value="${build.dir}/mac" />
   <property name="windows.dir" value="${build.dir}/windows" />
   <property name="full_version" value="0.1.0.0"/>
-  <property name="launch4j.dir" location="/Users/manuel/Work/tabula/launch4j"  />
-  <property name="launch4j.bindir" location="/Users/manuel/Work/tabula/launch4j/bin" />
+  <property name="launch4j.dir" location="${build.dir}/../launch4j"  />
+  <property name="launch4j.bindir" location="${build.dir}/../launch4j/bin" />
 
   <target name="check-jar-exists">
     <available file="${build.dir}/tabula.jar" property="jar.exists"/>
