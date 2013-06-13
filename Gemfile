@@ -3,10 +3,10 @@ platform :jruby do
   gem "cuba"
   gem "rack"
   gem "tilt"
-  gem "tabula-extractor", '>=0.0.1'
+  gem "tabula-extractor"
 
   group :development do
     gem "rake"
     gem "warbler"
-  end   
+  end
 end

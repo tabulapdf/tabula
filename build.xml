@@ -43,7 +43,7 @@
     </jarbundler>
   </target>
 
-  <target name="windows">
+  <target name="windows" depends="check-jar-exists" if="jar.exists">
     <mkdir dir="${windows.dir}"/>
     <taskdef
         name="launch4j"
