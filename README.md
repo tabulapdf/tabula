@@ -32,7 +32,7 @@ a simple web interface:
 
 2. Download Tabula and install the Ruby dependencies. (Note: if using `rvm` or
    `rbenv`, ensure that JRuby is being used. A `.ruby-version` file for
-   `jruby-1.7.4` is included in this repo.)
+   G`jruby-1.7.4` is included in this repo.)
 
     ~~~
     git clone git://github.com/jazzido/tabula.git
@@ -82,7 +82,13 @@ Tabula into a standalone application:
 Then, you will find a "Tabula.app" file in the `build/mac` directory. You can
 double-click this to run a hidden Tabula server that is viewble at http://127.0.0.1:8080/ .
 You will notice the Tabula server running in your Dock -- simply Quit that application to end
-the Tabula server.
+the Tabula server. You can create a .zip archive of this by doing:
+
+    # (from the root directory of the repo)
+    cd build/mac
+    zip -r9 tabula_mac.zip Tabula.app
+
+This will result in a portable "tabula_mac.zip" archive for Mac OS X users.
 
 **Windows**
 
@@ -95,6 +101,7 @@ is in the repository root.
 
 Then (these commands are for OS X/Linux and may need to be adjusted for Windows users):
 
+    # (from the root directory of the repo)
     rake war
     cd launch4j
     ant -f ../build.xml windows
@@ -108,10 +115,10 @@ needs "tabula.jar" (contained in "build") in the same directory. You can create 
     mkdir tabula
     cp tabula.exe ./tabula/
     cp ../tabula.jar ./tabula/
-    zip -9 tabula.zip tabula/*
+    zip -r9 tabula_win.zip tabula
     rm -fr tabula
 
-This will result in a portable "tabula.zip" archive for Windows users.
+This will result in a portable "tabula_win.zip" archive for Windows users.
 
 [1]: http://sourceforge.net/projects/launch4j/files/launch4j-3/3.1.0-beta1/
 
