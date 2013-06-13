@@ -31,8 +31,7 @@ a simple web interface:
    `rvm` or `rbenv`
 
 2. Download Tabula and install the Ruby dependencies. (Note: if using `rvm` or
-   `rbenv`, ensure that JRuby is being used. A `.ruby-version` file for
-   G`jruby-1.7.4` is included in this repo.)
+   `rbenv`, ensure that JRuby is being used.
 
     ~~~
     git clone git://github.com/jazzido/tabula.git
