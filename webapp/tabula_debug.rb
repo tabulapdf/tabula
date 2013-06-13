@@ -88,13 +88,9 @@ class TabulaDebug < Cuba
 
     on ":file_id/rulings" do |file_id|
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
-      page_dimensions = File.open(File.join(pdf_path, 'pages.json')) { |f|
-        JSON.parse(f.read, :symbolize_names => true)
-      }[req.params['page'].to_i - 1]
 
       rulings = Tabula::LSD.detect_lines_in_pdf_page(File.join(pdf_path, 'document.pdf'),
                                                      req.params['page'].to_i,
-                                                     :scale_factor => page_dimensions[:width] / 1024.0,
                                                      :image_size => 1024)
 
       rulings = Tabula::Ruling.clean_rulings(rulings)
