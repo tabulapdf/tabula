@@ -27,9 +27,12 @@ a simple web interface:
 
 ### Running Tabula from source (for developers)
 
-1. Download JRuby. You can install it from its website, or using tools like `rvm` or `rbenv`
+1. Download JRuby. You can install it from its website, or using tools like
+   `rvm` or `rbenv`
 
-2. Download Tabula and install the Ruby dependencies. (Note: if using `rvm` or `rbenv`, ensure that it is configured for JRuby)
+2. Download Tabula and install the Ruby dependencies. (Note: if using `rvm` or
+   `rbenv`, ensure that JRuby is being used. A `.ruby-version` file for
+   `jruby-1.7.4` is included in this repo.)
 
     ~~~
     git clone git://github.com/jazzido/tabula.git
@@ -57,6 +60,14 @@ You can a couple some options when executing the server in this manner:
   `~/Library/Application Support/Tabula` on Mac, `~/.tabula` on Linux/UNIX)
 * `TABULA_DEBUG` prints out extra status data when PDF files are being processed.
    (`false` by default.)
+
+**Alternatively, running the server as a JAR file**
+
+Testing in this manner will be closer to testing the "packaged application"
+version of the app.
+
+    bundle exec rake war
+    java -server -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -jar build/tabula.jar
 
 #### Building a packaged application version
 
