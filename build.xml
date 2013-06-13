@@ -33,7 +33,7 @@
         workingdirectory="$APP_PACKAGE/Contents/Resources"
         jvmversion="1.6+"
         bundleid="org.nerdpower.tabula.Tabula"
-        vmoptions="-server -Xms256M -Xmx1024M -Dfile.encoding=utf-8"
+        vmoptions="-Xms256M -Xmx1024M -Dfile.encoding=utf-8"
         antialiasedgraphics="true"
         antialiasedtext="true"
         liveresize="true"
@@ -61,7 +61,7 @@
           <cp>tabula.jar</cp>
         </classPath>
         <jre minVersion="1.6.0" jdkPreference="preferJre" initialHeapSize="256" maxHeapSize="1024">
-          <opt>-server -Xms256M -Xmx1024M -Dfile.encoding=utf-8</opt>
+          <opt>-Xms256M -Xmx1024M -Dfile.encoding=utf-8</opt>
         </jre>
         <versionInfo
             fileVersion="${full_version}"

@@ -67,7 +67,7 @@ Testing in this manner will be closer to testing the "packaged application"
 version of the app.
 
     bundle exec rake war
-    java -server -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -jar build/tabula.jar
+    java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -jar build/tabula.jar
 
 #### Building a packaged application version
 
