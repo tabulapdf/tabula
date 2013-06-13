@@ -30,6 +30,8 @@ STATIC_ROOT = defined?($servlet_context) ? \
 Cuba.plugin Cuba::Render
 Cuba.settings[:render].store(:views, File.expand_path("views", File.dirname(__FILE__)))
 Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/scripts", "/swf"]
+Cuba.use Rack::ContentLength
+#Cuba.use Rack::Reloader
 
 Cuba.define do
 
