@@ -217,7 +217,7 @@ Tabula.PDFView = Backbone.View.extend({
 
         console.log('debugRulings: page ' + this.lastQuery.page);
 
-        $.get('/debug/' + this.PDF_ID + '/rulings?q=page=' this.lastQuery.page,
+        $.get('/debug/' + this.PDF_ID + '/rulings?q=page=' + this.lastQuery.page,
               lq,
               _.bind(function(data) {
                   $.each(data, _.bind(function(i, ruling) {
