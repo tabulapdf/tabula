@@ -5,7 +5,7 @@ class TabulaDebug < Cuba
     ## TODO delete
     on ":file_id/whitespace" do |file_id|
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
-      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i || 1)
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i || 1])
 
       text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
                                                        req.params['x1'].to_f,
