@@ -89,8 +89,13 @@ class TabulaDebug < Cuba
     on ":file_id/rulings" do |file_id|
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
 
+      page = req.params['page'].to_i
+      if page < 1
+        page = 1
+      end
+
       rulings = Tabula::LSD.detect_lines_in_pdf_page(File.join(pdf_path, 'document.pdf'),
-                                                     req.params['page'].to_i || 1,
+                                                     page,
                                                      :image_size => 1024)
 
       rulings = Tabula::Ruling.clean_rulings(rulings)
@@ -103,7 +108,7 @@ class TabulaDebug < Cuba
     on 'pdf/:file_id/graph' do |file_id|
 
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
-      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i || 1])
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [page])
 
       text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
                                                        req.params['x1'].to_f,

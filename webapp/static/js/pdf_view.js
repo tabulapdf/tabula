@@ -215,9 +215,7 @@ Tabula.PDFView = Backbone.View.extend({
                               pdf_page_width: $('img#page-' + this.lastQuery.page).data('original-width')
                           });
 
-        console.log('debugRulings: page ' + this.lastQuery.page);
-
-        $.get('/debug/' + this.PDF_ID + '/rulings?q=page=' + this.lastQuery.page,
+        $.get('/debug/' + this.PDF_ID + '/rulings',
               lq,
               _.bind(function(data) {
                   $.each(data, _.bind(function(i, ruling) {
