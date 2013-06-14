@@ -3,7 +3,7 @@ platform :jruby do
   gem "cuba"
   gem "rack"
   gem "tilt"
-  gem "tabula-extractor", :require => "tabula"
+  gem "tabula-extractor", '~>0.5.1', :require => "tabula"
 
   group :development do
     gem "rake"
