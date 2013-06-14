@@ -5,7 +5,7 @@ class TabulaDebug < Cuba
     ## TODO delete
     on ":file_id/whitespace" do |file_id|
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
-      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i || 1)
 
       text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
                                                        req.params['x1'].to_f,
@@ -27,7 +27,7 @@ class TabulaDebug < Cuba
 
     on ":file_id/columns" do |file_id|
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
-      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i || 1])
 
       text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
                                                        req.params['x1'].to_f,
@@ -41,7 +41,7 @@ class TabulaDebug < Cuba
 
     on ":file_id/rows" do |file_id|
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
-      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i || 1])
 
       text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
                                                        req.params['x1'].to_f,
@@ -50,9 +50,9 @@ class TabulaDebug < Cuba
       make_table_options = {}
 
       if !req.params['use_lines'].nil? and req.params['use_lines'] != 'false'
-        page_dimensions = Tabula::XML.get_page_dimensions(pdf_path, req.params['page'])
+        page_dimensions = Tabula::XML.get_page_dimensions(pdf_path, req.params['page'].to_i || 1)
         rulings = Tabula::Rulings::detect_rulings(File.join(pdf_path,
-                                                            "document_2048_#{req.params['page']}.png"),
+                                                            "document_2048_#{req.params['page'].to_i || 1}.png"),
                                                   page_dimensions[:width] / 2048.0)
 
         make_table_options[:horizontal_rulings] = rulings[:horizontal]
@@ -69,7 +69,7 @@ class TabulaDebug < Cuba
 
     on ":file_id/characters" do |file_id|
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
-      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i || 1])
 
       text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
                                                        req.params['x1'].to_f,
@@ -90,7 +90,7 @@ class TabulaDebug < Cuba
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
 
       rulings = Tabula::LSD.detect_lines_in_pdf_page(File.join(pdf_path, 'document.pdf'),
-                                                     req.params['page'].to_i,
+                                                     req.params['page'].to_i || 1,
                                                      :image_size => 1024)
 
       rulings = Tabula::Ruling.clean_rulings(rulings)
@@ -103,7 +103,7 @@ class TabulaDebug < Cuba
     on 'pdf/:file_id/graph' do |file_id|
 
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
-      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i || 1])
 
       text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
                                                        req.params['x1'].to_f,
