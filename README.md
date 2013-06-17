@@ -75,19 +75,10 @@ Tabula into a standalone application:
 
 **Mac OS X**
 
-    rake war
-    ant macbundle
+    rake macosx
 
-Then, you will find a "Tabula.app" file in the `build/mac` directory. You can
-double-click this to run a hidden Tabula server that is viewble at http://127.0.0.1:8080/ .
-You will notice the Tabula server running in your Dock -- simply Quit that application to end
-the Tabula server. You can create a .zip archive of this by doing:
-
-    # (from the root directory of the repo)
-    cd build/mac
-    zip -r9 tabula_mac.zip Tabula.app
-
-This will result in a portable "tabula_mac.zip" archive for Mac OS X users.
+This will result in a portable "tabula_mac.zip" archive (inside the `build` directory)
+for Mac OS X users.
 
 **Windows**
 
@@ -98,7 +89,18 @@ Download a [3.1.X (beta) copy of Launch4J][1].
 Unzip it into the Tabula repo so that "launch4j" (with subdirectories "bin", etc.)
 is in the repository root.
 
-Then (these commands are for OS X/Linux and may need to be adjusted for Windows users):
+
+Then:
+
+    rake windows
+
+This will result in a portable "tabula_mac.zip" archive (inside the `build` directory)
+for Mac OS X users.
+
+---
+
+If you have issues, you can try building manually. (These commands are for
+OS X/Linux and may need to be adjusted for Windows users.)
 
     # (from the root directory of the repo)
     rake war
@@ -116,8 +118,6 @@ needs "tabula.jar" (contained in "build") in the same directory. You can create 
     cp ../tabula.jar ./tabula/
     zip -r9 tabula_win.zip tabula
     rm -fr tabula
-
-This will result in a portable "tabula_win.zip" archive for Windows users.
 
 [1]: http://sourceforge.net/projects/launch4j/files/launch4j-3/3.1.0-beta1/
 

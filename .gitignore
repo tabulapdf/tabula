@@ -7,8 +7,9 @@ tabula.war
 
 TEST_PDFS
 .DS_Store
-build/tabula.jar
 build/Tabula.app
+build/tabula.jar
+build/tabula-*.zip
 build/mac
 build/windows
 launch4j/
