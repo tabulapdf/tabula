@@ -6,7 +6,7 @@ Tabula helps you liberate data tables trapped inside PDF files.
 * [Check out the (feature-limited) demo](http://tabula.nerdpower.org/)
 
 © 2012-2013 Manuel Aristarán. Available under MIT License. See
-[`AUTHORS.md`](AUTHORS.md) and [`LICENSE.md`](LICENSE.md)`.
+[`AUTHORS.md`](AUTHORS.md) and [`LICENSE.md`](LICENSE.md).
 
 ## Why Tabula?
 
