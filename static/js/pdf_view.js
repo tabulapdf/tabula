@@ -219,7 +219,7 @@ Tabula.PDFView = Backbone.View.extend({
                           x2: ruling[2] * scaleFactor, y2: ruling[3] * scaleFactor
                       });
                   }, this));
-              }, bind));
+              }, this));
     },
 
 

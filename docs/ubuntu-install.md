@@ -71,6 +71,9 @@ And add the following lines
 
     PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig
     export PKG_CONFIG_PATH
+
+Save and exit the /etc/bash.bashrc file, then once back in terminal run
+
     source /etc/bash.bashrc
 
 **MuPDF** ([source](https://github.com/xiangxw/mupdf-qt/wiki/Compile-Mupdf-on-Ubuntu))
