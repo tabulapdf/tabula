@@ -16,13 +16,13 @@ module TabulaSettings
     # when invoking as "java -Dtabula.data_dir=/foo/bar ... -jar tabula.war"
     data_dir = java.lang.System.getProperty('tabula.data_dir')
     unless data_dir.nil?
-      return data_dir
+      return java.io.File.new(data_dir).getPath
     end
 
     # when invoking with env var
     data_dir = ENV['TABULA_DATA_DIR']
     unless data_dir.nil?
-      return data_dir
+      return java.io.File.new(data_dir).getPath
     end
 
     # use the usual directory in (system-dependent) user home dir
@@ -35,8 +35,7 @@ module TabulaSettings
       if appdata.nil?
         home = java.lang.System.getProperty('user.home')
       end
-      data_dir = File.join(appdata, '/Tabula')
-
+      data_dir = java.io.File.new(appdata, '/Tabula').getPath
 
     when /Mac/
       home = java.lang.System.getProperty('user.home')
