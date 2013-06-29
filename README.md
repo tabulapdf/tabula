@@ -123,7 +123,7 @@ Then:
 
     rake windows
 
-This will result in a portable "tabula_mac.zip" archive (inside the `build` directory)
+This will result in a portable "tabula_win.zip" archive (inside the `build` directory)
 for Mac OS X users.
 
 ---
