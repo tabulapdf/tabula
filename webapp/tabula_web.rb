@@ -14,6 +14,7 @@ unless File.directory?(TabulaSettings::DOCUMENTS_BASEPATH)
 end
 
 require_relative '../lib/tabula_job_executor/executor.rb'
+require_relative '../lib/tabula_job_executor/jobs/generate_document_metadata.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_page_index.rb'
 
@@ -31,7 +32,7 @@ Cuba.plugin Cuba::Render
 Cuba.settings[:render].store(:views, File.expand_path("views", File.dirname(__FILE__)))
 Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/scripts", "/swf"]
 Cuba.use Rack::ContentLength
-#Cuba.use Rack::Reloader
+Cuba.use Rack::Reloader
 
 Cuba.define do
 
@@ -50,7 +51,15 @@ Cuba.define do
 
   on get do
     on root do
-      res.write view("index.html")
+      workspace_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
+      workspace = if File.exists?(workspace_file)
+                    File.open(workspace_file) { |f| JSON.load(f) }
+                  else
+                    []
+                  end
+
+      res.write view("index.html",
+                     workspace: workspace)
     end
 
     on "pdf/:file_id/data" do |file_id|
@@ -106,10 +115,10 @@ Cuba.define do
         res.status = 400
         res.write view("upload_error.html",
                        :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
-        # FileUtils.rm(req.params['file'][:tempfile].path)
         next # halt this handler
       end
 
+      original_filename = req.params['file'][:filename]
       file_id = Digest::SHA1.hexdigest(Time.now.to_s)
       file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
       FileUtils.mkdir(file_path)
@@ -126,6 +135,9 @@ Cuba.define do
       file = File.join(file_path, 'document.pdf')
 
       # fire off background jobs
+
+      document_metadata_job = GenerateDocumentMetadataJob.create(:filename => original_filename,
+                                                                 :id => file_id)
       page_index_job = GeneratePageIndexJob.create(:file => file,
                                                    :output_dir => file_path)
       upload_id = GenerateThumbnailJob.create(:file_id => file_id,

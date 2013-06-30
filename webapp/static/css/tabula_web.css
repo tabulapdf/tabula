@@ -73,3 +73,15 @@ img.page-image {
     width: 40px;
     left: 1058px;
 }
+
+ul#uploadedfiles {
+  min-height: 100px;
+  max-height: 200px;
+  overflow: auto;
+  margin: 0;
+}
+
+ul#uploadedfiles li span {
+  font-size: 70%;
+  color: #ddd;
+}
