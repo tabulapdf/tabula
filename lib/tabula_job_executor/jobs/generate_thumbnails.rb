@@ -18,7 +18,7 @@ class GenerateThumbnailJob < Tabula::Background::Job
        :file_id => file_id,
        :upload_id => upload_id)
 
-    generator = PDFThumbnailGenerator.new(file, output_dir, thumbnail_sizes)
+    generator = JPedalThumbnailGenerator.new(file, output_dir, thumbnail_sizes)
     generator.add_observer(self, :at)
     generator.generate_thumbnails!
 
