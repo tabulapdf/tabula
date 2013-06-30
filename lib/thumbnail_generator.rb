@@ -1,17 +1,14 @@
 require 'java'
 require 'observer'
 
-require_relative './jars/PDFrenderer.jar'
-require_relative './jars/jbig2.jar'
+require_relative './jars/jpedal_lgpl.jar'
 
-java_import java.io.RandomAccessFile
-java_import java.nio.channels.FileChannel::MapMode
 java_import javax.imageio.ImageIO
 java_import java.awt.image.BufferedImage
 java_import java.awt.Image
 
-java_import com.sun.pdfview.PDFFile
-java_import com.sun.pdfview.PDFPage
+java_import org.jpedal.PdfDecoder
+java_import org.jpedal.fonts.FontMappings
 
 class AbstractThumbnailGenerator
   include Observable
@@ -29,43 +26,38 @@ class AbstractThumbnailGenerator
 
 end
 
-class PDFThumbnailGenerator < AbstractThumbnailGenerator
-
+class JPedalThumbnailGenerator < AbstractThumbnailGenerator
   def initialize(pdf_filename, output_directory, sizes=[2048, 560], pages=[])
     super(pdf_filename, output_directory, sizes, pages)
-    raf = RandomAccessFile.new(pdf_filename, 'r')
-    @pdf = Java::ComSunPdfview::PDFFile.new(raf.channel.map(MapMode::READ_ONLY, 0, raf.channel.size))
+    @decoder = PdfDecoder.new(true)
+    FontMappings.setFontReplacements
+    @decoder.openPdfFile(pdf_filename)
+    @decoder.setExtractionMode(0, 1.0)
+    @decoder.useHiResScreenDisplay(true)
   end
 
   def generate_thumbnails!
-    size, other_sizes = @sizes.first, @sizes[1..-1]
-    total_pages = @pdf.getNumPages
+    total_pages = @decoder.getPageCount
 
     total_pages.times do |i|
-      page_index = i + 1
-      page = @pdf.getPage(page_index, true)
+      # w = pageData.getCropBoxWidth(pageNo);
+      # h = pageData.getCropBoxHeight(pageNo);
+      image = @decoder.getPageAsImage(i+1);
+      image_w, image_h = image.getWidth, image.getHeight
 
-      # generate the biggest thumbnail
-      w, h = page.getWidth, page.getHeight
-      image = page.getImage(size, h * (size / w), nil, nil, true, true)
-      ImageIO.write(image, 'png',
-                    java.io.File.new(File.join(@output_directory,
-                                               "document_#{size}_#{page_index}.png")))
-
-      # rescale the already generated image for each specified size
-      other_sizes.each do |s|
-        scale = s.to_f / size.to_f
-        bi = BufferedImage.new(s, h * (size / w) * scale, image.getType)
-        bi.getGraphics.drawImage(image.getScaledInstance(s, h * (size / w) * scale, Image::SCALE_SMOOTH),
-                                 0, 0, nil)
+      @sizes.each do |s|
+        scale = s.to_f / image_w.to_f
+        bi = BufferedImage.new(s, image_h * scale, image.getType)
+        bi.getGraphics.drawImage(image.getScaledInstance(s, image_h * scale, Image::SCALE_SMOOTH), 0, 0, nil)
         ImageIO.write(bi,
                       'png',
                       java.io.File.new(File.join(@output_directory,
-                                                 "document_#{s}_#{page_index}.png")))
+                                                 "document_#{s}_#{i+1}.png")))
+        changed
+        notify_observers(i+1, total_pages)
       end
-      changed
-      notify_observers(page_index, total_pages)
     end
+    @decoder.closePdfFile
   end
 end
 
@@ -77,7 +69,7 @@ if __FILE__ == $0
     end
   end
 
-  pdftg = PDFThumbnailGenerator.new(ARGV[0], '/tmp', [560])
+  pdftg = JPedalThumbnailGenerator.new(ARGV[0], '/tmp', [560])
   pdftg.add_observer(STDERRProgressReporter.new)
   pdftg.generate_thumbnails!
 end
