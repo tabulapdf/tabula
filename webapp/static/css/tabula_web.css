@@ -3,10 +3,20 @@
     overflow: auto !important;
 }
 
+.flip {
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  filter: FlipH;
+  -ms-filter: "FlipH";
+}
+
 .thumbnail-list {
     margin-left: 0;
     list-style-type: none;
 }
+
 
   .thumbnail-list li {
       margin: 5px;
@@ -17,9 +27,26 @@
       top: 0; left: 0;
   }
 
+  .thumbnail-list li span {
+    visibility: hidden;
+    width: 100px !important;
+  }
+
+  .thumbnail-list li span i {
+    opacity: 0.3;
+  }
+
+  .thumbnail-list li:hover span {
+    visibility: visible;
+  }
+
+  .thumbnail-list li:hover span i:hover {
+    opacity: 1;
+  }
+
   .thumbnail-list li:hover {
       cursor: pointer;
-      background-color: #cccccc;
+      background-color: #ddd;
   }
 
     .thumbnail-list li img {
