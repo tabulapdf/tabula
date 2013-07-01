@@ -30,6 +30,7 @@ STATIC_ROOT = defined?($servlet_context) ? \
 
 Cuba.plugin Cuba::Render
 Cuba.settings[:render].store(:views, File.expand_path("views", File.dirname(__FILE__)))
+Cuba.use Rack::MethodOverride
 Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/scripts", "/swf"]
 Cuba.use Rack::ContentLength
 Cuba.use Rack::Reloader
@@ -47,6 +48,23 @@ Cuba.define do
   on 'queue' do
     require_relative './tabula_job_progress.rb'
     run TabulaJobProgress
+  end
+
+  on delete do
+    on 'pdf/:file_id/page/:page_number' do |file_id, page_number|
+      index_fname = File.join(TabulaSettings::DOCUMENTS_BASEPATH,
+                              file_id,
+                              'pages.json')
+      index = File.open(index_fname) { |f| JSON.load(f) }
+      index.find { |p| p['number'] == page_number.to_i }['deleted'] = true
+      File.open(index_fname, 'w') { |f| f.write JSON.generate(index) }
+    end
+  end
+
+  on put do
+    on 'pdf/:file_id/page/:page_number' do |file_id, page_number|
+      # nothing yet
+    end
   end
 
   on get do
@@ -96,12 +114,10 @@ Cuba.define do
         res.status = 404
       else
         res.write view("pdf_view.html",
-                       page_images: Dir.glob(File.join(document_dir, "document_560_*.png"))
-                         .sort_by { |f| f.gsub(/[^\d]/, '').to_i }
-                         .map { |f| f.gsub(TabulaSettings::DOCUMENTS_BASEPATH, '/pdfs') },
                        pages: File.open(File.join(document_dir, 'pages.json')) { |f|
                          JSON.parse(f.read)
-                       })
+                       },
+                       file_id: file_id)
       end
     end
 

@@ -30,10 +30,12 @@
   .thumbnail-list li span {
     visibility: hidden;
     width: 100px !important;
+    position: relative;
   }
 
   .thumbnail-list li span i {
     opacity: 0.3;
+    position: relative;
   }
 
   .thumbnail-list li:hover span {
@@ -64,6 +66,7 @@ img.page-image {
     border: 1px solid #888888;
     margin-bottom: 16px;
     display: block;
+    display: inline-block;
 }
 
 #myModal .modal-body {

@@ -21,7 +21,30 @@ Tabula.PDFView = Backbone.View.extend({
       'click a.tooltip-modal': 'tooltip', //$('a.tooltip-modal').tooltip();
       'change input#use_lines': 'toggleUseLines',
       'hide #myModal' : function(){ clip.unglue('#copy-csv-to-clipboard'); },
-      'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); }
+      'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
+      'click i.icon-remove': 'deletePage',
+      'click i.rotate-left i.rotate-right': 'rotatePage'
+    },
+
+    rotatePage: function(t) {
+
+    },
+
+    deletePage: function(t) {
+        var page_thumbnail = $(t.target).parent().parent();
+        var page_number = page_thumbnail.data('page').split('-')[1];
+        if (!confirm('Delete page ' + page_number + '?')) return;
+        $.post('/pdf/' + this.PDF_ID + '/page/' + page_number,
+               { _method: 'delete' },
+               function () {
+                   $('img.page-image#page-' + page_number)
+                       .fadeOut(200,
+                                function() { $(this).remove(); });
+                   page_thumbnail
+                       .fadeOut(200,
+                                function() { $(this).remove(); });
+               });
+
     },
 
     moveSelectionsUp: function(){
