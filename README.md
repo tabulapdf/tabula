@@ -13,9 +13,7 @@ Tabula helps you liberate data tables trapped inside PDF files.
 If you’ve ever tried to do anything with data provided to you in PDFs, you
 know how painful this is — you can’t easily copy-and-paste rows of data out
 of PDF files. Tabula allows you to extract that data in CSV format, through
-a simple web interface:
-
-{TODO: screenshot / screencast here}
+a simple web interface ([Check out this short screencast](https://erika.makes.org/popcorn/16ll))
 
 **Caveat**: Tabula only works on text-based PDFs, not scanned documents.
 
