@@ -8,6 +8,11 @@ Tabula helps you liberate data tables trapped inside PDF files.
 © 2012-2013 Manuel Aristarán. Available under MIT License. See
 [`AUTHORS.md`](AUTHORS.md) and [`LICENSE.md`](LICENSE.md).
 
+**Notice: July 8, 2013** --- If you are using the Amazon EC2 AMI for Tabula (released
+earlier this year), it will cease to function on next reboot. You should terminate
+all instances using this AMI. See the *Using Tabula* section below for instructions
+on using the new, desktop-oriented version of Tabula.
+
 ## Why Tabula?
 
 If you’ve ever tried to do anything with data provided to you in PDFs, you
@@ -23,9 +28,7 @@ First, make sure you have a recent copy of Java installed. You can
 [download Java here][jre_download]. Tabula requires
 a Java Runtime Environment compatible with Java 6 or Java 7.
 
-{**TODO**: Download links are not yet ready.}
-
-* **Windows** -- Download `tabula-win.zip` from {TODO}. Unzip the whole thing
+* **Windows** -- Download `tabula-win.zip` from [the download site][tabula_dl]. Unzip the whole thing
   and open the `tabula.exe` file inside. A browser should automatically open
   to http://127.0.0.1:8080/ . If not, open your web browser of choice and
   visit that link.
@@ -33,7 +36,7 @@ a Java Runtime Environment compatible with Java 6 or Java 7.
   To close Tabula, just go back to the console window and press "Control-C"
   (as if to copy).
 
-* **Mac OS X** -- Download `tabula-mac.zip` from {TODO}. Unzip and open
+* **Mac OS X** -- Download `tabula-mac.zip` from [the download site][tabula_dl]. Unzip and open
   the Tabula app inside. A browser should automatically open
   to http://127.0.0.1:8080/ . If not, open your web browser of choice and
   visit that link.
@@ -41,16 +44,17 @@ a Java Runtime Environment compatible with Java 6 or Java 7.
   To close Tabula, find the Tabula icon in your dock, right-click (or
   control-click) on it, and press "Quit".
 
-* **Other platforms** -- Download `tabula-jar.zip` from {TODO} and unzip it
+* **Other platforms** -- Download `tabula-jar.zip` from [the download site][tabula_dl] and unzip it
   to the directory of your choice. Open a terminal window, and `cd` to inside
   the `tabula` directory you just unzipped. Then run:
 
-  `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -jar build/tabula.jar`
+  `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -jar tabula.jar`
 
 If the program fails to run, double-check that you have [Java installed][jre_download]
 and then try again.
 
 [jre_download]: https://www.java.com/download/
+[tabula_dl]: http://jazzido.github.io/tabula/
 
 ## Running Tabula from source (for developers)
 
