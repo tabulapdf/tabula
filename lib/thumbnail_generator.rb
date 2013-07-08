@@ -1,6 +1,7 @@
 require 'java'
 require 'observer'
 
+java.lang.System.setProperty('org.jpedal.jai', 'true')
 require_relative './jars/jpedal_lgpl.jar'
 
 java_import javax.imageio.ImageIO
