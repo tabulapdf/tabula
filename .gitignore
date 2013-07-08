@@ -1,12 +1,23 @@
 static/pdfs
 local_settings.rb
+tabula.war
 
 .ruby-version
 .ruby-gemset
 
+TEST_PDFS
+.DS_Store
+build/Tabula.app
+build/tabula.jar
+build/tabula-*.zip
+build/mac
+build/windows
+launch4j/
+
 # Based on https://github.com/github/gitignore/blob/master/Ruby.gitignore
 *.gem
 *.rbc
+*.swp
 .bundle
 .config
 coverage

@@ -5,85 +5,60 @@ Tabula helps you liberate data tables trapped inside PDF files.
 * [Read more about Tabula on OpenNews Source](http://source.mozillaopennews.org/en-US/articles/introducing-tabula/)
 * [Check out the (feature-limited) demo](http://tabula.nerdpower.org/)
 
-© 2012-2013 Manuel Aristarán. Available under MIT License. See `AUTHORS.md`
-and `LICENSE.md`.
+© 2012-2013 Manuel Aristarán. Available under MIT License. See
+[`AUTHORS.md`](AUTHORS.md) and [`LICENSE.md`](LICENSE.md).
 
 ## Why Tabula?
 
 If you’ve ever tried to do anything with data provided to you in PDFs, you
-know how painful this is — you can’t easily copy-and-paste rows of data out 
+know how painful this is — you can’t easily copy-and-paste rows of data out
 of PDF files. Tabula allows you to extract that data in CSV format, through
-a simple web interface:
-
-{TODO: screenshot / screencast here}
+a simple web interface ([Check out this short screencast](https://erika.makes.org/popcorn/16ll))
 
 **Caveat**: Tabula only works on text-based PDFs, not scanned documents.
 
-## Amazon EC2 AMI
+## Using Tabula
 
-An Amazon EC2 AMI image is provided to give you a chance to boot up a quick test server: `ami-e895f081`
+First, make sure you have a recent copy of Java installed. You can
+[download Java here][jre_download]. Tabula requires
+a Java Runtime Environment compatible with Java 6 or Java 7.
 
-You can find a simple how-to [in `docs/ami-install.md`](docs/ami-install.md).
+{**TODO**: Download links are not yet ready.}
 
-### Caveats
+* **Windows** -- Download `tabula-win.zip` from {TODO}. Unzip the whole thing
+  and open the `tabula.exe` file inside. A browser should automatically open
+  to http://127.0.0.1:8080/ . If not, open your web browser of choice and
+  visit that link.
 
-Note the [EC2 instance types](https://aws.amazon.com/ec2/instance-types/)
-and [EC2 pricing](https://aws.amazon.com/ec2/pricing/). We’re not responsible
-for any costs this may incur.
+  To close Tabula, just go back to the console window and press "Control-C"
+  (as if to copy).
 
-Also, please note that this image is a development demo image and may not be
-secure. Using this AMI for mission-critical or sensitive documents is currently
-not recommended.
+* **Mac OS X** -- Download `tabula-mac.zip` from {TODO}. Unzip and open
+  the Tabula app inside. A browser should automatically open
+  to http://127.0.0.1:8080/ . If not, open your web browser of choice and
+  visit that link.
 
-## Manual Installation (OS X or Linux)
+  To close Tabula, find the Tabula icon in your dock, right-click (or
+  control-click) on it, and press "Quit".
 
-<i>(<b>Note:</b> A comprehensive, mostly copy-and-paste set of instructions is available for
-OS X users that normally don't do Ruby development but are interested bootstrapping
-Tabula on their own computer: [`docs/osx-simple-bootstrap.md`](docs/osx-simple-bootstrap.md))</i>
+* **Other platforms** -- Download `tabula-jar.zip` from {TODO} and unzip it
+  to the directory of your choice. Open a terminal window, and `cd` to inside
+  the `tabula` directory you just unzipped. Then run:
 
-1. Install Ruby and JRuby. Tabula has been tested with Ruby 1.9.3 and JRuby 1.7.3. 
-   Use of a Ruby version manager is recommended. Both [rbenv][rbenv] and [RVM][rvm] 
-   are fine choices. (JRuby is required to interface with `pdfbox`, but native Ruby 
-   must also be used since `ruby-opencv` is a natively compiled extension.)
+  `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -jar build/tabula.jar`
 
-   [rbenv]:https://github.com/sstephenson/rbenv/
-   [rvm]:https://rvm.io
+If the program fails to run, double-check that you have [Java installed][jre_download]
+and then try again.
 
-   If using rbenv:
-   ~~~
-   rbenv install 1.9.3-p392
-   rbenv install jruby-1.7.3
-   ~~~
+[jre_download]: https://www.java.com/download/
 
-   If using rvm:
-   ~~~
-   rvm install 1.9.3-p392
-   rvm install jruby-1.7.3
-   ~~~
+## Running Tabula from source (for developers)
 
-2. (Mac OS X only) Download and install XQuartz: https://xquartz.macosforge.org/landing/
+1. Download JRuby. You can install it from its website, or using tools like
+   `rvm` or `rbenv`
 
-3. Install the rest of the dependencies: (TODO: instructions for non-OSX platforms.)
-
-    ~~~
-    # Install Python, setuptools, and pip.  You can skip this
-    # if you already have them.
-    brew install python
-    curl http://python-distribute.org/distribute_setup.py | python
-    curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | python
-
-    # Install numpy (feel free to put it in a virtualenv); opencv dependency
-    pip install numpy
-
-    # Add the "science" tap to Homebrew so it can find OpenCV (if you haven't already)
-    brew tap homebrew/science
-
-    brew install opencv --with-tbb --with-opencl --with-qt
-    brew install mupdf redis
-    ~~~
-
-4. Download Tabula and install the Ruby dependencies. (Note: ensure that
-   `rbenv` is configured for the standard Ruby interpreter, not JRuby)
+2. Download Tabula and install the Ruby dependencies. (Note: if using `rvm` or
+   `rbenv`, ensure that JRuby is being used.
 
     ~~~
     git clone git://github.com/jazzido/tabula.git
@@ -93,29 +68,85 @@ Tabula on their own computer: [`docs/osx-simple-bootstrap.md`](docs/osx-simple-b
     bundle install
     ~~~
 
-5. Configure Tabula: Copy `local_settings-example.rb`  to `local_settings.rb`.
-   Edit `local_settings.rb` and set `JRUBY_PATH` to the path to the `jruby`
-   executable.
+**Then, start the development server:**
 
-   If you are using rbenv, you can find the path to `jruby` by doing:
+    bundle exec rackup
 
-   ~~~
-   RBENV_VERSION='jruby-1.7.3' rbenv which jruby
-   ~~~
+The site instance should now be viewable at http://127.0.0.1:9292/ .
 
-## Starting the Server (Dev)
+You can a couple some options when executing the server in this manner:
 
-Start `redis-server` in a separate terminal tab
+    TABULA_DATA_DIR="/tmp/tabula" \
+    TABULA_DEBUG=1 \
+    bundle exec rackup
 
-    redis-server /usr/local/etc/redis.conf
+* `TABULA_DATA_DIR` controls where uploaded data for Tabula is stored. By default,
+  data is stored in the OS-dependent application data directory for the current
+  user. (similar to: `C:\Users\foo\AppData\Roaming\Tabula` on Windows,
+  `~/Library/Application Support/Tabula` on Mac, `~/.tabula` on Linux/UNIX)
+* `TABULA_DEBUG` prints out extra status data when PDF files are being processed.
+   (`false` by default.)
 
-Next, you need to start `resque` and the actual web server.  You can run both
-of those using [Foreman](http://ddollar.github.com/foreman/) by running the
-following:
+**Alternatively, running the server as a JAR file**
 
-    bundle exec foreman start
+Testing in this manner will be closer to testing the "packaged application"
+version of the app.
 
-The site instance should now be viewable at http://127.0.0.1:9292/
+    bundle exec rake war
+    java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -jar build/tabula.jar
+
+### Building a packaged application version
+
+After performing the above steps ("Running Tabula from source"), you can compile
+Tabula into a standalone application:
+
+**Mac OS X**
+
+    rake macosx
+
+This will result in a portable "tabula_mac.zip" archive (inside the `build` directory)
+for Mac OS X users.
+
+**Windows**
+
+You can build .exe files for the Windows target on any platform.
+
+Download a [3.1.X (beta) copy of Launch4J][launch4j].
+
+Unzip it into the Tabula repo so that "launch4j" (with subdirectories "bin", etc.)
+is in the repository root.
+
+
+Then:
+
+    rake windows
+
+This will result in a portable "tabula_win.zip" archive (inside the `build` directory)
+for Mac OS X users.
+
+---
+
+If you have issues, you can try building manually. (These commands are for
+OS X/Linux and may need to be adjusted for Windows users.)
+
+    # (from the root directory of the repo)
+    rake war
+    cd launch4j
+    ant -f ../build.xml windows
+
+A "tabula.exe" file will be generated in "build/windows". To run, the exe file
+needs "tabula.jar" (contained in "build") in the same directory. You can create a
+.zip archive by doing:
+
+    # (from the root directory of the repo)
+    cd build/windows
+    mkdir tabula
+    cp tabula.exe ./tabula/
+    cp ../tabula.jar ./tabula/
+    zip -r9 tabula_win.zip tabula
+    rm -fr tabula
+
+[launch4j]: http://sourceforge.net/projects/launch4j/files/launch4j-3/3.1.0-beta1/
 
 ## Contributing
 

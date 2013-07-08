@@ -1,0 +1,117 @@
+.sidebar-nav {
+    height: 85% !important;
+    overflow: auto !important;
+}
+
+.flip {
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  filter: FlipH;
+  -ms-filter: "FlipH";
+}
+
+.thumbnail-list {
+    margin-left: 0;
+    list-style-type: none;
+}
+
+
+  .thumbnail-list li {
+      margin: 5px;
+      text-align: center;
+      margin-bottom: 15px;
+      display: block;
+      position: relative;
+      top: 0; left: 0;
+  }
+
+  .thumbnail-list li span {
+    visibility: hidden;
+    width: 100px !important;
+    position: relative;
+  }
+
+  .thumbnail-list li span i {
+    opacity: 0.3;
+    position: relative;
+  }
+
+  .thumbnail-list li:hover span {
+    visibility: visible;
+  }
+
+  .thumbnail-list li:hover span i:hover {
+    opacity: 1;
+  }
+
+  .thumbnail-list li:hover {
+      cursor: pointer;
+      background-color: #ddd;
+  }
+
+    .thumbnail-list li img {
+        display: block; 
+        position: relative; top: 0; left: 0;
+    }
+
+    .thumbnail-list li div.selection-show {
+        position: absolute;
+        border: 1px dashed red;
+        display: none;
+    }
+
+img.page-image {
+    border: 1px solid #888888;
+    margin-bottom: 16px;
+    display: block;
+    display: inline-block;
+}
+
+#myModal .modal-body {
+    overflow: auto;
+}
+
+#myModal {
+    width: 800px;
+    margin: -170px 0 0 -400px;
+    max-height: 500px;
+}
+
+.modal.fade.in {
+    top: 30% !important;
+}
+
+.modal-body table, .modal-body table:focus {
+    outline: 0px solid transparent;
+}
+
+.modal-body td:hover {
+    background-color: #cccccc;
+}
+
+.debug-canvas {
+    position: absolute;
+    z-index: 1000;
+}
+
+#loading {
+    position: fixed;
+    visibility: hidden;
+    top: 51px;
+    width: 40px;
+    left: 1058px;
+}
+
+ul#uploadedfiles {
+  min-height: 100px;
+  max-height: 200px;
+  overflow: auto;
+  margin: 0;
+}
+
+ul#uploadedfiles li span {
+  font-size: 70%;
+  color: #ddd;
+}

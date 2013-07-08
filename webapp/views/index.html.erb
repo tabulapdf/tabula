@@ -1,0 +1,58 @@
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span6 offset3">
+
+      <ul class="unstyled inline">
+        <li>
+          <iframe src="http://ghbtns.com/github-btn.html?user=jazzido&repo=tabula&type=fork&count=true"allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
+        </li>
+        <li>
+          <iframe src="http://ghbtns.com/github-btn.html?user=jazzido&repo=tabula&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+        </li>
+      </ul>
+      <div class="hero-unit" style="padding-left:50px;">
+        <img src="/img/logo.png" class="big-retina-illustration pull-left" style="margin:10px 10px 0 0; width:70px;">
+        <h1>Tabula </h1>
+        <p>Liberate data tables trapped inside PDF files</p>
+      </div> <!-- /hero-unit -->
+
+      <div id="demo">
+
+        <div class="row-fluid">
+          <div class="span6">
+            <div class="page-header">
+              <h4>Upload a PDF</h4>
+            </div>
+            <form action="/upload" enctype="multipart/form-data" method="post">
+              <input name="file" type="file" id="file" accept="application/pdf">
+              <input type="submit" class="btn btn-primary" value="Submit">
+            </form>
+          </div>
+
+          <div class="span6">
+            <div class="page-header">
+              <h4>Uploaded files</h4>
+            </div>
+            <% if workspace.size > 0 %>
+            <ul id="uploadedfiles">
+              <% workspace.each do |e| %>
+              <li><a href="/pdf/<%= e['id'] %>"><%= e['file'] %></a> <span>(<%= Time.at(e['time']).strftime('%Y-%m-%d %H:%M') %>)</span></li>
+              <% end %>
+            </ul>
+            <% else %>
+            <p>No uploaded files yet.</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <br><br><hr>
+
+
+      <p><strong>Tabula</strong> was created by <a href="http://jazzido.com/" target="_blank">Manuel Aristarán</a> with the help of <a href="http://propublica.org">ProPublica</a>, <a href="http://blogs.lanacion.com.ar/data/">La Nación DATA</a> and <a href="http://www.mozillaopennews.org/">Knight-Mozilla OpenNews</a></p>
+
+      <p>Learn more about this project on <a href="http://source.mozillaopennews.org">Source</a>: <a href="http://source.mozillaopennews.org/en-US/articles/introducing-tabula/"><strong>"Introducing Tabula"</strong></a></p>
+
+    </div>
+  </div>
+</div>
