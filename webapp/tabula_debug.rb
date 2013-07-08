@@ -5,7 +5,8 @@ class TabulaDebug < Cuba
     ## TODO delete
     on ":file_id/whitespace" do |file_id|
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
-      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i || 1])
+
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
 
       text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
                                                        req.params['x1'].to_f,
@@ -13,7 +14,7 @@ class TabulaDebug < Cuba
                                                        req.params['x2'].to_f])
 
 
-      whitespace =  Tabula::Whitespace.find_whitespace(text_elements,
+      whitespace =  Tabula::Whitespace.find_whitespace(Tabula::TableExtractor.new(text_elements, :merge_words => true).text_elements,
                                                        Tabula::ZoneEntity.new(req.params['y1'].to_f,
                                                                               req.params['x1'].to_f,
                                                                               req.params['x2'].to_f - req.params['x1'].to_f,
@@ -21,7 +22,6 @@ class TabulaDebug < Cuba
 
       res['Content-Type'] = 'application/json'
       res.write whitespace.to_json
-
     end
 
 
@@ -89,10 +89,7 @@ class TabulaDebug < Cuba
     on ":file_id/rulings" do |file_id|
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
 
-      page = req.params['page'].to_i
-      if page < 1
-        page = 1
-      end
+      page = req.params['page'].to_i - 1
 
       rulings = Tabula::LSD.detect_lines_in_pdf_page(File.join(pdf_path, 'document.pdf'),
                                                      page,
