@@ -14,6 +14,28 @@ $(document).ready(function() {
     });
 });
 
+//make the "follow you around bar" actually follow you around. ("sticky nav")
+$(document).ready(function() {
+    elem = $(".followyouaroundbar");
+
+    stick = function() {
+      var windowTop = $(window).scrollTop();
+      var footerTop = 50000; // this.jFooter.offset().top;
+      var topOffset = this.offset().top;
+      var elHeight = this.height();
+
+      if (windowTop > topOffset && windowTop < footerTop) {
+        this
+          .css("position", "fixed")
+          .css("width", "15%")
+          .css("top", 70);
+      } 
+    }
+
+    $(window).scroll(_.throttle(_.bind(stick, elem), 100));
+});
+
+
 Tabula.PDFView = Backbone.View.extend({
     el : 'body',
     events : {
@@ -23,7 +45,19 @@ Tabula.PDFView = Backbone.View.extend({
       'hide #myModal' : function(){ clip.unglue('#copy-csv-to-clipboard'); },
       'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
       'click i.icon-remove': 'deletePage',
-      'click i.rotate-left i.rotate-right': 'rotatePage'
+      'click i.rotate-left i.rotate-right': 'rotatePage',
+
+      //events related to the chardin help library.
+      'click a#chardin-help': 'fire_chardin_event',
+      'chardinJs:stop body' : 'chardin_stop',
+      'chardinJs:start body' : 'chardin_start',
+
+      //events for buttons on the follow-you-around bar.
+      'click #multiselect-checkbox' : 'toggleMultiSelectMode',
+      'click #clear-all-selections': 'clear_all_selection',
+      'click #restore-detected-tables': 'restore_detected_tables',
+      'click #repeat-lassos': 'repeat_lassos',
+      'click #all-data': 'query_all_data',
     },
 
     rotatePage: function(t) {
@@ -47,83 +81,42 @@ Tabula.PDFView = Backbone.View.extend({
 
     },
 
+
+    PDF_ID: window.location.pathname.split('/')[2],
+    colors: ['#f00', '#0f0', '#00f', '#ffff00', '#FF00FF'],
+    noModalAfterSelect: $('#multiselect-checkbox').is(':checked'),
+    lastQuery: [{}],
+    lastSelection: undefined,
+
+    initialize: function(){
+      _.bindAll(this, 'render', 'create_imgareaselects', 'get_tables_json', 'total_selections',
+                'toggleClearAllAndRestorePredetectedTablesButtons', 'toggleMultiSelectMode', 'query_all_data', 'toggleUseLines');
+      this.render();
+    },
+
+    render : function(){
+      query_parameters = {};
+      this.get_tables_json();
+      return this;
+    },
+
+    toggleMultiSelectMode: function(){
+      this.noModalAfterSelect = $('#multiselect-checkbox').is(':checked');
+    },
+
     moveSelectionsUp: function(){
         $('div.ias').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
     },
 
-    initialize: function(){
-      _.bindAll(this, 'render');
-      this.render();
-    },
-
-    PDF_ID: window.location.pathname.split('/')[2],
-    colors: ['#f00', '#0f0', '#00f', '#ffff00', '#FF00FF'],
-    lastQuery: {},
-
-    render : function(){
-      query_parameters = {};
-
-      $('img.page-image').imgAreaSelect({
-        handles: true,
-        //minHeight: 50, minWidth: 100,
-        onSelectStart: function(img, selection)  {
-            $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
-        },
-        onSelectChange: function(img, selection) {
-            var sshow = $('#thumb-' + $(img).attr('id') + ' .selection-show');
-            var scale = $('#thumb-' + $(img).attr('id') + ' img').width() / $(img).width();
-            $(sshow).css('top', selection.y1 * scale + 'px')
-                .css('left', selection.x1 * scale + 'px')
-                .css('width', ((selection.x2 - selection.x1) * scale) + 'px')
-                .css('height', ((selection.y2 - selection.y1) * scale) + 'px');
-        },
-        onSelectEnd: _.bind(function(img, selection) {
-            if (selection.width == 0 && selection.height == 0) {
-                $('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'none');
-            }
-            if (selection.height * selection.width < 5000) return;
-            lastSelection = selection;
-            var thumb_width = $(img).width();
-            var thumb_height = $(img).height();
-
-            var pdf_width = parseInt($(img).data('original-width'));
-            var pdf_height = parseInt($(img).data('original-height'));
-            var pdf_rotation = parseInt($(img).data('rotation'));
-
-            // if rotated, swap width and height
-            if (pdf_rotation == 90 || pdf_rotation == 270) {
-                var tmp = pdf_height;
-                pdf_height = pdf_width;
-                pdf_width = tmp;
-            }
-            // var tmp;
-            // switch(pdf_rotation) {
-            // case 180:
-            //     console.log('180 carajo!');
-            //     tmp = selection.x1; selection.x1 = selection.x2; selection.x2 = tmp;
-            //     tmp = selection.y1; selection.y1 = selection.y2; selection.y2 = tmp;
-            // }
-
-            var scale = (pdf_width / thumb_width);
-
-            var query_parameters = {
-                x1: selection.x1 * scale,
-                x2: selection.x2 * scale,
-                y1: selection.y1 * scale,
-                y2: selection.y2 * scale,
-                page: $(img).data('page')
-            };
-            this.doQuery(this.PDF_ID, query_parameters);
-        }, this)
-      });
-      return this;
-    },
 
     toggleUseLines: function() {
-        $.extend(this.lastQuery, { use_lines: $('input#use_lines').is(':checked') });
-        this.doQuery(this.PDF_ID, this.lastQuery);
+        //$.extend(this.lastQuery, { use_lines: $('input#use_lines').is(':checked') });
+        this.doQuery(this.PDF_ID, JSON.parse(this.lastQuery["coords"])); //TODO: stash lastCoords, rather than stashing lastQuery and then parsing it.
     },
 
+
+
+    /* debug functions */
     debugWhitespace: function(image) {
         image = $(image);
         var imagePos = image.offset();
@@ -197,9 +190,9 @@ Tabula.PDFView = Backbone.View.extend({
                   // draw rectangles enclosing each cluster
                   $.each(data.vertices, _.bind(function(i, row) {
                       $(newCanvas).drawRect({
-                          x: lastSelection.x1,
+                          x: this.lastSelection.x1,
                           y: row.top * scale_y,
-                          width: lastSelection.x2 - lastSelection.x1,
+                          width: this.lastSelection.x2 - this.lastSelection.x1,
                           height: row.bottom - row.top,
                           strokeStyle: this.colors[i % this.colors.length],
                           fromCenter: false
@@ -286,9 +279,9 @@ Tabula.PDFView = Backbone.View.extend({
               _.bind(function(data) {
                   $.each(data, _.bind(function(i, row) {
                       $(newCanvas).drawRect({
-                          x: lastSelection.x1,
+                          x: this.lastSelection.x1,
                           y: row.top * scale,
-                          width: lastSelection.x2 - lastSelection.x1,
+                          width: this.lastSelection.x2 - this.lastSelection.x1,
                           height: row.bottom - row.top,
                           strokeStyle: this.colors[i % this.colors.length],
                           fromCenter: false
@@ -330,14 +323,14 @@ Tabula.PDFView = Backbone.View.extend({
                   $.each(data, _.bind(function(i, column) {
                       $(newCanvas).drawRect({
                           x: column.left * scale_x,
-                          y: lastSelection.y1,
+                          y: this.lastSelection.y1,
                           width: (column.right - column.left) * scale_x,
-                          height: lastSelection.y2 - lastSelection.y1,
+                          height: this.lastSelection.y2 - this.lastSelection.y1,
                           strokeStyle: this.colors[i % this.colors.length],
                           fromCenter: false
                       });
                   }, this));
-              }, this));
+              }, this) );
     },
 
     debugCharacters: function(image) {
@@ -380,18 +373,106 @@ Tabula.PDFView = Backbone.View.extend({
                 }, this));
             }, this));
     },
+    /* functions for the follow-you-around bar */
+    total_selections: function(){
+      return _.reduce(imgAreaSelects, function(memo, s){ return memo + s.getSelections().length; }, 0);
+    },
+    toggleClearAllAndRestorePredetectedTablesButtons: function(numOfSelectionsOnPage){
+      if(numOfSelectionsOnPage <= 0){
+        $("#clear-all-selections").hide();
+        $("#restore-detected-tables").show();
+      }else{
+        $("#clear-all-selections").show();
+        $("#restore-detected-tables").hide();
+      }
+    },
+    clear_all_selection: function(){
+      _(imgAreaSelects).each(function(imgAreaSelectAPIObj){
+        imgAreaSelectAPIObj.cancelSelections();
+      });
+    },
+
+    restore_detected_tables: function(){
+      for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
+        var pageIndex = imageIndex + 1;
+        this.drawDetectedTables( $('img#page-' + pageIndex)[0], tableGuesses );
+      }
+      this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
+    },
+
+    repeat_lassos: function(){ alert("not yet implemented")},
+
+    query_all_data : function(){
+      all_coords = [];
+      _(imgAreaSelects).each(function(imgAreaSelectAPIObj){
+
+          var thumb_width = imgAreaSelectAPIObj.getImg().width();
+          var thumb_height = imgAreaSelectAPIObj.getImg().height();
+
+          var pdf_width = parseInt(imgAreaSelectAPIObj.getImg().data('original-width'));
+          var pdf_height = parseInt(imgAreaSelectAPIObj.getImg().data('original-height'));
+          var pdf_rotation = parseInt(imgAreaSelectAPIObj.getImg().data('rotation'));
+
+          // if rotated, swap width and height
+          if (pdf_rotation == 90 || pdf_rotation == 270) {
+              var tmp = pdf_height;
+              pdf_height = pdf_width;
+              pdf_width = tmp;
+          }
+
+          var scale = (pdf_width / thumb_width);
 
 
-    doQuery: function(pdf_id, query_parameters) {
-        $('#loading').css('left', ($(window).width() - 98) + 'px').css('visibility', 'visible');
+          console.log(imgAreaSelectAPIObj.getSelections());
 
-        this.lastQuery = query_parameters;
+        _(imgAreaSelectAPIObj.getSelections()).each(function(selection){
 
-        $.extend(this.lastQuery, { use_lines: $('#use_lines').is(':checked') });
+          new_coord = {
+                x1: selection.x1 * scale,
+                x2: selection.x2 * scale,
+                y1: selection.y1 * scale,
+                y2: selection.y2 * scale,
+                page: imgAreaSelectAPIObj.getImg().data('page')
+              }
+          all_coords.push(new_coord);
+        });
+      });
 
-        $.get('/pdf/' + pdf_id + '/data',
-              query_parameters,
-              function(data) {
+      this.doQuery(this.PDF_ID, all_coords);
+    },
+
+
+
+
+
+
+    /* Chardin help-related functions */
+    fire_chardin_event: function(){
+      if($('a#chardin-help').text() == "Help"){ 
+        $('body').chardinJs('start'); 
+      }else{ 
+        $('body').chardinJs('stop'); 
+      } 
+    },
+    chardin_stop : function(){
+      $('a#chardin-help').text("Help");
+      $("#multiselect-label").css("color", "black");
+    },
+    chardin_start: function(){
+      $('a#chardin-help').text("Close Help");
+      $("#multiselect-label").css("color", "black");
+    },
+
+    doQuery: function(pdf_id, coords) {
+      $('#loading').css('left', ($(window).width() - 98) + 'px').css('visibility', 'visible');
+
+      this.lastQuery = {coords: JSON.stringify(coords) ,
+                use_lines :  $('#use_lines').is(':checked')
+              };
+
+      $.post('/pdf/' + pdf_id + '/data',
+              this.lastQuery,
+              _.bind(function(data) {
                   var tableHTML = '<table class="table table-condensed table-bordered">';
                   $.each(data, function(i, row) {
                       tableHTML += '<tr><td>' + $.map(row, function(cell, j) { return cell.text; }).join('</td><td>') + '</td></tr>';
@@ -399,13 +480,192 @@ Tabula.PDFView = Backbone.View.extend({
                   tableHTML += '</table>';
 
                   $('.modal-body').html(tableHTML);
-                  $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(query_parameters));
-                  $('#download-tsv').attr('href', '/pdf/' + pdf_id + '/data?format=tsv&' + $.param(query_parameters));
+                  // $('#download-csv').click(function(){ 
+                  //                       $.post('/pdf/' + pdf_id + '/data',
+                  //                         {coords: JSON.stringify(query_parameters) ,
+                  //                           use_lines :  $('#use_lines').is(':checked'),
+                  //                           format : 'csv'
+                  //                         },
+                  //                         function(data){ window.open(data);}
+                  //                         )
+                  //                     });
+
+                  $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv');
+
+                    $('div#hidden-fields').empty();
+                    _(_(this.lastQuery).pairs()).each(function(key_val){
+                      //<input type="hidden" class="data-query" name="lastQuery" value="" >
+                      var new_hidden_field = $("<input type='hidden' class='data-query' value='' >");
+                      new_hidden_field.attr("name", key_val[0]);
+                      new_hidden_field.attr("value", key_val[1]);
+                      $('div#hidden-fields').append(new_hidden_field);
+                    });
+                  $('#download-csv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv'); });
+                  $('#download-tsv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=tsv'); });
+                  // $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(this.lastQuery));
+                  // $('#download-tsv').attr('href', '/pdf/' + pdf_id + '/data?format=tsv&' + $.param(this.lastQuery));
                   $('#myModal').modal();
                   clip.glue('#copy-csv-to-clipboard');
                   $('#loading').css('visibility', 'hidden');
-              });
+              }, this));
+    },
+
+    drawDetectedTables: function(e, tableGuesses){
+      img = $(e);
+
+      var imageIndex = parseInt(img.attr("id").replace("page-", '')) - 1;
+      var imgAreaSelectAPIObj = imgAreaSelects[imageIndex];
+
+      var thumb_width = img.width();
+      var thumb_height = img.height();
+
+      var pdf_width = parseInt(img.data('original-width'));
+      var pdf_height = parseInt(img.data('original-height'));
+      var pdf_rotation = parseInt(img.data('rotation'));
+
+      // if rotated, swap width and height
+      if (pdf_rotation == 90 || pdf_rotation == 270) {
+          var tmp = pdf_height;
+          pdf_height = pdf_width;
+          pdf_width = tmp;
+      }
+
+      var scale = (pdf_width / thumb_width);
+
+
+      $(tableGuesses[imageIndex]).each(function(tableGuessIndex, tableGuess){ 
+
+        var my_x2 = tableGuess[0] + tableGuess[2];
+        var my_y2 = tableGuess[1] + tableGuess[3];
+
+        // console.log("page: " + imageIndex + 1);
+        // console.log(tableGuess);
+        // console.log(scale);
+        // console.log(my_x2 / scale);
+        // console.log(my_y2 / scale);
+        // console.log("");
+
+        /* nothing is set yet, when race condition manifests */
+        //console.log(tableGuess, imageIndex);
+
+        selection = imgAreaSelectAPIObj.createNewSelection( Math.floor(tableGuess[0] / scale), 
+                                      Math.floor(tableGuess[1] / scale), 
+                                      Math.floor(my_x2 / scale), 
+                                      Math.floor(my_y2 / scale));      
+        imgAreaSelectAPIObj.setOptions({show: true});
+        imgAreaSelectAPIObj.update();
+
+       
+        //create a red box for this selection.
+        if(selection){ //selection is undefined if it overlaps an existing selection.
+          $('#thumb-' + $(img).attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
+          var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
+          var thumbScale = $('#thumb-' + img.attr('id') + ' img').width() / img.width();
+          $(sshow).css('top', selection.y1 * thumbScale + 'px')
+              .css('left', selection.x1 * thumbScale + 'px')
+              .css('width', ((selection.x2 - selection.x1) * thumbScale) + 'px')
+              .css('height', ((selection.y2 - selection.y1) * thumbScale) + 'px');
+        }
+
+      });
+      //imgAreaSelectAPIObj.createNewSelection(50, 50, 300, 300); //for testing overlaps from API.
+      imgAreaSelectAPIObj.setOptions({show: true});
+      imgAreaSelectAPIObj.update();
+    },
+
+    //var tableGuesses, imgAreaSelects;
+    get_tables_json : function(){
+      $.getJSON("/pdfs/" + this.PDF_ID + "/tables.json", _.bind(function(tableGuesses){ this.create_imgareaselects(tableGuesses) }, this) ).
+          error( _.bind(function(){ this.create_imgareaselects([]) }, this));
+    },
+
+    create_imgareaselects : function(tableGuessesTmp){ 
+      tableGuesses = tableGuessesTmp;
+      var selectsNotYetLoaded = tableGuesses.length;
+
+      imgAreaSelects = $.map($('img.page-image'), _.bind(function(image){ 
+        return $(image).imgAreaSelect({
+          handles: true,
+          instance: true,
+          allowOverlaps: false,
+          show: true,
+          multipleSelections: true,
+          //minHeight: 50, minWidth: 100,
+
+          onSelectStart: function(img, selection)  {
+              //$('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
+              $('#thumb-' + $(img).attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
+          },
+          onSelectChange: function(img, selection) {
+              var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
+              var scale = $('#thumb-' + $(img).attr('id') + ' img').width() / $(img).width();
+              $(sshow).css('top', selection.y1 * scale + 'px')
+                  .css('left', selection.x1 * scale + 'px')
+                  .css('width', ((selection.x2 - selection.x1) * scale) + 'px')
+                  .css('height', ((selection.y2 - selection.y1) * scale) + 'px');
+
+          },
+          onSelectEnd: _.bind(function(img, selection) {
+              if (selection.width == 0 && selection.height == 0) {
+                  $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id).css('display', 'none');
+              }
+              if (selection.height * selection.width < 5000) return;
+              this.lastSelection = selection;
+              var thumb_width = $(img).width();
+              var thumb_height = $(img).height();
+
+              var pdf_width = parseInt($(img).data('original-width'));
+              var pdf_height = parseInt($(img).data('original-height'));
+              var pdf_rotation = parseInt($(img).data('rotation'));
+
+              // if rotated, swap width and height
+              if (pdf_rotation == 90 || pdf_rotation == 270) {
+                  var tmp = pdf_height;
+                  pdf_height = pdf_width;
+                  pdf_width = tmp;
+              }
+              // var tmp;
+              // switch(pdf_rotation) {
+              // case 180:
+              //     console.log('180 carajo!'); //yesssssss -Jeremy
+              //     tmp = selection.x1; selection.x1 = selection.x2; selection.x2 = tmp;
+              //     tmp = selection.y1; selection.y1 = selection.y2; selection.y2 = tmp;
+              // }
+
+              var scale = (pdf_width / thumb_width);
+
+              var coords = {
+                  x1: selection.x1 * scale,
+                  x2: selection.x2 * scale,
+                  y1: selection.y1 * scale,
+                  y2: selection.y2 * scale,
+                  page: $(img).data('page')
+              };
+              if(!this.noModalAfterSelect){
+                this.doQuery(this.PDF_ID, [coords]);
+              }
+          }, this),
+          onSelectCancel: _.bind( function(img, selection, selectionId){
+            $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selectionId).remove();
+            //console.log("selections on page: " + this.total_selections() ); // this one hasn't been deleted yet.
+            this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
+            //TODO, if there are no selections, activate the restore detected tables button.
+          }, this),
+          onInit: _.bind(drawDetectedTablesIfAllAreLoaded, this)
+        });
+      }, this));
+
+      function drawDetectedTablesIfAllAreLoaded(){
+        selectsNotYetLoaded--;
+        if(selectsNotYetLoaded == 0){
+          for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
+            var pageIndex = imageIndex + 1;
+            this.drawDetectedTables( $('img#page-' + pageIndex)[0], tableGuesses );
+          }
+        }
+      }
     }
+
 });
 
 $(function () {

@@ -5,7 +5,9 @@
         <ul class="thumbnail-list">
           <% pages.each_with_index do |p, i| %>
           <% next if p['deleted'] %>
-          <li data-page="page-<%= i + 1 %>" id="thumb-page-<%= i + 1 %>">
+          <li data-page="page-<%= i + 1 %>" id="thumb-page-<%= i + 1 %>" 
+            <% if i == 0 %> data-position="right" data-intro="Click a thumbnail to skip directly to that page." <% end %>
+            >
             <a href="#page-<%= i + 1 %>"><img src="/pdfs/<%= file_id %>/document_560_<%= i+1 %>.png" width="100"></a>
             <span>
               <i title="delete this page" class="icon-remove"></i>
@@ -19,7 +21,7 @@
         </ul>
       </div>
     </div> <!-- /sidebar container -->
-    <div class="span10">
+    <div class="span6">
       <div class="alert alert-success" id="loading">Loading...</div>
       <div id="directionsRow" class="row">
         <div class="alert alert-info span7" >
@@ -29,15 +31,32 @@
         </div>
       </div>
       <div class="row">
-          <% pages.each_with_index do |p, i| %>
+        <% pages.each_with_index do |p, i| %>
           <% next if p['deleted'] %>
           <div class="row">
-          <img data-page="<%= i+1 %>" class="page-image" id="page-<%= i + 1 %>" src="/pdfs/<%= file_id %>/document_560_<%= i+1 %>.png" data-original-width="<%= p['width'] %>" data-original-height="<%= p['height'] %>" data-rotation="<%= p['rotation'] %>"><br>
+          <img data-page="<%= i+1 %>" class="page-image" id="page-<%= i + 1 %>" src="/pdfs/<%= file_id %>/document_560_<%= i+1 %>.png" data-original-width="<%= p['width'] %>" data-original-height="<%= p['height'] %>" data-rotation="<%= p['rotation'] %>" 
+            <% if i == 0 %> 
+              data-position="right" data-intro="Click and drag to select each table in your document. Once you've selected it, a window to preview your data will appear, along with options to download it as a spreadsheet."
+            <% end %> 
+          >
+          <br>
           </div>
-          <% end %>
+        <% end %>
       </div>
     </div> <!-- /main container -->
 
+    <div class="span2">
+      <div class="followyouaroundbar">
+        <h4>Advanced Options<h3>
+        <button id="all-data" type="button" class="btn btn-success" data-position="left" data-intro="When you've selected all of the tables in your PDF, click this button to preview the data from all of the selections and download it.">Download All Data</button>
+        <!-- <button id="repeat-lassos" type="button" class="btn btn-primary">Repeat Page 1 Lassos</button> -->
+        <button id="clear-all-selections" type="button" class="btn btn-danger">Clear All Selections</button>
+        <button id="restore-detected-tables" type="button" class="btn btn-warning" style="display: none;">Autodetect Tables</button>
+        <br /><input type="checkbox" id="multiselect-checkbox" checked> <label id="multiselect-label" for="multiselect-checkbox" data-position="bottom" data-intro="After you select each table on the page, a data preview window appears. If you want to select multiple tables without interruption, check this box to suppress the preview window.">Multi-Select Mode <a class="tooltip-modal" href="#" data-placement="left" data-toggle="tooltip" title="Check this to select multiple tables without their extracted data appearing afterwards." ><i class="icon-question-sign" ></i></a></label>
+        <br />
+        <a href="#" id="chardin-help">Help</a>
+      </div>
+    </div> <!-- followyouaround bar container -->
   </div>
 </div>
 
@@ -51,19 +70,30 @@
   </div>
   <div class="modal-footer" style="position: relative">
     <p>
-      <input type="checkbox" id="use_lines">Use row/columns separators <a class="tooltip-modal" href="#" data-placement="left" data-toggle="tooltip" title="Check this for using separator lines in table detection"><i class="icon-question-sign" ></i></a></p>
+      <input type="checkbox" id="use_lines">
+      <label for="use_lines" id="use-lines-label">
+      Use row/columns separators <a class="tooltip-modal" href="#" data-placement="left" data-toggle="tooltip" title="Check this for using separator lines in table detection"><i class="icon-question-sign" ></i></a></label>
     </p>
     <span style="display: none;">Copied!</span>
     <button id="close-modal" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
     <button class="btn btn-primary" id="copy-csv-to-clipboard">Copy to clipboard as CSV</button>
     <div class="btn-group">
-      <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Download data <span class="caret"></span></button>
-      <ul class="dropdown-menu">
-        <li><a id="download-csv">CSV</a></li>
-        <li><a id="download-tsv">TSV</a></li>
-      </ul>
+      <form id="download-form" action="#changedinJS" method="post">
+        <div id="hidden-fields">
+          <input type="hidden" class="data-query" name="lastQuery" value="" >
+        </div>
+        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Download data <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+          <li><input class="linklike download-btn" type="submit" id="download-csv" value="CSV"></li>
+          <li><input class="linklike download-btn" type="submit" id="download-tsv" value="TSV"></li>
+          <!-- <li><a id="download-csv">CSV</a></li>
+          <li><a id="download-tsv">TSV</a></li> -->
+        </ul>
+      </form>
     </div>
 </div>
+<script type="text/javascript" src="/js/chardinjs.min.js"></script>
+
 <script type="text/javascript" src="/js/ZeroClipboard.js"></script>
 <script type="text/javascript" src="/js/table2CSV.js"></script>
-<script type="text/javascript" src="/js/pdf_view.js"></script>
+<script type="text/javascript" src="/js/pdf_view.js?1365633567"></script> <!-- cachebuster: last update time of JS. -->

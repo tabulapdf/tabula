@@ -2,6 +2,7 @@ static/pdfs
 local_settings.rb
 tabula.war
 
+lib/jars/javacv*
 .ruby-version
 .ruby-gemset
 
@@ -20,6 +21,7 @@ launch4j/
 *.swp
 .bundle
 .config
+.DS_store
 coverage
 InstalledFiles
 lib/bundler/man
