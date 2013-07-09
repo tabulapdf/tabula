@@ -12,6 +12,7 @@ build/tabula.jar
 build/tabula-*.zip
 build/mac
 build/windows
+build/tabula
 launch4j/
 
 # Based on https://github.com/github/gitignore/blob/master/Ruby.gitignore
