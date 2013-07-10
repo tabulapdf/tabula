@@ -1418,7 +1418,7 @@ $.imgAreaSelect = function (img, options) {
             
             if (options.disable || options.enable === false) {
                 /* Disable the plugin */
-                s.$box.unbind('mousemove.imgareaselect').unbind('mousedown', areaMouseDown);
+                s.$box.unbind('mousemove.imgareaselect').unbind('mousedown.imgareaselect', s.areaMouseDown);
             }
             else {
                 if (options.enable || options.disable === false) {
@@ -1459,8 +1459,10 @@ $.imgAreaSelect = function (img, options) {
          */
         this.setOptions({ disable: true });
         _(selections).each(function(s){
-            if(s)
+            if(s){
                 s.$box/*.add($outer)*/.remove();
+                s.$closeBtn.remove();
+            }
         })
     };
 

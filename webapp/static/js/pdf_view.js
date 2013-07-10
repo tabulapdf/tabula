@@ -71,12 +71,28 @@ Tabula.PDFView = Backbone.View.extend({
         $.post('/pdf/' + this.PDF_ID + '/page/' + page_number,
                { _method: 'delete' },
                function () {
-                   $('img.page-image#page-' + page_number)
-                       .fadeOut(200,
-                                function() { $(this).remove(); });
-                   page_thumbnail
-                       .fadeOut(200,
-                                function() { $(this).remove(); });
+
+                  // delete the deleted page's imgAreaSelect object                  
+                  imgAreaSelects[page_number-1].remove();
+                  delete imgAreaSelects[page_number-1];
+
+                  // move all the stuff for the following pages' imgAreaSelect objects up.
+                  deleted_page_height = $('img.page-image#page-' + page_number).height();
+                  deleted_page_top = $('img.page-image#page-' + page_number).offset()["top"];
+
+                  $('img.page-image#page-' + page_number)
+                     .fadeOut(200,
+                              function() { $(this).remove(); });
+                  page_thumbnail
+                     .fadeOut(200,
+                              function() { $(this).remove(); });
+
+                  $('div.imgareaselect').each(function(){ 
+                    //if ( parseInt( $(this).attr('id').replace("page-", '')) > page_number){
+                    if( $(this).offset()["top"] > (deleted_page_top + deleted_page_height) ){
+                      $(this).offset({top: $(this).offset()["top"] - deleted_page_height }); 
+                    }
+                  });
                });
 
     },
@@ -105,7 +121,7 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     moveSelectionsUp: function(){
-        $('div.ias').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
+        $('div.imgareaselect').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
     },
 
 
@@ -113,7 +129,6 @@ Tabula.PDFView = Backbone.View.extend({
         //$.extend(this.lastQuery, { use_lines: $('input#use_lines').is(':checked') });
         this.doQuery(this.PDF_ID, JSON.parse(this.lastQuery["coords"])); //TODO: stash lastCoords, rather than stashing lastQuery and then parsing it.
     },
-
 
 
     /* debug functions */
