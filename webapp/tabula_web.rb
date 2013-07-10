@@ -151,7 +151,7 @@ Cuba.define do
 
       file = File.join(file_path, 'document.pdf')
 
-      # fire off background jobs
+      # fire off background jobs; in different orders if we're doing autodetection
 
       document_metadata_job = GenerateDocumentMetadataJob.create(:filename => original_filename,
                                                                  :id => file_id)
@@ -167,8 +167,8 @@ Cuba.define do
                                                    :output_dir => file_path)
       upload_id = GenerateThumbnailJob.create(:file_id => file_id,
                                               :file => file,
-                                              :page_index_job => page_index_job,
-                                              :table_detection_job => detect_tables_job,
+                                              :page_index_job_uuid => page_index_job,
+                                              :detect_tables_job_uuid => detect_tables_job,
                                               :output_dir => file_path,
                                               :thumbnail_sizes => [560])
       res.redirect "/queue/#{upload_id}"
