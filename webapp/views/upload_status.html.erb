@@ -3,7 +3,7 @@
     <div class="span6 offset3">
       <div class="hero-unit">
         <h1>Tabula</h1>
-        <h2>Upload Status</h2>
+        <h2>Processing File</h2>
         <div id="spinner" style="display:block;float:left;width:2em;height:1em;margin:3px 0 0 0"></div>
         <p><span id="message"><%= status.pct_complete %>%<% if status.message? %>: <%= status.message %><% elsif status.pct_complete == 0 %>: waiting to be processed...<% end %></span></p>
       </div> <!-- /hero-unit -->
