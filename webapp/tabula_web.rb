@@ -81,29 +81,6 @@ Cuba.define do
                      workspace: workspace)
     end
 
-    on "pdf/:file_id/data" do |file_id|
-      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
-
-      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [req.params['page'].to_i])
-
-      table = Tabula.make_table(extractor.extract.next.get_text([req.params['y1'].to_f,
-                                                                req.params['x1'].to_f,
-                                                                req.params['y2'].to_f,
-                                                                req.params['x2'].to_f]))
-
-      case req.params['format']
-      when 'csv'
-        res['Content-Type'] = 'text/csv'
-        Tabula::Writers.CSV(table, res)
-      when 'tsv'
-        res['Content-Type'] = 'text/tab-separated-values'
-        Tabula::Writers.TSV(table, res)
-      else
-        res['Content-Type'] = 'application/json'
-        Tabula::Writers.JSON(table, res)
-      end
-
-    end
 
     on 'pdfs' do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
@@ -173,5 +150,34 @@ Cuba.define do
                                               :thumbnail_sizes => [560])
       res.redirect "/queue/#{upload_id}"
     end
+
+    on "pdf/:file_id/data" do |file_id|
+      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+
+      coords = JSON.load(req.params['coords'])
+      coords.sort_by!{|coord_set| [ coord_set['page'], [coord_set['y1'], coord_set['y2']].min.to_i / 10, [coord_set['x1'], coord_set['x2']].min ] }
+
+      tables = coords.each_with_index.map do |coord_set, index|
+        extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [coord_set['page'].to_i])
+
+        Tabula.make_table(extractor.extract.next.get_text([coord_set['y1'].to_f,
+                                                                  coord_set['x1'].to_f,
+                                                                  coord_set['y2'].to_f,
+                                                                  coord_set['x2'].to_f]))
+      end
+
+      case req.params['format']
+      when 'csv'
+        res['Content-Type'] = 'text/csv'
+        Tabula::Writers.CSV(tables.flatten(1), res)
+      when 'tsv'
+        res['Content-Type'] = 'text/tab-separated-values'
+        Tabula::Writers.TSV(tables.flatten(1), res)
+      else
+        res['Content-Type'] = 'application/json'
+        Tabula::Writers.JSON(tables.flatten(1), res)
+      end
+
+    end    
   end
 end
