@@ -15,9 +15,8 @@ class GenerateThumbnailJob < Tabula::Background::Job
     table_detection_job = options[:table_detection_job]
 
     # return some status to browser
-    at(0, 100, "generating page thumbnails...")
-       :file_id => file_id,
-       :upload_id => upload_id)
+    at(0, 100, "generating page thumbnails...",
+      )
 
     generator = JPedalThumbnailGenerator.new(file, output_dir, thumbnail_sizes)
     generator.add_observer(self, :at)
@@ -25,9 +24,7 @@ class GenerateThumbnailJob < Tabula::Background::Job
 
     unless table_detection_job.nil?
       while !Tabula::Background::JobExecutor.get(table_detection_job).completed? do
-        at(67, 100, "auto-detecting tables...",
-           :file_id => file_id,
-           :upload_id => upload_id
+        at(50, 100, "auto-detecting tables...",
            )
         sleep 0.25
       end
@@ -35,15 +32,12 @@ class GenerateThumbnailJob < Tabula::Background::Job
 
     while !Tabula::Background::JobExecutor.get(page_index_job).completed? do
       at(99, 100, "generating page thumbnails...",
-         :file_id => file_id,
-         :upload_id => upload_id
          )
       sleep 0.25
     end
 
     at(100, 100, "complete",
-       :file_id => file_id,
-       :upload_id => upload_id)
+       )
 
   end
 end
