@@ -128,7 +128,7 @@ module Tabula
       end
 
       def message
-        self.status['message']
+        self.status['messages']
       end
 
       alias_method :message?, :message
