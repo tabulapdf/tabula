@@ -157,7 +157,7 @@ Cuba.define do
                                                                  :id => file_id)
       if req.params['autodetect-tables']
         STDERR.puts req.params['autodetect-tables']
-        detect_tables_job = DetectTablesJob.create(:filename => original_filename,
+        detect_tables_job = DetectTablesJob.create(:filename => file,
                                                    :output_dir => file_path)
       else
         detect_tables_job = nil
