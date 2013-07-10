@@ -155,8 +155,14 @@ Cuba.define do
 
       document_metadata_job = GenerateDocumentMetadataJob.create(:filename => original_filename,
                                                                  :id => file_id)
-      detect_tables_job = DetectTablesJob.create(:filename => original_filename,
-                                                 :output_dir => file_path)
+      if req.params['autodetect-tables']
+        STDERR.puts req.params['autodetect-tables']
+        detect_tables_job = DetectTablesJob.create(:filename => original_filename,
+                                                   :output_dir => file_path)
+      else
+        detect_tables_job = nil
+      end
+
       page_index_job = GeneratePageIndexJob.create(:file => file,
                                                    :output_dir => file_path)
       upload_id = GenerateThumbnailJob.create(:file_id => file_id,

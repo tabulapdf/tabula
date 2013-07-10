@@ -151,3 +151,9 @@ a#chardin-help{
   text-decoration: underline;
   color: blue;
 }
+
+div.explanation-label {
+  padding: 6px 15px 10px 15px;
+  color: #888;
+  font-size: 85%;
+}

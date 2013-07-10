@@ -24,6 +24,9 @@
               <h4>Upload a PDF</h4>
             </div>
             <form action="/upload" enctype="multipart/form-data" method="post">
+              <input type="checkbox" name="autodetect-tables" id="autodetect-tables">
+              <label for="autodetect-tables" style="display: inline;">Auto-Detect Tables</label>
+              <div id="autodetect-explainer" class="explanation-label">Table auto-detection can be time-consuming, especially for large PDFs.</div>
               <input name="file" type="file" id="file" accept="application/pdf">
               <input type="submit" class="btn btn-primary" value="Submit">
             </form>

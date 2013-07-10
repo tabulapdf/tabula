@@ -15,7 +15,7 @@ class GenerateThumbnailJob < Tabula::Background::Job
     table_detection_job = options[:table_detection_job]
 
     # return some status to browser
-    at(0, 100, "generating page thumbnails...",
+    at(0, 100, "generating page thumbnails...")
        :file_id => file_id,
        :upload_id => upload_id)
 
@@ -23,12 +23,14 @@ class GenerateThumbnailJob < Tabula::Background::Job
     generator.add_observer(self, :at)
     generator.generate_thumbnails!
 
-    while !Tabula::Background::JobExecutor.get(table_detection_job).completed? do
-      at(50, 100, "auto-detecting tables...",
-         :file_id => file_id,
-         :upload_id => upload_id
-         )
-      sleep 0.25
+    unless table_detection_job.nil?
+      while !Tabula::Background::JobExecutor.get(table_detection_job).completed? do
+        at(67, 100, "auto-detecting tables...",
+           :file_id => file_id,
+           :upload_id => upload_id
+           )
+        sleep 0.25
+      end
     end
 
     while !Tabula::Background::JobExecutor.get(page_index_job).completed? do

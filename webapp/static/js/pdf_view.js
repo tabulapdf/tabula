@@ -573,7 +573,7 @@ Tabula.PDFView = Backbone.View.extend({
       imgAreaSelectAPIObj.update();
     },
 
-    //var tableGuesses, imgAreaSelects;
+    /* pdfs/<this.PDF_ID>/tables.json may or may not exist, depending on whether the user chooses to use table autodetection. */
     get_tables_json : function(){
       $.getJSON("/pdfs/" + this.PDF_ID + "/tables.json", _.bind(function(tableGuesses){ this.create_imgareaselects(tableGuesses) }, this) ).
           error( _.bind(function(){ this.create_imgareaselects([]) }, this));
