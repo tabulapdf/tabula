@@ -55,7 +55,7 @@ class JPedalThumbnailGenerator < AbstractThumbnailGenerator
                       java.io.File.new(File.join(@output_directory,
                                                  "document_#{s}_#{i+1}.png")))
         changed
-        notify_observers(i+1, total_pages * 2)
+        notify_observers(i+1, total_pages * 2, "generating page thumbnails...")
       end
     end
     @decoder.closePdfFile
