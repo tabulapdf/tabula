@@ -36,7 +36,7 @@ task :jardist => [:war] do |t|
 
   jar_src = File.join(build_dir, "tabula.jar")
   jar_dst = File.join(dist_dir, "tabula.jar")
-  FileUtils.mv(jar_src, jar_dst)
+  FileUtils.cp(jar_src, jar_dst)
 
   readme_src = File.join(build_dir, "dist-README.txt")
   readme_dst = File.join(dist_dir, "README.txt")
