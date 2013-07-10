@@ -15,7 +15,7 @@ class GenerateThumbnailJob < Tabula::Background::Job
     table_detection_job = options[:table_detection_job]
 
     # return some status to browser
-    at(0, 100, "generating page thumbnails...")
+    at(0, 100, "generating page thumbnails...",
        :file_id => file_id,
        :upload_id => upload_id)
 
