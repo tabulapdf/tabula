@@ -588,7 +588,7 @@ Tabula.PDFView = Backbone.View.extend({
     getTablesJson : function(){
       $.getJSON("/pdfs/" + this.PDF_ID + "/tables.json", 
           _.bind(function(tableGuesses){ 
-            $.getJSON("/pdfs/" + this.PDF_ID + "/pages.json?" + Math.round(+new Date()).toString(),
+            $.getJSON("/pdfs/" + this.PDF_ID + "/pages.json?_=" + Math.round(+new Date()).toString(),
               _.bind(function(pages){
                 this.createImgareaselects(tableGuesses, pages) 
               }, this)).
