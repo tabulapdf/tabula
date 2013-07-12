@@ -148,13 +148,6 @@ Tabula.PDFView = Backbone.View.extend({
         var pdf_height = parseInt($(image).data('original-height'));
         var pdf_rotation = parseInt($(image).data('rotation'));
 
-        // if rotated, swap width and height
-        if (pdf_rotation == 90 || pdf_rotation == 270) {
-            var tmp = pdf_height;
-            pdf_height = pdf_width;
-            pdf_width = tmp;
-        }
-
         var scale = (thumb_width / pdf_width);
 
         $.get('/debug/' + this.PDF_ID + '/whitespace',
@@ -189,13 +182,6 @@ Tabula.PDFView = Backbone.View.extend({
         var pdf_width = parseInt($(image).data('original-width'));
         var pdf_height = parseInt($(image).data('original-height'));
         var pdf_rotation = parseInt($(image).data('rotation'));
-
-        // if rotated, swap width and height
-        if (pdf_rotation == 90 || pdf_rotation == 270) {
-            var tmp = pdf_height;
-            pdf_height = pdf_width;
-            pdf_width = tmp;
-        }
 
         var scale = (thumb_width / pdf_width);
 
@@ -277,13 +263,6 @@ Tabula.PDFView = Backbone.View.extend({
         var pdf_height = parseInt($(image).data('original-height'));
         var pdf_rotation = parseInt($(image).data('rotation'));
 
-        // if rotated, swap width and height
-        if (pdf_rotation == 90 || pdf_rotation == 270) {
-            var tmp = pdf_height;
-            pdf_height = pdf_width;
-            pdf_width = tmp;
-        }
-
         var scale = (thumb_width / pdf_width);
 
         if (use_rulings !== undefined)
@@ -322,13 +301,6 @@ Tabula.PDFView = Backbone.View.extend({
         var pdf_height = parseInt($(image).data('original-height'));
         var pdf_rotation = parseInt($(image).data('rotation'));
 
-        // if rotated, swap width and height
-        if (pdf_rotation == 90 || pdf_rotation == 270) {
-            var tmp = pdf_height;
-            pdf_height = pdf_width;
-            pdf_width = tmp;
-        }
-
         var scale_x = (thumb_width / pdf_width);
         var scale_y = (thumb_height / pdf_height);
 
@@ -363,13 +335,6 @@ Tabula.PDFView = Backbone.View.extend({
       var pdf_width = parseInt($(image).data('original-width'));
       var pdf_height = parseInt($(image).data('original-height'));
       var pdf_rotation = parseInt($(image).data('rotation'));
-
-      // if rotated, swap width and height
-      if (pdf_rotation == 90 || pdf_rotation == 270) {
-          var tmp = pdf_height;
-          pdf_height = pdf_width;
-          pdf_width = tmp;
-      }
 
       var scale = (thumb_width / pdf_width);
 
@@ -433,13 +398,6 @@ Tabula.PDFView = Backbone.View.extend({
           var pdf_width = parseInt(imgAreaSelectAPIObj.getImg().data('original-width'));
           var pdf_height = parseInt(imgAreaSelectAPIObj.getImg().data('original-height'));
           var pdf_rotation = parseInt(imgAreaSelectAPIObj.getImg().data('rotation'));
-
-          // if rotated, swap width and height
-          if (pdf_rotation == 90 || pdf_rotation == 270) {
-              var tmp = pdf_height;
-              pdf_height = pdf_width;
-              pdf_width = tmp;
-          }
 
           var scale = (pdf_width / thumb_width);
 
@@ -545,13 +503,6 @@ Tabula.PDFView = Backbone.View.extend({
       var pdf_height = parseInt($img.data('original-height'));
       var pdf_rotation = parseInt($img.data('rotation'));
 
-      // if rotated, swap width and height
-      if (pdf_rotation == 90 || pdf_rotation == 270) {
-          var tmp = pdf_height;
-          pdf_height = pdf_width;
-          pdf_width = tmp;
-      }
-
       var scale = (pdf_width / thumb_width);
 
       $(tableGuesses[arrayIndex]).each(function(tableGuessIndex, tableGuess){ 
@@ -586,13 +537,13 @@ Tabula.PDFView = Backbone.View.extend({
 
     /* pdfs/<this.PDF_ID>/tables.json may or may not exist, depending on whether the user chooses to use table autodetection. */
     getTablesJson : function(){
-      $.getJSON("/pdfs/" + this.PDF_ID + "/tables.json", 
-          _.bind(function(tableGuesses){ 
-            $.getJSON("/pdfs/" + this.PDF_ID + "/pages.json?_=" + Math.round(+new Date()).toString(),
-              _.bind(function(pages){
+      $.getJSON("/pdfs/" + this.PDF_ID + "/pages.json?_=" + Math.round(+new Date()).toString(), 
+          _.bind(function(pages){ 
+            $.getJSON("/pdfs/" + this.PDF_ID + "/tables.json",
+              _.bind(function(tableGuesses){
                 this.createImgareaselects(tableGuesses, pages) 
               }, this)).
-              error( _.bind(function(){ this.createImgareaselects([], []) }, this));
+              error( _.bind(function(){ this.createImgareaselects([], pages) }, this));
           }, this) ).
           error( _.bind(function(){ this.createImgareaselects([], []) }, this));
     },
@@ -641,20 +592,6 @@ Tabula.PDFView = Backbone.View.extend({
               var pdf_width = parseInt($(img).data('original-width'));
               var pdf_height = parseInt($(img).data('original-height'));
               var pdf_rotation = parseInt($(img).data('rotation'));
-
-              // if rotated, swap width and height
-              if (pdf_rotation == 90 || pdf_rotation == 270) {
-                  var tmp = pdf_height;
-                  pdf_height = pdf_width;
-                  pdf_width = tmp;
-              }
-              // var tmp;
-              // switch(pdf_rotation) {
-              // case 180:
-              //     console.log('180 carajo!'); //yesssssss -Jeremy
-              //     tmp = selection.x1; selection.x1 = selection.x2; selection.x2 = tmp;
-              //     tmp = selection.y1; selection.y1 = selection.y2; selection.y2 = tmp;
-              // }
 
               var scale = (pdf_width / thumb_width);
 
