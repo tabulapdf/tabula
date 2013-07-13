@@ -5,6 +5,9 @@ require 'cuba/render'
 require 'digest/sha1'
 require 'json'
 require 'csv'
+require 'tempfile'
+require 'fileutils'
+
 require 'tabula' # tabula-extractor gem
 
 require_relative './tabula_settings.rb'
@@ -52,6 +55,7 @@ Cuba.define do
   end
 
   on delete do
+
     on 'pdf/:file_id/page/:page_number' do |file_id, page_number|
       index_fname = File.join(TabulaSettings::DOCUMENTS_BASEPATH,
                               file_id,
@@ -60,6 +64,27 @@ Cuba.define do
       index.find { |p| p['number'] == page_number.to_i }['deleted'] = true
       File.open(index_fname, 'w') { |f| f.write JSON.generate(index) }
     end
+
+    # delete an uploaded file
+    on 'pdf/:file_id' do |file_id|
+      workspace_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
+      raise if !File.exists?(workspace_file)
+
+      workspace = File.open(workspace_file) { |f| JSON.load(f) }
+      f = workspace.find { |g| g['id'] == file_id }
+
+      FileUtils.rm_rf(File.join(TabulaSettings::DOCUMENTS_BASEPATH, f['id']))
+      workspace.delete(f)
+
+      # update safely
+      tmp = Tempfile.new('workspace')
+      tmp.write(JSON.generate(workspace))
+      tmp.flush; tmp.close
+      FileUtils.cp(tmp.path, workspace_file)
+      tmp.unlink
+
+    end
+
   end
 
   on put do
@@ -178,6 +203,6 @@ Cuba.define do
         Tabula::Writers.JSON(tables.flatten(1), res)
       end
 
-    end    
+    end
   end
 end
