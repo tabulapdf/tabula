@@ -29,7 +29,7 @@ $(document).ready(function() {
           .css("position", "fixed")
           .css("width", "15%")
           .css("top", 70);
-      } 
+      }
     }
 
     $(window).scroll(_.throttle(_.bind(stick, elem), 100));
@@ -72,7 +72,7 @@ Tabula.PDFView = Backbone.View.extend({
                { _method: 'delete' },
                function () {
 
-                  // delete the deleted page's imgAreaSelect object                  
+                  // delete the deleted page's imgAreaSelect object
                   imgAreaSelects[page_number-1].remove();
                   delete imgAreaSelects[page_number-1];
 
@@ -87,10 +87,10 @@ Tabula.PDFView = Backbone.View.extend({
                      .fadeOut(200,
                               function() { $(this).remove(); });
 
-                  $('div.imgareaselect').each(function(){ 
+                  $('div.imgareaselect').each(function(){
                     //if ( parseInt( $(this).attr('id').replace("page-", '')) > page_number){
                     if( $(this).offset()["top"] > (deleted_page_top + deleted_page_height) ){
-                      $(this).offset({top: $(this).offset()["top"] - deleted_page_height }); 
+                      $(this).offset({top: $(this).offset()["top"] - deleted_page_height });
                     }
                   });
                });
@@ -229,7 +229,7 @@ Tabula.PDFView = Backbone.View.extend({
 
         var lq = $.extend(this.lastQuery,
                           {
-                              pdf_page_width: $('img#page-' + this.lastQuery.page).data('original-width')
+                              pdf_page_width: pdf_width
                           });
 
         $.get('/debug/' + this.PDF_ID + '/rulings',
@@ -355,9 +355,9 @@ Tabula.PDFView = Backbone.View.extend({
     },
     /* functions for the follow-you-around bar */
     total_selections: function(){
-      return _.reduce(imgAreaSelects, function(memo, s){ 
+      return _.reduce(imgAreaSelects, function(memo, s){
         if(s){
-          return memo + s.getSelections().length; 
+          return memo + s.getSelections().length;
         }else{
           return memo;
         }
@@ -379,7 +379,7 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     restore_detected_tables: function(){
-      for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
+      for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){
         var pageIndex = imageIndex + 1;
         this.drawDetectedTables( $('img#page-' + pageIndex)[0], tableGuesses );
       }
@@ -401,9 +401,6 @@ Tabula.PDFView = Backbone.View.extend({
 
           var scale = (pdf_width / thumb_width);
 
-
-          console.log(imgAreaSelectAPIObj.getSelections());
-
         _(imgAreaSelectAPIObj.getSelections()).each(function(selection){
 
           new_coord = {
@@ -420,18 +417,13 @@ Tabula.PDFView = Backbone.View.extend({
       this.doQuery(this.PDF_ID, all_coords);
     },
 
-
-
-
-
-
     /* Chardin help-related functions */
     fire_chardin_event: function(){
-      if($('a#chardin-help').text() == "Help"){ 
-        $('body').chardinJs('start'); 
-      }else{ 
-        $('body').chardinJs('stop'); 
-      } 
+      if($('a#chardin-help').text() == "Help"){
+        $('body').chardinJs('start');
+      }else{
+        $('body').chardinJs('stop');
+      }
     },
     chardin_stop : function(){
       $('a#chardin-help').text("Help");
@@ -459,15 +451,6 @@ Tabula.PDFView = Backbone.View.extend({
                   tableHTML += '</table>';
 
                   $('.modal-body').html(tableHTML);
-                  // $('#download-csv').click(function(){ 
-                  //                       $.post('/pdf/' + pdf_id + '/data',
-                  //                         {coords: JSON.stringify(query_parameters) ,
-                  //                           use_lines :  $('#use_lines').is(':checked'),
-                  //                           format : 'csv'
-                  //                         },
-                  //                         function(data){ window.open(data);}
-                  //                         )
-                  //                     });
 
                   $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv');
 
@@ -481,8 +464,6 @@ Tabula.PDFView = Backbone.View.extend({
                     });
                   $('#download-csv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv'); });
                   $('#download-tsv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=tsv'); });
-                  // $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(this.lastQuery));
-                  // $('#download-tsv').attr('href', '/pdf/' + pdf_id + '/data?format=tsv&' + $.param(this.lastQuery));
                   $('#myModal').modal();
                   clip.glue('#copy-csv-to-clipboard');
                   $('#loading').css('visibility', 'hidden');
@@ -492,7 +473,7 @@ Tabula.PDFView = Backbone.View.extend({
     drawDetectedTables: function($img, tableGuesses){
       //$img = $(e);
 
-      var imageIndex = $img.data('page'); 
+      var imageIndex = $img.data('page');
       arrayIndex = imageIndex - 1;
       var imgAreaSelectAPIObj = imgAreaSelects[arrayIndex];
 
@@ -505,19 +486,19 @@ Tabula.PDFView = Backbone.View.extend({
 
       var scale = (pdf_width / thumb_width);
 
-      $(tableGuesses[arrayIndex]).each(function(tableGuessIndex, tableGuess){ 
+      $(tableGuesses[arrayIndex]).each(function(tableGuessIndex, tableGuess){
 
         var my_x2 = tableGuess[0] + tableGuess[2];
         var my_y2 = tableGuess[1] + tableGuess[3];
 
-        selection = imgAreaSelectAPIObj.createNewSelection( Math.floor(tableGuess[0] / scale), 
-                                      Math.floor(tableGuess[1] / scale), 
-                                      Math.floor(my_x2 / scale), 
-                                      Math.floor(my_y2 / scale));      
+        selection = imgAreaSelectAPIObj.createNewSelection( Math.floor(tableGuess[0] / scale),
+                                      Math.floor(tableGuess[1] / scale),
+                                      Math.floor(my_x2 / scale),
+                                      Math.floor(my_y2 / scale));
         imgAreaSelectAPIObj.setOptions({show: true});
         imgAreaSelectAPIObj.update();
 
-       
+
         //create a red box for this selection.
         if(selection){ //selection is undefined if it overlaps an existing selection.
           $('#thumb-' + $img.attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
@@ -537,11 +518,11 @@ Tabula.PDFView = Backbone.View.extend({
 
     /* pdfs/<this.PDF_ID>/tables.json may or may not exist, depending on whether the user chooses to use table autodetection. */
     getTablesJson : function(){
-      $.getJSON("/pdfs/" + this.PDF_ID + "/pages.json?_=" + Math.round(+new Date()).toString(), 
-          _.bind(function(pages){ 
+      $.getJSON("/pdfs/" + this.PDF_ID + "/pages.json?_=" + Math.round(+new Date()).toString(),
+          _.bind(function(pages){
             $.getJSON("/pdfs/" + this.PDF_ID + "/tables.json",
               _.bind(function(tableGuesses){
-                this.createImgareaselects(tableGuesses, pages) 
+                this.createImgareaselects(tableGuesses, pages)
               }, this)).
               error( _.bind(function(){ this.createImgareaselects([], pages) }, this));
           }, this) ).
@@ -549,11 +530,11 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     //skip if pages is "deleted"
-    createImgareaselects : function(tableGuessesTmp, pages){ 
+    createImgareaselects : function(tableGuessesTmp, pages){
       tableGuesses = tableGuessesTmp;
       var selectsNotYetLoaded = _(pages).filter(function(page){ return !page['deleted']}).length;
 
-      imgAreaSelects = $.map(pages, _.bind(function(page, arrayIndex){ 
+      imgAreaSelects = $.map(pages, _.bind(function(page, arrayIndex){
         pageIndex = arrayIndex + 1;
         if (page['deleted']){
           return false;
@@ -619,7 +600,7 @@ Tabula.PDFView = Backbone.View.extend({
       function drawDetectedTablesIfAllAreLoaded(){
         selectsNotYetLoaded--;
         if(selectsNotYetLoaded == 0){
-          for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
+          for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){
             var pageIndex = imageIndex + 1;
             if(imgAreaSelects[imageIndex]){ //not undefined
               this.drawDetectedTables( $('img#page-' + pageIndex), tableGuesses );
