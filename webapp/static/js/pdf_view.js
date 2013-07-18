@@ -29,7 +29,7 @@ $(document).ready(function() {
           .css("position", "fixed")
           .css("width", "15%")
           .css("top", 70);
-      } 
+      }
     }
 
     $(window).scroll(_.throttle(_.bind(stick, elem), 100));
@@ -72,7 +72,7 @@ Tabula.PDFView = Backbone.View.extend({
                { _method: 'delete' },
                function () {
 
-                  // delete the deleted page's imgAreaSelect object                  
+                  // delete the deleted page's imgAreaSelect object
                   imgAreaSelects[page_number-1].remove();
                   delete imgAreaSelects[page_number-1];
 
@@ -87,10 +87,10 @@ Tabula.PDFView = Backbone.View.extend({
                      .fadeOut(200,
                               function() { $(this).remove(); });
 
-                  $('div.imgareaselect').each(function(){ 
+                  $('div.imgareaselect').each(function(){
                     //if ( parseInt( $(this).attr('id').replace("page-", '')) > page_number){
                     if( $(this).offset()["top"] > (deleted_page_top + deleted_page_height) ){
-                      $(this).offset({top: $(this).offset()["top"] - deleted_page_height }); 
+                      $(this).offset({top: $(this).offset()["top"] - deleted_page_height });
                     }
                   });
                });
@@ -105,14 +105,14 @@ Tabula.PDFView = Backbone.View.extend({
     lastSelection: undefined,
 
     initialize: function(){
-      _.bindAll(this, 'render', 'create_imgareaselects', 'get_tables_json', 'total_selections',
+      _.bindAll(this, 'render', 'createImgareaselects', 'getTablesJson', 'total_selections',
                 'toggleClearAllAndRestorePredetectedTablesButtons', 'toggleMultiSelectMode', 'query_all_data', 'toggleUseLines');
       this.render();
     },
 
     render : function(){
       query_parameters = {};
-      this.get_tables_json();
+      this.getTablesJson();
       return this;
     },
 
@@ -148,13 +148,6 @@ Tabula.PDFView = Backbone.View.extend({
         var pdf_height = parseInt($(image).data('original-height'));
         var pdf_rotation = parseInt($(image).data('rotation'));
 
-        // if rotated, swap width and height
-        if (pdf_rotation == 90 || pdf_rotation == 270) {
-            var tmp = pdf_height;
-            pdf_height = pdf_width;
-            pdf_width = tmp;
-        }
-
         var scale = (thumb_width / pdf_width);
 
         $.get('/debug/' + this.PDF_ID + '/whitespace',
@@ -189,13 +182,6 @@ Tabula.PDFView = Backbone.View.extend({
         var pdf_width = parseInt($(image).data('original-width'));
         var pdf_height = parseInt($(image).data('original-height'));
         var pdf_rotation = parseInt($(image).data('rotation'));
-
-        // if rotated, swap width and height
-        if (pdf_rotation == 90 || pdf_rotation == 270) {
-            var tmp = pdf_height;
-            pdf_height = pdf_width;
-            pdf_width = tmp;
-        }
 
         var scale = (thumb_width / pdf_width);
 
@@ -243,7 +229,7 @@ Tabula.PDFView = Backbone.View.extend({
 
         var lq = $.extend(this.lastQuery,
                           {
-                              pdf_page_width: $('img#page-' + this.lastQuery.page).data('original-width')
+                              pdf_page_width: pdf_width
                           });
 
         $.get('/debug/' + this.PDF_ID + '/rulings',
@@ -276,13 +262,6 @@ Tabula.PDFView = Backbone.View.extend({
         var pdf_width = parseInt($(image).data('original-width'));
         var pdf_height = parseInt($(image).data('original-height'));
         var pdf_rotation = parseInt($(image).data('rotation'));
-
-        // if rotated, swap width and height
-        if (pdf_rotation == 90 || pdf_rotation == 270) {
-            var tmp = pdf_height;
-            pdf_height = pdf_width;
-            pdf_width = tmp;
-        }
 
         var scale = (thumb_width / pdf_width);
 
@@ -322,13 +301,6 @@ Tabula.PDFView = Backbone.View.extend({
         var pdf_height = parseInt($(image).data('original-height'));
         var pdf_rotation = parseInt($(image).data('rotation'));
 
-        // if rotated, swap width and height
-        if (pdf_rotation == 90 || pdf_rotation == 270) {
-            var tmp = pdf_height;
-            pdf_height = pdf_width;
-            pdf_width = tmp;
-        }
-
         var scale_x = (thumb_width / pdf_width);
         var scale_y = (thumb_height / pdf_height);
 
@@ -364,13 +336,6 @@ Tabula.PDFView = Backbone.View.extend({
       var pdf_height = parseInt($(image).data('original-height'));
       var pdf_rotation = parseInt($(image).data('rotation'));
 
-      // if rotated, swap width and height
-      if (pdf_rotation == 90 || pdf_rotation == 270) {
-          var tmp = pdf_height;
-          pdf_height = pdf_width;
-          pdf_width = tmp;
-      }
-
       var scale = (thumb_width / pdf_width);
 
       $.get('/debug/' + this.PDF_ID + '/characters',
@@ -390,7 +355,13 @@ Tabula.PDFView = Backbone.View.extend({
     },
     /* functions for the follow-you-around bar */
     total_selections: function(){
-      return _.reduce(imgAreaSelects, function(memo, s){ return memo + s.getSelections().length; }, 0);
+      return _.reduce(imgAreaSelects, function(memo, s){
+        if(s){
+          return memo + s.getSelections().length;
+        }else{
+          return memo;
+        }
+      }, 0);
     },
     toggleClearAllAndRestorePredetectedTablesButtons: function(numOfSelectionsOnPage){
       if(numOfSelectionsOnPage <= 0){
@@ -408,7 +379,7 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     restore_detected_tables: function(){
-      for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
+      for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){
         var pageIndex = imageIndex + 1;
         this.drawDetectedTables( $('img#page-' + pageIndex)[0], tableGuesses );
       }
@@ -428,17 +399,7 @@ Tabula.PDFView = Backbone.View.extend({
           var pdf_height = parseInt(imgAreaSelectAPIObj.getImg().data('original-height'));
           var pdf_rotation = parseInt(imgAreaSelectAPIObj.getImg().data('rotation'));
 
-          // if rotated, swap width and height
-          if (pdf_rotation == 90 || pdf_rotation == 270) {
-              var tmp = pdf_height;
-              pdf_height = pdf_width;
-              pdf_width = tmp;
-          }
-
           var scale = (pdf_width / thumb_width);
-
-
-          console.log(imgAreaSelectAPIObj.getSelections());
 
         _(imgAreaSelectAPIObj.getSelections()).each(function(selection){
 
@@ -456,18 +417,13 @@ Tabula.PDFView = Backbone.View.extend({
       this.doQuery(this.PDF_ID, all_coords);
     },
 
-
-
-
-
-
     /* Chardin help-related functions */
     fire_chardin_event: function(){
-      if($('a#chardin-help').text() == "Help"){ 
-        $('body').chardinJs('start'); 
-      }else{ 
-        $('body').chardinJs('stop'); 
-      } 
+      if($('a#chardin-help').text() == "Help"){
+        $('body').chardinJs('start');
+      }else{
+        $('body').chardinJs('stop');
+      }
     },
     chardin_stop : function(){
       $('a#chardin-help').text("Help");
@@ -495,15 +451,6 @@ Tabula.PDFView = Backbone.View.extend({
                   tableHTML += '</table>';
 
                   $('.modal-body').html(tableHTML);
-                  // $('#download-csv').click(function(){ 
-                  //                       $.post('/pdf/' + pdf_id + '/data',
-                  //                         {coords: JSON.stringify(query_parameters) ,
-                  //                           use_lines :  $('#use_lines').is(':checked'),
-                  //                           format : 'csv'
-                  //                         },
-                  //                         function(data){ window.open(data);}
-                  //                         )
-                  //                     });
 
                   $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv');
 
@@ -517,65 +464,46 @@ Tabula.PDFView = Backbone.View.extend({
                     });
                   $('#download-csv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv'); });
                   $('#download-tsv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=tsv'); });
-                  // $('#download-csv').attr('href', '/pdf/' + pdf_id + '/data?format=csv&' + $.param(this.lastQuery));
-                  // $('#download-tsv').attr('href', '/pdf/' + pdf_id + '/data?format=tsv&' + $.param(this.lastQuery));
                   $('#myModal').modal();
                   clip.glue('#copy-csv-to-clipboard');
                   $('#loading').css('visibility', 'hidden');
               }, this));
     },
 
-    drawDetectedTables: function(e, tableGuesses){
-      img = $(e);
+    drawDetectedTables: function($img, tableGuesses){
+      //$img = $(e);
 
-      var imageIndex = parseInt(img.attr("id").replace("page-", '')) - 1;
-      var imgAreaSelectAPIObj = imgAreaSelects[imageIndex];
+      var imageIndex = $img.data('page');
+      arrayIndex = imageIndex - 1;
+      var imgAreaSelectAPIObj = imgAreaSelects[arrayIndex];
 
-      var thumb_width = img.width();
-      var thumb_height = img.height();
+      var thumb_width = $img.width();
+      var thumb_height = $img.height();
 
-      var pdf_width = parseInt(img.data('original-width'));
-      var pdf_height = parseInt(img.data('original-height'));
-      var pdf_rotation = parseInt(img.data('rotation'));
-
-      // if rotated, swap width and height
-      if (pdf_rotation == 90 || pdf_rotation == 270) {
-          var tmp = pdf_height;
-          pdf_height = pdf_width;
-          pdf_width = tmp;
-      }
+      var pdf_width = parseInt($img.data('original-width'));
+      var pdf_height = parseInt($img.data('original-height'));
+      var pdf_rotation = parseInt($img.data('rotation'));
 
       var scale = (pdf_width / thumb_width);
 
-
-      $(tableGuesses[imageIndex]).each(function(tableGuessIndex, tableGuess){ 
+      $(tableGuesses[arrayIndex]).each(function(tableGuessIndex, tableGuess){
 
         var my_x2 = tableGuess[0] + tableGuess[2];
         var my_y2 = tableGuess[1] + tableGuess[3];
 
-        // console.log("page: " + imageIndex + 1);
-        // console.log(tableGuess);
-        // console.log(scale);
-        // console.log(my_x2 / scale);
-        // console.log(my_y2 / scale);
-        // console.log("");
-
-        /* nothing is set yet, when race condition manifests */
-        //console.log(tableGuess, imageIndex);
-
-        selection = imgAreaSelectAPIObj.createNewSelection( Math.floor(tableGuess[0] / scale), 
-                                      Math.floor(tableGuess[1] / scale), 
-                                      Math.floor(my_x2 / scale), 
-                                      Math.floor(my_y2 / scale));      
+        selection = imgAreaSelectAPIObj.createNewSelection( Math.floor(tableGuess[0] / scale),
+                                      Math.floor(tableGuess[1] / scale),
+                                      Math.floor(my_x2 / scale),
+                                      Math.floor(my_y2 / scale));
         imgAreaSelectAPIObj.setOptions({show: true});
         imgAreaSelectAPIObj.update();
 
-       
+
         //create a red box for this selection.
         if(selection){ //selection is undefined if it overlaps an existing selection.
-          $('#thumb-' + $(img).attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
-          var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
-          var thumbScale = $('#thumb-' + img.attr('id') + ' img').width() / img.width();
+          $('#thumb-' + $img.attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
+          var sshow = $('#thumb-' + $img.attr('id') + ' #selection-show-' + selection.id);
+          var thumbScale = $('#thumb-' + $img.attr('id') + ' img').width() / $img.width();
           $(sshow).css('top', selection.y1 * thumbScale + 'px')
               .css('left', selection.x1 * thumbScale + 'px')
               .css('width', ((selection.x2 - selection.x1) * thumbScale) + 'px')
@@ -589,17 +517,30 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     /* pdfs/<this.PDF_ID>/tables.json may or may not exist, depending on whether the user chooses to use table autodetection. */
-    get_tables_json : function(){
-      $.getJSON("/pdfs/" + this.PDF_ID + "/tables.json", _.bind(function(tableGuesses){ this.create_imgareaselects(tableGuesses) }, this) ).
-          error( _.bind(function(){ this.create_imgareaselects([]) }, this));
+    getTablesJson : function(){
+      $.getJSON("/pdfs/" + this.PDF_ID + "/pages.json?_=" + Math.round(+new Date()).toString(),
+          _.bind(function(pages){
+            $.getJSON("/pdfs/" + this.PDF_ID + "/tables.json",
+              _.bind(function(tableGuesses){
+                this.createImgareaselects(tableGuesses, pages)
+              }, this)).
+              error( _.bind(function(){ this.createImgareaselects([], pages) }, this));
+          }, this) ).
+          error( _.bind(function(){ this.createImgareaselects([], []) }, this));
     },
 
-    create_imgareaselects : function(tableGuessesTmp){ 
+    //skip if pages is "deleted"
+    createImgareaselects : function(tableGuessesTmp, pages){
       tableGuesses = tableGuessesTmp;
-      var selectsNotYetLoaded = tableGuesses.length;
+      var selectsNotYetLoaded = _(pages).filter(function(page){ return !page['deleted']}).length;
 
-      imgAreaSelects = $.map($('img.page-image'), _.bind(function(image){ 
-        return $(image).imgAreaSelect({
+      imgAreaSelects = $.map(pages, _.bind(function(page, arrayIndex){
+        pageIndex = arrayIndex + 1;
+        if (page['deleted']){
+          return false;
+        }
+        $image = $('img#page-' + pageIndex);
+        return $image.imgAreaSelect({
           handles: true,
           instance: true,
           allowOverlaps: false,
@@ -633,20 +574,6 @@ Tabula.PDFView = Backbone.View.extend({
               var pdf_height = parseInt($(img).data('original-height'));
               var pdf_rotation = parseInt($(img).data('rotation'));
 
-              // if rotated, swap width and height
-              if (pdf_rotation == 90 || pdf_rotation == 270) {
-                  var tmp = pdf_height;
-                  pdf_height = pdf_width;
-                  pdf_width = tmp;
-              }
-              // var tmp;
-              // switch(pdf_rotation) {
-              // case 180:
-              //     console.log('180 carajo!'); //yesssssss -Jeremy
-              //     tmp = selection.x1; selection.x1 = selection.x2; selection.x2 = tmp;
-              //     tmp = selection.y1; selection.y1 = selection.y2; selection.y2 = tmp;
-              // }
-
               var scale = (pdf_width / thumb_width);
 
               var coords = {
@@ -673,9 +600,11 @@ Tabula.PDFView = Backbone.View.extend({
       function drawDetectedTablesIfAllAreLoaded(){
         selectsNotYetLoaded--;
         if(selectsNotYetLoaded == 0){
-          for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){ 
+          for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){
             var pageIndex = imageIndex + 1;
-            this.drawDetectedTables( $('img#page-' + pageIndex)[0], tableGuesses );
+            if(imgAreaSelects[imageIndex]){ //not undefined
+              this.drawDetectedTables( $('img#page-' + pageIndex), tableGuesses );
+            }
           }
         }
       }

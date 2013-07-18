@@ -76,6 +76,8 @@ and then try again.
 **Then, start the development server:**
 
     bundle exec rackup
+    
+(If you get encoding errors, set the `JAVA_OPTS` environment variable to `-Dfile.encoding=utf-8`)
 
 The site instance should now be viewable at http://127.0.0.1:9292/ .
 
