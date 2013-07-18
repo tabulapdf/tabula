@@ -4,8 +4,11 @@
       <div class="hero-unit">
         <h1>Tabula</h1>
         <h2>Processing File</h2>
+        <div class="progress progress-striped active">
+          <div class="bar" style="width: <%= status.pct_complete %>%; "></div>
+        </div>
         <div id="spinner" style="display:block;float:left;width:2em;height:1em;margin:3px 0 0 0"></div>
-        <p><span id="message"><%= status.pct_complete %>%<% if status.message? %>: <%= status.message %><% elsif status.pct_complete == 0 %>: waiting to be processed...<% end %></span></p>
+        <p><span id="percent"><%= status.pct_complete %>%</span><span id="message"><% if status.message? %>: <%= status.message %><% elsif status.pct_complete == 0 %>: waiting to be processed...<% end %></span></p>
       </div> <!-- /hero-unit -->
     </div>
   </div>
@@ -44,7 +47,7 @@ function checkStatus() {
     });
 }
 function processStatus(data) {
-    var msg = "" + data.pct_complete + "%";
+    var msg = ""
     if (data.message) {
         msg += ": ";
         msg += data.message;
@@ -52,6 +55,8 @@ function processStatus(data) {
         msg += ": waiting to be processed..."
     }
     $("#message").text(msg);
+    $(".progress .bar").css("width", data.pct_complete + "%");
+    $("#percent").html(data.pct_complete + "%");
 }
 $(function() {
     window.spinpots = {
