@@ -41,6 +41,9 @@
         screenmenu="true">
       <jarfilelist dir="${build.dir}" files="tabula.jar" />
     </jarbundler>
+    <exec executable="codesign" os="Mac OS X">
+      <arg line="-f -s 'Mike Tigas (Tabula)' ${build.dir}/mac/Tabula.app" />
+    </exec>
   </target>
 
   <target name="windows" depends="check-jar-exists" if="jar.exists">
