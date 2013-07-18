@@ -42,6 +42,13 @@
       <jarfilelist dir="${build.dir}" files="tabula.jar" />
     </jarbundler>
     <exec executable="codesign" os="Mac OS X">
+      <!--
+        Generate a self-signed "Code Signing" certificate[1]
+        and use that name below. User can then right-click or Control-click the app
+        and "Open" and then tell OS X to open anyway[2].
+        [1]: http://support.apple.com/kb/PH7173
+        [2]: http://support.apple.com/kb/HT5290
+      -->
       <arg line="-f -s 'Mike Tigas (Tabula)' ${build.dir}/mac/Tabula.app" />
     </exec>
   </target>
