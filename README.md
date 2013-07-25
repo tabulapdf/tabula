@@ -35,6 +35,13 @@ a Java Runtime Environment compatible with Java 6 or Java 7.
 
   To close Tabula, just go back to the console window and press "Control-C"
   (as if to copy).
+  
+  (***Note***: If you’re running Mac OS X 10.8 or later, GateKeeper may prevent you from opening
+  the Tabula app. Please [see this GateKeeper page][gatekeeper] for more information. Make sure
+  you allow applications from "Mac App Store and identified developers", then right-click or
+  control-click on the app and then press "Open".)
+
+[gatekeeper]: http://support.apple.com/kb/HT5290
 
 * **Mac OS X** -- Download `tabula-mac.zip` from [the download site][tabula_dl]. Unzip and open
   the Tabula app inside. A browser should automatically open
@@ -43,6 +50,8 @@ a Java Runtime Environment compatible with Java 6 or Java 7.
 
   To close Tabula, find the Tabula icon in your dock, right-click (or
   control-click) on it, and press "Quit".
+  
+  Note: If you’re running Mac OS X 10.8 or later, GateKeeper may prevent you from opening the Tabula app. Please see this GateKeeper page for more information. Make sure you allow applications from "Mac App Store and identified developers", then right-click or control-click on the app and then press "Open".
 
 * **Other platforms** -- Download `tabula-jar.zip` from [the download site][tabula_dl] and unzip it
   to the directory of your choice. Open a terminal window, and `cd` to inside
@@ -109,10 +118,19 @@ Tabula into a standalone application:
 
 **Mac OS X**
 
+If you wish to share Tabula with other machines, you will need a codesigning certificate.
+Our distribution of Tabula uses a self-signed certificate, as noted above. See
+[this section of build.xml][buildxml_cert] for details. If you will only be running Tabula
+on the machine you are building it on, you may remove this entire <exec> block (lines 44-53).
+
+To compile the app:
+
     rake macosx
 
 This will result in a portable "tabula_mac.zip" archive (inside the `build` directory)
 for Mac OS X users.
+
+[buildxml_cert]: https://github.com/jazzido/tabula/blob/master/build.xml#L44-53
 
 **Windows**
 
