@@ -36,10 +36,10 @@ a Java Runtime Environment compatible with Java 6 or Java 7.
   To close Tabula, just go back to the console window and press "Control-C"
   (as if to copy).
   
-  (***Note***: If you’re running Mac OS X 10.8 or later, GateKeeper may prevent you from opening
+  ***Note***: If you’re running Mac OS X 10.8 or later, GateKeeper may prevent you from opening
   the Tabula app. Please [see this GateKeeper page][gatekeeper] for more information. Make sure
   you allow applications from "Mac App Store and identified developers", then right-click or
-  control-click on the app and then press "Open".)
+  control-click on the app and then press "Open".
 
 [gatekeeper]: http://support.apple.com/kb/HT5290
 
