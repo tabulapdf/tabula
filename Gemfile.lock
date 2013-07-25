@@ -8,7 +8,7 @@ GEM
     rack (1.5.2)
     rake (10.1.0)
     rubyzip (0.9.9)
-    tabula-extractor (0.6.4-java)
+    tabula-extractor (0.6.5-java)
       trollop (~> 2.0)
     tilt (1.4.1)
     trollop (2.0)
@@ -25,6 +25,6 @@ DEPENDENCIES
   cuba
   rack
   rake
-  tabula-extractor (~> 0.6.4)
+  tabula-extractor (~> 0.6.5)
   tilt
   warbler
