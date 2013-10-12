@@ -91,11 +91,11 @@ class TabulaDebug < Cuba
 
       page = req.params['page'].to_i - 1
 
-      rulings = Tabula::LSD.detect_lines_in_pdf_page(File.join(pdf_path, 'document.pdf'),
-                                                     page,
-                                                     :image_size => 1024)
+      rulings = Tabula::Extraction::LineExtractor.lines_in_pdf_page(File.join(pdf_path, 'document.pdf'),
+                                                                    page,
+                                                                    :render_pdf => req.params['render_page'] == 'true')
 
-      rulings = Tabula::Ruling.clean_rulings(rulings)
+#      rulings = Tabula::Ruling.clean_rulings(rulings)
 
       res['Content-Type'] = 'application/json'
       res.write(rulings.to_json)
