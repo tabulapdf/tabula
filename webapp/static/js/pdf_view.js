@@ -214,7 +214,7 @@ Tabula.PDFView = Backbone.View.extend({
               }, this));
     },
 
-    debugRulings: function(image) {
+    debugRulings: function(image, render) {
         image = $(image);
         var imagePos = image.offset();
         var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
@@ -229,7 +229,8 @@ Tabula.PDFView = Backbone.View.extend({
 
         var lq = $.extend(this.lastQuery,
                           {
-                              pdf_page_width: pdf_width
+                              pdf_page_width: pdf_width,
+                              render_page: render == true
                           });
 
         $.get('/debug/' + this.PDF_ID + '/rulings',
