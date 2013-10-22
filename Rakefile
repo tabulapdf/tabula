@@ -15,10 +15,30 @@ Warbler::Task.new("war",
   }
 )
 
+# version we're building
+def build_version
+  ENV['TABULA_VERSION'] || "rev#{`git rev-list --max-count=1 HEAD`.strip}"
+end
+
+def invoke_ant(*args)
+  IO.popen("ant #{args.join(' ')}") { |f|
+    yield f
+  }
+end
+
 ########## distribution bundles ##########
+task :create_version_file do |t|
+  tabula_dir = File.expand_path(File.dirname(__FILE__))
+  rb_file = <<-eos
+    $TABULA_VERSION = "#{build_version}"
+  eos
+  File.open(File.join(tabula_dir, 'webapp', 'tabula_version.rb'), 'wb') do |f|
+    f.write rb_file
+  end
+end
 
 
-task :jardist => [:war] do |t|
+task :jardist => [:create_version_file, :war] do |t|
   tabula_dir = File.expand_path(File.dirname(__FILE__))
   build_dir = File.join(tabula_dir, "build")
   dist_dir = File.join(build_dir, "jardist", "tabula")
@@ -51,7 +71,7 @@ task :jardist => [:war] do |t|
   FileUtils.cp(authors_src, authors_dst)
 
   cd File.join(build_dir, "jardist")
-  output = File.join(build_dir, "tabula-jar.zip")
+  output = File.join(build_dir, "tabula-jar-#{build_version}.zip")
   if File.exists?(output)
     File.delete(output)
   end
@@ -66,10 +86,12 @@ task :jardist => [:war] do |t|
 end
 
 
-task :macosx => [:war] do |t|
+task :macosx => [:create_version_file, :war] do |t|
   tabula_dir = File.expand_path(File.dirname(__FILE__))
   build_dir = File.join(tabula_dir, "build")
   dist_dir = File.join(build_dir, "mac", "tabula")
+
+  cd File.join(tabula_dir)
 
   if File.exist?(File.join(build_dir, "mac"))
     FileUtils.rm_rf(File.join(build_dir, "mac"))
@@ -78,9 +100,11 @@ task :macosx => [:war] do |t|
   puts "\n======================================================"
   puts "Building Mac OS X app..."
   puts "======================================================\n\n"
-  IO.popen("ant -v macbundle") { |f|
+
+  invoke_ant("-Dfull_version=#{build_version}", "-v", "macbundle") { |f|
     f.each { |line| puts line }
   }
+
 
   puts "\n======================================================"
   puts "Creating zip file bundle..."
@@ -105,7 +129,7 @@ task :macosx => [:war] do |t|
   FileUtils.cp(authors_src, authors_dst)
 
   cd File.join(build_dir, "mac")
-  output = File.join(build_dir, "tabula-mac.zip")
+  output = File.join(build_dir, "tabula-mac-#{build_version}.zip")
   if File.exists?(output)
     File.delete(output)
   end
@@ -120,7 +144,7 @@ task :macosx => [:war] do |t|
 end
 
 
-task :windows => [:war] do |t|
+task :windows => [:create_version_file, :war] do |t|
   tabula_dir = File.expand_path(File.dirname(__FILE__))
   build_dir = File.join(tabula_dir, "build")
   dist_dir = File.join(build_dir, "windows", "tabula")
@@ -129,11 +153,13 @@ task :windows => [:war] do |t|
     FileUtils.rm_rf(File.join(build_dir, "windows"))
   end
 
+  cd File.join(tabula_dir)
+
   puts "\n======================================================"
   puts "Building Windows executable..."
   puts "======================================================\n\n"
   cd File.join(File.expand_path(File.dirname(__FILE__)), "launch4j")
-  IO.popen("ant -f ../build.xml windows") { |f|
+  invoke_ant("-Dfull_version=#{build_version}", "-f", "../build.xml", "windows") { |f|
     f.each { |line| puts line }
   }
   puts "\n======================================================"
@@ -163,7 +189,7 @@ task :windows => [:war] do |t|
   FileUtils.cp(authors_src, authors_dst)
 
   cd File.join(build_dir, "windows")
-  output = File.join(build_dir, "tabula-win.zip")
+  output = File.join(build_dir, "tabula-win-#{build_version}.zip")
   if File.exists?(output)
     File.delete(output)
   end
@@ -175,4 +201,11 @@ task :windows => [:war] do |t|
   puts "\n======================================================"
   puts "Zip file saved to #{output}"
   puts "======================================================\n\n"
+end
+
+task :build_all_platforms => [:create_version_file, :war] do |t|
+  ['jardist', 'macosx', 'windows'].each do |platform|
+    Rake::Task[platform].execute
+    puts
+  end
 end

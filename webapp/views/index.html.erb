@@ -54,7 +54,6 @@
           $('#uploadedfiles li button').on('click', function() {
               var a = $(this).prevUntil('a').prev();
               if (!confirm('Delete file "'+a.html()+'"?')) return;
-              console.log(a.attr('href').split('/'));
               var pdf_id = a.attr('href').split('/')[2];
               $.post('/pdf/' + pdf_id,
                      { _method: 'delete' },
@@ -74,5 +73,18 @@
       <p>Learn more about this project on <a href="http://source.mozillaopennews.org">Source</a>: <a href="http://source.mozillaopennews.org/en-US/articles/introducing-tabula/"><strong>"Introducing Tabula"</strong></a></p>
 
     </div>
+  </div>
+</div>
+
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Welcome to Tabula!</h3>
+  </div>
+  <div class="modal-body">
+    <p>Lorem ipsum dolor sit amet…</p>
+    <p><input type="checkbox" name="update_notifications">Would you like to be notified when there's a new release available?</p>
+  </div>
+  <div class="modal-footer" style="position: relative">
   </div>
 </div>

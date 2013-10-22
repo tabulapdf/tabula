@@ -16,6 +16,12 @@ unless File.directory?(TabulaSettings::DOCUMENTS_BASEPATH)
   raise "DOCUMENTS_BASEPATH does not exist or is not a directory."
 end
 
+begin
+  require_relative './tabula_version.rb'
+rescue LoadError
+  $TABULA_VERSION = "rev#{`git rev-list --max-count=1 HEAD`.strip}"
+end
+
 require_relative '../lib/tabula_job_executor/executor.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_document_metadata.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
