@@ -49,7 +49,7 @@
         [1]: http://support.apple.com/kb/PH7173
         [2]: http://support.apple.com/kb/HT5290
       -->
-      <arg line="-f -s 'Mike Tigas (Tabula)' ${build.dir}/mac/Tabula.app" />
+      <arg line="-f -s 'Tabula' ${build.dir}/mac/Tabula.app" />
     </exec>
   </target>
 
