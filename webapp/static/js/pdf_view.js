@@ -400,7 +400,7 @@ Tabula.PDFView = Backbone.View.extend({
           var pdf_height = parseInt(imgAreaSelectAPIObj.getImg().data('original-height'));
           var pdf_rotation = parseInt(imgAreaSelectAPIObj.getImg().data('rotation'));
 
-          var scale = (pdf_rotation == 90 ? pdf_height : pdf_width) / thumb_width;
+          var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / thumb_width;
 
         _(imgAreaSelectAPIObj.getSelections()).each(function(selection){
 
@@ -575,7 +575,7 @@ Tabula.PDFView = Backbone.View.extend({
               var pdf_height = parseInt($(img).data('original-height'));
               var pdf_rotation = parseInt($(img).data('rotation'));
 
-              var scale = (pdf_rotation == 90 ? pdf_height : pdf_width) / thumb_width;
+              var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / thumb_width;
 
               var coords = {
                   x1: selection.x1 * scale,
