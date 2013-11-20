@@ -96,9 +96,7 @@ class TabulaDebug < Cuba
                                                                     page - 1,
                                                                     :render_pdf => req.params['render_page'] == 'true')
 
-#      require 'ruby-debug'; debugger
-
-      if req.params['clean_rulings']
+      if req.params['clean_rulings'] && req.params['clean_rulings'] != 'false'
         rulings = Tabula::Ruling.clean_rulings(rulings)
       end
       res['Content-Type'] = 'application/json'
