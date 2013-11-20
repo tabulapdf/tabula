@@ -15,6 +15,8 @@ class DetectTablesJob < Tabula::Background::Job
 
     page_areas_by_page = (0...page_count).map do |page_index|
       at( (page_count + page_index) / 2, page_count, "auto-detecting tables...") #starting at 50%...
+      # TODO uncomment this and remove LSD call when we get vector lines in tabula-extractor gem
+      # clean_lines = Tabula::Ruling::clean_rulings(Tabula::Extraction::LineExtractor.lines_in_pdf_page(file, page_index))
       clean_lines = Tabula::Ruling::clean_rulings(Tabula::LSD::detect_lines_in_pdf_page(file, page_index))
       page_areas = Tabula::TableGuesser::find_rects_from_lines(clean_lines)
       page_areas.map!{|rect| rect.dims(:left, :top, :width, :height)}
