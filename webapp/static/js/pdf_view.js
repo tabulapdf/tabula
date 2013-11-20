@@ -254,7 +254,7 @@ Tabula.PDFView = Backbone.View.extend({
       var pdf_height = parseInt($(image).data('original-height'));
       var pdf_rotation = parseInt($(image).data('rotation'));
 
-      var scale = (thumb_width / pdf_width);
+      var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width);
 
       $.get('/debug/' + this.PDF_ID + '/characters',
             this.lastQuery,
