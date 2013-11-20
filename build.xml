@@ -5,7 +5,7 @@
   <property name="build.dir" value="build"/>
   <property name="mac.dir" value="${build.dir}/mac" />
   <property name="windows.dir" value="${build.dir}/windows" />
-  <property name="full_version" value="0.9.2"/>
+  <property name="full_version" value="0.9.2.0"/>
   <property name="launch4j.dir" location="${build.dir}/../launch4j"  />
   <property name="launch4j.bindir" location="${build.dir}/../launch4j/bin" />
 
