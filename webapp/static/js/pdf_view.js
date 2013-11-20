@@ -365,12 +365,15 @@ Tabula.PDFView = Backbone.View.extend({
       }, 0);
     },
     toggleClearAllAndRestorePredetectedTablesButtons: function(numOfSelectionsOnPage){
-      if(numOfSelectionsOnPage <= 0){
-        $("#clear-all-selections").hide();
-        $("#restore-detected-tables").show();
-      }else{
-        $("#clear-all-selections").show();
-        $("#restore-detected-tables").hide();
+      // if tables weren't autodetected, don't tease the user with an autodetect button that won't work.
+      if(!_(tableGuesses).isEmpty()){
+        if(numOfSelectionsOnPage <= 0){
+          $("#clear-all-selections").hide();
+          $("#restore-detected-tables").show();
+        }else{
+          $("#clear-all-selections").show();
+          $("#restore-detected-tables").hide();
+        }
       }
     },
     clear_all_selection: function(){
@@ -382,7 +385,7 @@ Tabula.PDFView = Backbone.View.extend({
     restore_detected_tables: function(){
       for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){
         var pageIndex = imageIndex + 1;
-        this.drawDetectedTables( $('img#page-' + pageIndex)[0], tableGuesses );
+        this.drawDetectedTables( $('img#page-' + pageIndex), tableGuesses );
       }
       this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
     },
@@ -473,7 +476,6 @@ Tabula.PDFView = Backbone.View.extend({
 
     drawDetectedTables: function($img, tableGuesses){
       //$img = $(e);
-
       var imageIndex = $img.data('page');
       arrayIndex = imageIndex - 1;
       var imgAreaSelectAPIObj = imgAreaSelects[arrayIndex];
