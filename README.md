@@ -8,11 +8,6 @@ Tabula helps you liberate data tables trapped inside PDF files.
 © 2012-2013 Manuel Aristarán. Available under MIT License. See
 [`AUTHORS.md`](AUTHORS.md) and [`LICENSE.md`](LICENSE.md).
 
-**Notice: July 8, 2013** --- If you are using the Amazon EC2 AMI for Tabula (released
-earlier this year), it will cease to function on next reboot. You should terminate
-all instances using this AMI. See the *Using Tabula* section below for instructions
-on using the new, desktop-oriented version of Tabula.
-
 ## Why Tabula?
 
 If you’ve ever tried to do anything with data provided to you in PDFs, you
