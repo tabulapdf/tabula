@@ -54,7 +54,6 @@
           $('#uploadedfiles li button').on('click', function() {
               var a = $(this).prevUntil('a').prev();
               if (!confirm('Delete file "'+a.html()+'"?')) return;
-              console.log(a.attr('href').split('/'));
               var pdf_id = a.attr('href').split('/')[2];
               $.post('/pdf/' + pdf_id,
                      { _method: 'delete' },
@@ -67,12 +66,7 @@
       </script>
 
       <br><br><hr>
-
-
       <p><strong>Tabula</strong> was created by <a href="http://jazzido.com/" target="_blank">Manuel Aristarán</a> with the help of <a href="http://propublica.org">ProPublica</a>, <a href="http://blogs.lanacion.com.ar/data/">La Nación DATA</a> and <a href="http://www.mozillaopennews.org/">Knight-Mozilla OpenNews</a></p>
-
-      <p>Learn more about this project on <a href="http://source.mozillaopennews.org">Source</a>: <a href="http://source.mozillaopennews.org/en-US/articles/introducing-tabula/"><strong>"Introducing Tabula"</strong></a></p>
-
     </div>
   </div>
 </div>
