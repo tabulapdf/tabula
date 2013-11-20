@@ -92,14 +92,15 @@ class TabulaDebug < Cuba
 
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
 
-      rulings = Tabula::Extraction::LineExtractor.lines_in_pdf_page(File.join(pdf_path, 'document.pdf'),
+      rulings = ::Tabula::Extraction::LineExtractor.lines_in_pdf_page(File.join(pdf_path, 'document.pdf'),
                                                                     page - 1,
                                                                     :render_pdf => req.params['render_page'] == 'true')
 
 #      require 'ruby-debug'; debugger
 
-#      rulings = Tabula::Ruling.clean_rulings(rulings)
-
+      if req.params['clean_rulings']
+        rulings = Tabula::Ruling.clean_rulings(rulings)
+      end
       res['Content-Type'] = 'application/json'
       res.write(rulings.uniq.to_json)
 
