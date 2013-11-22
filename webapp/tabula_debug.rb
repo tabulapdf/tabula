@@ -45,26 +45,6 @@ class TabulaDebug < Cuba
 
     end
 
-    on ":file_id/rows" do |file_id|
-      page = JSON.load(req.params['coords']).first['page']
-
-      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
-      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, page)
-
-      text_elements = extractor.extract.next.get_text([req.params['y1'].to_f,
-                                                       req.params['x1'].to_f,
-                                                       req.params['y2'].to_f,
-                                                       req.params['x2'].to_f])
-      make_table_options = {}
-
-      rows = Tabula::TableExtractor.new(text_elements,
-                                        make_table_options).get_rows
-
-      res['Content-Type'] = 'application/json'
-      res.write rows.to_json
-
-    end
-
     on ":file_id/characters" do |file_id|
       par = JSON.load(req.params['coords']).first
       page = par['page']
