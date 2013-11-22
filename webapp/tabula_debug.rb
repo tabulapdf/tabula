@@ -28,23 +28,6 @@ class TabulaDebug < Cuba
     end
 
 
-    on ":file_id/columns" do |file_id|
-      par = JSON.load(req.params['coords']).first
-      page = par['page']
-
-      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
-      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [page])
-
-      text_elements = extractor.extract.next.get_text([par['y1'].to_f,
-                                                       par['x1'].to_f,
-                                                       par['y2'].to_f,
-                                                       par['x2'].to_f])
-
-      res['Content-Type'] = 'application/json'
-      res.write Tabula.get_columns(text_elements, true).to_json
-
-    end
-
     on ":file_id/characters" do |file_id|
       par = JSON.load(req.params['coords']).first
       page = par['page']
