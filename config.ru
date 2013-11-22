@@ -6,7 +6,8 @@ run Cuba
 puts "$PROGRAM_NAME : #{$PROGRAM_NAME}"
 
 # if running as a jar, automatically open the user's web browser
-if "#{$PROGRAM_NAME}".include? "tabula.jar"
+# (only if running under a desktop environment)
+if "#{$PROGRAM_NAME}".include?("tabula.jar") && java.awt.Desktop.isDesktopSupported
   require 'java'
   # don't do "java_import java.net.URI" -- it conflicts with Ruby URI and
   # makes Cuba/Rack really really upset. just call "java.*" classes
