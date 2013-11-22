@@ -164,45 +164,6 @@ Tabula.PDFView = Backbone.View.extend({
               }, this));
     },
 
-
-    debugRows: function(image, use_rulings) {
-        image = $(image);
-        var imagePos = image.offset();
-        var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
-            .attr('width', image.width())
-            .attr('height', image.height())
-            .css('top', imagePos.top + 'px')
-            .css('left', imagePos.left + 'px');
-        $('body').append(newCanvas);
-
-        var thumb_width = $(image).width();
-        var thumb_height = $(image).height();
-        var pdf_width = parseInt($(image).data('original-width'));
-        var pdf_height = parseInt($(image).data('original-height'));
-        var pdf_rotation = parseInt($(image).data('rotation'));
-
-        var scale = (thumb_width / pdf_width);
-
-        if (use_rulings !== undefined)
-            $.extend(this.lastQuery, { use_lines: true});
-
-        $.get('/debug/' + this.PDF_ID + '/rows',
-              this.lastQuery,
-              _.bind(function(data) {
-                  $.each(data, _.bind(function(i, row) {
-                      $(newCanvas).drawRect({
-                          x: this.lastSelection.x1,
-                          y: row.top * scale,
-                          width: this.lastSelection.x2 - this.lastSelection.x1,
-                          height: row.bottom - row.top,
-                          strokeStyle: this.colors[i % this.colors.length],
-                          fromCenter: false
-                      });
-                  }, this));
-              }, this));
-    },
-
-
     debugColumns: function(image) {
         image = $(image);
         var imagePos = image.offset();
