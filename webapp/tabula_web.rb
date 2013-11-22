@@ -194,9 +194,11 @@ Cuba.define do
       case req.params['format']
       when 'csv'
         res['Content-Type'] = 'text/csv'
+        res['Content-Disposition'] = "attachment; filename=tabula-#{file_id}.csv"
         Tabula::Writers.CSV(tables.flatten(1), res)
       when 'tsv'
         res['Content-Type'] = 'text/tab-separated-values'
+        res['Content-Disposition'] = "attachment; filename=tabula-#{file_id}.tsv"
         Tabula::Writers.TSV(tables.flatten(1), res)
       else
         res['Content-Type'] = 'application/json'
