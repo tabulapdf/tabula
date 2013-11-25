@@ -34,12 +34,28 @@ class TabulaDebug < Cuba
                                                                     page - 1,
                                                                     :render_pdf => req.params['render_page'] == 'true')
 
-      if req.params['clean_rulings'] && req.params['clean_rulings'] != 'false'
+      if req.params['clean_rulings'] != 'false'
         rulings = Tabula::Ruling.clean_rulings(rulings)
       end
-      res['Content-Type'] = 'application/json'
-      res.write(rulings.uniq.to_json)
 
+      # crop lines to area of interest
+      par = JSON.load(req.params['coords']).first
+      top, left, bottom, right = [par['y1'].to_f,
+                                  par['x1'].to_f,
+                                  par['y2'].to_f,
+                                  par['x2'].to_f]
+      area = Tabula::ZoneEntity.new(top, left,
+                                    right - left, bottom - top)
+      rulings = Tabula::Ruling.crop_rulings_to_area(rulings, area)
+
+      intersections = {}
+      if req.params['show_intersections'] != 'false'
+        intersections = Tabula::Ruling.find_intersections(rulings.find_all(&:horizontal?),
+                                                          rulings.find_all(&:vertical?))
+      end
+
+      res['Content-Type'] = 'application/json'
+      res.write({:rulings => rulings.uniq, :intersections => intersections.keys }.to_json)
     end
 
   end

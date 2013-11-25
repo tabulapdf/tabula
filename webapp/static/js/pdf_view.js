@@ -130,7 +130,7 @@ Tabula.PDFView = Backbone.View.extend({
         this.doQuery(this.PDF_ID, JSON.parse(this.lastQuery["coords"])); //TODO: stash lastCoords, rather than stashing lastQuery and then parsing it.
     },
 
-    debugRulings: function(image, render, clean) {
+    debugRulings: function(image, render, clean, show_intersections) {
         image = $(image);
         var imagePos = image.offset();
         var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
@@ -147,18 +147,27 @@ Tabula.PDFView = Backbone.View.extend({
                           {
                               pdf_page_width: pdf_width,
                               render_page: render == true,
-                              clean_rulings: clean == true
+                              clean_rulings: clean == true,
+                              show_intersections: show_intersections == true
                           });
-
         $.get('/debug/' + this.PDF_ID + '/rulings',
               lq,
               _.bind(function(data) {
-                  $.each(data, _.bind(function(i, ruling) {
+                  $.each(data.rulings, _.bind(function(i, ruling) {
                       $("canvas").drawLine({
                           strokeStyle: this.colors[i % this.colors.length],
                           strokeWidth: 1,
                           x1: ruling[0] * scaleFactor, y1: ruling[1] * scaleFactor,
                           x2: ruling[2] * scaleFactor, y2: ruling[3] * scaleFactor
+                      });
+                  }, this));
+
+                  $.each(data.intersections, _.bind(function(i, intersection) {
+                      $("canvas").drawEllipse({
+                          fillStyle: this.colors[i % this.colors.length],
+                          width: 5, height: 5,
+                          x: intersection[0] * scaleFactor,
+                          y: intersection[1] * scaleFactor
                       });
                   }, this));
               }, this));
