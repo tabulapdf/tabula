@@ -139,9 +139,13 @@ Tabula.PDFView = Backbone.View.extend({
             .css('top', imagePos.top + 'px')
             .css('left', imagePos.left + 'px');
         $('body').append(newCanvas);
-        var pdf_width = parseInt($(image).data('original-width'));
 
-        var scaleFactor = image.width() / pdf_width ;
+        var pdf_rotation = parseInt($(image).data('rotation'));
+        var pdf_width = parseInt($(image).data('original-width'));
+        var pdf_height = parseInt($(image).data('original-height'));
+        var thumb_width = $(image).width();
+
+        var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width);
 
         var lq = $.extend(this.lastQuery,
                           {
@@ -150,6 +154,7 @@ Tabula.PDFView = Backbone.View.extend({
                               clean_rulings: clean == true,
                               show_intersections: show_intersections == true
                           });
+
         $.get('/debug/' + this.PDF_ID + '/rulings',
               lq,
               _.bind(function(data) {
@@ -157,8 +162,8 @@ Tabula.PDFView = Backbone.View.extend({
                       $("canvas").drawLine({
                           strokeStyle: this.colors[i % this.colors.length],
                           strokeWidth: 1,
-                          x1: ruling[0] * scaleFactor, y1: ruling[1] * scaleFactor,
-                          x2: ruling[2] * scaleFactor, y2: ruling[3] * scaleFactor
+                          x1: ruling[0] * scale, y1: ruling[1] * scale,
+                          x2: ruling[2] * scale, y2: ruling[3] * scale
                       });
                   }, this));
 
@@ -166,8 +171,8 @@ Tabula.PDFView = Backbone.View.extend({
                       $("canvas").drawEllipse({
                           fillStyle: this.colors[i % this.colors.length],
                           width: 5, height: 5,
-                          x: intersection[0] * scaleFactor,
-                          y: intersection[1] * scaleFactor
+                          x: intersection[0] * scale,
+                          y: intersection[1] * scale
                       });
                   }, this));
               }, this));
