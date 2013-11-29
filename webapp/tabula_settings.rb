@@ -60,22 +60,6 @@ module TabulaSettings
     data_dir
   end
 
-  #def self.getPortNo
-  #  # when invoking as "java -Dtabula.port=8000 ... -jar tabula.war"
-  #  portno = java.lang.System.getProperty('tabula.port')
-  #  unless portno.nil?
-  #    return portno.to_i
-  #  end
-
-  #  # when invoking with env var
-  #  portno = ENV['TABULA_PORT']
-  #  unless portno.nil?
-  #    return portno.to_i
-  #  end
-
-  #  DEFAULT_PORT
-  #end
-
   def self.enableDebug
     # when invoking as "java -Dtabula.debug=1 ... -jar tabula.war"
     debug = java.lang.System.getProperty('tabula.debug')
