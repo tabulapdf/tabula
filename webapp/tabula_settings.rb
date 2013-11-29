@@ -76,22 +76,6 @@ module TabulaSettings
     DEFAULT_DEBUG
   end
 
-  def self.enableAsync
-    # when invoking as "java -Dtabula.async=0 ... -jar tabula.war"
-    async = java.lang.System.getProperty('tabula.async')
-    unless async.nil?
-      return (async.to_i > 0)
-    end
-
-    # when invoking with env var
-    async = ENV['TABULA_ASYNC']
-    unless async.nil?
-      return (async.to_i > 0)
-    end
-
-    DEFAULT_ASYNC
-  end
-
   ########## Constants that are used around the app, based on settings ##########
   DOCUMENTS_BASEPATH = File.join(self.getDataDir, 'pdfs')
   #PORT_NUMBER = self.getPortNo
