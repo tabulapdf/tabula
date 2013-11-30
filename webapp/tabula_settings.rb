@@ -4,7 +4,6 @@ require 'fileutils'
 module TabulaSettings
 
   ########## Defaults ##########
-  DEFAULT_ASYNC = true
   DEFAULT_DEBUG = false
   #DEFAULT_PORT = 8080
 
@@ -80,14 +79,12 @@ module TabulaSettings
   DOCUMENTS_BASEPATH = File.join(self.getDataDir, 'pdfs')
   #PORT_NUMBER = self.getPortNo
   ENABLE_DEBUG_METHODS = self.enableDebug
-  ASYNC_PROCESSING = self.enableAsync
 
   if true
   #if ENABLE_DEBUG_METHODS
     puts "self.getDataDir = #{self.getDataDir}"
     puts "DOCUMENTS_BASEPATH = #{DOCUMENTS_BASEPATH}"
     puts "ENABLE_DEBUG_METHODS = #{ENABLE_DEBUG_METHODS}"
-    puts "ASYNC_PROCESSING = #{ASYNC_PROCESSING}"
   end
 
   ########## Initialize environment, using helpers ##########
