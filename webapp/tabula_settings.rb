@@ -80,12 +80,9 @@ module TabulaSettings
   #PORT_NUMBER = self.getPortNo
   ENABLE_DEBUG_METHODS = self.enableDebug
 
-  if true
-  #if ENABLE_DEBUG_METHODS
-    puts "self.getDataDir = #{self.getDataDir}"
-    puts "DOCUMENTS_BASEPATH = #{DOCUMENTS_BASEPATH}"
-    puts "ENABLE_DEBUG_METHODS = #{ENABLE_DEBUG_METHODS}"
-  end
+  puts "self.getDataDir = #{self.getDataDir}"
+  puts "DOCUMENTS_BASEPATH = #{DOCUMENTS_BASEPATH}"
+  puts "ENABLE_DEBUG_METHODS = #{ENABLE_DEBUG_METHODS}"
 
   ########## Initialize environment, using helpers ##########
   FileUtils.mkdir_p(DOCUMENTS_BASEPATH)
