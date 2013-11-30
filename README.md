@@ -8,11 +8,6 @@ Tabula helps you liberate data tables trapped inside PDF files.
 © 2012-2013 Manuel Aristarán. Available under MIT License. See
 [`AUTHORS.md`](AUTHORS.md) and [`LICENSE.md`](LICENSE.md).
 
-**Notice: July 8, 2013** --- If you are using the Amazon EC2 AMI for Tabula (released
-earlier this year), it will cease to function on next reboot. You should terminate
-all instances using this AMI. See the *Using Tabula* section below for instructions
-on using the new, desktop-oriented version of Tabula.
-
 ## Why Tabula?
 
 If you’ve ever tried to do anything with data provided to you in PDFs, you
@@ -35,7 +30,9 @@ a Java Runtime Environment compatible with Java 6 or Java 7.
 
   To close Tabula, just go back to the console window and press "Control-C"
   (as if to copy).
-  
+
+  If you need Tabula to use a port other than 8080, set the `TABULA_PORT` environment variable.
+
   ***Note***: If you’re running Mac OS X 10.8 or later, GateKeeper may prevent you from opening
   the Tabula app. Please [see this GateKeeper page][gatekeeper] for more information. Make sure
   you allow applications from "Mac App Store and identified developers", then right-click or
@@ -50,7 +47,7 @@ a Java Runtime Environment compatible with Java 6 or Java 7.
 
   To close Tabula, find the Tabula icon in your dock, right-click (or
   control-click) on it, and press "Quit".
-  
+
   Note: If you’re running Mac OS X 10.8 or later, GateKeeper may prevent you from opening the Tabula app. Please see this GateKeeper page for more information. Make sure you allow applications from "Mac App Store and identified developers", then right-click or control-click on the app and then press "Open".
 
 * **Other platforms** -- Download `tabula-jar.zip` from [the download site][tabula_dl] and unzip it
@@ -58,6 +55,10 @@ a Java Runtime Environment compatible with Java 6 or Java 7.
   the `tabula` directory you just unzipped. Then run:
 
   `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -jar tabula.jar`
+
+  Tabula binds to port 8080 by default. You can change it with the `jetty.port` property:
+
+  `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Djetty.port=9999 -jar tabula.jar`
 
 If the program fails to run, double-check that you have [Java installed][jre_download]
 and then try again.
@@ -85,7 +86,7 @@ and then try again.
 **Then, start the development server:**
 
     bundle exec rackup
-    
+
 (If you get encoding errors, set the `JAVA_OPTS` environment variable to `-Dfile.encoding=utf-8`)
 
 The site instance should now be viewable at http://127.0.0.1:9292/ .

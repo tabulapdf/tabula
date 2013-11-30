@@ -3,7 +3,6 @@ local_settings.rb
 tabula.war
 
 lib/jars/javacv*
-.ruby-version
 .ruby-gemset
 
 TEST_PDFS

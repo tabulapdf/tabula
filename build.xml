@@ -5,7 +5,7 @@
   <property name="build.dir" value="build"/>
   <property name="mac.dir" value="${build.dir}/mac" />
   <property name="windows.dir" value="${build.dir}/windows" />
-  <property name="full_version" value="0.9.1.9990"/>
+  <property name="full_version" value="0.9.2.2"/>
   <property name="launch4j.dir" location="${build.dir}/../launch4j"  />
   <property name="launch4j.bindir" location="${build.dir}/../launch4j/bin" />
 
@@ -71,7 +71,8 @@
           <cp>tabula.jar</cp>
         </classPath>
         <jre minVersion="1.6.0" jdkPreference="preferJre" initialHeapSize="256" maxHeapSize="1024">
-          <opt>-Xms256M -Xmx1024M -Dfile.encoding=utf-8</opt>
+          <opt>-Dfile.encoding=utf-8</opt>
+          <opt>-Djetty.port=%TABULA_PORT%</opt>
         </jre>
         <versionInfo
             fileVersion="${full_version}"

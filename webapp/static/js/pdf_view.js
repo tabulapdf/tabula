@@ -130,91 +130,7 @@ Tabula.PDFView = Backbone.View.extend({
         this.doQuery(this.PDF_ID, JSON.parse(this.lastQuery["coords"])); //TODO: stash lastCoords, rather than stashing lastQuery and then parsing it.
     },
 
-
-    /* debug functions */
-    debugWhitespace: function(image) {
-        image = $(image);
-        var imagePos = image.offset();
-        var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
-            .attr('width', image.width())
-            .attr('height', image.height())
-            .css('top', imagePos.top + 'px')
-            .css('left', imagePos.left + 'px');
-        $('body').append(newCanvas);
-
-        var thumb_width = $(image).width();
-        var thumb_height = $(image).height();
-        var pdf_width = parseInt($(image).data('original-width'));
-        var pdf_height = parseInt($(image).data('original-height'));
-        var pdf_rotation = parseInt($(image).data('rotation'));
-
-        var scale = (thumb_width / pdf_width);
-
-        $.get('/debug/' + this.PDF_ID + '/whitespace',
-              this.lastQuery,
-              function(data) {
-                  // whitespace
-                  $.each(data, function(i, row) {
-                      $(newCanvas).drawRect({
-                          x: row.left * scale,
-                          y: row.top * scale,
-                          width: row.width * scale,
-                          height: row.height * scale,
-                          /*strokeStyle: '#f00', */fillStyle: '#f00',
-                          fromCenter: false
-                      });
-                  });
-              });
-    },
-
-    debugGraph: function(image) {
-      image = $(image);
-        var imagePos = image.offset();
-        var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
-            .attr('width', image.width())
-            .attr('height', image.height())
-            .css('top', imagePos.top + 'px')
-            .css('left', imagePos.left + 'px');
-        $('body').append(newCanvas);
-
-        var thumb_width = $(image).width();
-        var thumb_height = $(image).height();
-        var pdf_width = parseInt($(image).data('original-width'));
-        var pdf_height = parseInt($(image).data('original-height'));
-        var pdf_rotation = parseInt($(image).data('rotation'));
-
-        var scale = (thumb_width / pdf_width);
-
-        $.get('/debug/' + this.PDF_ID + '/graph',
-              this.lastQuery,
-              _.bind( function(data) {
-                  // draw rectangles enclosing each cluster
-                  $.each(data.vertices, _.bind(function(i, row) {
-                      $(newCanvas).drawRect({
-                          x: this.lastSelection.x1,
-                          y: row.top * scale_y,
-                          width: this.lastSelection.x2 - this.lastSelection.x1,
-                          height: row.bottom - row.top,
-                          strokeStyle: this.colors[i % this.colors.length],
-                          fromCenter: false
-                      });
-                  }, this));
-
-                  // draw lines connecting clusters (edges)
-                  // $.each(data, function(i, row) {
-                  //     $(newCanvas).drawRect({
-                  //         x: lastSelection.x1,
-                  //         y: row.top * scale_y,
-                  //         width: lastSelection.x2 - lastSelection.x1,
-                  //         height: row.bottom - row.top,
-                  //         strokeStyle: this.colors[i % this.colors.length],
-                  //         fromCenter: false
-                  //     });
-                  // });
-              }, this));
-    },
-
-    debugRulings: function(image, render) {
+    debugRulings: function(image, render, clean) {
         image = $(image);
         var imagePos = image.offset();
         var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
@@ -230,7 +146,8 @@ Tabula.PDFView = Backbone.View.extend({
         var lq = $.extend(this.lastQuery,
                           {
                               pdf_page_width: pdf_width,
-                              render_page: render == true
+                              render_page: render == true,
+                              clean_rulings: clean == true
                           });
 
         $.get('/debug/' + this.PDF_ID + '/rulings',
@@ -245,80 +162,6 @@ Tabula.PDFView = Backbone.View.extend({
                       });
                   }, this));
               }, this));
-    },
-
-
-    debugRows: function(image, use_rulings) {
-        image = $(image);
-        var imagePos = image.offset();
-        var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
-            .attr('width', image.width())
-            .attr('height', image.height())
-            .css('top', imagePos.top + 'px')
-            .css('left', imagePos.left + 'px');
-        $('body').append(newCanvas);
-
-        var thumb_width = $(image).width();
-        var thumb_height = $(image).height();
-        var pdf_width = parseInt($(image).data('original-width'));
-        var pdf_height = parseInt($(image).data('original-height'));
-        var pdf_rotation = parseInt($(image).data('rotation'));
-
-        var scale = (thumb_width / pdf_width);
-
-        if (use_rulings !== undefined)
-            $.extend(this.lastQuery, { use_lines: true});
-
-        $.get('/debug/' + this.PDF_ID + '/rows',
-              this.lastQuery,
-              _.bind(function(data) {
-                  $.each(data, _.bind(function(i, row) {
-                      $(newCanvas).drawRect({
-                          x: this.lastSelection.x1,
-                          y: row.top * scale,
-                          width: this.lastSelection.x2 - this.lastSelection.x1,
-                          height: row.bottom - row.top,
-                          strokeStyle: this.colors[i % this.colors.length],
-                          fromCenter: false
-                      });
-                  }, this));
-              }, this));
-    },
-
-
-    debugColumns: function(image) {
-        image = $(image);
-        var imagePos = image.offset();
-        var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
-            .attr('width', image.width())
-            .attr('height', image.height())
-            .css('top', imagePos.top + 'px')
-            .css('left', imagePos.left + 'px');
-        $('body').append(newCanvas);
-
-        var thumb_width = $(image).width();
-        var thumb_height = $(image).height();
-        var pdf_width = parseInt($(image).data('original-width'));
-        var pdf_height = parseInt($(image).data('original-height'));
-        var pdf_rotation = parseInt($(image).data('rotation'));
-
-        var scale_x = (thumb_width / pdf_width);
-        var scale_y = (thumb_height / pdf_height);
-
-        $.get('/debug/' + this.PDF_ID + '/columns',
-              this.lastQuery,
-              _.bind(function(data) {
-                  $.each(data, _.bind(function(i, column) {
-                      $(newCanvas).drawRect({
-                          x: column.left * scale_x,
-                          y: this.lastSelection.y1,
-                          width: (column.right - column.left) * scale_x,
-                          height: this.lastSelection.y2 - this.lastSelection.y1,
-                          strokeStyle: this.colors[i % this.colors.length],
-                          fromCenter: false
-                      });
-                  }, this));
-              }, this) );
     },
 
     debugCharacters: function(image) {
@@ -337,7 +180,7 @@ Tabula.PDFView = Backbone.View.extend({
       var pdf_height = parseInt($(image).data('original-height'));
       var pdf_rotation = parseInt($(image).data('rotation'));
 
-      var scale = (thumb_width / pdf_width);
+      var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width);
 
       $.get('/debug/' + this.PDF_ID + '/characters',
             this.lastQuery,
@@ -365,12 +208,15 @@ Tabula.PDFView = Backbone.View.extend({
       }, 0);
     },
     toggleClearAllAndRestorePredetectedTablesButtons: function(numOfSelectionsOnPage){
-      if(numOfSelectionsOnPage <= 0){
-        $("#clear-all-selections").hide();
-        $("#restore-detected-tables").show();
-      }else{
-        $("#clear-all-selections").show();
-        $("#restore-detected-tables").hide();
+      // if tables weren't autodetected, don't tease the user with an autodetect button that won't work.
+      if(!_(tableGuesses).isEmpty()){
+        if(numOfSelectionsOnPage <= 0){
+          $("#clear-all-selections").hide();
+          $("#restore-detected-tables").show();
+        }else{
+          $("#clear-all-selections").show();
+          $("#restore-detected-tables").hide();
+        }
       }
     },
     clear_all_selection: function(){
@@ -382,7 +228,7 @@ Tabula.PDFView = Backbone.View.extend({
     restore_detected_tables: function(){
       for(var imageIndex=0; imageIndex < imgAreaSelects.length; imageIndex++){
         var pageIndex = imageIndex + 1;
-        this.drawDetectedTables( $('img#page-' + pageIndex)[0], tableGuesses );
+        this.drawDetectedTables( $('img#page-' + pageIndex), tableGuesses );
       }
       this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
     },
@@ -400,7 +246,7 @@ Tabula.PDFView = Backbone.View.extend({
           var pdf_height = parseInt(imgAreaSelectAPIObj.getImg().data('original-height'));
           var pdf_rotation = parseInt(imgAreaSelectAPIObj.getImg().data('rotation'));
 
-          var scale = (pdf_width / thumb_width);
+          var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / thumb_width;
 
         _(imgAreaSelectAPIObj.getSelections()).each(function(selection){
 
@@ -473,7 +319,6 @@ Tabula.PDFView = Backbone.View.extend({
 
     drawDetectedTables: function($img, tableGuesses){
       //$img = $(e);
-
       var imageIndex = $img.data('page');
       arrayIndex = imageIndex - 1;
       var imgAreaSelectAPIObj = imgAreaSelects[arrayIndex];
@@ -575,7 +420,7 @@ Tabula.PDFView = Backbone.View.extend({
               var pdf_height = parseInt($(img).data('original-height'));
               var pdf_rotation = parseInt($(img).data('rotation'));
 
-              var scale = (pdf_width / thumb_width);
+              var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / thumb_width;
 
               var coords = {
                   x1: selection.x1 * scale,
