@@ -71,7 +71,8 @@
           <cp>tabula.jar</cp>
         </classPath>
         <jre minVersion="1.6.0" jdkPreference="preferJre" initialHeapSize="256" maxHeapSize="1024">
-          <opt>-Xms256M -Xmx1024M -Dfile.encoding=utf-8</opt>
+          <opt>-Dfile.encoding=utf-8</opt>
+          <opt>-Djetty.port=%TABULA_PORT%</opt>
         </jre>
         <versionInfo
             fileVersion="${full_version}"
