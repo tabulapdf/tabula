@@ -1,11 +1,7 @@
 # encoding: UTF-8
-
 require_relative './webapp/tabula_settings.rb'
 require_relative './webapp/tabula_web.rb'
 run Cuba
-
-
-puts "$PROGRAM_NAME : #{$PROGRAM_NAME}"
 
 # if running as a jar, automatically open the user's web browser
 # (only if running under a desktop environment)
