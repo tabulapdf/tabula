@@ -1,4 +1,5 @@
 # encoding: UTF-8
+
 require_relative './webapp/tabula_settings.rb'
 require_relative './webapp/tabula_web.rb'
 run Cuba
@@ -13,8 +14,8 @@ if "#{$PROGRAM_NAME}".include?("tabula.jar") && java.awt.Desktop.isDesktopSuppor
   # don't do "java_import java.net.URI" -- it conflicts with Ruby URI and
   # makes Cuba/Rack really really upset. just call "java.*" classes
   # directly.
-
-  url = "http://127.0.0.1:8080"
+  port = java.lang.Integer.getInteger('jetty.port', 8080)
+  url = "http://127.0.0.1:#{port}"
 
   puts "\n======================================================"
   puts "Launching web browser to #{url}\n\n"
