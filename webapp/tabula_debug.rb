@@ -25,6 +25,33 @@ class TabulaDebug < Cuba
       }.to_json
     end
 
+
+    on ":file_id/clipping_paths" do |file_id|
+      par = JSON.load(req.params['coords']).first
+      page = par['page']
+
+      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [page])
+      text_extractor = extractor.instance_variable_get(:@extractor)
+      text_extractor.debug_clipping_paths = true
+
+      text_elements = extractor.extract.next.get_text([par['y1'].to_f,
+                                                       par['x1'].to_f,
+                                                       par['y2'].to_f,
+                                                       par['x2'].to_f])
+
+      res['Content-Type'] = 'application/json'
+      res.write text_extractor.clipping_paths.map { |cp|
+        {
+          'left' => cp.left,
+          'top' => cp.top,
+          'width' => cp.width,
+          'height' => cp.height
+        }
+      }.to_json
+    end
+
+
     on ":file_id/rulings" do |file_id|
       page = JSON.load(req.params['coords']).first['page']
 

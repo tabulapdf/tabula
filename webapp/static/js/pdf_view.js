@@ -178,8 +178,8 @@ Tabula.PDFView = Backbone.View.extend({
               }, this));
     },
 
-    debugCharacters: function(image) {
-      image = $(image);
+    _debugRectangularShapes: function(image, url) {
+        image = $(image);
       var imagePos = image.offset();
       var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
           .attr('width', image.width())
@@ -196,7 +196,7 @@ Tabula.PDFView = Backbone.View.extend({
 
       var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width);
 
-      $.get('/debug/' + this.PDF_ID + '/characters',
+      $.get(url,
             this.lastQuery,
             _.bind(function(data) {
                 $.each(data, _.bind(function(i, row) {
@@ -210,7 +210,17 @@ Tabula.PDFView = Backbone.View.extend({
                     });
                 }, this));
             }, this));
+
     },
+
+    debugCharacters: function(image) {
+        return this._debugRectangularShapes(image, '/debug/' + this.PDF_ID + '/characters');
+    },
+
+    debugClippingPaths: function(image) {
+        return this._debugRectangularShapes(image, '/debug/' + this.PDF_ID + '/clipping_paths');
+    },
+
     /* functions for the follow-you-around bar */
     total_selections: function(){
       return _.reduce(imgAreaSelects, function(memo, s){
