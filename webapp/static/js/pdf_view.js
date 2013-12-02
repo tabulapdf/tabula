@@ -502,13 +502,13 @@ Tabula.PDFView = Backbone.View.extend({
                          function(page) { return $(page).data('page') > $(img).data('page'); })) {
 
                   var but_id = $(img).attr('id') + '-' + selection.id;
-                  $('body').append('<button class="repeat-lassos" id="'+but_id+'">Repeat this selection</button>');
+                  $('body').append('<button class="btn repeat-lassos" id="'+but_id+'">Repeat this selection</button>');
                   var img_pos = $(img).offset();
                   $('button#' + but_id)
                       .css({
                           position: 'absolute',
-                          top: img_pos.top + selection.y1 + selection.height,
-                          left: img_pos.left + selection.x1 + selection.width
+                          top: img_pos.top + selection.y1 + selection.height - $('button#' + but_id).height() * 1.5,
+                          left: img_pos.left + selection.x1 + selection.width + 5
                       })
                       .data('selection', selection);
               }
