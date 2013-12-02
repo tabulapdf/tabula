@@ -74,8 +74,8 @@ img.page-image {
 }
 
 #myModal {
-    width: 800px;
-    margin: -170px 0 0 -400px;
+    width: 80%;
+    margin: -170px 0 0 -40%;
     max-height: 500px;
 }
 
@@ -100,8 +100,12 @@ img.page-image {
     position: fixed;
     visibility: hidden;
     top: 51px;
-    width: 40px;
+    width: 60px;
     left: 1058px;
+}
+
+div.spinner {
+  top: 10px !important;
 }
 
 ul#uploadedfiles {

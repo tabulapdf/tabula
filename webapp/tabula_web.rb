@@ -189,12 +189,13 @@ Cuba.define do
       coords.sort_by!{|coord_set| [ coord_set['page'], [coord_set['y1'], coord_set['y2']].min.to_i / 10, [coord_set['x1'], coord_set['x2']].min ] }
 
       tables = coords.each_with_index.map do |coord_set, index|
-        extractor = Tabula::Extraction::CharacterExtractor.new(pdf_path, [coord_set['page'].to_i])
+        Tabula.extract_table(pdf_path,
+                             coord_set['page'].to_i,
+                             [coord_set['y1'].to_f,
+                              coord_set['x1'].to_f,
+                              coord_set['y2'].to_f,
+                              coord_set['x2'].to_f])
 
-        Tabula.make_table(extractor.extract.next.get_text([coord_set['y1'].to_f,
-                                                                  coord_set['x1'].to_f,
-                                                                  coord_set['y2'].to_f,
-                                                                  coord_set['x2'].to_f]))
       end
 
       case req.params['format']
