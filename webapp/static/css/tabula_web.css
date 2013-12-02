@@ -79,7 +79,19 @@ img.page-image {
     max-height: 500px;
 }
 
-.modal.fade.in {
+#modal-error {
+  width: 60%;
+  margin-left: -30%;
+  top: 50% !important;
+}
+
+#modal-error textarea {
+  width: 98%;
+  font-family: monospace;
+  height: 350px;
+}
+
+.modal.fade.in#myModal {
     top: 30% !important;
 }
 
