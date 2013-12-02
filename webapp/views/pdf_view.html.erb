@@ -22,7 +22,7 @@
       </div>
     </div> <!-- /sidebar container -->
     <div class="span6">
-      <div class="alert alert-success" id="loading">Loading...</div>
+      <div class="alert alert-success" id="loading"><span id="spinner"></span><span style="position: relative; left: 16px;">Loading...</span></div>
       <div id="directionsRow" class="row">
         <div class="alert alert-info span7" >
           <button id="directions" type="button" class="close" data-dismiss="alert">×</button>
@@ -91,3 +91,24 @@
 <script type="text/javascript" src="/js/ZeroClipboard.js"></script>
 <script type="text/javascript" src="/js/table2CSV.js"></script>
 <script type="text/javascript" src="/js/pdf_view.js?1365633567"></script> <!-- cachebuster: last update time of JS. -->
+<script type="text/javascript">
+                                                                                     var SPINNER_OPTS = {
+              lines: 10, // The number of lines to draw
+              length: 5, // The length of each line
+              width: 2, // The line thickness
+              radius: 5, // The radius of the inner circle
+              corners: 1, // Corner roundness (0..1)
+              rotate: 0, // The rotation offset
+              direction: 1, // 1: clockwise, -1: counterclockwise
+              color: '#000', // #rgb or #rrggbb
+              speed: 1.1, // Rounds per second
+              trail: 60, // Afterglow percentage
+              shadow: false, // Whether to render a shadow
+              hwaccel: true, // Whether to use hardware acceleration
+              className: 'spinner', // The CSS class to assign to the spinner
+              zIndex: 2e9, // The z-index (defaults to 2000000000)
+              top: 'auto', // Top position relative to parent in px
+              left: 'auto' // Left position relative to parent in px
+          };
+ new Spinner(SPINNER_OPTS).spin($('#spinner').get(0))
+</script>
