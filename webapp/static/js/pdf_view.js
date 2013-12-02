@@ -44,6 +44,7 @@ Tabula.PDFView = Backbone.View.extend({
       'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
       'click i.icon-remove': 'deletePage',
       'click i.rotate-left i.rotate-right': 'rotatePage',
+      'click button.repeat-lassos': 'repeat_lassos',
 
       //events related to the chardin help library.
       'click a#chardin-help': 'fire_chardin_event',
@@ -264,7 +265,22 @@ Tabula.PDFView = Backbone.View.extend({
         }
     },
 
-    repeat_lassos: function(){ alert("not yet implemented")},
+    repeat_lassos: function(e) {
+        var page_idx = parseInt($(e.currentTarget).attr('id').split('-')[1]);
+        var selection_to_clone = $(e.currentTarget).data('selection');
+
+        $('#multiselect-checkbox').prop('checked', true);
+        this.toggleMultiSelectMode();
+
+        _(imgAreaSelects.slice(page_idx)).each(_.bind(function(imgAreaSelectAPIObj) {
+            imgAreaSelectAPIObj.createNewSelection(selection_to_clone.x1, selection_to_clone.y1,
+                                                   selection_to_clone.x2, selection_to_clone.y2);
+            imgAreaSelectAPIObj.setOptions({show: true});
+            imgAreaSelectAPIObj.update();
+            this.showSelectionThumbnail(imgAreaSelectAPIObj.getImg(),
+                                        selection_to_clone);
+        }, this));
+    },
 
     query_all_data : function(){
       all_coords = [];
@@ -356,6 +372,16 @@ Tabula.PDFView = Backbone.View.extend({
         });
     },
 
+    showSelectionThumbnail: function(img, selection) {
+        $('#thumb-' + img.attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
+        var sshow = $('#thumb-' + img.attr('id') + ' #selection-show-' + selection.id);
+        var thumbScale = $('#thumb-' + img.attr('id') + ' img').width() / img.width();
+        $(sshow).css('top', selection.y1 * thumbScale + 'px')
+            .css('left', selection.x1 * thumbScale + 'px')
+            .css('width', ((selection.x2 - selection.x1) * thumbScale) + 'px')
+            .css('height', ((selection.y2 - selection.y1) * thumbScale) + 'px');
+    },
+
     drawDetectedTables: function($img, tableGuesses){
       //$img = $(e);
       var imageIndex = $img.data('page');
@@ -386,13 +412,7 @@ Tabula.PDFView = Backbone.View.extend({
 
         //create a red box for this selection.
         if(selection){ //selection is undefined if it overlaps an existing selection.
-          $('#thumb-' + $img.attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
-          var sshow = $('#thumb-' + $img.attr('id') + ' #selection-show-' + selection.id);
-          var thumbScale = $('#thumb-' + $img.attr('id') + ' img').width() / $img.width();
-          $(sshow).css('top', selection.y1 * thumbScale + 'px')
-              .css('left', selection.x1 * thumbScale + 'px')
-              .css('width', ((selection.x2 - selection.x1) * thumbScale) + 'px')
-              .css('height', ((selection.y2 - selection.y1) * thumbScale) + 'px');
+            this.showSelectionThumbnail($img, selection);
         }
 
       });
@@ -418,6 +438,7 @@ Tabula.PDFView = Backbone.View.extend({
     createImgareaselects : function(tableGuessesTmp, pages){
       tableGuesses = tableGuessesTmp;
       var selectsNotYetLoaded = _(pages).filter(function(page){ return !page['deleted']}).length;
+      var that = this;
 
       imgAreaSelects = $.map(pages, _.bind(function(page, arrayIndex){
         pageIndex = arrayIndex + 1;
@@ -434,9 +455,9 @@ Tabula.PDFView = Backbone.View.extend({
           //minHeight: 50, minWidth: 100,
 
           onSelectStart: function(img, selection)  {
-              //$('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
-              $('#thumb-' + $(img).attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
+              that.showSelectionThumbnail($(img), selection);
           },
+
           onSelectChange: function(img, selection) {
               var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
               var scale = $('#thumb-' + $(img).attr('id') + ' img').width() / $(img).width();
@@ -445,7 +466,19 @@ Tabula.PDFView = Backbone.View.extend({
                   .css('width', ((selection.x2 - selection.x1) * scale) + 'px')
                   .css('height', ((selection.y2 - selection.y1) * scale) + 'px');
 
+              var b;
+              if (b = $('button#' + $(img).attr('id') + '-' + selection.id)) {
+                  var img_pos = $(img).offset();
+                  $(b)
+                      .css({
+                          top: img_pos.top + selection.y1 + selection.height,
+                          left: img_pos.left + selection.x1 + selection.width
+                      })
+                      .data('selection', selection);
+              }
+
           },
+
           onSelectEnd: _.bind(function(img, selection) {
               if (selection.width == 0 && selection.height == 0) {
                   $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id).css('display', 'none');
@@ -461,6 +494,22 @@ Tabula.PDFView = Backbone.View.extend({
 
               var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / thumb_width;
 
+              // create button for repeating lassos, only if there are more pages after this
+              if (_.some($('img.page-image'),
+                         function(page) { return $(page).data('page') > $(img).data('page'); })) {
+
+                  var but_id = $(img).attr('id') + '-' + selection.id;
+                  $('body').append('<button class="repeat-lassos" id="'+but_id+'">Repeat this selection</button>');
+                  var img_pos = $(img).offset();
+                  $('button#' + but_id)
+                      .css({
+                          position: 'absolute',
+                          top: img_pos.top + selection.y1 + selection.height,
+                          left: img_pos.left + selection.x1 + selection.width
+                      })
+                      .data('selection', selection);
+              }
+
               var coords = {
                   x1: selection.x1 * scale,
                   x2: selection.x2 * scale,
@@ -473,10 +522,11 @@ Tabula.PDFView = Backbone.View.extend({
               }
               this.toggleDownloadAllAndClearButtons();
           }, this),
+
           onSelectCancel: _.bind( function(img, selection, selectionId){
-            $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selectionId).remove();
-            //console.log("selections on page: " + this.total_selections() ); // this one hasn't been deleted yet.
-            this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
+              $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selectionId).remove();
+              $('#' + $(img).attr('id') + '-' + selectionId).remove();
+              this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
             //TODO, if there are no selections, activate the restore detected tables button.
               this.toggleDownloadAllAndClearButtons();
           }, this),
