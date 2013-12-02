@@ -1,5 +1,3 @@
-// TODO this really needs a refactor. maybe bootstrap.js
-
 Tabula = {};
 
 var clip = null;
@@ -315,7 +313,7 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     doQuery: function(pdf_id, coords) {
-      $('#loading').css('left', ($(window).width() - 98) + 'px').css('visibility', 'visible');
+      $('#loading').css('left', ($(window).width() - 118) + 'px').css('visibility', 'visible');
 
       this.lastQuery = {coords: JSON.stringify(coords) ,
                 use_lines :  $('#use_lines').is(':checked')

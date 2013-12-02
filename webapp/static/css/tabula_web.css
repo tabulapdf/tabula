@@ -100,8 +100,12 @@ img.page-image {
     position: fixed;
     visibility: hidden;
     top: 51px;
-    width: 40px;
+    width: 60px;
     left: 1058px;
+}
+
+div.spinner {
+  top: 10px !important;
 }
 
 ul#uploadedfiles {
