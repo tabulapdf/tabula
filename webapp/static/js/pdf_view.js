@@ -273,6 +273,7 @@ Tabula.PDFView = Backbone.View.extend({
         this.toggleMultiSelectMode();
 
         _(imgAreaSelects.slice(page_idx)).each(_.bind(function(imgAreaSelectAPIObj) {
+            if (imgAreaSelectAPIObj === false) return;
             imgAreaSelectAPIObj.createNewSelection(selection_to_clone.x1, selection_to_clone.y1,
                                                    selection_to_clone.x2, selection_to_clone.y2);
             imgAreaSelectAPIObj.setOptions({show: true});
@@ -285,6 +286,8 @@ Tabula.PDFView = Backbone.View.extend({
     query_all_data : function(){
       all_coords = [];
       _(imgAreaSelects).each(function(imgAreaSelectAPIObj){
+
+          if (imgAreaSelectAPIObj === false) return;
 
           var thumb_width = imgAreaSelectAPIObj.getImg().width();
           var thumb_height = imgAreaSelectAPIObj.getImg().height();
@@ -442,7 +445,7 @@ Tabula.PDFView = Backbone.View.extend({
 
       imgAreaSelects = $.map(pages, _.bind(function(page, arrayIndex){
         pageIndex = arrayIndex + 1;
-        if (page['deleted']){
+        if (page['deleted']) {
           return false;
         }
         $image = $('img#page-' + pageIndex);
