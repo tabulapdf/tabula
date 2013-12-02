@@ -1,5 +1,3 @@
-// TODO this really needs a refactor. maybe bootstrap.js
-
 Tabula = {};
 
 var clip = null;
@@ -130,7 +128,7 @@ Tabula.PDFView = Backbone.View.extend({
         this.doQuery(this.PDF_ID, JSON.parse(this.lastQuery["coords"])); //TODO: stash lastCoords, rather than stashing lastQuery and then parsing it.
     },
 
-    debugRulings: function(image, render, clean) {
+    debugRulings: function(image, render, clean, show_intersections) {
         image = $(image);
         var imagePos = image.offset();
         var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
@@ -139,33 +137,47 @@ Tabula.PDFView = Backbone.View.extend({
             .css('top', imagePos.top + 'px')
             .css('left', imagePos.left + 'px');
         $('body').append(newCanvas);
-        var pdf_width = parseInt($(image).data('original-width'));
 
-        var scaleFactor = image.width() / pdf_width ;
+        var pdf_rotation = parseInt($(image).data('rotation'));
+        var pdf_width = parseInt($(image).data('original-width'));
+        var pdf_height = parseInt($(image).data('original-height'));
+        var thumb_width = $(image).width();
+
+        var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width);
 
         var lq = $.extend(this.lastQuery,
                           {
                               pdf_page_width: pdf_width,
                               render_page: render == true,
-                              clean_rulings: clean == true
+                              clean_rulings: clean == true,
+                              show_intersections: show_intersections == true
                           });
 
         $.get('/debug/' + this.PDF_ID + '/rulings',
               lq,
               _.bind(function(data) {
-                  $.each(data, _.bind(function(i, ruling) {
+                  $.each(data.rulings, _.bind(function(i, ruling) {
                       $("canvas").drawLine({
                           strokeStyle: this.colors[i % this.colors.length],
                           strokeWidth: 1,
-                          x1: ruling[0] * scaleFactor, y1: ruling[1] * scaleFactor,
-                          x2: ruling[2] * scaleFactor, y2: ruling[3] * scaleFactor
+                          x1: ruling[0] * scale, y1: ruling[1] * scale,
+                          x2: ruling[2] * scale, y2: ruling[3] * scale
+                      });
+                  }, this));
+
+                  $.each(data.intersections, _.bind(function(i, intersection) {
+                      $("canvas").drawEllipse({
+                          fillStyle: this.colors[i % this.colors.length],
+                          width: 5, height: 5,
+                          x: intersection[0] * scale,
+                          y: intersection[1] * scale
                       });
                   }, this));
               }, this));
     },
 
-    debugCharacters: function(image) {
-      image = $(image);
+    _debugRectangularShapes: function(image, url) {
+        image = $(image);
       var imagePos = image.offset();
       var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
           .attr('width', image.width())
@@ -182,7 +194,7 @@ Tabula.PDFView = Backbone.View.extend({
 
       var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width);
 
-      $.get('/debug/' + this.PDF_ID + '/characters',
+      $.get(url,
             this.lastQuery,
             _.bind(function(data) {
                 $.each(data, _.bind(function(i, row) {
@@ -196,7 +208,17 @@ Tabula.PDFView = Backbone.View.extend({
                     });
                 }, this));
             }, this));
+
     },
+
+    debugCharacters: function(image) {
+        return this._debugRectangularShapes(image, '/debug/' + this.PDF_ID + '/characters');
+    },
+
+    debugClippingPaths: function(image) {
+        return this._debugRectangularShapes(image, '/debug/' + this.PDF_ID + '/clipping_paths');
+    },
+
     /* functions for the follow-you-around bar */
     total_selections: function(){
       return _.reduce(imgAreaSelects, function(memo, s){
@@ -231,6 +253,15 @@ Tabula.PDFView = Backbone.View.extend({
         this.drawDetectedTables( $('img#page-' + pageIndex), tableGuesses );
       }
       this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
+    },
+
+    toggleDownloadAllAndClearButtons: function() {
+        if (this.total_selections() > 0) {
+            $('#all-data, #clear-all-selections').removeAttr('disabled');
+        }
+        else {
+            $('#all-data, #clear-all-selections').attr('disabled', 'disabled');
+        }
     },
 
     repeat_lassos: function(){ alert("not yet implemented")},
@@ -282,7 +313,7 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     doQuery: function(pdf_id, coords) {
-      $('#loading').css('left', ($(window).width() - 98) + 'px').css('visibility', 'visible');
+      $('#loading').css('left', ($(window).width() - 118) + 'px').css('visibility', 'visible');
 
       this.lastQuery = {coords: JSON.stringify(coords) ,
                 use_lines :  $('#use_lines').is(':checked')
@@ -432,12 +463,14 @@ Tabula.PDFView = Backbone.View.extend({
               if(!this.noModalAfterSelect){
                 this.doQuery(this.PDF_ID, [coords]);
               }
+              this.toggleDownloadAllAndClearButtons();
           }, this),
           onSelectCancel: _.bind( function(img, selection, selectionId){
             $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selectionId).remove();
             //console.log("selections on page: " + this.total_selections() ); // this one hasn't been deleted yet.
             this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
             //TODO, if there are no selections, activate the restore detected tables button.
+              this.toggleDownloadAllAndClearButtons();
           }, this),
           onInit: _.bind(drawDetectedTablesIfAllAreLoaded, this)
         });
