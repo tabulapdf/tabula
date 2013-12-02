@@ -257,6 +257,15 @@ Tabula.PDFView = Backbone.View.extend({
       this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
     },
 
+    toggleDownloadAllAndClearButtons: function() {
+        if (this.total_selections() > 0) {
+            $('#all-data, #clear-all-selections').removeAttr('disabled');
+        }
+        else {
+            $('#all-data, #clear-all-selections').attr('disabled', 'disabled');
+        }
+    },
+
     repeat_lassos: function(){ alert("not yet implemented")},
 
     query_all_data : function(){
@@ -456,12 +465,14 @@ Tabula.PDFView = Backbone.View.extend({
               if(!this.noModalAfterSelect){
                 this.doQuery(this.PDF_ID, [coords]);
               }
+              this.toggleDownloadAllAndClearButtons();
           }, this),
           onSelectCancel: _.bind( function(img, selection, selectionId){
             $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selectionId).remove();
             //console.log("selections on page: " + this.total_selections() ); // this one hasn't been deleted yet.
             this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
             //TODO, if there are no selections, activate the restore detected tables button.
+              this.toggleDownloadAllAndClearButtons();
           }, this),
           onInit: _.bind(drawDetectedTablesIfAllAreLoaded, this)
         });
