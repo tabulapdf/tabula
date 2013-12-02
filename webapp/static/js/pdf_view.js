@@ -319,9 +319,11 @@ Tabula.PDFView = Backbone.View.extend({
                 use_lines :  $('#use_lines').is(':checked')
               };
 
-      $.post('/pdf/' + pdf_id + '/data',
-              this.lastQuery,
-              _.bind(function(data) {
+        $.ajax({
+            type: 'POST',
+            url: '/pdf/' + pdf_id + '/data',
+            data: this.lastQuery,
+            success: _.bind(function(data) {
                   var tableHTML = '<table class="table table-condensed table-bordered">';
                   $.each(data, function(i, row) {
                       tableHTML += '<tr><td>' + $.map(row, function(cell, j) { return cell.text; }).join('</td><td>') + '</td></tr>';
@@ -345,7 +347,13 @@ Tabula.PDFView = Backbone.View.extend({
                   $('#myModal').modal();
                   clip.glue('#copy-csv-to-clipboard');
                   $('#loading').css('visibility', 'hidden');
-              }, this));
+              }, this),
+            error: _.bind(function(xhr, status, error) {
+                $('#modal-error textarea').html(xhr.responseText);
+                $('#loading').css('visibility', 'hidden');
+                $('#modal-error').modal();
+            })
+        });
     },
 
     drawDetectedTables: function($img, tableGuesses){
