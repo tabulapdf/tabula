@@ -60,12 +60,13 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     rotatePage: function(t) {
-
+        alert('not implemented');
     },
 
     deletePage: function(t) {
         var page_thumbnail = $(t.target).parent().parent();
         var page_number = page_thumbnail.data('page').split('-')[1];
+        var that = this;
         if (!confirm('Delete page ' + page_number + '?')) return;
         $.post('/pdf/' + this.PDF_ID + '/page/' + page_number,
                { _method: 'delete' },
@@ -87,11 +88,11 @@ Tabula.PDFView = Backbone.View.extend({
                               function() { $(this).remove(); });
 
                   $('div.imgareaselect').each(function(){
-                    //if ( parseInt( $(this).attr('id').replace("page-", '')) > page_number){
                     if( $(this).offset()["top"] > (deleted_page_top + deleted_page_height) ){
                       $(this).offset({top: $(this).offset()["top"] - deleted_page_height });
                     }
                   });
+                   that.pageCount -= 1;
                });
 
     },
@@ -102,11 +103,13 @@ Tabula.PDFView = Backbone.View.extend({
     noModalAfterSelect: $('#multiselect-checkbox').is(':checked'),
     lastQuery: [{}],
     lastSelection: undefined,
+    pageCount: undefined,
 
     initialize: function(){
       _.bindAll(this, 'render', 'createImgareaselects', 'getTablesJson', 'total_selections',
                 'toggleClearAllAndRestorePredetectedTablesButtons', 'toggleMultiSelectMode', 'query_all_data', 'toggleUseLines');
-      this.render();
+        this.pageCount = $('img.page-image').length;
+        this.render();
     },
 
     render : function(){
@@ -244,7 +247,8 @@ Tabula.PDFView = Backbone.View.extend({
     },
     clear_all_selection: function(){
       _(imgAreaSelects).each(function(imgAreaSelectAPIObj){
-        imgAreaSelectAPIObj.cancelSelections();
+          if (imgAreaSelectAPIObj === false) return;
+          imgAreaSelectAPIObj.cancelSelections();
       });
     },
 
@@ -269,49 +273,50 @@ Tabula.PDFView = Backbone.View.extend({
         var page_idx = parseInt($(e.currentTarget).attr('id').split('-')[1]);
         var selection_to_clone = $(e.currentTarget).data('selection');
 
+        $(e.currentTarget).fadeOut(500, function() { $(this).remove(); });
+
         $('#multiselect-checkbox').prop('checked', true);
         this.toggleMultiSelectMode();
 
-        _(imgAreaSelects.slice(page_idx)).each(_.bind(function(imgAreaSelectAPIObj) {
+        imgAreaSelects.slice(page_idx).forEach(function(imgAreaSelectAPIObj) {
             if (imgAreaSelectAPIObj === false) return;
+            imgAreaSelectAPIObj.cancelSelections();
             imgAreaSelectAPIObj.createNewSelection(selection_to_clone.x1, selection_to_clone.y1,
                                                    selection_to_clone.x2, selection_to_clone.y2);
             imgAreaSelectAPIObj.setOptions({show: true});
             imgAreaSelectAPIObj.update();
             this.showSelectionThumbnail(imgAreaSelectAPIObj.getImg(),
                                         selection_to_clone);
-        }, this));
+        }, this);
     },
 
     query_all_data : function(){
-      all_coords = [];
-      _(imgAreaSelects).each(function(imgAreaSelectAPIObj){
+        all_coords = [];
+        imgAreaSelects.forEach(function(imgAreaSelectAPIObj){
 
-          if (imgAreaSelectAPIObj === false) return;
+            if (imgAreaSelectAPIObj === false) return;
 
-          var thumb_width = imgAreaSelectAPIObj.getImg().width();
-          var thumb_height = imgAreaSelectAPIObj.getImg().height();
+            var thumb_width = imgAreaSelectAPIObj.getImg().width();
+            var thumb_height = imgAreaSelectAPIObj.getImg().height();
 
-          var pdf_width = parseInt(imgAreaSelectAPIObj.getImg().data('original-width'));
-          var pdf_height = parseInt(imgAreaSelectAPIObj.getImg().data('original-height'));
-          var pdf_rotation = parseInt(imgAreaSelectAPIObj.getImg().data('rotation'));
+            var pdf_width = parseInt(imgAreaSelectAPIObj.getImg().data('original-width'));
+            var pdf_height = parseInt(imgAreaSelectAPIObj.getImg().data('original-height'));
+            var pdf_rotation = parseInt(imgAreaSelectAPIObj.getImg().data('rotation'));
 
-          var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / thumb_width;
+            var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / thumb_width;
 
-        _(imgAreaSelectAPIObj.getSelections()).each(function(selection){
-
-          new_coord = {
-                x1: selection.x1 * scale,
-                x2: selection.x2 * scale,
-                y1: selection.y1 * scale,
-                y2: selection.y2 * scale,
-                page: imgAreaSelectAPIObj.getImg().data('page')
-              }
-          all_coords.push(new_coord);
+            imgAreaSelectAPIObj.getSelections().forEach(function(selection){
+                new_coord = {
+                    x1: selection.x1 * scale,
+                    x2: selection.x2 * scale,
+                    y1: selection.y1 * scale,
+                    y2: selection.y2 * scale,
+                    page: imgAreaSelectAPIObj.getImg().data('page')
+                }
+                all_coords.push(new_coord);
+            });
         });
-      });
-
-      this.doQuery(this.PDF_ID, all_coords);
+        this.doQuery(this.PDF_ID, all_coords);
     },
 
     /* Chardin help-related functions */
@@ -437,6 +442,73 @@ Tabula.PDFView = Backbone.View.extend({
           error( _.bind(function(){ this.createImgareaselects([], []) }, this));
     },
 
+    _onSelectStart: function(img, selection) {
+        this.showSelectionThumbnail($(img), selection);
+    },
+
+    _onSelectChange: function(img, selection) {
+        var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
+        var scale = $('#thumb-' + $(img).attr('id') + ' img').width() / $(img).width();
+        $(sshow).css('top', selection.y1 * scale + 'px')
+            .css('left', selection.x1 * scale + 'px')
+            .css('width', ((selection.x2 - selection.x1) * scale) + 'px')
+            .css('height', ((selection.y2 - selection.y1) * scale) + 'px');
+
+        var b;
+        var but_id = $(img).attr('id') + '-' + selection.id;
+        if (b = $('button#' + but_id)) {
+            var img_pos = $(img).offset();
+            $(b)
+                .css({
+                    top: img_pos.top + selection.y1 + selection.height - $('button#' + but_id).height() * 1.5,
+                    left: img_pos.left + selection.x1 + selection.width + 5
+                })
+                .data('selection', selection);
+        }
+    },
+
+    _onSelectEnd: function(img, selection) {
+        if (selection.width == 0 && selection.height == 0) {
+            $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id).css('display', 'none');
+        }
+        if (selection.height * selection.width < 5000) return;
+        this.lastSelection = selection;
+        var thumb_width = $(img).width();
+        var thumb_height = $(img).height();
+
+        var pdf_width = parseInt($(img).data('original-width'));
+        var pdf_height = parseInt($(img).data('original-height'));
+        var pdf_rotation = parseInt($(img).data('rotation'));
+
+        var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / thumb_width;
+
+        // create button for repeating lassos, only if there are more pages after this
+        if (this.pageCount > $(img).data('page')) {
+            var but_id = $(img).attr('id') + '-' + selection.id;
+            $('body').append('<button class="btn repeat-lassos" id="'+but_id+'">Repeat this selection</button>');
+            var img_pos = $(img).offset();
+            $('button#' + but_id)
+                .css({
+                    position: 'absolute',
+                    top: img_pos.top + selection.y1 + selection.height - $('button#' + but_id).height() * 1.5,
+                    left: img_pos.left + selection.x1 + selection.width + 5
+                })
+                .data('selection', selection);
+        }
+
+        var coords = {
+            x1: selection.x1 * scale,
+            x2: selection.x2 * scale,
+            y1: selection.y1 * scale,
+            y2: selection.y2 * scale,
+            page: $(img).data('page')
+        };
+        if(!this.noModalAfterSelect){
+            this.doQuery(this.PDF_ID, [coords]);
+        }
+        this.toggleDownloadAllAndClearButtons();
+    },
+
     //skip if pages is "deleted"
     createImgareaselects : function(tableGuessesTmp, pages){
       tableGuesses = tableGuessesTmp;
@@ -457,74 +529,9 @@ Tabula.PDFView = Backbone.View.extend({
           multipleSelections: true,
           //minHeight: 50, minWidth: 100,
 
-          onSelectStart: function(img, selection)  {
-              that.showSelectionThumbnail($(img), selection);
-          },
-
-          onSelectChange: function(img, selection) {
-              var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
-              var scale = $('#thumb-' + $(img).attr('id') + ' img').width() / $(img).width();
-              $(sshow).css('top', selection.y1 * scale + 'px')
-                  .css('left', selection.x1 * scale + 'px')
-                  .css('width', ((selection.x2 - selection.x1) * scale) + 'px')
-                  .css('height', ((selection.y2 - selection.y1) * scale) + 'px');
-
-              var b;
-              if (b = $('button#' + $(img).attr('id') + '-' + selection.id)) {
-                  var img_pos = $(img).offset();
-                  $(b)
-                      .css({
-                          top: img_pos.top + selection.y1 + selection.height,
-                          left: img_pos.left + selection.x1 + selection.width
-                      })
-                      .data('selection', selection);
-              }
-
-          },
-
-          onSelectEnd: _.bind(function(img, selection) {
-              if (selection.width == 0 && selection.height == 0) {
-                  $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id).css('display', 'none');
-              }
-              if (selection.height * selection.width < 5000) return;
-              this.lastSelection = selection;
-              var thumb_width = $(img).width();
-              var thumb_height = $(img).height();
-
-              var pdf_width = parseInt($(img).data('original-width'));
-              var pdf_height = parseInt($(img).data('original-height'));
-              var pdf_rotation = parseInt($(img).data('rotation'));
-
-              var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / thumb_width;
-
-              // create button for repeating lassos, only if there are more pages after this
-              if (_.some($('img.page-image'),
-                         function(page) { return $(page).data('page') > $(img).data('page'); })) {
-
-                  var but_id = $(img).attr('id') + '-' + selection.id;
-                  $('body').append('<button class="btn repeat-lassos" id="'+but_id+'">Repeat this selection</button>');
-                  var img_pos = $(img).offset();
-                  $('button#' + but_id)
-                      .css({
-                          position: 'absolute',
-                          top: img_pos.top + selection.y1 + selection.height - $('button#' + but_id).height() * 1.5,
-                          left: img_pos.left + selection.x1 + selection.width + 5
-                      })
-                      .data('selection', selection);
-              }
-
-              var coords = {
-                  x1: selection.x1 * scale,
-                  x2: selection.x2 * scale,
-                  y1: selection.y1 * scale,
-                  y2: selection.y2 * scale,
-                  page: $(img).data('page')
-              };
-              if(!this.noModalAfterSelect){
-                this.doQuery(this.PDF_ID, [coords]);
-              }
-              this.toggleDownloadAllAndClearButtons();
-          }, this),
+          onSelectStart: _.bind(that._onSelectStart, that),
+          onSelectChange: that._onSelectChange,
+          onSelectEnd: _.bind(that._onSelectEnd, that),
 
           onSelectCancel: _.bind( function(img, selection, selectionId){
               $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selectionId).remove();
