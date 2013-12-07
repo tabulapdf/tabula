@@ -509,6 +509,17 @@ Tabula.PDFView = Backbone.View.extend({
         this.toggleDownloadAllAndClearButtons();
     },
 
+    _onSelectCancel: function(img, selection, selectionId) {
+        $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selectionId).remove();
+        $('#' + $(img).attr('id') + '-' + selectionId).remove();
+        var but_id = $(img).attr('id') + '-' + selectionId;
+        $('button#' + but_id).remove();
+        this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
+        //TODO, if there are no selections, activate the restore detected tables button.
+        this.toggleDownloadAllAndClearButtons();
+
+    },
+
     //skip if pages is "deleted"
     createImgareaselects : function(tableGuessesTmp, pages){
       tableGuesses = tableGuessesTmp;
@@ -527,19 +538,11 @@ Tabula.PDFView = Backbone.View.extend({
           allowOverlaps: false,
           show: true,
           multipleSelections: true,
-          //minHeight: 50, minWidth: 100,
 
           onSelectStart: _.bind(that._onSelectStart, that),
           onSelectChange: that._onSelectChange,
           onSelectEnd: _.bind(that._onSelectEnd, that),
-
-          onSelectCancel: _.bind( function(img, selection, selectionId){
-              $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selectionId).remove();
-              $('#' + $(img).attr('id') + '-' + selectionId).remove();
-              this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
-            //TODO, if there are no selections, activate the restore detected tables button.
-              this.toggleDownloadAllAndClearButtons();
-          }, this),
+          onSelectCancel: _.bind(that._onSelectCancel, that),
           onInit: _.bind(drawDetectedTablesIfAllAreLoaded, this)
         });
       }, this));
