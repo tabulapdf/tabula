@@ -8,18 +8,15 @@ class DetectTablesJob < Tabula::Background::Job
     file = options[:filename]
     output_dir = options[:output_dir]
 
-    #get page count
-    pdf_file = Tabula::Extraction.openPDF(file)
-    page_count = pdf_file.getDocumentCatalog.getAllPages.size
-    pdf_file.close
 
-    page_areas_by_page = (0...page_count).map do |page_index|
+    page_areas_by_page = []
+
+    extractor = Tabula::Extraction::ObjectExtractor.new(file, :all)
+    page_count = extractor.page_count
+    extractor.extract.each do |page|
+      page_index = page.number(:zero_indexed)
       at( (page_count + page_index) / 2, page_count, "auto-detecting tables...") #starting at 50%...
-      # TODO uncomment this and remove LSD call when we get vector lines in tabula-extractor gem
-      # clean_lines = Tabula::Ruling::clean_rulings(Tabula::Extraction::LineExtractor.lines_in_pdf_page(file, page_index))
-      clean_lines = Tabula::Ruling::clean_rulings(Tabula::LSD::detect_lines_in_pdf_page(file, page_index))
-      page_areas = Tabula::TableGuesser::find_rects_from_lines(clean_lines)
-      page_areas.map!{|rect| rect.dims(:left, :top, :width, :height)}
+      page_areas_by_page << page.spreadsheets.map{|rect| rect.dims(:left, :top, :width, :height)}
     end
     File.open(output_dir + "/tables.json", 'w') do |f|
       f.puts page_areas_by_page.to_json
