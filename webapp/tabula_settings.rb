@@ -76,6 +76,11 @@ module TabulaSettings
   end
 
   def self.useExtractionCache
+    # don't use cache if debugging
+    if self.enableDebug
+      return false
+    end
+
     extraction_cache = java.lang.System.getProperty('tabula.extraction_cache')
     unless extraction_cache.nil?
       return (extraction_cache.to_i > 0)
