@@ -178,7 +178,7 @@ form#download-form input.linklike:hover{
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc',endColorstr='#ff0077b3',GradientType=0);
 }
 
-a#chardin-help{
+a#help-start{
   font-size: 16px;
   text-decoration: underline;
   color: blue;

@@ -10,6 +10,45 @@ $(document).ready(function() {
         client.setText($('table').table2CSV({delivery: null}));
         $('#myModal span').css('display', 'inline').delay(900).fadeOut('slow');
     });
+
+  Tabula.tour = new Tour(
+  {
+    storage: false,
+    onStart: function(){
+      $('a#help-start').text("Close Help");
+    },
+    onEnd: function(){
+      $('a#help-start').text("Help");
+    }
+  });
+
+  Tabula.tour.addSteps([
+    {
+      content: "Click and drag to select each table in your document. Once you've selected it, a window to preview your data will appear, along with options to download it as a spreadsheet.",
+      element: ".page-image#page-1",
+      title: "Select Tables",
+      placement: 'right'
+    },
+    {
+      element: "#all-data",
+      title: "Download Data",
+      content: "When you've selected all of the tables in your PDF, click this button to preview the data from all of the selections and download it.",
+      placement: 'left'
+    },
+    {
+      element: "#multiselect-checkbox",
+      title: "Multi-Select Mode",
+      content: "After you select each table on the page, a data preview window appears. If you want to select multiple tables without interruption, check this box to suppress the preview window.",
+      placement: 'left'
+    },
+    {
+      element: "#thumb-page-2",
+      title: "Page Shortcuts",
+      content: "Click a thumbnail to skip directly to that page.",
+      placement: 'right',
+      parent: 'body'
+    }
+  ]);
 });
 
 //make the "follow you around bar" actually follow you around. ("sticky nav")
@@ -33,7 +72,6 @@ $(document).ready(function() {
     $(window).scroll(_.throttle(_.bind(stick, elem), 100));
 });
 
-
 Tabula.PDFView = Backbone.View.extend({
     el : 'body',
     events : {
@@ -46,10 +84,7 @@ Tabula.PDFView = Backbone.View.extend({
       'click i.rotate-left i.rotate-right': 'rotatePage',
       'click button.repeat-lassos': 'repeat_lassos',
 
-      //events related to the chardin help library.
-      'click a#chardin-help': 'fire_chardin_event',
-      'chardinJs:stop body' : 'chardin_stop',
-      'chardinJs:start body' : 'chardin_start',
+      'click a#help-start': function(){ Tabula.tour.ended ? Tabula.tour.restart(true) : Tabula.tour.start(true); },
 
       //events for buttons on the follow-you-around bar.
       'click #multiselect-checkbox' : 'toggleMultiSelectMode',
@@ -317,23 +352,6 @@ Tabula.PDFView = Backbone.View.extend({
             });
         });
         this.doQuery(this.PDF_ID, all_coords);
-    },
-
-    /* Chardin help-related functions */
-    fire_chardin_event: function(){
-      if($('a#chardin-help').text() == "Help"){
-        $('body').chardinJs('start');
-      }else{
-        $('body').chardinJs('stop');
-      }
-    },
-    chardin_stop : function(){
-      $('a#chardin-help').text("Help");
-      $("#multiselect-label").css("color", "black");
-    },
-    chardin_start: function(){
-      $('a#chardin-help').text("Close Help");
-      $("#multiselect-label").css("color", "black");
     },
 
     doQuery: function(pdf_id, coords) {
