@@ -5,9 +5,7 @@
         <ul class="thumbnail-list">
           <% pages.each_with_index do |p, i| %>
           <% next if p['deleted'] %>
-          <li data-page="page-<%= i + 1 %>" id="thumb-page-<%= i + 1 %>"
-            <% if i == 0 %> data-position="right" data-intro="Click a thumbnail to skip directly to that page." <% end %>
-            >
+          <li data-page="page-<%= i + 1 %>" id="thumb-page-<%= i + 1 %>" <% if i == 0 %> data-position="right" data-intro="Click a thumbnail to skip directly to that page." <% end %>>
             <a href="#page-<%= i + 1 %>"><img src="/pdfs/<%= file_id %>/document_560_<%= i+1 %>.png" width="100"></a>
             <span>
               <i title="delete this page" class="icon-remove"></i>
@@ -51,9 +49,9 @@
         <!-- <button id="repeat-lassos" type="button" class="btn btn-primary">Repeat Page 1 Lassos</button> -->
         <button id="clear-all-selections" type="button" class="btn btn-danger" disabled="disabled">Clear All Selections</button>
         <button id="restore-detected-tables" type="button" class="btn btn-warning" style="display: none;">Autodetect Tables</button>
-        <br /><input type="checkbox" id="multiselect-checkbox"> <label id="multiselect-label" for="multiselect-checkbox" data-position="bottom" data-intro="After you select each table on the page, a data preview window appears. If you want to select multiple tables without interruption, check this box to suppress the preview window.">Multi-Select Mode <a class="tooltip-modal" href="#" data-placement="left" data-toggle="tooltip" title="Check this to select multiple tables without their extracted data appearing afterwards." ><i class="icon-question-sign" ></i></a></label>
+        <br /><input type="checkbox" id="multiselect-checkbox"> <label id="multiselect-label" for="multiselect-checkbox">Multi-Select Mode <a class="tooltip-modal" href="#" data-placement="left" data-toggle="tooltip" title="Check this to select multiple tables without their extracted data appearing afterwards." ><i class="icon-question-sign" ></i></a></label>
         <br />
-        <a href="#" id="chardin-help">Help</a>
+        <a href="#" id="help-start">Help</a>
       </div>
     </div> <!-- followyouaround bar container -->
   </div>
@@ -99,7 +97,7 @@
       </form>
     </div>
 </div>
-<script type="text/javascript" src="/js/chardinjs.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap-tour.min.js"></script>
 
 <script type="text/javascript" src="/js/ZeroClipboard.js"></script>
 <script type="text/javascript" src="/js/table2CSV.js"></script>
