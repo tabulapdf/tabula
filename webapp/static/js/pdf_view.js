@@ -10,6 +10,45 @@ $(document).ready(function() {
         client.setText($('table').table2CSV({delivery: null}));
         $('#myModal span').css('display', 'inline').delay(900).fadeOut('slow');
     });
+
+  Tabula.tour = new Tour(
+  {
+    storage: false,
+    onStart: function(){
+      $('a#help-start').text("Close Help");
+    },
+    onEnd: function(){
+      $('a#help-start').text("Help");
+    }
+  });
+
+  Tabula.tour.addSteps([
+    {
+      content: "Click and drag to select each table in your document. Once you've selected it, a window to preview your data will appear, along with options to download it as a spreadsheet.",
+      element: ".page-image#page-1",
+      title: "Select Tables",
+      placement: 'right'
+    },
+    {
+      element: "#all-data",
+      title: "Download Data",
+      content: "When you've selected all of the tables in your PDF, click this button to preview the data from all of the selections and download it.",
+      placement: 'left'
+    },
+    {
+      element: "#multiselect-checkbox",
+      title: "Multi-Select Mode",
+      content: "After you select each table on the page, a data preview window appears. If you want to select multiple tables without interruption, check this box to suppress the preview window.",
+      placement: 'left'
+    },
+    {
+      element: "#thumb-page-2",
+      title: "Page Shortcuts",
+      content: "Click a thumbnail to skip directly to that page.",
+      placement: 'right',
+      parent: 'body'
+    }
+  ]);
 });
 
 //make the "follow you around bar" actually follow you around. ("sticky nav")
@@ -33,7 +72,6 @@ $(document).ready(function() {
     $(window).scroll(_.throttle(_.bind(stick, elem), 100));
 });
 
-
 Tabula.PDFView = Backbone.View.extend({
     el : 'body',
     events : {
@@ -44,11 +82,9 @@ Tabula.PDFView = Backbone.View.extend({
       'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
       'click i.icon-remove': 'deletePage',
       'click i.rotate-left i.rotate-right': 'rotatePage',
+      'click button.repeat-lassos': 'repeat_lassos',
 
-      //events related to the chardin help library.
-      'click a#chardin-help': 'fire_chardin_event',
-      'chardinJs:stop body' : 'chardin_stop',
-      'chardinJs:start body' : 'chardin_start',
+      'click a#help-start': function(){ Tabula.tour.ended ? Tabula.tour.restart(true) : Tabula.tour.start(true); },
 
       //events for buttons on the follow-you-around bar.
       'click #multiselect-checkbox' : 'toggleMultiSelectMode',
@@ -59,12 +95,13 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     rotatePage: function(t) {
-
+        alert('not implemented');
     },
 
     deletePage: function(t) {
         var page_thumbnail = $(t.target).parent().parent();
         var page_number = page_thumbnail.data('page').split('-')[1];
+        var that = this;
         if (!confirm('Delete page ' + page_number + '?')) return;
         $.post('/pdf/' + this.PDF_ID + '/page/' + page_number,
                { _method: 'delete' },
@@ -86,11 +123,11 @@ Tabula.PDFView = Backbone.View.extend({
                               function() { $(this).remove(); });
 
                   $('div.imgareaselect').each(function(){
-                    //if ( parseInt( $(this).attr('id').replace("page-", '')) > page_number){
                     if( $(this).offset()["top"] > (deleted_page_top + deleted_page_height) ){
                       $(this).offset({top: $(this).offset()["top"] - deleted_page_height });
                     }
                   });
+                   that.pageCount -= 1;
                });
 
     },
@@ -101,11 +138,13 @@ Tabula.PDFView = Backbone.View.extend({
     noModalAfterSelect: $('#multiselect-checkbox').is(':checked'),
     lastQuery: [{}],
     lastSelection: undefined,
+    pageCount: undefined,
 
     initialize: function(){
       _.bindAll(this, 'render', 'createImgareaselects', 'getTablesJson', 'total_selections',
                 'toggleClearAllAndRestorePredetectedTablesButtons', 'toggleMultiSelectMode', 'query_all_data', 'toggleUseLines');
-      this.render();
+        this.pageCount = $('img.page-image').length;
+        this.render();
     },
 
     render : function(){
@@ -243,7 +282,8 @@ Tabula.PDFView = Backbone.View.extend({
     },
     clear_all_selection: function(){
       _(imgAreaSelects).each(function(imgAreaSelectAPIObj){
-        imgAreaSelectAPIObj.cancelSelections();
+          if (imgAreaSelectAPIObj === false) return;
+          imgAreaSelectAPIObj.cancelSelections();
       });
     },
 
@@ -264,52 +304,54 @@ Tabula.PDFView = Backbone.View.extend({
         }
     },
 
-    repeat_lassos: function(){ alert("not yet implemented")},
+    repeat_lassos: function(e) {
+        var page_idx = parseInt($(e.currentTarget).attr('id').split('-')[1]);
+        var selection_to_clone = $(e.currentTarget).data('selection');
+
+        $(e.currentTarget).fadeOut(500, function() { $(this).remove(); });
+
+        $('#multiselect-checkbox').prop('checked', true);
+        this.toggleMultiSelectMode();
+
+        imgAreaSelects.slice(page_idx).forEach(function(imgAreaSelectAPIObj) {
+            if (imgAreaSelectAPIObj === false) return;
+            imgAreaSelectAPIObj.cancelSelections();
+            imgAreaSelectAPIObj.createNewSelection(selection_to_clone.x1, selection_to_clone.y1,
+                                                   selection_to_clone.x2, selection_to_clone.y2);
+            imgAreaSelectAPIObj.setOptions({show: true});
+            imgAreaSelectAPIObj.update();
+            this.showSelectionThumbnail(imgAreaSelectAPIObj.getImg(),
+                                        selection_to_clone);
+        }, this);
+    },
 
     query_all_data : function(){
-      all_coords = [];
-      _(imgAreaSelects).each(function(imgAreaSelectAPIObj){
+        all_coords = [];
+        imgAreaSelects.forEach(function(imgAreaSelectAPIObj){
 
-          var thumb_width = imgAreaSelectAPIObj.getImg().width();
-          var thumb_height = imgAreaSelectAPIObj.getImg().height();
+            if (imgAreaSelectAPIObj === false) return;
 
-          var pdf_width = parseInt(imgAreaSelectAPIObj.getImg().data('original-width'));
-          var pdf_height = parseInt(imgAreaSelectAPIObj.getImg().data('original-height'));
-          var pdf_rotation = parseInt(imgAreaSelectAPIObj.getImg().data('rotation'));
+            var thumb_width = imgAreaSelectAPIObj.getImg().width();
+            var thumb_height = imgAreaSelectAPIObj.getImg().height();
 
-          var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / thumb_width;
+            var pdf_width = parseInt(imgAreaSelectAPIObj.getImg().data('original-width'));
+            var pdf_height = parseInt(imgAreaSelectAPIObj.getImg().data('original-height'));
+            var pdf_rotation = parseInt(imgAreaSelectAPIObj.getImg().data('rotation'));
 
-        _(imgAreaSelectAPIObj.getSelections()).each(function(selection){
+            var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / thumb_width;
 
-          new_coord = {
-                x1: selection.x1 * scale,
-                x2: selection.x2 * scale,
-                y1: selection.y1 * scale,
-                y2: selection.y2 * scale,
-                page: imgAreaSelectAPIObj.getImg().data('page')
-              }
-          all_coords.push(new_coord);
+            imgAreaSelectAPIObj.getSelections().forEach(function(selection){
+                new_coord = {
+                    x1: selection.x1 * scale,
+                    x2: selection.x2 * scale,
+                    y1: selection.y1 * scale,
+                    y2: selection.y2 * scale,
+                    page: imgAreaSelectAPIObj.getImg().data('page')
+                }
+                all_coords.push(new_coord);
+            });
         });
-      });
-
-      this.doQuery(this.PDF_ID, all_coords);
-    },
-
-    /* Chardin help-related functions */
-    fire_chardin_event: function(){
-      if($('a#chardin-help').text() == "Help"){
-        $('body').chardinJs('start');
-      }else{
-        $('body').chardinJs('stop');
-      }
-    },
-    chardin_stop : function(){
-      $('a#chardin-help').text("Help");
-      $("#multiselect-label").css("color", "black");
-    },
-    chardin_start: function(){
-      $('a#chardin-help').text("Close Help");
-      $("#multiselect-label").css("color", "black");
+        this.doQuery(this.PDF_ID, all_coords);
     },
 
     doQuery: function(pdf_id, coords) {
@@ -319,9 +361,11 @@ Tabula.PDFView = Backbone.View.extend({
                 use_lines :  $('#use_lines').is(':checked')
               };
 
-      $.post('/pdf/' + pdf_id + '/data',
-              this.lastQuery,
-              _.bind(function(data) {
+        $.ajax({
+            type: 'POST',
+            url: '/pdf/' + pdf_id + '/data',
+            data: this.lastQuery,
+            success: _.bind(function(data) {
                   var tableHTML = '<table class="table table-condensed table-bordered">';
                   $.each(data, function(i, row) {
                       tableHTML += '<tr><td>' + $.map(row, function(cell, j) { return cell.text; }).join('</td><td>') + '</td></tr>';
@@ -345,7 +389,23 @@ Tabula.PDFView = Backbone.View.extend({
                   $('#myModal').modal();
                   clip.glue('#copy-csv-to-clipboard');
                   $('#loading').css('visibility', 'hidden');
-              }, this));
+              }, this),
+            error: _.bind(function(xhr, status, error) {
+                $('#modal-error textarea').html(xhr.responseText);
+                $('#loading').css('visibility', 'hidden');
+                $('#modal-error').modal();
+            })
+        });
+    },
+
+    showSelectionThumbnail: function(img, selection) {
+        $('#thumb-' + img.attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
+        var sshow = $('#thumb-' + img.attr('id') + ' #selection-show-' + selection.id);
+        var thumbScale = $('#thumb-' + img.attr('id') + ' img').width() / img.width();
+        $(sshow).css('top', selection.y1 * thumbScale + 'px')
+            .css('left', selection.x1 * thumbScale + 'px')
+            .css('width', ((selection.x2 - selection.x1) * thumbScale) + 'px')
+            .css('height', ((selection.y2 - selection.y1) * thumbScale) + 'px');
     },
 
     drawDetectedTables: function($img, tableGuesses){
@@ -378,13 +438,7 @@ Tabula.PDFView = Backbone.View.extend({
 
         //create a red box for this selection.
         if(selection){ //selection is undefined if it overlaps an existing selection.
-          $('#thumb-' + $img.attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
-          var sshow = $('#thumb-' + $img.attr('id') + ' #selection-show-' + selection.id);
-          var thumbScale = $('#thumb-' + $img.attr('id') + ' img').width() / $img.width();
-          $(sshow).css('top', selection.y1 * thumbScale + 'px')
-              .css('left', selection.x1 * thumbScale + 'px')
-              .css('width', ((selection.x2 - selection.x1) * thumbScale) + 'px')
-              .css('height', ((selection.y2 - selection.y1) * thumbScale) + 'px');
+            this.showSelectionThumbnail($img, selection);
         }
 
       });
@@ -406,14 +460,93 @@ Tabula.PDFView = Backbone.View.extend({
           error( _.bind(function(){ this.createImgareaselects([], []) }, this));
     },
 
+    _onSelectStart: function(img, selection) {
+        this.showSelectionThumbnail($(img), selection);
+    },
+
+    _onSelectChange: function(img, selection) {
+        var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
+        var scale = $('#thumb-' + $(img).attr('id') + ' img').width() / $(img).width();
+        $(sshow).css('top', selection.y1 * scale + 'px')
+            .css('left', selection.x1 * scale + 'px')
+            .css('width', ((selection.x2 - selection.x1) * scale) + 'px')
+            .css('height', ((selection.y2 - selection.y1) * scale) + 'px');
+
+        var b;
+        var but_id = $(img).attr('id') + '-' + selection.id;
+        if (b = $('button#' + but_id)) {
+            var img_pos = $(img).offset();
+            $(b)
+                .css({
+                    top: img_pos.top + selection.y1 + selection.height - $('button#' + but_id).height() * 1.5,
+                    left: img_pos.left + selection.x1 + selection.width + 5
+                })
+                .data('selection', selection);
+        }
+    },
+
+    _onSelectEnd: function(img, selection) {
+        if (selection.width == 0 && selection.height == 0) {
+            $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id).css('display', 'none');
+        }
+        if (selection.height * selection.width < 5000) return;
+        this.lastSelection = selection;
+        var thumb_width = $(img).width();
+        var thumb_height = $(img).height();
+
+        var pdf_width = parseInt($(img).data('original-width'));
+        var pdf_height = parseInt($(img).data('original-height'));
+        var pdf_rotation = parseInt($(img).data('rotation'));
+
+        var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / thumb_width;
+
+        // create button for repeating lassos, only if there are more pages after this
+        if (this.pageCount > $(img).data('page')) {
+            var but_id = $(img).attr('id') + '-' + selection.id;
+            $('body').append('<button class="btn repeat-lassos" id="'+but_id+'">Repeat this selection</button>');
+            var img_pos = $(img).offset();
+            $('button#' + but_id)
+                .css({
+                    position: 'absolute',
+                    top: img_pos.top + selection.y1 + selection.height - $('button#' + but_id).height() * 1.5,
+                    left: img_pos.left + selection.x1 + selection.width + 5
+                })
+                .data('selection', selection);
+        }
+
+        var coords = {
+            x1: selection.x1 * scale,
+            x2: selection.x2 * scale,
+            y1: selection.y1 * scale,
+            y2: selection.y2 * scale,
+            page: $(img).data('page')
+        };
+        if(!this.noModalAfterSelect){
+            this.doQuery(this.PDF_ID, [coords]);
+        }
+        this.toggleDownloadAllAndClearButtons();
+    },
+
+    _onSelectCancel: function(img, selection, selectionId) {
+        $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selectionId).remove();
+        $('#' + $(img).attr('id') + '-' + selectionId).remove();
+        var but_id = $(img).attr('id') + '-' + selectionId;
+        $('button#' + but_id).remove();
+        this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
+        //TODO, if there are no selections, activate the restore detected tables button.
+        this.toggleDownloadAllAndClearButtons();
+
+    },
+
     //skip if pages is "deleted"
     createImgareaselects : function(tableGuessesTmp, pages){
       tableGuesses = tableGuessesTmp;
       var selectsNotYetLoaded = _(pages).filter(function(page){ return !page['deleted']}).length;
+      var that = this;
 
       imgAreaSelects = $.map(pages, _.bind(function(page, arrayIndex){
         pageIndex = arrayIndex + 1;
-        if (page['deleted']){
+        if (page['deleted']) {
           return false;
         }
         $image = $('img#page-' + pageIndex);
@@ -423,55 +556,11 @@ Tabula.PDFView = Backbone.View.extend({
           allowOverlaps: false,
           show: true,
           multipleSelections: true,
-          //minHeight: 50, minWidth: 100,
 
-          onSelectStart: function(img, selection)  {
-              //$('#thumb-' + $(img).attr('id') + ' .selection-show').css('display', 'block');
-              $('#thumb-' + $(img).attr('id') + " a").append( $('<div class="selection-show" id="selection-show-' + selection.id + '" />').css('display', 'block') );
-          },
-          onSelectChange: function(img, selection) {
-              var sshow = $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id);
-              var scale = $('#thumb-' + $(img).attr('id') + ' img').width() / $(img).width();
-              $(sshow).css('top', selection.y1 * scale + 'px')
-                  .css('left', selection.x1 * scale + 'px')
-                  .css('width', ((selection.x2 - selection.x1) * scale) + 'px')
-                  .css('height', ((selection.y2 - selection.y1) * scale) + 'px');
-
-          },
-          onSelectEnd: _.bind(function(img, selection) {
-              if (selection.width == 0 && selection.height == 0) {
-                  $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selection.id).css('display', 'none');
-              }
-              if (selection.height * selection.width < 5000) return;
-              this.lastSelection = selection;
-              var thumb_width = $(img).width();
-              var thumb_height = $(img).height();
-
-              var pdf_width = parseInt($(img).data('original-width'));
-              var pdf_height = parseInt($(img).data('original-height'));
-              var pdf_rotation = parseInt($(img).data('rotation'));
-
-              var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / thumb_width;
-
-              var coords = {
-                  x1: selection.x1 * scale,
-                  x2: selection.x2 * scale,
-                  y1: selection.y1 * scale,
-                  y2: selection.y2 * scale,
-                  page: $(img).data('page')
-              };
-              if(!this.noModalAfterSelect){
-                this.doQuery(this.PDF_ID, [coords]);
-              }
-              this.toggleDownloadAllAndClearButtons();
-          }, this),
-          onSelectCancel: _.bind( function(img, selection, selectionId){
-            $('#thumb-' + $(img).attr('id') + ' #selection-show-' + selectionId).remove();
-            //console.log("selections on page: " + this.total_selections() ); // this one hasn't been deleted yet.
-            this.toggleClearAllAndRestorePredetectedTablesButtons(this.total_selections());
-            //TODO, if there are no selections, activate the restore detected tables button.
-              this.toggleDownloadAllAndClearButtons();
-          }, this),
+          onSelectStart: _.bind(that._onSelectStart, that),
+          onSelectChange: that._onSelectChange,
+          onSelectEnd: _.bind(that._onSelectEnd, that),
+          onSelectCancel: _.bind(that._onSelectCancel, that),
           onInit: _.bind(drawDetectedTablesIfAllAreLoaded, this)
         });
       }, this));

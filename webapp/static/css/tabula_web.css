@@ -79,7 +79,19 @@ img.page-image {
     max-height: 500px;
 }
 
-.modal.fade.in {
+#modal-error {
+  width: 60%;
+  margin-left: -30%;
+  top: 50% !important;
+}
+
+#modal-error textarea {
+  width: 98%;
+  font-family: monospace;
+  height: 350px;
+}
+
+.modal.fade.in#myModal {
     top: 30% !important;
 }
 
@@ -166,7 +178,7 @@ form#download-form input.linklike:hover{
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc',endColorstr='#ff0077b3',GradientType=0);
 }
 
-a#chardin-help{
+a#help-start{
   font-size: 16px;
   text-decoration: underline;
   color: blue;
