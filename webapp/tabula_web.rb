@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'cuba'
 require 'cuba/render'
+require 'rufus-lru'
 
 require 'digest/sha1'
 require 'json'
@@ -34,9 +35,13 @@ def is_valid_pdf?(path)
 end
 
 
-STATIC_ROOT = defined?($servlet_context) ? \
-                File.join($servlet_context.getRealPath('/'), 'WEB-INF/webapp/static') : \
+STATIC_ROOT = if defined?($servlet_context)
+                File.join($servlet_context.getRealPath('/'), 'WEB-INF/webapp/static')
+              else
                 File.join(File.dirname(__FILE__), 'static')
+              end
+
+MAX_CACHE_ENTRIES = 10
 
 Cuba.plugin Cuba::Render
 Cuba.settings[:render].store(:views, File.expand_path("views", File.dirname(__FILE__)))
@@ -44,6 +49,25 @@ Cuba.use Rack::MethodOverride
 Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/swf"]
 Cuba.use Rack::ContentLength
 Cuba.use Rack::Reloader
+
+if TabulaSettings::EXTRACTION_CACHE
+  CACHE = Rufus::Lru::SynchronizedHash.new(MAX_CACHE_ENTRIES)
+else
+  # horrid, wrong, disrespectful
+  # sort of a pass-through
+  class NoCache < Hash
+    def [](k)
+      return @k
+    end
+    def []=(k, v)
+      @k = v
+    end
+    def has_key?(k)
+      false
+    end
+  end
+  CACHE = NoCache.new
+end
 
 Cuba.define do
 
@@ -186,30 +210,37 @@ Cuba.define do
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
 
       coords = JSON.load(req.params['coords'])
-      coords.sort_by!{|coord_set| [ coord_set['page'], [coord_set['y1'], coord_set['y2']].min.to_i / 10, [coord_set['x1'], coord_set['x2']].min ] }
+      coords.sort_by! { |coord_set|
+        [
+         coord_set['page'],
+         [coord_set['y1'], coord_set['y2']].min.to_i / 10,
+         [coord_set['x1'], coord_set['x2']].min ]
+      }
 
-      tables = coords.each_with_index.map do |coord_set, index|
-        Tabula.extract_table(pdf_path,
-                             coord_set['page'].to_i,
-                             [coord_set['y1'].to_f,
-                              coord_set['x1'].to_f,
-                              coord_set['y2'].to_f,
-                              coord_set['x2'].to_f])
-
+      # don't rewrite this is as CACHE[coords] ||= ....
+      unless CACHE.has_key?(coords)
+        CACHE[coords] = coords.each_with_index.map do |coord_set, index|
+          Tabula.extract_table(pdf_path,
+                               coord_set['page'].to_i,
+                               [coord_set['y1'].to_f,
+                                coord_set['x1'].to_f,
+                                coord_set['y2'].to_f,
+                                coord_set['x2'].to_f])
+        end
       end
 
       case req.params['format']
       when 'csv'
         res['Content-Type'] = 'text/csv'
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.csv\""
-        Tabula::Writers.CSV(tables.flatten(1), res)
+        Tabula::Writers.CSV(CACHE[coords].flatten(1), res)
       when 'tsv'
         res['Content-Type'] = 'text/tab-separated-values'
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.tsv\""
-        Tabula::Writers.TSV(tables.flatten(1), res)
+        Tabula::Writers.TSV(CACHE[coords].flatten(1), res)
       else
         res['Content-Type'] = 'application/json'
-        Tabula::Writers.JSON(tables.flatten(1), res)
+        Tabula::Writers.JSON(CACHE[coords].flatten(1), res)
       end
     end
   end

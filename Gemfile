@@ -7,6 +7,7 @@ platform :jruby do
   gem "cuba"
   gem "rack"
   gem "tilt"
+  gem "rufus-lru"
   gem "tabula-extractor", '~>0.6.6', :require => "tabula"
 
   group :development do
