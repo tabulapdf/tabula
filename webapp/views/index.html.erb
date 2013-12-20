@@ -16,6 +16,11 @@
         <p>Liberate data tables trapped inside PDF files</p>
       </div> <!-- /hero-unit -->
 
+      <div class="alert alert-warning alert-dismissable" style="display: none;">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          <strong>New version!</strong> <a href="">Tabula <span id="new-version">version</span></a> is available (you have <span id="installed-version"><%= $TABULA_VERSION %></span>)
+      </div>
+
       <div id="demo">
 
         <div class="row-fluid">
@@ -50,19 +55,35 @@
       </div>
 
       <script type="text/javascript">
-        $(function() {
-          $('#uploadedfiles li button').on('click', function() {
-              var a = $(this).prevUntil('a').prev();
-              if (!confirm('Delete file "'+a.html()+'"?')) return;
-              var pdf_id = a.attr('href').split('/')[2];
-              $.post('/pdf/' + pdf_id,
-                     { _method: 'delete' },
-                     function() {
-                         $(a).parent().fadeOut(200,
-                                               function() { $(this).remove(); });
-                     });
-          });
-        });
+       $(function() {
+
+           var TABULA_VERSION = '<%= $TABULA_VERSION %>';
+
+           $('#uploadedfiles li button').on('click', function() {
+               var a = $(this).prevUntil('a').prev();
+               if (!confirm('Delete file "'+a.html()+'"?')) return;
+               var pdf_id = a.attr('href').split('/')[2];
+               $.post('/pdf/' + pdf_id,
+                      { _method: 'delete' },
+                      function() {
+                       $(a).parent().fadeOut(200,
+                                             function() { $(this).remove(); });
+                   });
+           });
+
+           $.get('https://api.github.com/repos/jazzido/tabula/releases',
+                 function(data) {
+                   if (data.length < 1) return;
+                   // check if new version
+                   var i = data.map(function(d) { return d.name; }).indexOf(TABULA_VERSION);
+                   // if index >= 1, current release is not the newest
+                   if (i == 0) return;
+                   var new_release = data[i-1];
+                   $('div.alert a').attr('href', new_release.html_url);
+                   $('div.alert #new-version').html(new_release.name);
+                   $('div.alert').css('display', 'block');
+               });
+       });
       </script>
 
       <br><br><hr>
