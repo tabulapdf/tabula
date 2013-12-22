@@ -26,5 +26,5 @@ notifications([
     "live_date": "2013-12-20",
     "name": "Test",
     "body": "This is a test for valid dates that shouldn't be displayed because the one above it occurs first."
-  },
+  }
 ])
