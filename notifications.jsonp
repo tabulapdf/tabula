@@ -1,6 +1,6 @@
 notifications([
   {
-    "expires": "2013-12-22",
+    "expires": "2013-12-23",
     "live_date": "2013-12-20",
     "name": "Test",
     "body": "This is a test"
