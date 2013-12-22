@@ -1,8 +1,30 @@
 notifications([
   {
-    "expires": "2013-12-23",
+    "expires_date": "2013-12-20",
+    "live_date": "2013-12-19",
+    "name": "Test",
+    "body": "This should never be displayed because it has expired"
+  },
+  {
+    "expires_date": "2013-12-27",
+    "live_date": "2013-12-23",
+    "name": "Test",
+    "body": "This should never be displayed because it isn't live yet"
+  },
+  {
+    "versions": ["1800beefbeefbeef"],
+    "name": "Test",
+    "body": "This should never be displayed because it doesn't apply to this version."
+  },
+  {
+    "versions": ["1800beefbeefbeef", "rev198dbcd99d135c2dc992f97820bb65cfecb090e0"],
+    "name": "Test",
+    "body": "This should be displayed because it applies to this version."
+  },
+  {
+    "expires_date": "2013-12-23",
     "live_date": "2013-12-20",
     "name": "Test",
-    "body": "This is a test"
-  }
+    "body": "This is a test for valid dates that shouldn't be displayed because the one above it occurs first."
+  },
 ])
