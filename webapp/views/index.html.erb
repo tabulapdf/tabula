@@ -16,9 +16,14 @@
         <p>Liberate data tables trapped inside PDF files</p>
       </div> <!-- /hero-unit -->
 
-      <div class="alert alert-warning alert-dismissable" style="display: none;">
+      <div class="alert alert-warning alert-dismissable" id="update-alert" style="display: none;">
           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
           <strong>New version!</strong> <a href="">Tabula <span id="new-version">version</span></a> is available (you have <span id="installed-version"><%= $TABULA_VERSION %></span>)
+      </div>
+
+      <div class="alert alert-warning alert-dismissable" id="custom-alert" style="display: none;">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          <strong>New version!</strong> <span class="custom-alert-body"></span>
       </div>
 
       <div id="demo">
@@ -53,38 +58,11 @@
           </div>
         </div>
       </div>
-
-      <script type="text/javascript">
-       $(function() {
-
-           var TABULA_VERSION = '<%= $TABULA_VERSION %>';
-
-           $('#uploadedfiles li button').on('click', function() {
-               var a = $(this).prevUntil('a').prev();
-               if (!confirm('Delete file "'+a.html()+'"?')) return;
-               var pdf_id = a.attr('href').split('/')[2];
-               $.post('/pdf/' + pdf_id,
-                      { _method: 'delete' },
-                      function() {
-                       $(a).parent().fadeOut(200,
-                                             function() { $(this).remove(); });
-                   });
-           });
-
-           $.get('https://api.github.com/repos/jazzido/tabula/releases',
-                 function(data) {
-                   if (data.length < 1) return;
-                   // check if new version
-                   var i = data.map(function(d) { return d.name; }).indexOf(TABULA_VERSION);
-                   // if index >= 1, current release is not the newest
-                   if (i == 0) return;
-                   var new_release = data[i-1];
-                   $('div.alert a').attr('href', new_release.html_url);
-                   $('div.alert #new-version').html(new_release.name);
-                   $('div.alert').css('display', 'block');
-               });
-       });
+      <script type="text/javascript"> 
+          var TABULA_VERSION = '<%= $TABULA_VERSION %>';
       </script>
+      <script type="text/javascript" src="/js/file-library.js"></script>
+      <script type="text/javascript" src="/js/update-notifications.js"></script>
 
       <br><br><hr>
       <p><strong>Tabula</strong> was created by <a href="http://jazzido.com/" target="_blank">Manuel Aristarán</a> with the help of <a href="http://propublica.org">ProPublica</a>, <a href="http://blogs.lanacion.com.ar/data/">La Nación DATA</a> and <a href="http://www.mozillaopennews.org/">Knight-Mozilla OpenNews</a></p>
