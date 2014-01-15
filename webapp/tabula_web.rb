@@ -216,8 +216,12 @@ Cuba.define do
          [coord_set['y1'], coord_set['y2']].min.to_i / 10,
          [coord_set['x1'], coord_set['x2']].min ]
       end
-      extraction_method_requested = req.params['extraction_method'] == "spreadsheet" ? "spreadsheet" : "original"
-      STDERR.puts "JEREMY: #{extraction_method_requested}"
+      if ["guess", "spreadsheet", "original"].include?(req.params['extraction_method'])
+        extraction_method_requested = req.params['extraction_method']
+      else
+        extraction_method_requested = "guess"
+      end
+
       coords_method_key = extraction_method_requested + coords.to_s
       # don't rewrite this is as CACHE[coords] ||= ....
       unless CACHE.has_key?(coords_method_key)
@@ -228,7 +232,7 @@ Cuba.define do
                                 coord_set['x1'].to_f,
                                 coord_set['y2'].to_f,
                                 coord_set['x2'].to_f],
-                                {:spreadsheet_extraction_method => extraction_method_requested == "spreadsheet"}
+                                {:extraction_method => extraction_method_requested}
                                 )
         end
       end

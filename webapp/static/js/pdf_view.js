@@ -94,9 +94,11 @@ Tabula.PDFView = Backbone.View.extend({
       'click #all-data': 'query_all_data',
       'click #switch-method': 'queryWithToggledExtractionMethod'
     },
-    extractionMethod: "original",
+    extractionMethod: "guess",
     getOppositeExtractionMethod: function(){
-      if(this.extractionMethod == "original"){
+      if(this.extractionMethod == "guess"){
+        return;
+      }else  if(this.extractionMethod == "original"){
         return "spreadsheet";
       }else{
         return "original";
@@ -106,11 +108,14 @@ Tabula.PDFView = Backbone.View.extend({
       // change the extraction method for this request
       this.extractionMethod = this.getOppositeExtractionMethod(); 
       // and update the button for next time.
-      $('#extraction-method').text(this.getOppositeExtractionMethod()).css("text-transform", "capitalize");
+      this.updateExtractionMethodButton();
     },
     queryWithToggledExtractionMethod: function(){
       this.toggleExtractionMethod();
       this.redoQuery();
+    },
+    updateExtractionMethodButton: function(){
+      $('#extraction-method').text(this.getOppositeExtractionMethod()).css("text-transform", "capitalize");
     },
 
     rotatePage: function(t) {
@@ -164,7 +169,7 @@ Tabula.PDFView = Backbone.View.extend({
                 'toggleClearAllAndRestorePredetectedTablesButtons', 'toggleMultiSelectMode', 'query_all_data', 'redoQuery');
         this.pageCount = $('img.page-image').length;
         this.render();
-        $('#extraction-method').text(this.getOppositeExtractionMethod()).css("text-transform", "capitalize");
+        this.updateExtractionMethodButton();
     },
 
     render : function(){
@@ -387,9 +392,10 @@ Tabula.PDFView = Backbone.View.extend({
             data: this.lastQuery,
             success: _.bind(function(resp) {
                   var table = resp[0]["data"];
-                  var extractionMethod = resp[0]["extraction_method"];
-                  // console.log("resp", resp)
-                  // console.log("Extraction method: ", extractionMethod);
+                  this.extractionMethod = resp[0]["extraction_method"];
+                  this.updateExtractionMethodButton();
+                  console.log("resp", resp);
+                  console.log("Extraction method: ", this.extractionMethod);
                   var tableHTML = '<table class="table table-condensed table-bordered">';
                   $.each(table, function(i, row) {
                       tableHTML += '<tr><td>' + $.map(row, function(cell, j) { return cell.text; }).join('</td><td>') + '</td></tr>';
