@@ -77,7 +77,7 @@ Tabula.PDFView = Backbone.View.extend({
     events : {
       'click button.close#directions' : 'moveSelectionsUp',
       'click a.tooltip-modal': 'tooltip', //$('a.tooltip-modal').tooltip();
-      'change input#use_lines': 'toggleUseLines',
+      'change input#use_lines': 'redoQuery',
       'hide #myModal' : function(){ clip.unglue('#copy-csv-to-clipboard'); },
       'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
       'click i.icon-remove': 'deletePage',
@@ -92,6 +92,25 @@ Tabula.PDFView = Backbone.View.extend({
       'click #restore-detected-tables': 'restore_detected_tables',
       'click #repeat-lassos': 'repeat_lassos',
       'click #all-data': 'query_all_data',
+      'click #switch-method': 'queryWithToggledExtractionMethod'
+    },
+    extractionMethod: "original",
+    getOppositeExtractionMethod: function(){
+      if(this.extractionMethod == "original"){
+        return "spreadsheet";
+      }else{
+        return "original";
+      }
+    },
+    toggleExtractionMethod: function(){
+      // change the extraction method for this request
+      this.extractionMethod = this.getOppositeExtractionMethod(); 
+      // and update the button for next time.
+      $('#extraction-method').text(this.getOppositeExtractionMethod()).css("text-transform", "capitalize");
+    },
+    queryWithToggledExtractionMethod: function(){
+      this.toggleExtractionMethod();
+      this.redoQuery();
     },
 
     rotatePage: function(t) {
@@ -142,9 +161,10 @@ Tabula.PDFView = Backbone.View.extend({
 
     initialize: function(){
       _.bindAll(this, 'render', 'createImgareaselects', 'getTablesJson', 'total_selections',
-                'toggleClearAllAndRestorePredetectedTablesButtons', 'toggleMultiSelectMode', 'query_all_data', 'toggleUseLines');
+                'toggleClearAllAndRestorePredetectedTablesButtons', 'toggleMultiSelectMode', 'query_all_data', 'redoQuery');
         this.pageCount = $('img.page-image').length;
         this.render();
+        $('#extraction-method').text(this.getOppositeExtractionMethod()).css("text-transform", "capitalize");
     },
 
     render : function(){
@@ -161,8 +181,7 @@ Tabula.PDFView = Backbone.View.extend({
         $('div.imgareaselect').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
     },
 
-
-    toggleUseLines: function() {
+    redoQuery: function() {
         //$.extend(this.lastQuery, { use_lines: $('input#use_lines').is(':checked') });
         this.doQuery(this.PDF_ID, JSON.parse(this.lastQuery["coords"])); //TODO: stash lastCoords, rather than stashing lastQuery and then parsing it.
     },
@@ -358,16 +377,21 @@ Tabula.PDFView = Backbone.View.extend({
       $('#loading').css('left', ($(window).width() - 118) + 'px').css('visibility', 'visible');
 
       this.lastQuery = {coords: JSON.stringify(coords) ,
-                use_lines :  $('#use_lines').is(':checked')
+                use_lines :  $('#use_lines').is(':checked'),
+                'extraction_method': this.extractionMethod
               };
 
         $.ajax({
             type: 'POST',
             url: '/pdf/' + pdf_id + '/data',
             data: this.lastQuery,
-            success: _.bind(function(data) {
+            success: _.bind(function(resp) {
+                  var table = resp[0]["data"];
+                  var extractionMethod = resp[0]["extraction_method"];
+                  // console.log("resp", resp)
+                  // console.log("Extraction method: ", extractionMethod);
                   var tableHTML = '<table class="table table-condensed table-bordered">';
-                  $.each(data, function(i, row) {
+                  $.each(table, function(i, row) {
                       tableHTML += '<tr><td>' + $.map(row, function(cell, j) { return cell.text; }).join('</td><td>') + '</td></tr>';
                   });
                   tableHTML += '</table>';
