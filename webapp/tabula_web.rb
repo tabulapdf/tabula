@@ -210,22 +210,26 @@ Cuba.define do
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
 
       coords = JSON.load(req.params['coords'])
-      coords.sort_by! { |coord_set|
+      coords.sort_by! do |coord_set|
         [
          coord_set['page'],
          [coord_set['y1'], coord_set['y2']].min.to_i / 10,
          [coord_set['x1'], coord_set['x2']].min ]
-      }
-
+      end
+      extraction_method_requested = req.params['extraction_method'] == "spreadsheet" ? "spreadsheet" : "original"
+      STDERR.puts "JEREMY: #{extraction_method_requested}"
+      coords_method_key = extraction_method_requested + coords.to_s
       # don't rewrite this is as CACHE[coords] ||= ....
-      unless CACHE.has_key?(coords)
-        CACHE[coords] = coords.each_with_index.map do |coord_set, index|
+      unless CACHE.has_key?(coords_method_key)
+        CACHE[coords_method_key] = coords.each_with_index.map do |coord_set, index|
           Tabula.extract_table(pdf_path,
                                coord_set['page'].to_i,
                                [coord_set['y1'].to_f,
                                 coord_set['x1'].to_f,
                                 coord_set['y2'].to_f,
-                                coord_set['x2'].to_f])
+                                coord_set['x2'].to_f],
+                                {:spreadsheet_extraction_method => extraction_method_requested == "spreadsheet"}
+                                )
         end
       end
 
@@ -233,14 +237,14 @@ Cuba.define do
       when 'csv'
         res['Content-Type'] = 'text/csv'
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.csv\""
-        Tabula::Writers.CSV(CACHE[coords].flatten(1), res)
+        Tabula::Writers.CSV(CACHE[coords_method_key].flatten(1), res)
       when 'tsv'
         res['Content-Type'] = 'text/tab-separated-values'
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.tsv\""
-        Tabula::Writers.TSV(CACHE[coords].flatten(1), res)
+        Tabula::Writers.TSV(CACHE[coords_method_key].flatten(1), res)
       else
         res['Content-Type'] = 'application/json'
-        Tabula::Writers.JSON(CACHE[coords].flatten(1), res)
+        Tabula::Writers.JSON(CACHE[coords_method_key].flatten(1), res)
       end
     end
   end
