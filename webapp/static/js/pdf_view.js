@@ -106,7 +106,7 @@ Tabula.PDFView = Backbone.View.extend({
     },
     toggleExtractionMethod: function(){
       // change the extraction method for this request
-      this.extractionMethod = this.getOppositeExtractionMethod(); 
+      this.extractionMethod = this.getOppositeExtractionMethod();
       // and update the button for next time.
       this.updateExtractionMethodButton();
     },
@@ -391,14 +391,15 @@ Tabula.PDFView = Backbone.View.extend({
             url: '/pdf/' + pdf_id + '/data',
             data: this.lastQuery,
             success: _.bind(function(resp) {
-                  var table = resp[0]["data"];
                   this.extractionMethod = resp[0]["extraction_method"];
                   this.updateExtractionMethodButton();
                   console.log("resp", resp);
                   console.log("Extraction method: ", this.extractionMethod);
                   var tableHTML = '<table class="table table-condensed table-bordered">';
-                  $.each(table, function(i, row) {
-                      tableHTML += '<tr><td>' + $.map(row, function(cell, j) { return cell.text; }).join('</td><td>') + '</td></tr>';
+                  $.each(_.pluck(resp, 'data'), function(i, rows) {
+                    $.each(rows, function(j, row) {
+                      tableHTML += '<tr><td>' + _.pluck(row, 'text').join('</td><td>') + '</td></tr>';
+                    });
                   });
                   tableHTML += '</table>';
 
