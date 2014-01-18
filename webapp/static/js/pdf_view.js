@@ -53,23 +53,7 @@ $(document).ready(function() {
 
 //make the "follow you around bar" actually follow you around. ("sticky nav")
 $(document).ready(function() {
-    elem = $(".followyouaroundbar");
-
-    stick = function() {
-      var windowTop = $(window).scrollTop();
-      var footerTop = 50000; // this.jFooter.offset().top;
-      var topOffset = this.offset().top;
-      var elHeight = this.height();
-
-      if (windowTop > topOffset && windowTop < footerTop) {
-        this
-          .css("position", "fixed")
-          .css("width", "15%")
-          .css("top", 70);
-      }
-    }
-
-    $(window).scroll(_.throttle(_.bind(stick, elem), 100));
+  $('.followyouaroundbar').affix({top: 70 });
 });
 
 Tabula.PDFView = Backbone.View.extend({
