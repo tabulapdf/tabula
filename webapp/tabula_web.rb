@@ -239,13 +239,33 @@ Cuba.define do
 
       case req.params['format']
       when 'csv'
+        # this SUCKS SO BAD. Change when we have a common interface for
+        # Tabula::Table and Tabula::Spreadsheet
         res['Content-Type'] = 'text/csv'
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.csv\""
-        Tabula::Writers.CSV(CACHE[coords_method_key].flatten(1), res)
+        tables = CACHE[coords_method_key].flatten(1)
+        tables.each do |table|
+          is_table = table.instance_of?(Tabula::Table)
+          rows =  is_table ? table.lines : table.rows
+          rows.each do |row|
+            text_elements = is_table ? row.text_elements : row
+            res.write CSV.generate_line(text_elements.map(&:text), row_sep: "\r\n")
+          end
+        end
       when 'tsv'
+        # this SUCKS SO BAD. Change when we have a common interface for
+        # Tabula::Table and Tabula::Spreadsheet
         res['Content-Type'] = 'text/tab-separated-values'
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.tsv\""
-        Tabula::Writers.TSV(CACHE[coords_method_key].flatten(1), res)
+        tables = CACHE[coords_method_key].flatten(1)
+        tables.each do |table|
+          is_table = table.instance_of?(Tabula::Table)
+          rows =  is_table ? table.lines : table.rows
+          rows.each do |row|
+            text_elements = is_table ? row.text_elements : row
+            res.write CSV.generate_line(text_elements.map(&:text), col_sep: "\t", row_sep: "\r\n")
+          end
+        end
       else
         res['Content-Type'] = 'application/json'
         Tabula::Writers.JSON(CACHE[coords_method_key].flatten(1), res)
