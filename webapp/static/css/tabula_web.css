@@ -146,7 +146,9 @@ ul#uploadedfiles li:hover button {
 }
 
 
-
+.followyouaroundbar.affix {
+  width: 15%;
+}
 .followyouaroundbar button{
   margin-bottom: 5px;
 }
