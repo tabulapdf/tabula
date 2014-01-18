@@ -54,9 +54,6 @@ class TabulaDebug < Cuba
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
       extractor = Tabula::Extraction::ObjectExtractor.new(pdf_path, [page])
 
-      page_obj = extractor.extract.next
-      rulings = page_obj.ruling_lines
-
       # crop lines to area of interest
       par = JSON.load(req.params['coords']).first
       top, left, bottom, right = [par['y1'].to_f,
@@ -67,12 +64,14 @@ class TabulaDebug < Cuba
       area = Tabula::ZoneEntity.new(top, left,
                                     right - left, bottom - top)
 
-      rulings = Tabula::Ruling.crop_rulings_to_area(rulings, area)
+      page_obj = extractor.extract.next
+      page_area = page_obj.get_area(area)
+      rulings = page_area.ruling_lines
 
       intersections = {}
       if req.params['show_intersections'] != 'false'
-        intersections = Tabula::Ruling.find_intersections(rulings.find_all(&:horizontal?),
-                                                          rulings.find_all(&:vertical?))
+        intersections = Tabula::Ruling.find_intersections(page_area.horizontal_ruling_lines,
+                                                          page_area.vertical_ruling_lines)
       end
 
       res['Content-Type'] = 'application/json'
