@@ -3,15 +3,15 @@ GEM
   specs:
     cuba (3.1.0)
       rack
-    jruby-jars (1.7.8)
+    jruby-jars (1.7.10)
     jruby-rack (1.1.13.3)
     rack (1.5.2)
-    rake (10.1.0)
+    rake (10.1.1)
     rubyzip (1.0.0)
     rufus-lru (1.0.5)
     tabula-extractor (0.7.1-java)
       trollop (~> 2.0)
-    tilt (1.4.1)
+    tilt (2.0.0)
     trollop (2.0)
     warbler (1.4.0)
       jruby-jars (>= 1.5.6)
