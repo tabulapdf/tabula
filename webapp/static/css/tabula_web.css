@@ -81,8 +81,8 @@ img.page-image {
 
 #modal-error {
   width: 60%;
-  margin-left: -30%;
-  top: 50% !important;
+  margin: -10px 0 0 -30%;
+  max-height: 500px;
 }
 
 #modal-error textarea {
