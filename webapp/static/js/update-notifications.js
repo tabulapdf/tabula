@@ -31,7 +31,7 @@ $(function() {
            var i = data.map(function(d) { return d.name; }).indexOf(TABULA_VERSION);
            // if index >= 1, current release is not the newest
            if (i == 0) return;
-           var new_release = data[i-1];
+           var new_release = data[0];
            if(new_release){
              $('div#update-alert a').attr('href', new_release.html_url);
              $('div#update-alert #new-version').html(new_release.name);
