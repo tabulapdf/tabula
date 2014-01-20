@@ -9,6 +9,9 @@
     <title>Tabula</title>
   </head>
   <body data-spy="scroll" data-target=".nav.sidebar-nav" data-offset="0">
+    <% if $TABULA_VERSION.start_with?('rev') %>
+        <div class="ribbon-wrapper-green"><div class="ribbon-green">DEV mode</div></div>
+    <% end %>
     <% if req.path != "/" %>
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
