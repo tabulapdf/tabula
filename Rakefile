@@ -158,12 +158,18 @@ task :windows => [:create_version_file, :war] do |t|
   puts "\n======================================================"
   puts "Building Windows executable..."
   puts "======================================================\n\n"
-  cd File.join(File.expand_path(File.dirname(__FILE__)), "launch4j")
+
   # exe files REALLY need x.x.x.x otherwise the compile fails.
-  win_build_version = build_version
-  while win_build_version.split('.').length < 4
-    win_build_version = "#{win_build_version}.0"
+  if build_version.start_with?('rev')
+    win_build_version = '0.0.0.0'
+  else
+    while win_build_version.split('.').length < 4
+      win_build_version = build_version
+      win_build_version = "#{win_build_version}.0"
+    end
   end
+
+  cd File.join(File.expand_path(File.dirname(__FILE__)), "launch4j")
   invoke_ant("-Dfull_version=#{win_build_version}", "-f", "../build.xml", "windows") { |f|
     f.each { |line| puts line }
   }
