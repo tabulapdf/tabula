@@ -80,7 +80,8 @@
   </div>
   <div class="modal-footer" style="position: relative">
     <span style="display: none;">Copied!</span>
-    <button id="switch-method" class="btn btn-warning" style="float: left;">Switch Extraction Method To <span id="extraction-method"></span></button>
+    <button id="switch-method" class="btn btn-warning" style="float: left;">Switch Extraction Method To <b><span id="extraction-method"></span></b></button>
+    <div id="spinner-modal"></div>
     <button id="close-modal" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
     <button class="btn btn-primary" id="copy-csv-to-clipboard">Copy to clipboard as CSV</button>
     <div class="btn-group">
@@ -92,8 +93,6 @@
         <ul class="dropdown-menu">
           <li><input class="linklike download-btn" type="submit" id="download-csv" value="CSV"></li>
           <li><input class="linklike download-btn" type="submit" id="download-tsv" value="TSV"></li>
-          <!-- <li><a id="download-csv">CSV</a></li>
-          <li><a id="download-tsv">TSV</a></li> -->
         </ul>
       </form>
     </div>
@@ -122,5 +121,6 @@
               top: 'auto', // Top position relative to parent in px
               left: 'auto' // Left position relative to parent in px
           };
- new Spinner(SPINNER_OPTS).spin($('#spinner').get(0))
+ new Spinner(SPINNER_OPTS).spin($('#spinner').get(0));
+ new Spinner(SPINNER_OPTS).spin($('#spinner-modal').get(0));
 </script>

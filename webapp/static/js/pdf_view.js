@@ -61,7 +61,6 @@ Tabula.PDFView = Backbone.View.extend({
     events : {
       'click button.close#directions' : 'moveSelectionsUp',
       'click a.tooltip-modal': 'tooltip', //$('a.tooltip-modal').tooltip();
-      'change input#use_lines': 'redoQuery',
       'hide #myModal' : function(){ clip.unglue('#copy-csv-to-clipboard'); },
       'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
       'click i.icon-remove': 'deletePage',
@@ -80,14 +79,15 @@ Tabula.PDFView = Backbone.View.extend({
     },
     extractionMethod: "guess",
     getOppositeExtractionMethod: function(){
-      if(this.extractionMethod == "guess"){
+      if (this.extractionMethod == "guess"){
         return;
-      }else  if(this.extractionMethod == "original"){
-        return "spreadsheet";
-      }else{
-        return "original";
       }
+      else if (this.extractionMethod == "original") {
+        return "spreadsheet";
+      }
+      return "original";
     },
+
     toggleExtractionMethod: function(){
       // change the extraction method for this request
       this.extractionMethod = this.getOppositeExtractionMethod();
@@ -95,9 +95,23 @@ Tabula.PDFView = Backbone.View.extend({
       this.updateExtractionMethodButton();
     },
     queryWithToggledExtractionMethod: function(){
-      this.toggleExtractionMethod();
-      this.redoQuery();
+      $('#switch-method').prop('disabled', true);
+      $('#spinner-modal').css({
+        display: 'block',
+        left: $('#switch-method').width() + 40
+      });
+      $('#myModal .modal-body table').css('opacity', 0.5);
+
+      this.redoQuery({
+        success: _.bind(function() {
+          $('#spinner-modal').css('display', 'none');
+          $('#switch-method').prop('disabled', false);
+          $('#myModal .modal-body table').css('opacity', 1);
+          this.toggleExtractionMethod();
+        }, this)
+      });
     },
+
     updateExtractionMethodButton: function(){
       $('#extraction-method').text(this.getOppositeExtractionMethod()).css("text-transform", "capitalize");
     },
@@ -167,12 +181,14 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     moveSelectionsUp: function(){
-        $('div.imgareaselect').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
+      $('div.imgareaselect').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
     },
 
-    redoQuery: function() {
-        //$.extend(this.lastQuery, { use_lines: $('input#use_lines').is(':checked') });
-        this.doQuery(this.PDF_ID, JSON.parse(this.lastQuery["coords"])); //TODO: stash lastCoords, rather than stashing lastQuery and then parsing it.
+    redoQuery: function(options) {
+      //TODO: stash lastCoords, rather than stashing lastQuery and then parsing it.
+      this.doQuery(this.PDF_ID,
+                   JSON.parse(this.lastQuery["coords"]),
+                   options);
     },
 
     debugRulings: function(image, render, clean, show_intersections) {
@@ -362,13 +378,15 @@ Tabula.PDFView = Backbone.View.extend({
         this.doQuery(this.PDF_ID, all_coords);
     },
 
-    doQuery: function(pdf_id, coords) {
+    doQuery: function(pdf_id, coords, options) {
       $('#loading').css('left', ($(window).width() - 118) + 'px').css('visibility', 'visible');
 
-      this.lastQuery = {coords: JSON.stringify(coords) ,
-                use_lines :  $('#use_lines').is(':checked'),
-                'extraction_method': this.extractionMethod
-              };
+      console.log(options);
+
+      this.lastQuery = {
+        coords: JSON.stringify(coords) ,
+        'extraction_method': this.extractionMethod
+      };
 
         $.ajax({
             type: 'POST',
@@ -404,11 +422,17 @@ Tabula.PDFView = Backbone.View.extend({
                   $('#myModal').modal();
                   clip.glue('#copy-csv-to-clipboard');
                   $('#loading').css('visibility', 'hidden');
+                  if (options !== undefined && _.isFunction(options.success))
+                    options.success(resp);
+
               }, this),
             error: _.bind(function(xhr, status, error) {
                 $('#modal-error textarea').html(xhr.responseText);
                 $('#loading').css('visibility', 'hidden');
                 $('#modal-error').modal();
+                if (options !== undefined && _.isFunction(options.error))
+                  options.error(resp);
+
             })
         });
     },

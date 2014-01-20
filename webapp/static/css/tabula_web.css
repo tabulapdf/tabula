@@ -79,6 +79,13 @@ img.page-image {
     max-height: 500px;
 }
 
+#myModal #spinner-modal {
+  top: 5px;
+  left: 280px;
+  position: relative;
+  display: none;
+}
+
 #modal-error {
   width: 60%;
   margin: -10px 0 0 -30%;
