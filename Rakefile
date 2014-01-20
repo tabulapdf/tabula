@@ -37,6 +37,11 @@ task :create_version_file do |t|
   end
 end
 
+task :delete_version_file do |t|
+  tabula_dir = File.expand_path(File.dirname(__FILE__))
+  FileUtils.rm(File.join(tabula_dir, 'webapp', 'tabula_version.rb'))
+end
+
 
 task :jardist => [:create_version_file, :war] do |t|
   tabula_dir = File.expand_path(File.dirname(__FILE__))
@@ -219,4 +224,11 @@ task :build_all_platforms => [:create_version_file, :war] do |t|
     Rake::Task[platform].execute
     puts
   end
+end
+
+# delete version file after build
+['jardist', 'macosx', 'windows'].each do |t|
+  Rake::Task[t.intern].enhance {
+    Rake::Task['delete_version_file'.intern].invoke
+  }
 end
