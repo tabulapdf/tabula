@@ -186,13 +186,12 @@ Cuba.define do
       # fire off background jobs; in different orders if we're doing autodetection
 
       document_metadata_job = GenerateDocumentMetadataJob.create(:filename => original_filename,
+
                                                                  :id => file_id)
+      detect_tables_job = nil
       if req.params['autodetect-tables']
-        STDERR.puts req.params['autodetect-tables']
         detect_tables_job = DetectTablesJob.create(:filename => file,
                                                    :output_dir => file_path)
-      else
-        detect_tables_job = nil
       end
 
       page_index_job = GeneratePageIndexJob.create(:file => file,
