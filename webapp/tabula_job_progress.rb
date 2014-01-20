@@ -30,7 +30,6 @@ class TabulaJobProgress < Cuba
     on ":upload_id" do |upload_id|
       # upload_id is the "job id" uuid that resque-status provides
       status = Tabula::Background::JobExecutor.get(upload_id)
-      puts Tabula::Background::JobExecutor.instance.jobs.inspect
       if status.nil?
         res.status = 404
         res.write ""
