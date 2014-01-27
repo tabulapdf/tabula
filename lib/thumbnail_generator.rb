@@ -19,6 +19,7 @@ class AbstractThumbnailGenerator
     raise ArgumentError if sizes.empty?
     @sizes = sizes.sort.reverse
     @output_directory = output_directory
+    @pages = []
   end
 
   def generate_thumbnails!
@@ -41,8 +42,6 @@ class JPedalThumbnailGenerator < AbstractThumbnailGenerator
     total_pages = @decoder.getPageCount
 
     total_pages.times do |i|
-      # w = pageData.getCropBoxWidth(pageNo);
-      # h = pageData.getCropBoxHeight(pageNo);
       image = @decoder.getPageAsImage(i+1);
       image_w, image_h = image.getWidth, image.getHeight
 
@@ -55,7 +54,7 @@ class JPedalThumbnailGenerator < AbstractThumbnailGenerator
                       java.io.File.new(File.join(@output_directory,
                                                  "document_#{s}_#{i+1}.png")))
         changed
-        notify_observers(i+1, total_pages * 2, "generating page thumbnails...")
+        notify_observers(i+1, total_pages, "generating page thumbnails...")
       end
     end
     @decoder.closePdfFile
