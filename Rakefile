@@ -28,6 +28,7 @@ end
 
 ########## distribution bundles ##########
 task :create_version_file do |t|
+  puts "Creating version file (#{build_version})..."
   tabula_dir = File.expand_path(File.dirname(__FILE__))
   rb_file = <<-eos
     $TABULA_VERSION = "#{build_version}"
