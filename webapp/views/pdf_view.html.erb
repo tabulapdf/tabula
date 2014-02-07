@@ -80,7 +80,12 @@
   </div>
   <div class="modal-footer" style="position: relative">
     <span style="display: none;">Copied!</span>
-    <button id="switch-method" class="btn btn-warning" style="float: left;">Switch Extraction Method To <b><span id="extraction-method"></span></b></button>
+
+    <label for="extraction-method-btns">Extraction Method:</span>
+    <div class="btn-group" data-toggle="buttons-radio" id="extraction-method-btns">
+      <button type="button" class="btn btn-warning extraction-method-btn" id="original-method-btn">Original</button>
+      <button type="button" class="btn btn-warning extraction-method-btn" id="spreadsheet-method-btn">Spreadsheet</button>
+    </div>
     <div id="spinner-modal"></div>
     <button id="close-modal" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
     <button class="btn btn-primary" id="copy-csv-to-clipboard">Copy to clipboard as CSV</button>
