@@ -25,6 +25,32 @@ class TabulaDebug < Cuba
       }.to_json
     end
 
+    on ":file_id/text_chunks" do |file_id|
+      par = JSON.load(req.params['coords']).first
+      page = par['page']
+
+      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      extractor = Tabula::Extraction::ObjectExtractor.new(pdf_path, [page])
+
+      text_elements = extractor.extract.next.get_text([par['y1'].to_f,
+                                                       par['x1'].to_f,
+                                                       par['y2'].to_f,
+                                                       par['x2'].to_f])
+
+      text_chunks = Tabula::TextElement.merge_words(text_elements)
+
+      puts text_chunks.inspect
+
+      res['Content-Type'] = 'application/json'
+      res.write text_chunks.map { |te|
+        { 'left' => te.left,
+          'top' => te.top,
+          'width' => te.width,
+          'height' => te.height,
+          'text' => te.text }
+      }.to_json
+    end
+
 
     on ":file_id/clipping_paths" do |file_id|
       par = JSON.load(req.params['coords']).first

@@ -1,3 +1,9 @@
+PATH
+  remote: ../tabula-extractor
+  specs:
+    tabula-extractor (0.7.2-java)
+      trollop (~> 2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -27,6 +33,10 @@ DEPENDENCIES
   rack
   rake
   rufus-lru
+<<<<<<< Updated upstream
   tabula-extractor (~> 0.7.2)
+=======
+  tabula-extractor (~> 0.7.2)!
+>>>>>>> Stashed changes
   tilt
   warbler

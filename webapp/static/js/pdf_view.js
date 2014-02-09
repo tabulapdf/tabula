@@ -323,6 +323,9 @@ Tabula.PDFView = Backbone.View.extend({
         return [coords.y1, coords.x1, coords.y2, coords.x2].join(',');
     },
 
+    debugTextChunks: function(image) {
+        return this._debugRectangularShapes(image, '/debug/' + this.PDF_ID + '/text_chunks');
+    },
 
     /* functions for the follow-you-around bar */
     total_selections: function(){
