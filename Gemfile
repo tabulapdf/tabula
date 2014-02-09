@@ -8,7 +8,7 @@ platform :jruby do
   gem "rack"
   gem "tilt"
   gem "rufus-lru"
-  gem "tabula-extractor", '~>0.7.2', :require => "tabula"
+  gem "tabula-extractor", '~>0.7.2', :require => "tabula", :path => '../tabula-extractor'
 
   group :development do
     gem "rake"
