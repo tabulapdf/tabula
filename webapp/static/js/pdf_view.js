@@ -282,6 +282,48 @@ Tabula.PDFView = Backbone.View.extend({
         return this._debugRectangularShapes(image, '/debug/' + this.PDF_ID + '/clipping_paths');
     },
 
+    debugColumns: function(image) {
+      image = $(image);
+      var imagePos = image.offset();
+      var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
+          .attr('width', image.width())
+          .attr('height', image.height())
+          .css('top', imagePos.top + 'px')
+          .css('left', imagePos.left + 'px');
+      $('body').append(newCanvas);
+
+      var thumb_width = $(image).width();
+      var thumb_height = $(image).height();
+      var pdf_width = parseInt($(image).data('original-width'));
+      var pdf_height = parseInt($(image).data('original-height'));
+      var pdf_rotation = parseInt($(image).data('rotation'));
+
+      var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width);
+
+      var coords = JSON.parse(this.lastQuery.coords);
+
+      this.redoQuery({
+        success: _.bind(function(data) {
+                   var colors = this.colors;
+                   console.log(coords);
+                   $.each(data[0].vertical_separators, function(i, vert) {
+                     newCanvas.drawLine({
+                       strokeStyle: colors[i % colors.length],
+                       strokeWidth: 1,
+                       x1: vert * scale, y1: coords[0].y1 * scale,
+                       x2: vert * scale, y2: coords[0].y2 * scale
+                     });
+                   });
+                 }, this)});
+
+    },
+
+    debugCoordsToTabula: function() {
+        var coords = eval(this.lastQuery.coords)[0];
+        return [coords.y1, coords.x1, coords.y2, coords.x2].join(',');
+    },
+
+
     /* functions for the follow-you-around bar */
     total_selections: function(){
       return _.reduce(imgAreaSelects, function(memo, s){
@@ -380,8 +422,6 @@ Tabula.PDFView = Backbone.View.extend({
 
     doQuery: function(pdf_id, coords, options) {
       $('#loading').css('left', ($(window).width() - 118) + 'px').css('visibility', 'visible');
-
-      console.log(options);
 
       this.lastQuery = {
         coords: JSON.stringify(coords) ,
