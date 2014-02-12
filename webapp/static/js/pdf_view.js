@@ -75,12 +75,12 @@ Tabula.PDFView = Backbone.View.extend({
       'click #restore-detected-tables': 'restore_detected_tables',
       'click #repeat-lassos': 'repeat_lassos',
       'click #all-data': 'query_all_data',
-      'click #switch-method': 'queryWithToggledExtractionMethod'
+      'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod'
     },
     extractionMethod: "guess",
     getOppositeExtractionMethod: function(){
       if (this.extractionMethod == "guess"){
-        return;
+        return; // this should never happen.
       }
       else if (this.extractionMethod == "original") {
         return "spreadsheet";
@@ -88,13 +88,7 @@ Tabula.PDFView = Backbone.View.extend({
       return "original";
     },
 
-    toggleExtractionMethod: function(){
-      // change the extraction method for this request
-      this.extractionMethod = this.getOppositeExtractionMethod();
-      // and update the button for next time.
-      this.updateExtractionMethodButton();
-    },
-    queryWithToggledExtractionMethod: function(){
+    queryWithToggledExtractionMethod: function(e){
       $('#switch-method').prop('disabled', true);
       $('#spinner-modal').css({
         display: 'block',
@@ -102,18 +96,23 @@ Tabula.PDFView = Backbone.View.extend({
       });
       $('#myModal .modal-body table').css('opacity', 0.5);
 
+      console.log("before", this.extractionMethod);
+      this.extractionMethod = this.getOppositeExtractionMethod();
+      console.log("after", this.extractionMethod);
+      this.updateExtractionMethodButton();
+
       this.redoQuery({
         success: _.bind(function() {
           $('#spinner-modal').css('display', 'none');
           $('#switch-method').prop('disabled', false);
           $('#myModal .modal-body table').css('opacity', 1);
-          this.toggleExtractionMethod();
+          // this.toggleExtractionMethod();
         }, this)
       });
     },
 
     updateExtractionMethodButton: function(){
-      $('#extraction-method').text(this.getOppositeExtractionMethod()).css("text-transform", "capitalize");
+      $('#' + this.extractionMethod + '-method-btn').button('toggle');
     },
 
     rotatePage: function(t) {
