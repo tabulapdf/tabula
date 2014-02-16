@@ -21,6 +21,13 @@ body {
 .x.axis path {
   display: none;
 }
+
+.line {
+  fill: none;
+  stroke: red;
+  stroke-width: 2.5px;
+}
+
 </style>
 </head>
 <body>
@@ -32,9 +39,12 @@ body {
   height = 500 - margin.top - margin.bottom;
 
   var x = d3.scale.ordinal()
-    .rangeRoundBands([0, width], .1);
+    .rangeRoundBands([0, width-20], .1);
 
   var y = d3.scale.linear()
+    .rangeRound([height, 0]);
+
+  var y_avg_downloads_scale = d3.scale.linear()
     .rangeRound([height, 0]);
 
   var color = d3.scale.ordinal()
@@ -48,6 +58,16 @@ body {
     .scale(y)
     .orient("left")
     .tickFormat(d3.format(".2s"));
+
+  var yAxisAvgDownloads = d3.svg.axis()
+      .scale(y_avg_downloads_scale)
+      .orient("left")
+      .tickFormat(d3.format(".2s"));
+
+  var avg_downloads_line = d3.svg.line()
+      .x(function(d) { return x(d.name) + x.rangeBand() / 2; })
+      .y(function(d) { return y_avg_downloads_scale(d.avg_downloads); });
+
 
   var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -65,7 +85,7 @@ body {
 
       data.sort(function(a,b) { return new Date(a.created_at) - new Date(b.created_at);});
       data.shift();
-      data.forEach(function(d) {
+      data.forEach(function(d, i) {
           var y0 = 0;
           d.platforms = platformNames.map(function(name) {
               return { name: name,
@@ -75,12 +95,17 @@ body {
                        })[0].download_count };
           });
           d.total = d3.sum(d.platforms.map(function(x) { return x.y1 - x.y0; }));
+          var next_release_date = i == data.length - 1 ? new Date() : new Date(data[i+1].created_at);
+          var days_between_releases = (next_release_date - new Date(d.created_at)) / (1000*60*60*24)
+          d.avg_downloads = d.total / days_between_releases;
           total_downloads += d.total;
-          console.log(d.name, d.total, d.platforms);
       });
+
+      console.log(data);
 
       x.domain(data.map(function(d) { return d.name; }));
       y.domain([0, d3.max(data, function(d) { return d.total; })]);
+      y_avg_downloads_scale.domain([0, d3.max(data, function(d) { return d.avg_downloads; })]);
 
   svg.append("g")
       .attr("class", "x axis")
@@ -97,6 +122,17 @@ body {
       .style("text-anchor", "end")
       .text("Downloads");
 
+   svg.append("g")
+          .attr("class", "y axis")
+          .attr('transform', 'translate(' + width + ', 0)')
+          .call(yAxisAvgDownloads)
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("Avg. downloads / day");
+
   var state = svg.selectAll(".state")
       .data(data)
     .enter().append("g")
@@ -112,21 +148,26 @@ body {
       .style("fill", function(d) { return color(d.name); })
       .append("title").text(function(d) { return d.y1 - d.y0; });
 
+   svg.append("path")
+          .datum(data)
+          .attr("class", "line")
+          .attr("d", avg_downloads_line);
+
 
   var legend = svg.selectAll(".legend")
       .data(color.domain().slice().reverse())
     .enter().append("g")
       .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+      .attr("transform", function(d, i) { return "translate(20," + i * 20 + ")"; });
 
   legend.append("rect")
-      .attr("x", width - 18)
+      .attr("x", 40)
       .attr("width", 18)
       .attr("height", 18)
       .style("fill", color);
 
   legend.append("text")
-      .attr("x", width - 24)
+      .attr("x", 24)
       .attr("y", 9)
       .attr("dy", ".35em")
       .style("text-anchor", "end")
