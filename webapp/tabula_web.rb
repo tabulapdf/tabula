@@ -244,12 +244,10 @@ Cuba.define do
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.csv\""
         tables = CACHE[coords_method_key].flatten(1)
         tables.each do |table|
-          is_table = table.instance_of?(Tabula::Table)
-          rows =  is_table ? table.lines : table.rows
-          rows.each do |row|
-            text_elements = is_table ? row.text_elements : row
-            res.write CSV.generate_line(text_elements.map(&:text), row_sep: "\r\n")
-          end
+          # table.rows.each do |row|
+          #   res.write CSV.generate_line(text_elements.map(&:text), row_sep: "\r\n")
+          # end
+          res.write table.to_csv
         end
       when 'tsv'
         # this SUCKS SO BAD. Change when we have a common interface for
@@ -258,16 +256,14 @@ Cuba.define do
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.tsv\""
         tables = CACHE[coords_method_key].flatten(1)
         tables.each do |table|
-          is_table = table.instance_of?(Tabula::Table)
-          rows =  is_table ? table.lines : table.rows
-          rows.each do |row|
-            text_elements = is_table ? row.text_elements : row
-            res.write CSV.generate_line(text_elements.map(&:text), col_sep: "\t", row_sep: "\r\n")
-          end
+          # table.rows.each do |row|
+          #   res.write CSV.generate_line(text_elements.map(&:text), col_sep: "\t", row_sep: "\r\n")
+          # end
+          res.write table.to_tsv
         end
       else
         res['Content-Type'] = 'application/json'
-        Tabula::Writers.JSON(CACHE[coords_method_key].flatten(1), res)
+        res.write CACHE[coords_method_key].flatten(1).to_json
       end
     end
   end
