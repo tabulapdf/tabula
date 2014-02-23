@@ -8,6 +8,7 @@ require 'json'
 require 'csv'
 require 'tempfile'
 require 'fileutils'
+require 'securerandom'
 
 require 'tabula' # tabula-extractor gem
 
@@ -185,24 +186,29 @@ Cuba.define do
 
       # fire off background jobs; in different orders if we're doing autodetection
 
-      document_metadata_job = GenerateDocumentMetadataJob.create(:filename => original_filename,
+      job_batch = SecureRandom.uuid
 
-                                                                 :id => file_id)
-      detect_tables_job = nil
+      GenerateDocumentMetadataJob.create(:filename => original_filename,
+                                         :id => file_id,
+                                         :batch => job_batch)
+
       if req.params['autodetect-tables']
-        detect_tables_job = DetectTablesJob.create(:filename => file,
-                                                   :output_dir => file_path)
+        DetectTablesJob.create(:filename => file,
+                               :output_dir => file_path,
+                               :batch => job_batch)
       end
 
-      page_index_job = GeneratePageIndexJob.create(:file => file,
-                                                   :output_dir => file_path)
-      upload_id = GenerateThumbnailJob.create(:file_id => file_id,
-                                              :file => file,
-                                              :page_index_job_uuid => page_index_job,
-                                              :detect_tables_job_uuid => detect_tables_job,
-                                              :output_dir => file_path,
-                                              :thumbnail_sizes => [560])
-      res.redirect "/queue/#{upload_id}"
+      GeneratePageIndexJob.create(:file => file,
+                                  :output_dir => file_path,
+                                  :batch => job_batch)
+
+      GenerateThumbnailJob.create(:file_id => file_id,
+                                  :file => file,
+                                  :output_dir => file_path,
+                                  :thumbnail_sizes => [560],
+                                  :batch => job_batch)
+
+      res.redirect "/queue/#{job_batch}?file_id=#{file_id}"
     end
 
     on "pdf/:file_id/data" do |file_id|
