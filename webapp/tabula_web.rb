@@ -250,9 +250,6 @@ Cuba.define do
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.csv\""
         tables = CACHE[coords_method_key].flatten(1)
         tables.each do |table|
-          # table.rows.each do |row|
-          #   res.write CSV.generate_line(text_elements.map(&:text), row_sep: "\r\n")
-          # end
           res.write table.to_csv
         end
       when 'tsv'
@@ -262,9 +259,6 @@ Cuba.define do
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.tsv\""
         tables = CACHE[coords_method_key].flatten(1)
         tables.each do |table|
-          # table.rows.each do |row|
-          #   res.write CSV.generate_line(text_elements.map(&:text), col_sep: "\t", row_sep: "\r\n")
-          # end
           res.write table.to_tsv
         end
       else
