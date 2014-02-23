@@ -68,6 +68,12 @@ module Tabula
         def get(uuid)
           instance.jobs[uuid]
         end
+
+        def get_by_batch(uuid)
+          instance.jobs.select { |k, j|
+            j.options[:batch] == uuid
+          }
+        end
       end
     end
 
@@ -79,7 +85,7 @@ module Tabula
 
       def initialize(options={})
         @uuid = SecureRandom.uuid
-        @status = {}
+        @status = {'num' => 0 }
         self.options = options
       end
 
@@ -98,7 +104,7 @@ module Tabula
       end
 
       def [](k)
-        options[k] 
+        options[k]
       end
 
       def at(num, total, *messages)
