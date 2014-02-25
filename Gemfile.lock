@@ -33,10 +33,6 @@ DEPENDENCIES
   rack
   rake
   rufus-lru
-<<<<<<< Updated upstream
   tabula-extractor (~> 0.7.2)
-=======
-  tabula-extractor (~> 0.7.2)!
->>>>>>> Stashed changes
   tilt
   warbler
