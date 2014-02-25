@@ -244,8 +244,6 @@ Cuba.define do
 
       case req.params['format']
       when 'csv'
-        # this SUCKS SO BAD. Change when we have a common interface for
-        # Tabula::Table and Tabula::Spreadsheet
         res['Content-Type'] = 'text/csv'
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.csv\""
         tables = CACHE[coords_method_key].flatten(1)
@@ -258,8 +256,6 @@ Cuba.define do
           end
         end
       when 'tsv'
-        # this SUCKS SO BAD. Change when we have a common interface for
-        # Tabula::Table and Tabula::Spreadsheet
         res['Content-Type'] = 'text/tab-separated-values'
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.tsv\""
         tables = CACHE[coords_method_key].flatten(1)
