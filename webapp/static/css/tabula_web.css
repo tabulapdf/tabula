@@ -118,9 +118,11 @@ img.page-image {
 #loading {
     position: fixed;
     visibility: hidden;
-    top: 51px;
-    width: 60px;
-    left: 1058px;
+    top: 40%;
+    /* left is set in JavaScript*/
+    padding: 20px;
+    width: 100px;
+    z-index: 101;
 }
 
 div.spinner {
@@ -251,4 +253,17 @@ div.explanation-label {
 }
 .ribbon-green:after {
   right: 0;
+}
+
+#loading-dimmer{
+  display: none;
+  visibility: hidden;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #000;
+  opacity: 0.8;
 }
