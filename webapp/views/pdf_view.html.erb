@@ -49,7 +49,7 @@
         <!-- <button id="repeat-lassos" type="button" class="btn btn-primary">Repeat Page 1 Lassos</button> -->
         <button id="clear-all-selections" type="button" class="btn btn-danger" disabled="disabled">Clear All Selections</button>
         <button id="restore-detected-tables" type="button" class="btn btn-warning" style="display: none;">Autodetect Tables</button>
-        <br /><input type="checkbox" id="multiselect-checkbox"> <label id="multiselect-label" for="multiselect-checkbox">Multi-Select Mode <a class="tooltip-modal" href="#" data-placement="left" data-toggle="tooltip" title="Check this to select multiple tables without their extracted data appearing afterwards." ><i class="icon-question-sign" ></i></a></label>
+        <br /><input type="checkbox" id="multiselect-checkbox"> <label id="multiselect-label" for="multiselect-checkbox">Multi-Select Mode <a class="tooltip-modal has-tooltip" href="#" data-placement="left" data-toggle="tooltip" title="Check this to select multiple tables without their extracted data appearing afterwards." ><i class="icon-question-sign" ></i></a></label>
         <br />
         <a href="#" id="help-start">Help</a>
       </div>
@@ -71,7 +71,7 @@
 </div>
 
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-header">
+  <div class="modal-header">  
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="myModalLabel">Extracted tabular data</h3>
   </div>
@@ -82,7 +82,7 @@
     <div id="spinner-modal"></div>
     <span style="display: none;">Copied!</span>
 
-    <label style="display: inline;" for="extraction-method-btns">Extraction Method:</label>
+    <label class="has-tooltip" style="display: inline;" for="extraction-method-btns" data-placement="left" data-toggle="tooltip" title="Advanced Users: Tabula has two different extraction methods for extracting data from different kinds of tables. It tries to select the right one automatically, but sometimes chooses incorrectly. Try switching the method if the extracted data doesn't come out right."><i class="icon-question-sign" ></i>Extraction Method: </label>
     <div class="btn-group" data-toggle="buttons-radio" id="extraction-method-btns">
       <button type="button" class="btn btn-warning extraction-method-btn" id="original-method-btn">Original</button>
       <button type="button" class="btn btn-warning extraction-method-btn" id="spreadsheet-method-btn">Spreadsheet</button>

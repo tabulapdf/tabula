@@ -11,6 +11,8 @@ $(document).ready(function() {
         $('#myModal span').css('display', 'inline').delay(900).fadeOut('slow');
     });
 
+    $('.has-tooltip').tooltip();
+
   Tabula.tour = new Tour(
   {
     storage: false,
