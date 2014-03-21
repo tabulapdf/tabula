@@ -11,6 +11,8 @@ $(document).ready(function() {
         $('#myModal span').css('display', 'inline').delay(900).fadeOut('slow');
     });
 
+    $('.has-tooltip').tooltip();
+
   Tabula.tour = new Tour(
   {
     storage: false,
@@ -423,7 +425,8 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     doQuery: function(pdf_id, coords, options) {
-      $('#loading').css('left', ($(window).width() - 118) + 'px').css('visibility', 'visible');
+      $('#loading').css('left', ($(window).width() / 2) - 50 + 'px').css('visibility', 'visible');
+      $('#loading-dimmer').show().css('visibility', 'visible');
 
       this.lastQuery = {
         coords: JSON.stringify(coords) ,
@@ -464,6 +467,7 @@ Tabula.PDFView = Backbone.View.extend({
                   $('#myModal').modal();
                   clip.glue('#copy-csv-to-clipboard');
                   $('#loading').css('visibility', 'hidden');
+                  $('#loading-dimmer').hide().css('visibility', 'hidden');
                   if (options !== undefined && _.isFunction(options.success))
                     options.success(resp);
 
@@ -471,6 +475,7 @@ Tabula.PDFView = Backbone.View.extend({
             error: _.bind(function(xhr, status, error) {
                 $('#modal-error textarea').html(xhr.responseText);
                 $('#loading').css('visibility', 'hidden');
+                $('#loading-dimmer').hide().css('visibility', 'hidden');
                 $('#modal-error').modal();
                 if (options !== undefined && _.isFunction(options.error))
                   options.error(resp);
