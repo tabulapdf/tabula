@@ -15,15 +15,17 @@ know how painful this is — you can’t easily copy-and-paste rows of data out
 of PDF files. Tabula allows you to extract that data in CSV format, through
 a simple web interface ([Check out this short screencast](https://erika.makes.org/popcorn/16ll))
 
-**Caveat**: Tabula only works on text-based PDFs, not scanned documents.
+**Caveat**: Tabula only works on text-based PDFs, not scanned documents. If you can click-and-drag to select text in your table in a PDF viewer (even if the output is disorganized trash), then your PDF is text-based and Tabula should work.
 
 ## Using Tabula
 
 First, make sure you have a recent copy of Java installed. You can
 [download Java here][jre_download]. Tabula requires
 a Java Runtime Environment compatible with Java 6 or Java 7.
+If you have a problem, check [Known Issues](#knownissues) first, then [report an issue](http://www.github.com/jazzido/tabula/issues).
 
-* **Windows** -- Download `tabula-win.zip` from [the download site][tabula_dl]. Unzip the whole thing
+* ### Windows
+  Download `tabula-win.zip` from [the download site][tabula_dl]. Unzip the whole thing
   and open the `tabula.exe` file inside. A browser should automatically open
   to http://127.0.0.1:8080/ . If not, open your web browser of choice and
   visit that link.
@@ -33,14 +35,8 @@ a Java Runtime Environment compatible with Java 6 or Java 7.
 
   If you need Tabula to use a port other than 8080, set the `TABULA_PORT` environment variable.
 
-  ***Note***: If you’re running Mac OS X 10.8 or later, GateKeeper may prevent you from opening
-  the Tabula app. Please [see this GateKeeper page][gatekeeper] for more information. Make sure
-  you allow applications from "Mac App Store and identified developers", then right-click or
-  control-click on the app and then press "Open".
-
-[gatekeeper]: http://support.apple.com/kb/HT5290
-
-* **Mac OS X** -- Download `tabula-mac.zip` from [the download site][tabula_dl]. Unzip and open
+* ###Mac OS X
+  Download `tabula-mac.zip` from [the download site][tabula_dl]. Unzip and open
   the Tabula app inside. A browser should automatically open
   to http://127.0.0.1:8080/ . If not, open your web browser of choice and
   visit that link.
@@ -48,9 +44,10 @@ a Java Runtime Environment compatible with Java 6 or Java 7.
   To close Tabula, find the Tabula icon in your dock, right-click (or
   control-click) on it, and press "Quit".
 
-  Note: If you’re running Mac OS X 10.8 or later, GateKeeper may prevent you from opening the Tabula app. Please see this GateKeeper page for more information. Make sure you allow applications from "Mac App Store and identified developers", then right-click or control-click on the app and then press "Open".
+  Note: If you’re running Mac OS X 10.8 or later, you might get an error like "Tabula is damaged and can't be opened." We're working on fixing this, but click [here](#gatekeeper) for a workaround.
 
-* **Other platforms** -- Download `tabula-jar.zip` from [the download site][tabula_dl] and unzip it
+* ###Other platforms (e.g. Linux)
+  Download `tabula-jar.zip` from [the download site][tabula_dl] and unzip it
   to the directory of your choice. Open a terminal window, and `cd` to inside
   the `tabula` directory you just unzipped. Then run:
 
@@ -65,6 +62,34 @@ and then try again.
 
 [jre_download]: https://www.java.com/download/
 [tabula_dl]: http://jazzido.github.io/tabula/
+
+## <a name="knownissues">Known issues</a>
+
+There are some bugs that we're aware of that we haven't managed to fix yet. If there's not a solution here or you need more help, please go ahead and [report an issue](http://www.github.com/jazzido/tabula/issues).
+
+* <a name='gatekeeper'>**"Tabula is damaged and can't be opened"** (Mac)</a>:
+  If you’re running Mac OS X 10.8 or later, GateKeeper may prevent you from opening
+  the Tabula app. Please [see this GateKeeper page][gatekeeper] for more information.
+
+
+  1. Temporarily disable Gatekeeper. Go into System Preferences -> Security & Privacy and temporarily change the setting for "Allow applications downloaded from:" to be "Anywhere".
+  2. Run Tabula, the system will tell you that the application was downloaded from the Internet and ask for permission to run it. Allow the application to run.
+  3. Close Tabula.
+  4. Change Gatekeeper back to its previous settings (probably "Mac App Store and identified developers")
+  5. Run Tabula again, it should just run without issues
+
+[gatekeeper]: http://support.apple.com/kb/HT5290
+
+* <a name='gatekeeper'>**org.jruby.exceptions.RaiseException: (NoMethodError) undefined method `lines' for []:Array**</a> (All platforms):
+  This error means that the area you selected didn't contain any text or a table that Tabula can understand. You probably have an image-based PDF (or a text-based PDF containing an image of a table). We'll fix the error on the next release, but Tabula won't be able to extract any data from image-based PDFs at any point in the near future. (Though you can try OCRing the PDF.)
+
+* <a name='gatekeeper'>**org.jruby.exceptions.RaiseException: (Encoding::CompatibilityError) incompatible character encodings:**</a> (Windows):
+  Your Windows computer expects one type an encoding other than Unicode or Windows's English encoding. You can fix this by entering a few simple commands in the Command Prompt. (The commands won't affect anything besides Tabula.)
+
+  1. Open a Command Prompt
+  2. type `cd` and then the path to the directory that contains `tabula.exe`, e.g. `cd C:\Users\Username\Downloads`
+  3. Change that terminal's codepage by typing: `chcp 65001`
+  4. Run Tabula by typing `tabula.exe`
 
 ## Running Tabula from source (for developers)
 
