@@ -4,14 +4,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Tabula</title>
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-      ga('create', 'UA-42330903-1', 'jazzido.github.io');
-      ga('send', 'pageview');
-    </script>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
@@ -30,9 +22,9 @@
         <p class="view"><a href="https://github.com/jazzido/tabula">View the Project on GitHub <small>jazzido/tabula</small></a></p>
 
         <ul>
-          <li><a href="https://github.com/jazzido/tabula/releases/download/v0.9.3/tabula-win-0.9.3.zip">Download for <strong>Windows</strong></a></li>
-          <li><a href="https://github.com/jazzido/tabula/releases/download/v0.9.3/tabula-mac-0.9.3d.zip">Download for <strong>Mac</strong></a></li>
-          <li><a href="https://github.com/jazzido/tabula">View source on <strong>GitHub</strong></a></li>
+          <li><a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.3/tabula-win-0.9.3.zip">Download for <strong>Windows</strong></a></li>
+          <li><a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.3/tabula-mac-0.9.3d.zip">Download for <strong>Mac</strong></a></li>
+          <li><a onclick="ga('send', 'event', 'link', 'download', 'source')" href="https://github.com/jazzido/tabula">View source on <strong>GitHub</strong></a></li>
         </ul>
         <p style="margin-top:-1em"><b>Current Version:</b> <a href="https://github.com/jazzido/tabula/releases/v0.9.3">0.9.3</a> (Jan 18 2014)</p>
         <p style="margin-top:-1em"><b>Other Versions:</b> <a href="https://github.com/jazzido/tabula/releases">pre-releases &amp; archives</a></p>
@@ -50,10 +42,10 @@
 
 <p style="margin-bottom:0">1. Download the version of Tabula for your operating system:</p>
 <ul>
-  <li><b>Windows:</b> <a href="https://github.com/jazzido/tabula/releases/download/v0.9.3/tabula-win-0.9.3.zip">tabula-win.zip</a></li>
-  <li><b>Mac OS X:</b> <a href="https://github.com/jazzido/tabula/releases/download/v0.9.3/tabula-mac-0.9.3d.zip">tabula-mac.zip</a>
+  <li><b>Windows:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.3/tabula-win-0.9.3.zip">tabula-win.zip</a></li>
+  <li><b>Mac OS X:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.3/tabula-mac-0.9.3d.zip">tabula-mac.zip</a>
     <ul style="margin-bottom:0;padding-bottom:0"><li><i>OS X 10.8+ users</i>: if you have issues opening the app, <a href="https://github.com/jazzido/tabula/releases/tag/v0.9.3">see note at bottom of download page</a></li></ul></li>
-  <li><b>Linux/Other:</b> <a href="https://github.com/jazzido/tabula/releases/download/v0.9.3/tabula-jar-0.9.3.zip">tabula-jar.zip</a> (view README.txt inside for instructions)</li>
+  <li><b>Linux/Other:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.3/tabula-jar-0.9.3.zip">tabula-jar.zip</a> (view README.txt inside for instructions)</li>
 </ul>
 <p>2. Extract the zip file using the file extractor of your choice (such as 7-zip).</p>
 <p>3. Go into the folder you just extracted. Run the "Tabula" program inside.</p>
@@ -83,6 +75,15 @@
       </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-42330903-1', 'nerdpower.org');
+  ga('send', 'pageview');
+
+</script>
   </body>
 </html>
