@@ -88,7 +88,7 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
 
   1. Open a Command Prompt
   2. type `cd` and then the path to the directory that contains `tabula.exe`, e.g. `cd C:\Users\Username\Downloads`
-  3. Change that terminal's codepage by typing: `chcp 65001`
+  3. Change that terminal's codepage to Unicode by typing: `chcp 65001`
   4. Run Tabula by typing `tabula.exe`
 
 ## Running Tabula from source (for developers)
