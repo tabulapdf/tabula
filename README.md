@@ -201,4 +201,11 @@ needs "tabula.jar" (contained in "build") in the same directory. You can create 
 
 ## Contributing
 
-Interested in helping out? See [`TODO.md`](TODO.md) for ideas.
+Interested in helping out? We'd love to have your help!
+
+You can help by:
+
+- [Reporting a bug](https://github.com/jazzido/tabula).
+- Adding or editing documentation.
+- Contributing code via a Pull Request from ideas or bugs listed in the [Issues](https://github.com/jazzido/tabula/issues) section.
+- Spreading the word about Tabula to people who might be able to benefit from using it.
