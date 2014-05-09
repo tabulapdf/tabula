@@ -42,19 +42,24 @@ class JPedalThumbnailGenerator < AbstractThumbnailGenerator
     total_pages = @decoder.getPageCount
 
     total_pages.times do |i|
-      image = @decoder.getPageAsImage(i+1);
-      image_w, image_h = image.getWidth, image.getHeight
 
-      @sizes.each do |s|
-        scale = s.to_f / image_w.to_f
-        bi = BufferedImage.new(s, image_h * scale, image.getType)
-        bi.getGraphics.drawImage(image.getScaledInstance(s, image_h * scale, Image::SCALE_SMOOTH), 0, 0, nil)
-        ImageIO.write(bi,
-                      'png',
-                      java.io.File.new(File.join(@output_directory,
-                                                 "document_#{s}_#{i+1}.png")))
-        changed
-        notify_observers(i+1, total_pages, "generating page thumbnails...")
+      begin
+        image = @decoder.getPageAsImage(i+1);
+        image_w, image_h = image.getWidth, image.getHeight
+
+        @sizes.each do |s|
+          scale = s.to_f / image_w.to_f
+          bi = BufferedImage.new(s, image_h * scale, image.getType)
+          bi.getGraphics.drawImage(image.getScaledInstance(s, image_h * scale, Image::SCALE_SMOOTH), 0, 0, nil)
+          ImageIO.write(bi,
+                        'png',
+                        java.io.File.new(File.join(@output_directory,
+                                                   "document_#{s}_#{i+1}.png")))
+          changed
+          notify_observers(i+1, total_pages, "generating page thumbnails...")
+        end
+      rescue java.lang.RuntimeException
+        # TODO What?
       end
     end
     @decoder.closePdfFile
