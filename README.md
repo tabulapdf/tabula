@@ -73,7 +73,7 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
 
 
   1. Right-click on Tabula.app and select Open from the context menu.
-  2. The system will tell you that the application is "from an unidentified developer" and ask you whether you want to open it. Click Open to allow the application to run. The system remembers this and won't prompt you again.
+  2. The system will tell you that the application is "from an unidentified developer" and ask you whether you want to open it. Click Open to allow the application to run. The system remembers this choice and won't prompt you again.
   
 [gatekeeper]: http://support.apple.com/kb/HT5290
 
