@@ -72,12 +72,9 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
   the Tabula app. Please [see this GateKeeper page][gatekeeper] for more information.
 
 
-  1. Temporarily disable Gatekeeper. Go into System Preferences -> Security & Privacy and temporarily change the setting for "Allow applications downloaded from:" to be "Anywhere".
-  2. Run Tabula, the system will tell you that the application was downloaded from the Internet and ask for permission to run it. Allow the application to run.
-  3. Close Tabula.
-  4. Change Gatekeeper back to its previous settings (probably "Mac App Store and identified developers")
-  5. Run Tabula again, it should just run without issues
-
+  1. Right-click on Tabula.app and select Open from the context menu.
+  2. The system will tell you that the application is "from an unidentified developer" and ask you whether you want to open it. Click Open to allow the application to run. The system remembers this choice and won't prompt you again.
+  
 [gatekeeper]: http://support.apple.com/kb/HT5290
 
 * <a name='lines'>**org.jruby.exceptions.RaiseException: (NoMethodError) undefined method `lines' for []:Array**</a> (All platforms):
