@@ -1,25 +1,19 @@
-PATH
-  remote: ../tabula-extractor
-  specs:
-    tabula-extractor (0.7.2-java)
-      trollop (~> 2.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
     cuba (3.1.0)
       rack
-    jruby-jars (1.7.10)
-    jruby-rack (1.1.13.3)
+    jruby-jars (1.7.11)
+    jruby-rack (1.1.14)
     rack (1.5.2)
     rake (10.1.1)
     rubyzip (1.0.0)
     rufus-lru (1.0.5)
-    tabula-extractor (0.7.2-java)
+    tabula-extractor (0.7.4-java)
       trollop (~> 2.0)
     tilt (2.0.0)
     trollop (2.0)
-    warbler (1.4.0)
+    warbler (1.4.1)
       jruby-jars (>= 1.5.6)
       jruby-rack (>= 1.0.0)
       rake (>= 0.9.6)
@@ -33,6 +27,6 @@ DEPENDENCIES
   rack
   rake
   rufus-lru
-  tabula-extractor (~> 0.7.2)
+  tabula-extractor (~> 0.7.4)
   tilt
   warbler
