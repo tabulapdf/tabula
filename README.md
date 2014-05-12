@@ -71,10 +71,11 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
   If you’re running Mac OS X 10.8 or later, GateKeeper may prevent you from opening
   the Tabula app. Please [see this GateKeeper page][gatekeeper] for more information.
 
-
   1. Right-click on Tabula.app and select Open from the context menu.
   2. The system will tell you that the application is "from an unidentified developer" and ask you whether you want to open it. Click Open to allow the application to run. The system remembers this choice and won't prompt you again.
-  
+
+  (If you continue to have issues, double-check the [OS X GateKeeper documentation][gatekeeper] for more information.)
+
 [gatekeeper]: http://support.apple.com/kb/HT5290
 
 * <a name='lines'>**org.jruby.exceptions.RaiseException: (NoMethodError) undefined method `lines' for []:Array**</a> (All platforms):
