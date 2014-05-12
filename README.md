@@ -71,24 +71,22 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
   If you’re running Mac OS X 10.8 or later, GateKeeper may prevent you from opening
   the Tabula app. Please [see this GateKeeper page][gatekeeper] for more information.
 
+  1. Right-click on Tabula.app and select Open from the context menu.
+  2. The system will tell you that the application is "from an unidentified developer" and ask you whether you want to open it. Click Open to allow the application to run. The system remembers this choice and won't prompt you again.
 
-  1. Temporarily disable Gatekeeper. Go into System Preferences -> Security & Privacy and temporarily change the setting for "Allow applications downloaded from:" to be "Anywhere".
-  2. Run Tabula, the system will tell you that the application was downloaded from the Internet and ask for permission to run it. Allow the application to run.
-  3. Close Tabula.
-  4. Change Gatekeeper back to its previous settings (probably "Mac App Store and identified developers")
-  5. Run Tabula again, it should just run without issues
+  (If you continue to have issues, double-check the [OS X GateKeeper documentation][gatekeeper] for more information.)
 
 [gatekeeper]: http://support.apple.com/kb/HT5290
 
-* <a name='gatekeeper'>**org.jruby.exceptions.RaiseException: (NoMethodError) undefined method `lines' for []:Array**</a> (All platforms):
+* <a name='lines'>**org.jruby.exceptions.RaiseException: (NoMethodError) undefined method `lines' for []:Array**</a> (All platforms):
   This error means that the area you selected didn't contain any text or a table that Tabula can understand. You probably have an image-based PDF (or a text-based PDF containing an image of a table). We'll fix the error on the next release, but Tabula won't be able to extract any data from image-based PDFs at any point in the near future. (Though you can try OCRing the PDF.)
 
-* <a name='gatekeeper'>**org.jruby.exceptions.RaiseException: (Encoding::CompatibilityError) incompatible character encodings:**</a> (Windows):
-  Your Windows computer expects one type an encoding other than Unicode or Windows's English encoding. You can fix this by entering a few simple commands in the Command Prompt. (The commands won't affect anything besides Tabula.)
+* <a name='encoding'>**org.jruby.exceptions.RaiseException: (Encoding::CompatibilityError) incompatible character encodings:**</a> (Windows):
+  Your Windows computer expects a type of encoding other than Unicode or Windows's English encoding. You can fix this by entering a few simple commands in the Command Prompt. (The commands won't affect anything besides Tabula.)
 
   1. Open a Command Prompt
   2. type `cd` and then the path to the directory that contains `tabula.exe`, e.g. `cd C:\Users\Username\Downloads`
-  3. Change that terminal's codepage by typing: `chcp 65001`
+  3. Change that terminal's codepage to Unicode by typing: `chcp 65001`
   4. Run Tabula by typing `tabula.exe`
 
 ## Running Tabula from source (for developers)
@@ -201,4 +199,11 @@ needs "tabula.jar" (contained in "build") in the same directory. You can create 
 
 ## Contributing
 
-Interested in helping out? See [`TODO.md`](TODO.md) for ideas.
+Interested in helping out? We'd love to have your help!
+
+You can help by:
+
+- [Reporting a bug](https://github.com/jazzido/tabula).
+- Adding or editing documentation.
+- Contributing code via a Pull Request from ideas or bugs listed in the [Issues](https://github.com/jazzido/tabula/issues) section.
+- Spreading the word about Tabula to people who might be able to benefit from using it.
