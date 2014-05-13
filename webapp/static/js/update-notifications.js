@@ -1,7 +1,11 @@
 $(function() {
 
   function showNotificationModal(){
+    $('#myModal').show();
     $('#myModal').modal("show");
+  }
+  function hideNotificationModal(){
+    $('#myModal').hide();
   }
 
   $('#myModal').on('hidden.bs.modal', function (e) {
@@ -15,10 +19,12 @@ $(function() {
 
   var notificationSetting = localStorage.getItem("tabula-notifications");
   if ( notificationSetting == "false" ){
+    hideNotificationModal();
     return;
   }else if (notificationSetting == null){
     showNotificationModal();
   }else{
+    hideNotificationModal();
     getNotifications();
   } // if it's neither "false" nor null, it's true (or something weird)
     // so we can continue.
