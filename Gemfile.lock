@@ -1,20 +1,20 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    cuba (3.1.0)
+    cuba (3.1.1)
       rack
-    jruby-jars (1.7.11)
+    jruby-jars (1.7.12)
     jruby-rack (1.1.14)
     rack (1.5.2)
-    rake (10.1.1)
+    rake (10.3.1)
     rubyzip (1.0.0)
     rufus-lru (1.0.5)
     tabula-extractor (0.7.4-java)
       trollop (~> 2.0)
-    tilt (2.0.0)
+    tilt (2.0.1)
     trollop (2.0)
-    warbler (1.4.1)
-      jruby-jars (>= 1.5.6)
+    warbler (1.4.2)
+      jruby-jars (>= 1.5.6, < 2.0)
       jruby-rack (>= 1.0.0)
       rake (>= 0.9.6)
       rubyzip (>= 0.9, < 1.1)
