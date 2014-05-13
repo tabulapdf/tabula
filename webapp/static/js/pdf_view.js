@@ -464,19 +464,26 @@ Tabula.PDFView = Backbone.View.extend({
                     });
                   $('#download-csv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv'); });
                   $('#download-tsv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=tsv'); });
-                  $('#myModal').modal();
+                  
+                  $('#myModal').on('show', function(){
+                    $('#loading').fadeOut(300);
+                    $('#loading-dimmer').fadeOut(300);
+                  });
+                  $('#myModal').modal('show');
+
                   clip.glue('#copy-csv-to-clipboard');
-                  $('#loading').css('visibility', 'hidden');
-                  $('#loading-dimmer').hide().css('visibility', 'hidden');
                   if (options !== undefined && _.isFunction(options.success))
                     options.success(resp);
 
               }, this),
             error: _.bind(function(xhr, status, error) {
                 $('#modal-error textarea').html(xhr.responseText);
-                $('#loading').css('visibility', 'hidden');
-                $('#loading-dimmer').hide().css('visibility', 'hidden');
-                $('#modal-error').modal();
+                $('#modal-error').on('show', function(){
+                    $('#loading').fadeOut(300);
+                    $('#loading-dimmer').fadeOut(300);
+                });
+                $('#modal-error').modal('show');
+
                 if (options !== undefined && _.isFunction(options.error))
                   options.error(resp);
 
