@@ -169,8 +169,8 @@ task :windows => [:create_version_file, :war] do |t|
   if build_version.start_with?('rev')
     win_build_version = '0.0.0.0'
   else
+    win_build_version = build_version
     while win_build_version.split('.').length < 4
-      win_build_version = build_version
       win_build_version = "#{win_build_version}.0"
     end
   end
