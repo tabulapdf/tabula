@@ -187,17 +187,17 @@ Tabula.PDFView = Backbone.View.extend({
 
     dimmer: function (modality) {
       if(typeof(modality)==='undefined') modality = 'on';
-      $dimmer = $('.modal-backdrop');
+      $dimmer = $('.modal-backdrop.tabula-dimmer');
 
       if ($dimmer.length === 0) {
-        $dimmer = $('<div class="modal-backdrop fade" />')
+        $dimmer = $('<div class="modal-backdrop tabula-dimmer fade" />')
           .appendTo(document.body);
       }
 
-      if ($dimmer.hasClass('on') && modality === "off" ){
-        $dimmer.removeClass('in');
+      if ($dimmer.hasClass('in') && modality === "off" ){
+        $dimmer.removeClass('in').hide();
       }else if (modality === "on"){
-        $dimmer.addClass('in');
+        $dimmer.addClass('in').show();
       }
     },
 
