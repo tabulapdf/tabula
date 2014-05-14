@@ -1,4 +1,3 @@
-<div id="loading-dimmer"></div>
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span2">
@@ -21,7 +20,6 @@
       </div>
     </div> <!-- /sidebar container -->
     <div class="span6">
-      <div class="alert alert-success" id="loading"><span id="spinner"></span><span style="position: relative; left: 16px; font-size: 24px;">Loading...</span></div>
       <div id="directionsRow" class="row">
         <div class="alert alert-info span7" >
           <button id="directions" type="button" class="close" data-dismiss="alert">×</button>
@@ -67,20 +65,18 @@
         <p><strong>Tabula</strong> couldn't finish processing your request. We'd appreciate if you could <a href="https://github.com/jazzido/tabula/issues/new">report this error in our issue tracker</a>. If possible, please include the document that caused the error and the text below.</p>
         <textarea></textarea>
     </div>
-    <div class="modal-footer" style="position: relative">
-    </div>
+    <div class="modal-footer"></div>
 </div>
 
-<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="data-modal" class="modal dialog-modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">  
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="myModalLabel">Extracted tabular data</h3>
   </div>
+  <div class="alert alert-success" id="loading"><span id="spinner"></span><span style="position: relative; left: 16px; font-size: 24px;">Loading...</span></div>
   <div class="modal-body">
-    <p>One fine body…</p>
   </div>
-  <div class="modal-footer" style="position: relative">
-    <div id="spinner-modal"></div>
+  <div class="modal-footer">
     <span style="display: none;">Copied!</span>
 
     <label class="has-tooltip" style="display: inline;" for="extraction-method-btns" data-placement="left" data-toggle="tooltip" title="Advanced Users: Tabula has two different extraction methods for extracting data from different kinds of tables. It tries to select the right one automatically, but sometimes chooses incorrectly. Try switching the method if the extracted data doesn't come out right."><i class="icon-question-sign" ></i>Extraction Method: </label>
@@ -128,5 +124,4 @@
               left: 'auto' // Left position relative to parent in px
           };
  new Spinner(SPINNER_OPTS).spin($('#spinner').get(0));
- new Spinner(SPINNER_OPTS).spin($('#spinner-modal').get(0));
 </script>
