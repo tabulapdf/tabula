@@ -122,7 +122,7 @@ img.page-image {
     /* left is set in JavaScript*/
     padding: 20px;
     width: 100px;
-    z-index: 101;
+    z-index: 1041;
 }
 
 div.spinner {

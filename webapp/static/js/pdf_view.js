@@ -185,6 +185,22 @@ Tabula.PDFView = Backbone.View.extend({
       $('div.imgareaselect').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
     },
 
+    dimmer: function (modality) {
+      if(typeof(modality)==='undefined') modality = 'on';
+      $dimmer = $('.modal-backdrop');
+
+      if ($dimmer.length === 0) {
+        $dimmer = $('<div class="modal-backdrop fade" />')
+          .appendTo(document.body);
+      }
+
+      if ($dimmer.hasClass('on') && modality === "off" ){
+        $dimmer.removeClass('in');
+      }else if (modality === "on"){
+        $dimmer.addClass('in');
+      }
+    },
+
     redoQuery: function(options) {
       //TODO: stash lastCoords, rather than stashing lastQuery and then parsing it.
       this.doQuery(this.PDF_ID,
@@ -426,7 +442,7 @@ Tabula.PDFView = Backbone.View.extend({
 
     doQuery: function(pdf_id, coords, options) {
       $('#loading').css('left', ($(window).width() / 2) - 50 + 'px').css('visibility', 'visible');
-      $('#loading-dimmer').show().css('visibility', 'visible');
+      this.dimmer('on')
 
       this.lastQuery = {
         coords: JSON.stringify(coords) ,
@@ -464,26 +480,21 @@ Tabula.PDFView = Backbone.View.extend({
                     });
                   $('#download-csv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv'); });
                   $('#download-tsv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=tsv'); });
-                  
-                  $('#myModal').on('show', function(){
-                    $('#loading').fadeOut(300);
-                    $('#loading-dimmer').fadeOut(300);
-                  });
-                  $('#myModal').modal('show');
-
+                  this.dimmer('off')
+                  $('#myModal').modal();
                   clip.glue('#copy-csv-to-clipboard');
+
+
+                  $('#loading').css('visibility', 'hidden');
                   if (options !== undefined && _.isFunction(options.success))
                     options.success(resp);
 
               }, this),
             error: _.bind(function(xhr, status, error) {
                 $('#modal-error textarea').html(xhr.responseText);
-                $('#modal-error').on('show', function(){
-                    $('#loading').fadeOut(300);
-                    $('#loading-dimmer').fadeOut(300);
-                });
-                $('#modal-error').modal('show');
-
+                $('#loading').css('visibility', 'hidden');
+                this.dimmer('off')
+                $('#modal-error').modal();
                 if (options !== undefined && _.isFunction(options.error))
                   options.error(resp);
 
