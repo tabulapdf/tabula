@@ -1,10 +1,10 @@
 $(function() {
 
   function showNotificationModal(){
-    $('#myModal').modal("show");
+    $('#notifications-modal').modal("show");
   }
 
-  $('#myModal').on('hidden.bs.modal', function (e) {
+  $('#notifications-modal').on('hidden.bs.modal', function (e) {
     if( $('input#update-notifications').is(':checked')){
       localStorage.setItem("tabula-notifications", "true");
       getNotifications();
