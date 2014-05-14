@@ -39,7 +39,7 @@ $(function() {
            }
        });
     $.ajax({
-      url: 'http://jazzido.github.io/tabula/notifications.jsonp', 
+      url: 'http://tabula.jeremybmerrill.com/tabula/notifications.jsonp', 
       dataType: "jsonp",
       jsonpCallback: 'notifications',
       success: function(data){
