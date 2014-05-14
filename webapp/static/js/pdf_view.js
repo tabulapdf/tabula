@@ -8,7 +8,7 @@ $(document).ready(function() {
 
     clip.on('mousedown', function(client) {
         client.setText($('table').table2CSV({delivery: null}));
-        $('#myModal span').css('display', 'inline').delay(900).fadeOut('slow');
+        $('#data-modal span').css('display', 'inline').delay(900).fadeOut('slow');
     });
 
     $('.has-tooltip').tooltip();
@@ -63,7 +63,7 @@ Tabula.PDFView = Backbone.View.extend({
     events : {
       'click button.close#directions' : 'moveSelectionsUp',
       'click a.tooltip-modal': 'tooltip', //$('a.tooltip-modal').tooltip();
-      'hide #myModal' : function(){ clip.unglue('#copy-csv-to-clipboard'); },
+      'hide #data-modal' : function(){ clip.unglue('#copy-csv-to-clipboard'); },
       'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
       'click i.icon-remove': 'deletePage',
       'click i.rotate-left i.rotate-right': 'rotatePage',
@@ -80,6 +80,8 @@ Tabula.PDFView = Backbone.View.extend({
       'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod'
     },
     extractionMethod: "guess",
+    $loading: $('#loading'),
+
     getOppositeExtractionMethod: function(){
       if (this.extractionMethod == "guess"){
         return; // this should never happen.
@@ -92,11 +94,10 @@ Tabula.PDFView = Backbone.View.extend({
 
     queryWithToggledExtractionMethod: function(e){
       $('#switch-method').prop('disabled', true);
-      $('#spinner-modal').css({
-        display: 'block',
-        left: $('#switch-method').width() + 40
-      });
-      $('#myModal .modal-body table').css('opacity', 0.5);
+      $('#data-modal .modal-body').prepend(this.$loading.show());// $('#loading').show();
+
+      $('#data-modal .modal-body table').css('visibility', 'hidden');
+      $('#data-modal .modal-body').css('overflow', 'hidden');
 
       console.log("before", this.extractionMethod);
       this.extractionMethod = this.getOppositeExtractionMethod();
@@ -105,10 +106,11 @@ Tabula.PDFView = Backbone.View.extend({
 
       this.redoQuery({
         success: _.bind(function() {
-          $('#spinner-modal').css('display', 'none');
+          //$('#loading').remove();
+          this.$loading = this.$loading.detach();
           $('#switch-method').prop('disabled', false);
-          $('#myModal .modal-body table').css('opacity', 1);
-          // this.toggleExtractionMethod();
+          $('#data-modal .modal-body table').css('visibility', 'visible');
+          $('#data-modal .modal-body').css('overflow', 'auto');
         }, this)
       });
     },
@@ -183,22 +185,6 @@ Tabula.PDFView = Backbone.View.extend({
 
     moveSelectionsUp: function(){
       $('div.imgareaselect').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
-    },
-
-    dimmer: function (modality) {
-      if(typeof(modality)==='undefined') modality = 'on';
-      $dimmer = $('.modal-backdrop.tabula-dimmer');
-
-      if ($dimmer.length === 0) {
-        $dimmer = $('<div class="modal-backdrop tabula-dimmer fade" />')
-          .appendTo(document.body);
-      }
-
-      if ($dimmer.hasClass('in') && modality === "off" ){
-        $dimmer.removeClass('in').hide();
-      }else if (modality === "on"){
-        $dimmer.addClass('in').show();
-      }
     },
 
     redoQuery: function(options) {
@@ -441,64 +427,65 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     doQuery: function(pdf_id, coords, options) {
-      $('#loading').css('left', ($(window).width() / 2) - 50 + 'px').css('visibility', 'visible');
-      this.dimmer('on')
-
       this.lastQuery = {
         coords: JSON.stringify(coords) ,
         'extraction_method': this.extractionMethod
       };
 
-        $.ajax({
-            type: 'POST',
-            url: '/pdf/' + pdf_id + '/data',
-            data: this.lastQuery,
-            success: _.bind(function(resp) {
-                  this.extractionMethod = resp[0]["extraction_method"];
-                  this.updateExtractionMethodButton();
-                  console.log("resp", resp);
-                  console.log("Extraction method: ", this.extractionMethod);
-                  var tableHTML = '<table class="table table-condensed table-bordered">';
-                  $.each(_.pluck(resp, 'data'), function(i, rows) {
-                    $.each(rows, function(j, row) {
-                      tableHTML += '<tr><td>' + _.pluck(row, 'text').join('</td><td>') + '</td></tr>';
-                    });
+      $('#data-modal').modal();
+
+      $.ajax({
+          type: 'POST',
+          url: '/pdf/' + pdf_id + '/data',
+          data: this.lastQuery,
+          success: _.bind(function(resp) {
+                this.extractionMethod = resp[0]["extraction_method"];
+                this.updateExtractionMethodButton();
+                
+                //$('#data-modal').find('#loading').hide();
+                this.$loading = this.$loading.detach();
+                console.log("resp", resp);
+                console.log("Extraction method: ", this.extractionMethod);
+
+
+                var tableHTML = '<table class="table table-condensed table-bordered">';
+                $.each(_.pluck(resp, 'data'), function(i, rows) {
+                  $.each(rows, function(j, row) {
+                    tableHTML += '<tr><td>' + _.pluck(row, 'text').join('</td><td>') + '</td></tr>';
                   });
-                  tableHTML += '</table>';
+                });
+                tableHTML += '</table>';
 
-                  $('.modal-body').html(tableHTML);
+                $('.modal-body').html(tableHTML);
 
-                  $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv');
+                $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv');
 
-                    $('div#hidden-fields').empty();
-                    _(_(this.lastQuery).pairs()).each(function(key_val){
-                      //<input type="hidden" class="data-query" name="lastQuery" value="" >
-                      var new_hidden_field = $("<input type='hidden' class='data-query' value='' >");
-                      new_hidden_field.attr("name", key_val[0]);
-                      new_hidden_field.attr("value", key_val[1]);
-                      $('div#hidden-fields').append(new_hidden_field);
-                    });
-                  $('#download-csv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv'); });
-                  $('#download-tsv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=tsv'); });
-                  this.dimmer('off')
-                  $('#myModal').modal();
-                  clip.glue('#copy-csv-to-clipboard');
+                  $('div#hidden-fields').empty();
+                  _(_(this.lastQuery).pairs()).each(function(key_val){
+                    //<input type="hidden" class="data-query" name="lastQuery" value="" >
+                    var new_hidden_field = $("<input type='hidden' class='data-query' value='' >");
+                    new_hidden_field.attr("name", key_val[0]);
+                    new_hidden_field.attr("value", key_val[1]);
+                    $('div#hidden-fields').append(new_hidden_field);
+                  });
+                $('#download-csv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv'); });
+                $('#download-tsv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=tsv'); });
+                
+                clip.glue('#copy-csv-to-clipboard');
 
 
-                  $('#loading').css('visibility', 'hidden');
-                  if (options !== undefined && _.isFunction(options.success))
-                    options.success(resp);
+                if (options !== undefined && _.isFunction(options.success))
+                  options.success(resp);
 
-              }, this),
-            error: _.bind(function(xhr, status, error) {
-                $('#modal-error textarea').html(xhr.responseText);
-                $('#loading').css('visibility', 'hidden');
-                this.dimmer('off')
-                $('#modal-error').modal();
-                if (options !== undefined && _.isFunction(options.error))
-                  options.error(resp);
+            }, this),
+          error: _.bind(function(xhr, status, error) {
+            $('#data-modal').modal('hide');
+            $('#modal-error textarea').html(xhr.responseText);
+            $('#modal-error').modal();
+            if (options !== undefined && _.isFunction(options.error))
+              options.error(resp);
 
-            })
+          })
         });
     },
 
