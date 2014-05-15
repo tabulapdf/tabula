@@ -72,7 +72,7 @@ Tabula.PDFView = Backbone.View.extend({
       'click a#help-start': function(){ Tabula.tour.ended ? Tabula.tour.restart(true) : Tabula.tour.start(true); },
 
       //events for buttons on the follow-you-around bar.
-      'click #should-preview-data-checkbox' : 'setShouldPreviewData',
+      'click #should-preview-data-checkbox' : 'updateShouldPreviewDataAutomaticallyButton',
       'click #clear-all-selections': 'clear_all_selection',
       'click #restore-detected-tables': 'restore_detected_tables',
       'click #repeat-lassos': 'repeat_lassos',
@@ -93,26 +93,12 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     queryWithToggledExtractionMethod: function(e){
-      $('#switch-method').prop('disabled', true);
-      $('#data-modal .modal-body').prepend(this.$loading.show());// $('#loading').show();
-
-      $('#data-modal .modal-body table').css('visibility', 'hidden');
-      $('#data-modal .modal-body').css('overflow', 'hidden');
-
-      console.log("before", this.extractionMethod);
+      // console.log("before", this.extractionMethod);
       this.extractionMethod = this.getOppositeExtractionMethod();
-      console.log("after", this.extractionMethod);
+      // console.log("after", this.extractionMethod);
       this.updateExtractionMethodButton();
 
-      this.redoQuery({
-        success: _.bind(function() {
-          //$('#loading').remove();
-          this.$loading = this.$loading.detach();
-          $('#switch-method').prop('disabled', false);
-          $('#data-modal .modal-body table').css('visibility', 'visible');
-          $('#data-modal .modal-body').css('overflow', 'auto');
-        }, this)
-      });
+      this.redoQuery();
     },
 
     updateExtractionMethodButton: function(){
@@ -167,7 +153,7 @@ Tabula.PDFView = Backbone.View.extend({
 
     initialize: function(){
       _.bindAll(this, 'render', 'createImgareaselects', 'getTablesJson', 'total_selections',
-                'toggleClearAllAndRestorePredetectedTablesButtons', 'setShouldPreviewData', 'query_all_data', 'redoQuery');
+                'toggleClearAllAndRestorePredetectedTablesButtons', 'updateShouldPreviewDataAutomaticallyButton', 'query_all_data', 'redoQuery');
         this.pageCount = $('img.page-image').length;
         this.render();
         this.updateExtractionMethodButton();
@@ -179,7 +165,7 @@ Tabula.PDFView = Backbone.View.extend({
       return this;
     },
 
-    setShouldPreviewData: function(){
+    updateShouldPreviewDataAutomaticallyButton: function(){
       this.noModalAfterSelect = !$('#should-preview-data-checkbox').is(':checked');
     },
 
@@ -383,7 +369,7 @@ Tabula.PDFView = Backbone.View.extend({
         $(e.currentTarget).fadeOut(500, function() { $(this).remove(); });
 
         $('#should-preview-data-checkbox').prop('checked', false);
-        this.setShouldPreviewData();
+        this.updateShouldPreviewDataAutomaticallyButton();
 
         imgAreaSelects.slice(page_idx).forEach(function(imgAreaSelectAPIObj) {
             if (imgAreaSelectAPIObj === false) return;
@@ -434,6 +420,11 @@ Tabula.PDFView = Backbone.View.extend({
 
       $('#data-modal').modal();
 
+      $('#switch-method').prop('disabled', true);
+      $('#data-modal .modal-body').prepend(this.$loading.show());
+      $('#data-modal .modal-body table').css('visibility', 'hidden');
+      $('#data-modal .modal-body').css('overflow', 'hidden');
+
       $.ajax({
           type: 'POST',
           url: '/pdf/' + pdf_id + '/data',
@@ -447,6 +438,11 @@ Tabula.PDFView = Backbone.View.extend({
                 console.log("resp", resp);
                 console.log("Extraction method: ", this.extractionMethod);
 
+                this.$loading = this.$loading.detach();
+                $('#switch-method').prop('disabled', false);
+                $('#data-modal .modal-body table').css('visibility', 'visible');
+                $('#data-modal .modal-body').css('overflow', 'auto');
+
 
                 var tableHTML = '<table class="table table-condensed table-bordered">';
                 $.each(_.pluck(resp, 'data'), function(i, rows) {
@@ -455,8 +451,7 @@ Tabula.PDFView = Backbone.View.extend({
                   });
                 });
                 tableHTML += '</table>';
-
-                $('.modal-body').html(tableHTML);
+                $('#data-modal .modal-body').html(tableHTML);
 
                 $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv');
 
