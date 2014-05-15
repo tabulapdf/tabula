@@ -38,9 +38,9 @@ $(document).ready(function() {
       placement: 'left'
     },
     {
-      element: "#multiselect-checkbox",
-      title: "Multi-Select Mode",
-      content: "After you select each table on the page, a data preview window appears. If you want to select multiple tables without interruption, check this box to suppress the preview window.",
+      element: "#should-preview-data-checkbox",
+      title: "Preview Data Automatically?",
+      content: "After you select each table on a page, a data preview window will appear automatically. If you want to select multiple tables without interruption, uncheck this box to suppress the preview window.",
       placement: 'left'
     },
     {
@@ -72,7 +72,7 @@ Tabula.PDFView = Backbone.View.extend({
       'click a#help-start': function(){ Tabula.tour.ended ? Tabula.tour.restart(true) : Tabula.tour.start(true); },
 
       //events for buttons on the follow-you-around bar.
-      'click #multiselect-checkbox' : 'toggleMultiSelectMode',
+      'click #should-preview-data-checkbox' : 'setShouldPreviewData',
       'click #clear-all-selections': 'clear_all_selection',
       'click #restore-detected-tables': 'restore_detected_tables',
       'click #repeat-lassos': 'repeat_lassos',
@@ -160,14 +160,14 @@ Tabula.PDFView = Backbone.View.extend({
 
     PDF_ID: window.location.pathname.split('/')[2],
     colors: ['#f00', '#0f0', '#00f', '#ffff00', '#FF00FF'],
-    noModalAfterSelect: $('#multiselect-checkbox').is(':checked'),
+    noModalAfterSelect: !$('#should-preview-data-checkbox').is(':checked'),
     lastQuery: [{}],
     lastSelection: undefined,
     pageCount: undefined,
 
     initialize: function(){
       _.bindAll(this, 'render', 'createImgareaselects', 'getTablesJson', 'total_selections',
-                'toggleClearAllAndRestorePredetectedTablesButtons', 'toggleMultiSelectMode', 'query_all_data', 'redoQuery');
+                'toggleClearAllAndRestorePredetectedTablesButtons', 'setShouldPreviewData', 'query_all_data', 'redoQuery');
         this.pageCount = $('img.page-image').length;
         this.render();
         this.updateExtractionMethodButton();
@@ -179,8 +179,8 @@ Tabula.PDFView = Backbone.View.extend({
       return this;
     },
 
-    toggleMultiSelectMode: function(){
-      this.noModalAfterSelect = $('#multiselect-checkbox').is(':checked');
+    setShouldPreviewData: function(){
+      this.noModalAfterSelect = !$('#should-preview-data-checkbox').is(':checked');
     },
 
     moveSelectionsUp: function(){
@@ -382,8 +382,8 @@ Tabula.PDFView = Backbone.View.extend({
 
         $(e.currentTarget).fadeOut(500, function() { $(this).remove(); });
 
-        $('#multiselect-checkbox').prop('checked', true);
-        this.toggleMultiSelectMode();
+        $('#should-preview-data-checkbox').prop('checked', false);
+        this.setShouldPreviewData();
 
         imgAreaSelects.slice(page_idx).forEach(function(imgAreaSelectAPIObj) {
             if (imgAreaSelectAPIObj === false) return;
