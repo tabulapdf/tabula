@@ -229,6 +229,7 @@ end
 
 # delete version file after build
 ['jardist', 'macosx', 'windows'].each do |t|
+  puts "Deleting version file."
   Rake::Task[t.intern].enhance {
     Rake::Task['delete_version_file'.intern].invoke
   }
