@@ -465,6 +465,8 @@ Tabula.PDFView = Backbone.View.extend({
                   });
                 $('#download-csv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv'); });
                 $('#download-tsv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=tsv'); });
+                $('#download-script').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=script'); });
+                $('#download-bbox').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=bbox'); });
                 
                 clip.glue('#copy-csv-to-clipboard');
 

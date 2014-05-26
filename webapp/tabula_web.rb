@@ -257,7 +257,24 @@ Cuba.define do
         tables.each do |table|
           res.write table.to_tsv
         end
-      else
+      when 'script'
+        # Write shell script of tabula-extractor commands.  $1 takes 
+        # the name of a file from the command line and passes it 
+        # to tabula-extractor so the script can be reused on similar pdfs.
+        res['Content-Type'] = 'application/x-sh'
+        res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.sh\""
+        coords.each do |c|
+          res.write "tabula -a #{c['y1']},#{c['x1']},#{c['y2']},#{c['x2']} -p #{c['page']} \"$1\" \n"
+        end
+      when 'bbox'
+        # Write json representation of bounding boxes and pages for 
+        # use in OCR and other back ends.
+        res['Content-Type'] = 'application/json'
+        res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.json\""
+        coords.each do |c|
+          res.write c.to_json + "\n"
+        end
+     else
         res['Content-Type'] = 'application/json'
         res.write CACHE[coords_method_key].flatten(1).to_json
       end
