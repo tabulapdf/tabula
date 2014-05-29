@@ -84,6 +84,25 @@
     position: relative;
   }
 
+  .modal .modal-footer .modal-footer-row-label{
+    float: left;
+    font-weight: bold;
+  }
+
+  .modal-footer-row:not(:first-of-type){
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid black;
+  }
+
+  #expert-options{
+    display: none;
+  }
+
+  .toggle-expert-options{
+    cursor: select;
+  }
+
   #data-modal .modal-body {
     overflow: auto;
   }

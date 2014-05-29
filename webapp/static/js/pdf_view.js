@@ -65,7 +65,7 @@ Tabula.PDFView = Backbone.View.extend({
       'click a.tooltip-modal': 'tooltip', //$('a.tooltip-modal').tooltip();
       'hide #data-modal' : function(){ clip.unglue('#copy-csv-to-clipboard'); },
       'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
-      'click i.icon-remove': 'deletePage',
+      'click i.delete-page': 'deletePage',
       'click i.rotate-left i.rotate-right': 'rotatePage',
       'click button.repeat-lassos': 'repeat_lassos',
 
@@ -77,20 +77,34 @@ Tabula.PDFView = Backbone.View.extend({
       'click #restore-detected-tables': 'restore_detected_tables',
       'click #repeat-lassos': 'repeat_lassos',
       'click #all-data': 'query_all_data',
-      'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod'
+      'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod',
+      'click .toggle-expert-options': 'toggleExpertOptionsShown'
     },
     extractionMethod: "guess",
     $loading: $('#loading'),
+    PDF_ID: window.location.pathname.split('/')[2],
+    colors: ['#f00', '#0f0', '#00f', '#ffff00', '#FF00FF'],
+    noModalAfterSelect: !$('#should-preview-data-checkbox').is(':checked'),
+    lastQuery: [{}],
+    lastSelection: undefined,
+    pageCount: undefined,
 
-    getOppositeExtractionMethod: function(){
-      if (this.extractionMethod == "guess"){
-        return; // this should never happen.
-      }
-      else if (this.extractionMethod == "original") {
-        return "spreadsheet";
-      }
-      return "original";
+    initialize: function(){
+      _.bindAll(this, 'render', 'createImgareaselects', 'getTablesJson', 'total_selections',
+                'toggleClearAllAndRestorePredetectedTablesButtons', 'updateShouldPreviewDataAutomaticallyButton', 
+                'query_all_data', 'redoQuery', 'toggleExpertOptionsShown');
+        this.pageCount = $('img.page-image').length;
+        this.setExpertOptionsShown();
+        this.render();
+        this.updateExtractionMethodButton();
     },
+
+    render : function(){
+      query_parameters = {};
+      this.getTablesJson();
+      return this;
+    },
+
 
     queryWithToggledExtractionMethod: function(e){
       // console.log("before", this.extractionMethod);
@@ -101,9 +115,6 @@ Tabula.PDFView = Backbone.View.extend({
       this.redoQuery();
     },
 
-    updateExtractionMethodButton: function(){
-      $('#' + this.extractionMethod + '-method-btn').button('toggle');
-    },
 
     rotatePage: function(t) {
         alert('not implemented');
@@ -141,36 +152,6 @@ Tabula.PDFView = Backbone.View.extend({
                    that.pageCount -= 1;
                });
 
-    },
-
-
-    PDF_ID: window.location.pathname.split('/')[2],
-    colors: ['#f00', '#0f0', '#00f', '#ffff00', '#FF00FF'],
-    noModalAfterSelect: !$('#should-preview-data-checkbox').is(':checked'),
-    lastQuery: [{}],
-    lastSelection: undefined,
-    pageCount: undefined,
-
-    initialize: function(){
-      _.bindAll(this, 'render', 'createImgareaselects', 'getTablesJson', 'total_selections',
-                'toggleClearAllAndRestorePredetectedTablesButtons', 'updateShouldPreviewDataAutomaticallyButton', 'query_all_data', 'redoQuery');
-        this.pageCount = $('img.page-image').length;
-        this.render();
-        this.updateExtractionMethodButton();
-    },
-
-    render : function(){
-      query_parameters = {};
-      this.getTablesJson();
-      return this;
-    },
-
-    updateShouldPreviewDataAutomaticallyButton: function(){
-      this.noModalAfterSelect = !$('#should-preview-data-checkbox').is(':checked');
-    },
-
-    moveSelectionsUp: function(){
-      $('div.imgareaselect').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
     },
 
     redoQuery: function(options) {
@@ -419,7 +400,7 @@ Tabula.PDFView = Backbone.View.extend({
       };
 
       $('#data-modal').modal();
-
+      this.setExpertOptionsShown();
       $('#switch-method').prop('disabled', true);
       $('#data-modal .modal-body').prepend(this.$loading.show());
       $('#data-modal .modal-body table').css('visibility', 'hidden');
@@ -463,6 +444,7 @@ Tabula.PDFView = Backbone.View.extend({
                     new_hidden_field.attr("value", key_val[1]);
                     $('div#hidden-fields').append(new_hidden_field);
                   });
+                $('#download-data').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv'); });
                 $('#download-csv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=csv'); });
                 $('#download-tsv').click(function(){ $('#download-form').attr("action", '/pdf/' + pdf_id + '/data?format=tsv'); });
                 
@@ -662,7 +644,57 @@ Tabula.PDFView = Backbone.View.extend({
           }
         }
       }
-    }
+    },
+
+    /* simple display-related functions */
+
+    toggleExpertOptionsShown: function(){
+      var $expertOptions = $('#expert-options');
+      currentExpertOptions = $expertOptions.is(":visible");
+      if(currentExpertOptions){
+        // currently shown, so hide it
+        localStorage.setItem("tabula-show-expert-options", "false");
+      }else{
+        // currently hidden, so show it
+        localStorage.setItem("tabula-show-expert-options", "true");
+      }
+      this.setExpertOptionsShown();
+    },
+
+    setExpertOptionsShown: function(){
+      var showExpertOptions = localStorage.getItem("tabula-show-expert-options");
+      var $expertOptions = $('#expert-options');
+      var $expertShowButton = $('#basic-options .toggle-expert-options');
+      if(showExpertOptions === "true"){
+        $expertOptions.slideDown();
+        $expertShowButton.hide();
+      }else{
+        $expertOptions.slideUp();
+        $expertShowButton.show();
+      }
+    },
+
+    getOppositeExtractionMethod: function(){
+      if (this.extractionMethod == "guess"){
+        return; // this should never happen.
+      }
+      else if (this.extractionMethod == "original") {
+        return "spreadsheet";
+      }
+      return "original";
+    },
+
+    updateExtractionMethodButton: function(){
+      $('#' + this.extractionMethod + '-method-btn').button('toggle');
+    },
+    
+    updateShouldPreviewDataAutomaticallyButton: function(){
+      this.noModalAfterSelect = !$('#should-preview-data-checkbox').is(':checked');
+    },
+
+    moveSelectionsUp: function(){
+      $('div.imgareaselect').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
+    },
 
 });
 
