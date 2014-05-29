@@ -78,7 +78,7 @@ Tabula.PDFView = Backbone.View.extend({
       'click #repeat-lassos': 'repeat_lassos',
       'click #all-data': 'query_all_data',
       'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod',
-      'click .toggle-expert-options': 'toggleExpertOptionsShown'
+      'click .toggle-advanced-options': 'toggleAdvancedOptionsShown'
     },
     extractionMethod: "guess",
     $loading: $('#loading'),
@@ -92,9 +92,9 @@ Tabula.PDFView = Backbone.View.extend({
     initialize: function(){
       _.bindAll(this, 'render', 'createImgareaselects', 'getTablesJson', 'total_selections',
                 'toggleClearAllAndRestorePredetectedTablesButtons', 'updateShouldPreviewDataAutomaticallyButton', 
-                'query_all_data', 'redoQuery', 'toggleExpertOptionsShown');
+                'query_all_data', 'redoQuery', 'toggleAdvancedOptionsShown');
         this.pageCount = $('img.page-image').length;
-        this.setExpertOptionsShown();
+        this.setAdvancedOptionsShown();
         this.render();
         this.updateExtractionMethodButton();
     },
@@ -400,7 +400,7 @@ Tabula.PDFView = Backbone.View.extend({
       };
 
       $('#data-modal').modal();
-      this.setExpertOptionsShown();
+      this.setAdvancedOptionsShown();
       $('#switch-method').prop('disabled', true);
       $('#data-modal .modal-body').prepend(this.$loading.show());
       $('#data-modal .modal-body table').css('visibility', 'hidden');
@@ -648,29 +648,29 @@ Tabula.PDFView = Backbone.View.extend({
 
     /* simple display-related functions */
 
-    toggleExpertOptionsShown: function(){
-      var $expertOptions = $('#expert-options');
-      currentExpertOptions = $expertOptions.is(":visible");
-      if(currentExpertOptions){
+    toggleAdvancedOptionsShown: function(){
+      var $advancedOptions = $('#advanced-options');
+      currentAdvancedOptions = $advancedOptions.is(":visible");
+      if(currentAdvancedOptions){
         // currently shown, so hide it
-        localStorage.setItem("tabula-show-expert-options", "false");
+        localStorage.setItem("tabula-show-advanced-options", "false");
       }else{
         // currently hidden, so show it
-        localStorage.setItem("tabula-show-expert-options", "true");
+        localStorage.setItem("tabula-show-advanced-options", "true");
       }
-      this.setExpertOptionsShown();
+      this.setAdvancedOptionsShown();
     },
 
-    setExpertOptionsShown: function(){
-      var showExpertOptions = localStorage.getItem("tabula-show-expert-options");
-      var $expertOptions = $('#expert-options');
-      var $expertShowButton = $('#basic-options .toggle-expert-options');
-      if(showExpertOptions === "true"){
-        $expertOptions.slideDown();
-        $expertShowButton.hide();
+    setAdvancedOptionsShown: function(){
+      var showAdvancedOptions = localStorage.getItem("tabula-show-advanced-options");
+      var $advancedOptions = $('#advanced-options');
+      var $advancedShowButton = $('#basic-options .toggle-advanced-options');
+      if(showAdvancedOptions === "true"){
+        $advancedOptions.slideDown();
+        $advancedShowButton.hide();
       }else{
-        $expertOptions.slideUp();
-        $expertShowButton.show();
+        $advancedOptions.slideUp();
+        $advancedShowButton.show();
       }
     },
 
