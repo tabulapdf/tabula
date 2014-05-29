@@ -95,11 +95,11 @@
     border-top: 1px solid black;
   }
 
-  #expert-options{
+  #advanced-options{
     display: none;
   }
 
-  .toggle-expert-options{
+  .toggle-advanced-options{
     cursor: select;
   }
 
