@@ -78,7 +78,8 @@ Tabula.PDFView = Backbone.View.extend({
       'click #repeat-lassos': 'repeat_lassos',
       'click #all-data': 'query_all_data',
       'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod',
-      'click .toggle-advanced-options': 'toggleAdvancedOptionsShown'
+      'click .toggle-advanced-options': 'toggleAdvancedOptionsShown',
+      'click .download-dropdown': 'dropDownOrUp'
     },
     extractionMethod: "guess",
     $loading: $('#loading'),
@@ -698,8 +699,40 @@ Tabula.PDFView = Backbone.View.extend({
       $('div.imgareaselect').each(function(){ $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); });
     },
 
+    dropDownOrUp: function(e){
+      var $el = $(e.currentTarget);
+      $ul = $el.parent().find('ul');
+
+      window.setTimeout(function(){ // if we upgrade to bootstrap 3.0
+                                         // we don't need this gross timeout and can, instead,
+                                         // listen for the `dropdown's shown.bs.dropdown` event
+        if(!isElementInViewport($ul)){
+          $el.addClass('dropup');
+          $ul.addClass('bottom-up');
+        }
+      }, 100);
+    }
+
 });
 
 $(function () {
   Tabula.pdf_view = new Tabula.PDFView();
 });
+
+
+function isElementInViewport (el) {
+
+    //special bonus for those using jQuery
+    if (el instanceof jQuery) {
+        el = el[0];
+    }
+
+    var rect = el.getBoundingClientRect();
+
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+    );
+}

@@ -279,3 +279,9 @@
   .ribbon-green:after {
     right: 0;
   }
+
+
+
+.bottom-up {top: auto; bottom: 100%; }
+.dropdown-menu.bottom-up:before { border-bottom: 0px solid transparent !important; border-top: 7px solid rgba(0, 0, 0, 0.2); top: auto !important; bottom: -7px; }
+.dropdown-menu.bottom-up:after  { border-bottom: 0px solid transparent !important; border-top: 6px solid white;              top: auto !important; bottom: -6px; }
