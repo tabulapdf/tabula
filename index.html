@@ -50,22 +50,21 @@
       </section>
       <section aria-role="main">
         <h3>
-        <a name="download-install" class="anchor" href="#download-install"><span class="octicon octicon-link"></span></a>Download and Install Tabula</h3>
+        <a name="download-install" class="anchor" href="#download-install"><span class="octicon octicon-link"></span></a>How to Install Tabula</h3>
 
         <p>Note: You’ll need a copy of <a href="https://www.java.com/download/">Java</a> installed. You can <a href="https://www.java.com/download/">download Java here</a>.</p>
-
-        <p style="margin-bottom:0">1. Download the version of Tabula for your operating system:</p>
-        <ul>
-          <li><b>Windows:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.5/tabula-win-0.9.5.zip">tabula-win.zip</a></li>
-          <li><b>Mac OS X:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.5/tabula-mac-0.9.5.zip">tabula-mac.zip</a>
-            <ul style="margin-bottom:0;padding-bottom:0"><li><i>OS X 10.8+ users</i>: if you have issues opening the app, <a href="https://github.com/jazzido/tabula/releases/tag/v0.9.5">see note at bottom of download page</a></li></ul></li>
-          <li><b>Linux/Other:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.5/tabula-jar-0.9.5.zip">tabula-jar.zip</a> (view README.txt inside for instructions)</li>
-        </ul>
-        <p>2. Extract the zip file using the file extractor of your choice (such as 7-zip).</p>
-        <p>3. Go into the folder you just extracted. Run the "Tabula" program inside.</p>
-        <p>4. In your web browser, go to http://localhost:8080/ . (This should automatically happen, actually.) There's Tabula!</p>
-        <p>5. Upload a file of your choice. Select a section of a table, and go.</p>
-
+        <ol>
+          <li style="margin-bottom:0">Download the version of Tabula for your operating system:</li>
+          <ul>
+            <li><b>Windows:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.5/tabula-win-0.9.5.zip">tabula-win.zip</a></li>
+            <li><b>Mac OS X:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.5/tabula-mac-0.9.5.zip">tabula-mac.zip</a>
+              <ul style="margin-bottom:0;padding-bottom:0"><li><i>OS X 10.8+ users</i>: if you have issues opening the app, <a href="https://github.com/jazzido/tabula/releases/tag/v0.9.5">see note at bottom of download page</a></li></ul></li>
+            <li><b>Linux/Other:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.5/tabula-jar-0.9.5.zip">tabula-jar.zip</a> (view README.txt inside for instructions)</li>
+          </ul>
+          <li>Extract the zip file. (Instructions: <a href="http://windows.microsoft.com/en-us/windows-8/zip-unzip-files">Windows</a> | <a href="http://support.apple.com/kb/PH10915">Mac</a>)</li>
+          <li>Go into the folder you just extracted. Run the "Tabula" program inside.</li>
+          <li>A web browser will open. If it doesn't, open your web browser, and go to <a href="http://localhost:8080/">http://localhost:8080</a>. There's Tabula!</li>
+        </ol>
         <p>
           <iframe src="https://erika.makes.org/popcorn/16ll_" width="512" height="322" frameborder="0" mozallowfullscreen webkitallowfullscreen allowfullscreen></iframe>
         </p>
@@ -73,12 +72,14 @@
       <section aria-role="main">
         <h3>
         <a name="using-tabula" class="anchor" href="#using-tabula"><span class="octicon octicon-link"></span></a>Using Tabula</h3>
-
-        <p>1. Upload a file with tables you would like to copy.</p>
-        <p>2. Draw a box around the area of the table you would like to copy.<br>
-        (Note: currently, Tabula can't select tables over multiple pages)</p>
-        <p>3. You will be given the option to copy the table as a CSV (comma-separated values) file or download the CSV or TSV (tab separated values). If you notice any errors in the table, you can make text edits to the selected text before copying or downloading.</p>
-        <p>4. Now you can work with your data in a spreadsheet or text file rather than a PDF!</p>
+        <ol>
+          <li>Upload a PDF file containing a data table.</li>
+          <li>Select the table by clicking the top left corner of a table and dragging the mouse to the bottom right corner, until all of the data is included in the shaded selection area.</li>
+          <li>A window will then appear containing your data. Inspect the data to make sure it looks correct. If data is missing, you may have to slightly expand your selection.</li>
+          <li>Click the Download button.</li>
+          <li>Now you can work with your data as text file or a spreadsheet rather than a PDF! <br />
+          (You can open the downloaded file in Microsoft Excel or the free <a href="http://www.libreoffice.org/discover/calc/">LibreOffice Calc</a>)</p>
+        </ol>
         <p>Note: Tabula only works on text-based PDFs, not scanned documents.</p>
       </section>
 
