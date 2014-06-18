@@ -2,6 +2,8 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Tabula: Extract Tables from PDFs | Free, Open-Source</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <title>Tabula</title>
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -10,16 +12,17 @@
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="canonical" href="http://tabula.nerdpower.org/" />
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
   <body>
     <div class="wrapper">
-      <header>
+      <header aria-role="main">
+        <h2>Tabula</h2>
         <object data="tabula.svg" type="image/svg+xml" style="width:100px; height:100px; position:relative; left: -15px"></object>
-        <h1>Tabula</h1>
-        <p>Tabula is a tool for liberating data tables trapped inside PDF files.</p>
+        <h1 class="seo-headline">Tabula is a tool for liberating data tables trapped inside PDF files.</h1>
 
         <p class="view"><a href="https://github.com/jazzido/tabula">View the Project on GitHub <small>jazzido/tabula</small></a></p>
 
@@ -31,61 +34,73 @@
         <p style="margin-top:-1em"><b>Current Version:</b> <a href="https://github.com/jazzido/tabula/releases/v0.9.5">0.9.5</a> (May 25 2014)</p>
         <p style="margin-top:-1em"><b>Other Versions:</b> <a href="https://github.com/jazzido/tabula/releases">pre-releases &amp; archives</a></p>
       </header>
-      <section>
+      <section aria-role="main">
         <h3>
-<a name="why-tabula" class="anchor" href="#why-tabula"><span class="octicon octicon-link"></span></a>Why Tabula?</h3>
+          <a name="why-tabula" class="anchor" href="#why-tabula"><span class="octicon octicon-link"></span></a>Why Tabula?
+        </h3>
 
-<p>If you’ve ever tried to do anything with data provided to you in PDFs, you know how painful this is — you can’t easily copy-and-paste rows of data out of PDF files. Tabula allows you to extract that data in CSV format, through a simple interface. And now you can download Tabula and run it on your own computer, like you would with <a href="http://openrefine.org/">OpenRefine</a>.</p>
+        <p>If you’ve ever tried to do anything with data provided to you in PDFs, you know how painful this is — you can’t easily copy-and-paste rows of data out of PDF files. Tabula allows you to extract that data in CSV format, through a simple interface. And now you can download Tabula and run it on your own computer, like you would with <a href="http://openrefine.org/">OpenRefine</a>.</p>
+      </section>
+      <section aria-role="main">
+        <h3>
+        <a name="download-install" class="anchor" href="#download-install"><span class="octicon octicon-link"></span></a>Download and Install Tabula</h3>
 
-<h3>
-<a name="download-install" class="anchor" href="#download-install"><span class="octicon octicon-link"></span></a>Download and install Tabula</h3>
+        <p>Note: You’ll need a copy of <a href="https://www.java.com/download/">Java</a> installed. You can <a href="https://www.java.com/download/">download Java here</a>.</p>
 
-<p>Note: You’ll need a copy of <a href="https://www.java.com/download/">Java</a> installed. You can <a href="https://www.java.com/download/">download Java here</a>.</p>
+        <p style="margin-bottom:0">1. Download the version of Tabula for your operating system:</p>
+        <ul>
+          <li><b>Windows:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.5/tabula-win-0.9.5.zip">tabula-win.zip</a></li>
+          <li><b>Mac OS X:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.5/tabula-mac-0.9.5.zip">tabula-mac.zip</a>
+            <ul style="margin-bottom:0;padding-bottom:0"><li><i>OS X 10.8+ users</i>: if you have issues opening the app, <a href="https://github.com/jazzido/tabula/releases/tag/v0.9.5">see note at bottom of download page</a></li></ul></li>
+          <li><b>Linux/Other:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.5/tabula-jar-0.9.5.zip">tabula-jar.zip</a> (view README.txt inside for instructions)</li>
+        </ul>
+        <p>2. Extract the zip file using the file extractor of your choice (such as 7-zip).</p>
+        <p>3. Go into the folder you just extracted. Run the "Tabula" program inside.</p>
+        <p>4. In your web browser, go to http://localhost:8080/ . (This should automatically happen, actually.) There's Tabula!</p>
+        <p>5. Upload a file of your choice. Select a section of a table, and go.</p>
 
-<p style="margin-bottom:0">1. Download the version of Tabula for your operating system:</p>
-<ul>
-  <li><b>Windows:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.5/tabula-win-0.9.5.zip">tabula-win.zip</a></li>
-  <li><b>Mac OS X:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.5/tabula-mac-0.9.5.zip">tabula-mac.zip</a>
-    <ul style="margin-bottom:0;padding-bottom:0"><li><i>OS X 10.8+ users</i>: if you have issues opening the app, <a href="https://github.com/jazzido/tabula/releases/tag/v0.9.5">see note at bottom of download page</a></li></ul></li>
-  <li><b>Linux/Other:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/jazzido/tabula/releases/download/v0.9.5/tabula-jar-0.9.5.zip">tabula-jar.zip</a> (view README.txt inside for instructions)</li>
-</ul>
-<p>2. Extract the zip file using the file extractor of your choice (such as 7-zip).</p>
-<p>3. Go into the folder you just extracted. Run the "Tabula" program inside.</p>
-<p>4. In your web browser, go to http://localhost:8080/ . (This should automatically happen, actually.) There's Tabula!</p>
-<p>5. Upload a file of your choice. Select a section of a table, and go.</p>
+        <p>
+          <iframe src="https://erika.makes.org/popcorn/16ll_" width="512" height="322" frameborder="0" mozallowfullscreen webkitallowfullscreen allowfullscreen></iframe>
+        </p>
+      </section>
+      <section aria-role="main">
+        <h3>
+        <a name="using-tabula" class="anchor" href="#using-tabula"><span class="octicon octicon-link"></span></a>Using Tabula</h3>
 
-<p>
-  <iframe src="https://erika.makes.org/popcorn/16ll_" width="512" height="322" frameborder="0" mozallowfullscreen webkitallowfullscreen allowfullscreen></iframe>
-</p>
+        <p>1. Upload a file with tables you would like to copy.</p>
+        <p>2. Draw a box around the area of the table you would like to copy.<br>
+        (Note: currently, Tabula can't select tables over multiple pages)</p>
+        <p>3. You will be given the option to copy the table as a CSV (comma-separated values) file or download the CSV or TSV (tab separated values). If you notice any errors in the table, you can make text edits to the selected text before copying or downloading.</p>
+        <p>4. Now you can work with your data in a spreadsheet or text file rather than a PDF!</p>
+        <p>Note: Tabula only works on text-based PDFs, not scanned documents.</p>
+      </section>
 
-<h3>
-<a name="using-tabula" class="anchor" href="#using-tabula"><span class="octicon octicon-link"></span></a>Using Tabula</h3>
 
-<p>1. Upload a file with tables you would like to copy.</p>
-<p>2. Draw a box around the area of the table you would like to copy.<br>
-(Note: currently, Tabula can't select tables over multiple pages)</p>
-<p>3. You will be given the option to copy the table as a CSV (comma-separated values) file or download the CSV or TSV (tab separated values). If you notice any errors in the table, you can make text edits to the selected text before copying or downloading.</p>
-<p>4. Now you can work with your data in a spreadsheet or text file rather than a PDF!</p>
-<p>Note: Tabula only works on text-based PDFs at this time, not scanned documents.</p>
+      <section aria-role="main">
+        <h3>
+        <a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+        <p><strong>Tabula</strong> was created by <a href="http://jazzido.com/" target="_blank">Manuel Aristarán</a>, <a href="http://mike.tig.as/" target="_blank">Mike Tigas</a>, <a href="http://jeremybmerrill.com/" target="_blank">Jeremy B. Merrill</a> with the support of <a href="http://propublica.org">ProPublica</a>, <a href="http://blogs.lanacion.com.ar/data/">La Nación DATA</a>, <a href="http://www.mozillaopennews.org/">Knight-Mozilla OpenNews</a>, <a href="http://www.nytimes.com">The New York Times</a> and <a href="http://www.knightfoundation.org/">The Knight Foundation</a>.</p>
+        <p>Want to contribute? <a href="https://github.com/jazzido/tabula">Fork it on GitHub</a> and check out the <a href="https://github.com/jazzido/tabula/blob/master/TODO.md"></a>to-do list</a> for ideas.</p>
+         <p>Learn more about this project on <a href="http://source.mozillaopennews.org">Source</a>: <a href="http://source.mozillaopennews.org/en-US/articles/introducing-tabula/"><strong>"Introducing Tabula"</strong></a></p>
+        <p>Tabula was created by journalists for journalists and anyone else working with data locked away in PDFs. Tabula will always be free and open source.</p>
+      </section>
 
-<p><strong>Tabula</strong> was created by <a href="http://jazzido.com/" target="_blank">Manuel Aristarán</a> with the help of <a href="http://propublica.org">ProPublica</a>, <a href="http://blogs.lanacion.com.ar/data/">La Nación DATA</a> and <a href="http://www.mozillaopennews.org/">Knight-Mozilla OpenNews</a>.</p>
-<p>Want to contribute? <a href="https://github.com/jazzido/tabula">Fork it on GitHub</a> and check out the <a href="https://github.com/jazzido/tabula/blob/master/TODO.md"></a>to-do list</a> for ideas.</p>
- <p>Learn more about this project on <a href="http://source.mozillaopennews.org">Source</a>: <a href="http://source.mozillaopennews.org/en-US/articles/introducing-tabula/"><strong>"Introducing Tabula"</strong></a></p>
-      </footer>
-    </div>
+      <section class="footer" aria-role="complementary">
+        What Can Tabula Do? Convert PDF to Excel, Convert PDF to CSV, Convert PDF to TSV, Convert PDF to JSON, Extract PDF Data to Excel, Extract PDF Data to CSV, Extract PDF Data to TSV, Tabula is Free, Tabula works on Windows, Tabula works on Mac, Tabula works on Linux
+      </section>
+    
+   </div>
     <script src="javascripts/scale.fix.js"></script>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-42330903-1', 'nerdpower.org');
-  ga('send', 'pageview');
+      ga('create', 'UA-42330903-1', 'nerdpower.org');
+      ga('send', 'pageview');
 
-</script>
+    </script>
   </body>
 </html>

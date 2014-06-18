@@ -253,3 +253,13 @@ footer {
     color:#444;
   }
 }
+
+h1.seo-headline{
+  font: 300 14px/1.5 Lato,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  color: #222;
+}
+
+section.footer{
+  font: 300 10px/1 Lato,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  color: #999;
+}
