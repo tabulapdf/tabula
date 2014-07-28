@@ -12,53 +12,52 @@ $(document).ready(function() {
     });
 
     $('.has-tooltip').tooltip();
-
-  Tabula.tour = new Tour(
-  {
-    storage: false,
-    onStart: function(){
-      $('a#help-start').text("Close Help");
-    },
-    onEnd: function(){
-      $('a#help-start').text("Help");
-    }
-  });
-
-  Tabula.tour.addSteps([
-    {
-      content: "Click and drag to select each table in your document. Once you've selected it, a window to preview your data will appear, along with options to download it as a spreadsheet.",
-      element: ".page-image#page-1",
-      title: "Select Tables",
-      placement: 'right'
-    },
-    {
-      element: "#all-data",
-      title: "Download Data",
-      content: "When you've selected all of the tables in your PDF, click this button to preview the data from all of the selections and download it.",
-      placement: 'left'
-    },
-    {
-      element: "#should-preview-data-checkbox",
-      title: "Preview Data Automatically?",
-      content: "After you select each table on a page, a data preview window will appear automatically. If you want to select multiple tables without interruption, uncheck this box to suppress the preview window.",
-      placement: 'left'
-    },
-    {
-      element: "#thumb-page-2",
-      title: "Page Shortcuts",
-      content: "Click a thumbnail to skip directly to that page.",
-      placement: 'right',
-      parent: 'body'
-    }
-  ]);
 });
 
-//make the "follow you around bar" actually follow you around. ("sticky nav")
-$(document).ready(function() {
-  $('.followyouaroundbar').affix({top: 70 });
+// TODO: make sure render fires after document ready or something
+
+Tabula.DataView = Backbone.View.extend({  //only one
+  // flash clipboard
+  // data modal
+  // switch extraction method button
+  // advanced options button
+  // download button
+
 });
 
-Tabula.PDFView = Backbone.View.extend({
+Tabula.PDFView = Backbone.View.extend({ //only one
+  // directions bar (move stuff up)
+
+  initialize: function(){
+    // create a bunch of PageViews
+  }
+});
+
+Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
+  // selector?
+});
+
+Tabula.SelectionView = Backbone.View.extend({ // maybe multiple per page of the PDF
+  // repeat lasso button
+});
+
+Tabula.ControlPanelView = Backbone.View.extend({ // only one
+  // autopreview data button
+  // clear all selections button
+  // download all button
+
+  render: function(){
+    //make the "follow you around bar" actually follow you around. ("sticky nav")
+    $('.followyouaroundbar').affix({top: 70 });
+  }
+});
+
+Tabula.SidebarView = Backbone.View.extend({ // only one
+  // sidebar scroll
+
+})
+
+Tabula.UI = Backbone.View.extend({
     el : 'body',
     events : {
       'click button.close#directions' : 'moveSelectionsUp',
@@ -89,6 +88,7 @@ Tabula.PDFView = Backbone.View.extend({
     lastQuery: [{}],
     lastSelection: undefined,
     pageCount: undefined,
+    components: {},
 
     initialize: function(){
       _.bindAll(this, 'render', 'createImgareaselects', 'getTablesJson', 'total_selections',
@@ -96,6 +96,11 @@ Tabula.PDFView = Backbone.View.extend({
                 'query_all_data', 'redoQuery', 'toggleAdvancedOptionsShown');
         this.pageCount = $('img.page-image').length;
         this.setAdvancedOptionsShown();
+
+        this.components['pdf_view'] = new Tabula.PDFView();
+        this.components['control_panel'] = new Tabula.ControlPanelView();
+        this.components['sidebar'] = new Tabula.SidebarView();
+
         this.render();
         this.updateExtractionMethodButton();
     },
@@ -103,8 +108,51 @@ Tabula.PDFView = Backbone.View.extend({
     render : function(){
       query_parameters = {};
       this.getTablesJson();
+
+      // render out the components, as necessary
       return this;
     },
+
+    createTour: function(){
+      Tabula.tour = new Tour(
+        {
+          storage: false,
+          onStart: function(){
+            $('a#help-start').text("Close Help");
+          },
+          onEnd: function(){
+            $('a#help-start').text("Help");
+          }
+        });
+
+      Tabula.tour.addSteps([
+        {
+          content: "Click and drag to select each table in your document. Once you've selected it, a window to preview your data will appear, along with options to download it as a spreadsheet.",
+          element: ".page-image#page-1",
+          title: "Select Tables",
+          placement: 'right'
+        },
+        {
+          element: "#all-data",
+          title: "Download Data",
+          content: "When you've selected all of the tables in your PDF, click this button to preview the data from all of the selections and download it.",
+          placement: 'left'
+        },
+        {
+          element: "#should-preview-data-checkbox",
+          title: "Preview Data Automatically?",
+          content: "After you select each table on a page, a data preview window will appear automatically. If you want to select multiple tables without interruption, uncheck this box to suppress the preview window.",
+          placement: 'left'
+        },
+        {
+          element: "#thumb-page-2",
+          title: "Page Shortcuts",
+          content: "Click a thumbnail to skip directly to that page.",
+          placement: 'right',
+          parent: 'body'
+        }
+      ]);
+    }
 
 
     queryWithToggledExtractionMethod: function(e){
@@ -716,7 +764,7 @@ Tabula.PDFView = Backbone.View.extend({
 });
 
 $(function () {
-  Tabula.pdf_view = new Tabula.PDFView();
+  Tabula.ui = new Tabula.UI();
 });
 
 
