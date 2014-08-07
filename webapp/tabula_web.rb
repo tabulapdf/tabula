@@ -219,41 +219,38 @@ Cuba.define do
         [
          coord_set['page'],
          [coord_set['y1'], coord_set['y2']].min.to_i / 10,
-         [coord_set['x1'], coord_set['x2']].min ]
-      end
-      if ["guess", "spreadsheet", "original"].include?(req.params['extraction_method'])
-        extraction_method_requested = req.params['extraction_method']
-      else
-        extraction_method_requested = "guess"
+         [coord_set['x1'], coord_set['x2']].min 
+        ]
       end
 
-      coords_method_key = extraction_method_requested + coords.to_s
-      # don't rewrite this is as CACHE[coords] ||= ....
-      unless CACHE.has_key?(coords_method_key)
-        CACHE[coords_method_key] = coords.each_with_index.map do |coord_set, index|
-          Tabula.extract_table(pdf_path,
-                               coord_set['page'].to_i,
-                               [coord_set['y1'].to_f,
-                                coord_set['x1'].to_f,
-                                coord_set['y2'].to_f,
-                                coord_set['x2'].to_f],
-                                {:extraction_method => extraction_method_requested}
-                                )
+      tables = coords.map do |coord_set|
+        extraction_method_requested = ["guess", "spreadsheet", "original"].include?(coord_set['extraction_method']) ? coord_set['extraction_method'] : "guess"
+        coords_method_key = extraction_method_requested + coord_set.to_s
+        unless CACHE.has_key?(coords_method_key)
+          CACHE[coords_method_key] = Tabula.extract_table(pdf_path,
+                                                         coord_set['page'].to_i,
+                                                         [coord_set['y1'].to_f,
+                                                          coord_set['x1'].to_f,
+                                                          coord_set['y2'].to_f,
+                                                          coord_set['x2'].to_f],
+                                                          {:extraction_method => extraction_method_requested}
+                                                          )
         end
+        CACHE[coords_method_key]
       end
+      tables = tables.flatten(1)
+
 
       case req.params['format']
       when 'csv'
         res['Content-Type'] = 'text/csv'
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.csv\""
-        tables = CACHE[coords_method_key].flatten(1)
         tables.each do |table|
           res.write table.to_csv
         end
       when 'tsv'
         res['Content-Type'] = 'text/tab-separated-values'
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.tsv\""
-        tables = CACHE[coords_method_key].flatten(1)
         tables.each do |table|
           res.write table.to_tsv
         end
@@ -274,7 +271,7 @@ Cuba.define do
         res.write coords.to_json
      else
         res['Content-Type'] = 'application/json'
-        res.write CACHE[coords_method_key].flatten(1).to_json
+        res.write tables.to_json
       end
     end
   end

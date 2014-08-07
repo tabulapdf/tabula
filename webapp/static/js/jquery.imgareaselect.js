@@ -57,9 +57,6 @@ $.imgAreaSelect = function (img, options) {
         /* Document element */
         docElem = document.documentElement,
 
-        /* User agent */
-        ua = navigator.userAgent,
-
         /* Image position (relative to viewport) */
         left, top,
 
@@ -1732,7 +1729,7 @@ $.fn.imgAreaSelect = function (options) {
                 $(this).data('imgAreaSelect').setOptions(options);
         }
         else if (!options.remove) {
-            /* No exising instance -- create a new one */
+            /* No existing instance -- create a new one */
 
             /*
              * If neither the "enable" nor the "disable" option is present, add

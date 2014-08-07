@@ -13,7 +13,7 @@
 
     </div> <!-- /main container -->
 
-    <div class="span2" id="#control-panel-container">
+    <div class="span2" id="control-panel-container">
     </div> <!-- followyouaround bar container -->
   </div>
 </div>
@@ -38,63 +38,21 @@
   <div class="alert alert-success" id="loading"><span id="spinner"></span><span style="position: relative; left: 16px; font-size: 24px;">Loading...</span></div>
   <div class="modal-body">
   </div>
-  <form id="download-form" action="#changedinJS" method="post">
-    <!-- the whole modal footer has to be inside a <form> so that the various download buttons work -->
-    <div id="hidden-fields">
-      <input type="hidden" class="data-query" name="lastQuery" value="" >
-    </div>
-    <div class="modal-footer">
+  <div class="modal-footer-container">
+  </div>
 
-      <div id="basic-options" class="modal-footer-row" style="width: 100%;">
-        <span class="modal-footer-row-label">
-        <label class="has-tooltip" style="display: inline;" data-placement="right" data-toggle="tooltip" title="Show Advanced Options"><i class="icon-wrench toggle-advanced-options"></i></label>
-        Basic Options:
-        </span>
-        <!-- TODO: just a copy-to-clipboard-as-tsv option and download-as-csv -->
-        <span style="display: none;">Copied!</span>
-
-        <button class="btn btn-primary" id="copy-csv-to-clipboard">Copy to Clipboard</button>
-        <button class="btn btn-primary download-btn" id="download-data" value="CSV">Download CSV</button>
-
-        <button id="close-modal" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
-      </div>
-      <div id="advanced-options" class="modal-footer-row" style="width: 100%;">
-        <!-- TODO: extraction method selector, download as... button, tabula-extractor hooks -->
-        <span class="modal-footer-row-label">
-          <label class="has-tooltip" style="display: inline;" data-placement="right" data-toggle="tooltip" title="Hide Advanced Options"><i class="icon-remove toggle-advanced-options"></i></label>
-          Advanced Options: 
-        </span>
-        <label class="has-tooltip" style="display: inline;" for="extraction-method-btns" data-placement="left" data-toggle="tooltip" title="Advanced Users: Tabula has two different extraction methods for extracting data from different kinds of tables. It tries to select the right one automatically, but sometimes chooses incorrectly. Try switching the method if the extracted data doesn't come out right."><i class="icon-question-sign" ></i>Extraction Method: </label>
-        <div class="btn-group" data-toggle="buttons-radio" id="extraction-method-btns">
-          <button type="button" class="btn btn-warning extraction-method-btn" id="original-method-btn">Original</button>
-          <button type="button" class="btn btn-warning extraction-method-btn" id="spreadsheet-method-btn">Spreadsheet</button>
-        </div>
-
-        <div class="btn-group">
-            <button class="btn btn-primary download-dropdown dropdown-toggle" data-toggle="dropdown">Download Data As... <span class="caret"></span></button> <!-- TODO: add JSON -->
-            <ul class="dropdown-menu">
-              <li><input class="linklike download-btn" type="submit" id="download-csv" value="CSV"></li>
-              <li><input class="linklike download-btn" type="submit" id="download-tsv" value="TSV"></li>
-              <li><input class="linklike download-btn" type="submit" id="download-script" value="tabula-extractor Script"></li>
-              <li><input class="linklike download-btn" type="submit" id="download-bbox" value="Bounding Boxes JSON"></li>
-            </ul>
-        </div>
-      </div>
-
-    </div>
-  </form>
 </div>
 
 <div id="templates" style="display: none; visibility: hidden;">
 
-  <div id="page-template">
+  <script type="text/template" id="page-template">
     <div class="row pdf-page" id="page-div-{{ number }}">
       <img class="page-image" src="{{ image_url }}"> 
       <br>
     </div>
-  </div>
+  </script>
 
-  <div id="thumbnail-template">
+  <script type="text/template" id="thumbnail-template">
     <a href="#page-{{ number }}"><img src="{{ image_url }}" width="100"></a>
     <span>
       <i title="delete this page" class="icon-remove delete-page"></i>
@@ -102,23 +60,71 @@
       <i title="rotate this page left" class="icon-repeat flip rotate-right"></i -->
     </span>
     <br>Page {{ number }}
-  </div>
+  </script>
 
-  <div id="control-panel-template">
-    <button id="all-data" type="button" class="btn btn-success" data-position="left" data-intro="When you've selected all of the tables in your PDF, click this button to preview the data from all of the selections and download it." disabled="disabled">Download All Data</button>
+  <script type="text/template" id="control-panel-template">
+    <button id="all-data" type="button" class="btn btn-success" data-position="left" data-intro="When you've selected all of the tables in your PDF, click this button to preview the data from all of the selections and download it." {{{disable_download_all}}}>Download All Data</button>
       <!-- <button id="repeat-lassos" type="button" class="btn btn-primary">Repeat Page 1 Lassos</button> -->
-    <button id="clear-all-selections" type="button" class="btn btn-danger" disabled="disabled">Clear All Selections</button>
+    <button id="clear-all-selections" type="button" class="btn btn-danger" {{{disable_clear_all_selections}}}>Clear All Selections</button>
     <button id="restore-detected-tables" type="button" class="btn btn-warning" style="display: none;">Autodetect Tables</button>
-    <br /><input type="checkbox" id="should-preview-data-checkbox" checked="checked"> <label id="should-preview-data-label" for="should-preview-data-checkbox">Preview Data Automatically? <a class="tooltip-modal has-tooltip" href="#" data-placement="left" data-toggle="tooltip" title="If checked, after you create or change a selection area, the data will appear immediately in a preview window. Uncheck if you want to select multiple tables without interruption. (Formerly named Multi-Select Mode)" ><i class="icon-question-sign" ></i></a></label>
+    <br /><input type="checkbox" id="should-preview-data-checkbox" {{{if_multiselect_checked}}} > <label id="should-preview-data-label" for="should-preview-data-checkbox">Preview Data Automatically? <a class="tooltip-modal has-tooltip" href="#" data-placement="left" data-toggle="tooltip" title="If checked, after you create or change a selection area, the data will appear immediately in a preview window. Uncheck if you want to select multiple tables without interruption. (Formerly named Multi-Select Mode)" ><i class="icon-question-sign" ></i></a></label>
     <br />
     <a href="#" id="help-start">Help</a>
-  </div>
+  </script>
+
+  <script type="text/template" id="modal-footer-template">
+    <form id="download-form" action="/pdf/{{pdf_id}}/data?format=csv" method="post">
+      <!-- the whole modal footer has to be inside a <form> so that the various download buttons work -->
+      <div id="hidden-fields">
+      <input type='hidden' class='data-query' name='coords' value='{{list_of_coords}}' >
+      </div>
+      <div class="modal-footer">
+        <div id="basic-options" class="modal-footer-row" style="width: 100%;">
+          <span class="modal-footer-row-label">
+          <label class="has-tooltip show-advanced-options toggle-advanced-options" style="display: inline;" data-placement="right" data-toggle="tooltip" title="Show Advanced Options"><i class="icon-wrench"></i> Need More Options?</label>
+          
+          </span>
+          <!-- TODO: just a copy-to-clipboard-as-tsv option and download-as-csv -->
+          <span style="display: none;">Copied!</span>
+
+          <button class="btn btn-primary" type="button" id="copy-csv-to-clipboard" {{{copyDisabled}}}>Copy to Clipboard</button>
+          <button class="btn btn-primary download-btn" id="download-data" action='/pdf/{{pdf_id}}/data?format=csv' value="CSV">Download CSV</button>
+
+          <button id="close-modal" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
+        </div>
+        <div id="advanced-options" class="modal-footer-row" style="width: 100%;">
+          <!-- TODO: extraction method selector, download as... button, tabula-extractor hooks -->
+          <span class="modal-footer-row-label">
+            <label class="has-tooltip hide-advanced-options toggle-advanced-options" style="display: inline;" data-placement="right" data-toggle="tooltip" title="Hide Advanced Options"><i class="icon-remove"></i> Too Many Options? </label>
+            
+          </span>
+          <label class="has-tooltip" style="display: inline;" for="extraction-method-btns" data-placement="left" data-toggle="tooltip" title="Advanced Users: Tabula has two different extraction methods for extracting data from different kinds of tables. It tries to select the right one automatically, but sometimes chooses incorrectly. Try switching the method if the extracted data doesn't come out right."><i class="icon-question-sign" ></i>Extraction Method: </label>
+          <div class="btn-group" data-toggle="buttons-radio" id="extraction-method-btns" {{extractionMethodDisabled}} >
+            <button type="button" class="btn btn-warning extraction-method-btn" id="original-method-btn">Original</button>
+            <button type="button" class="btn btn-warning extraction-method-btn" id="spreadsheet-method-btn">Spreadsheet</button>
+          </div>
+
+          <div class="btn-group">
+              <button class="btn btn-primary download-dropdown dropdown-toggle" data-toggle="dropdown">Download Data As... <span class="caret"></span></button> <!-- TODO: add JSON -->
+              <ul class="dropdown-menu">
+                <li><input class="linklike download-btn" action="/pdf/{{pdf_id}}/data?format=csv" type="submit" id="download-csv" value="CSV"></li>
+                <li><input class="linklike download-btn" action="/pdf/{{pdf_id}}/data?format=tsv" type="submit" id="download-tsv" value="TSV"></li>
+                <li><input class="linklike download-btn" action="/pdf/{{pdf_id}}/data?format=script" type="submit" id="download-script" value="tabula-extractor Script"></li>
+                <li><input class="linklike download-btn" action="/pdf/{{pdf_id}}/data?format=bbox" type="submit" id="download-bbox" value="Bounding Boxes JSON"></li>
+              </ul>
+          </div>
+        </div>
+
+      </div>
+    </form>
+
+  </script>
 
 </div>
 
 <script type="text/javascript" src="/js/bootstrap-tour.min.js"></script>
 
-<script type="text/javascript" src="/js/ZeroClipboard.js"></script>
+<script type="text/javascript" src="/js/ZeroClipboard.min.js"></script>
 <script type="text/javascript" src="/js/table2CSV.js"></script>
 <script type="text/javascript" src="/js/pdf_view.js?1365633567"></script> <!-- cachebuster: last update time of JS. -->
 <script type="text/javascript">
