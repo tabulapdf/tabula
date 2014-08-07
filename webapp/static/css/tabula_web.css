@@ -101,6 +101,7 @@
 
   .toggle-advanced-options{
     cursor: select;
+    color: #666;
   }
 
   #data-modal .modal-body {
