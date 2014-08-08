@@ -134,7 +134,7 @@ Tabula.Selections = Backbone.Collection.extend({
   },
 
   findByIasId: function(iasId, pageNumber){
-    return this.find(function(selection){ return selection.get('iasId') == iasId && selection.get('page_number') == pageNumber});
+    return this.find(function(selection){ return (selection.get('iasId') == iasId && selection.get('page_number') == pageNumber) });
   },
 
   updateOrCreateByIasId: function(iasSelection, pageNumber, imageWidth){
@@ -149,7 +149,8 @@ Tabula.Selections = Backbone.Collection.extend({
                                       'pdf_document': this.pdf_document}, 
                                       _.omit(iasSelection, 'id'))
         selection = new Tabula.Selection(new_selection_args);
-        this.add([selection]);
+        console.log("add", new_selection_args);
+        this.add(selection);
       }
       return selection;
   }
@@ -523,7 +524,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
   //TODO: deal with this.
   _onSelectEnd: function(img, iasSelection) {
-    selection = Tabula.ui.pdf_document.selections.updateOrCreateByIasId(iasSelection, this.model.get('number'), this.$image.width());
+    var selection = Tabula.ui.pdf_document.selections.updateOrCreateByIasId(iasSelection, this.model.get('number'), this.$image.width());
 
     //TODO: deal with invalid/too-small iasSelections somehow (including thumbnails)
     if (iasSelection.width == 0 && iasSelection.height == 0) {
@@ -554,13 +555,14 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     Tabula.ui.components['control_panel'].render(); // deal with buttons that need blurred out if there's zero selections, etc.
   },
 
-  _onSelectCancel: function(img, iasSelection, iasSelectionId) {
+  // iasSelection
+  _onSelectCancel: function(img, iasSelection) {
     // remove repeat lassos button
     var but_id = $(img).attr('id') + '-' + iasSelection.id;
     $('button#' + but_id).remove();
-
     // find and remove the canceled selection from the collection of selections. (triggering remove events).
-    var selection = Tabula.ui.pdf_document.selections.find(function(selection){ return selection.get('iasId') == iasSelectionId });
+    var selection = Tabula.ui.pdf_document.selections.findWhere({iasId: iasSelection.id, page_number: this.model.get('number')});
+    console.log("cancel2", selection.cid.toString(), selection.get('iasId'), selection.get('page_number').toString());
     Tabula.ui.pdf_document.selections.remove(selection);
 
     Tabula.ui.components['control_panel'].render(); // deal with buttons that need blurred out if there's zero selections, etc.
@@ -744,6 +746,7 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
     this.thumbnail_views[selection.get('page_number') - 1].changeSelectionThumbnail(selection)
   },
   removeThumbnail: function (selection){
+    console.log("removeThumbnail", selection);
     this.thumbnail_views[selection.get('page_number') - 1].removeSelectionThumbnail(selection)
   }
 });

@@ -914,7 +914,9 @@ $.imgAreaSelect = function (img, options) {
             options.onSelectChange(img, this.getSelection());
             options.onSelectEnd(img, this.getSelection());
         }
-        options.onSelectCancel(img, this.getSelection(), index_of_this);
+        var selection = this.getSelection()
+        selection.id = index_of_this;
+        options.onSelectCancel(img, selection);
 
     }
 
