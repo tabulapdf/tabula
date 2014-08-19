@@ -195,7 +195,8 @@ $.imgAreaSelect = function (img, options) {
 
         $parent.append(this.$box);
         this.$box/*.add($outer)*/.css({ position: this.position,
-            overflow: 'hidden', zIndex: zIndex || '0' });
+            // overflow: 'hidden',  -JBM 8/16/14
+            zIndex: zIndex || '0' });
         this.$box.css({ zIndex: zIndex + 2 || 2 });
         this.$closeBtn.css({ zIndex: zIndex + 3 || 3 });
         this.$area.add(this.$border).css({ position: 'absolute', fontSize: 0 });
@@ -457,7 +458,9 @@ $.imgAreaSelect = function (img, options) {
             y2: round(this.selection.y2 * sy),
             width: round(this.selection.x2 * sx) - round(this.selection.x1 * sx),
             height: round(this.selection.y2 * sy) - round(this.selection.y1 * sy) ,
-            id: selections.indexOf(this)
+            id: selections.indexOf(this),
+            el: this.$box[0],
+            $el: this.$box
         };
     };
 

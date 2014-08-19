@@ -25,10 +25,17 @@
 }
 
 .imgareaselect-box{
-    /* placeholder */
+/*  these properties moved to imgareaselect-area -JBM 8/16/14
+    background-color: #000;
+    filter: alpha(opacity=50);
+    opacity: 0.3; 
+*/
+}
+.imgareaselect-area{
     background-color: #000;
     filter: alpha(opacity=50);
     opacity: 0.3;
+    overflow: hidden;
 }
 
 .imgareaselect-handle {

@@ -24,9 +24,11 @@ Tabula.Page = Backbone.Model.extend({
 Tabula.Pages = Backbone.Collection.extend({
   model: Tabula.Page,
   url: null, //set on initialize
+  comparator: 'number',
   initialize: function(){
     this.url = '/pdfs/' + PDF_ID + '/pages.json?_=' + Math.round(+new Date()).toString();
   },
+
 });
 
 Tabula.Document = Backbone.Model.extend({
@@ -86,7 +88,8 @@ Tabula.Selection = Backbone.Model.extend({
 
         new_selection = this.clone();                                // and create a new Selection.
         new_selection.set('page_number', page.get('page_number'));
-        new_selection.set('iasId', iasSelection.id);
+        new_selection.set('id', page.get('page_number') * 100000 + iasSelection.id);
+        new_selection.id = page.get('page_number') * 100000 + iasSelection.id;
         this.collection.add(new_selection);
         /* which causes thumbnails to be created, Download All button to know about these selections. */
       }
@@ -104,10 +107,15 @@ Tabula.Selection = Backbone.Model.extend({
 //TODO: get values here from localStroage on startup
 Tabula.Options = Backbone.Model.extend({
   initialize: function(){
-    this.set('multiselect_mode', true);
-    this.set('extraction_method', null);
+    _.bindAll(this, 'write');
+    this.set('multiselect_mode', localStorage.getItem("tabula-multiselect-mode"));
+    this.set('extraction_method', null); // don't write this one to localStorage
     this.set('show_advanced_options', localStorage.getItem("tabula-show-advanced-options"))
   },
+  write: function(){
+    localStorage.setItem("tabula-multiselect-mode", this.get('multiselect_mode'));
+    localStorage.setItem("tabula-show-advanced-options", this.get('show_advanced_options'));
+  }
 });
 
 /* What the hell are you doing here, Jeremy? 
@@ -130,26 +138,23 @@ Tabula.Selections = Backbone.Collection.extend({
   url: null, //set on init
   initialize: function(){
     this.url = '/pdfs/' + PDF_ID + '/tables.json?_=' + Math.round(+new Date()).toString();
-    _.bindAll(this, 'findByIasId', 'updateOrCreateByIasId');
-  },
-
-  findByIasId: function(iasId, pageNumber){
-    return this.find(function(selection){ return (selection.get('iasId') == iasId && selection.get('page_number') == pageNumber) });
+    _.bindAll(this, 'updateOrCreateByIasId');
   },
 
   updateOrCreateByIasId: function(iasSelection, pageNumber, imageWidth){
-    var selection = this.findByIasId(iasSelection.id, pageNumber);
+    var selectionId = pageNumber * 100000 + iasSelection.id;
+    var selection = this.get(selectionId); 
       if(selection){ // if it already exists
-        selection.set(iasSelection);
+        selection.set(_.omit(iasSelection, 'id'));
       }else{
         new_selection_args = _.extend({'page_number': pageNumber, 
                                       'imageWidth': imageWidth, 
-                                      'iasId': iasSelection.id,
+                                      'id': selectionId,
                                       'extractionMethod': Tabula.ui.options.extraction_method,
                                       'pdf_document': this.pdf_document}, 
-                                      _.omit(iasSelection, 'id'))
+                                      _.omit(iasSelection, 'id', '$el'))
+        console.log('create', iasSelection);
         selection = new Tabula.Selection(new_selection_args);
-        console.log("add", new_selection_args);
         this.add(selection);
       }
       return selection;
@@ -254,7 +259,7 @@ Tabula.DataView = Backbone.View.extend({  //only one, is the data modal.
   },
 
   renderUnlessMultiSelect: function(){
-    console.log(Tabula.ui.options.get('multiselect_mode'));
+    console.log('multiselectMode', Tabula.ui.options.get('multiselect_mode'));
     if(!Tabula.ui.options.get('multiselect_mode')){
       this.render();
     }
@@ -277,11 +282,10 @@ Tabula.DataView = Backbone.View.extend({  //only one, is the data modal.
   },
 
   renderFooter: function(){
-
     templateOptions = {
       extractionMethodDisabled: _.isNull(this.model.data) ? 'disabled="disabled"' : '',
       pdf_id: PDF_ID,
-      list_of_coords: this.model.get('list_of_coords'),
+      list_of_coords: JSON.stringify(this.model.get('list_of_coords')),
       copyDisabled: Tabula.ui.flash_borked ? 'disabled="disabled" data-toggle="tooltip" title="'+Tabula.ui.flash_borken_message+'"' : '',
     }
     //TODO: on create, show/hide advanced options area as necessary from this.ui.options
@@ -391,7 +395,7 @@ Tabula.DocumentView = Backbone.View.extend({ //only one
     'click button.close#directions' : 'moveSelectionsUp',
   },
   ui: null, //added on create
-  page_views: [],
+  page_views: {},
 
   /* when the Directions area is closed, the pages themselves move up, because they're just normally positioned.
    * The selections on those images, though, do not, and need to be moved up separately.
@@ -404,15 +408,39 @@ Tabula.DocumentView = Backbone.View.extend({ //only one
   },
 
   initialize: function(stuff){
-    _.bindAll(this, 'createImgareaselects', 'render');
+    _.bindAll(this, 'createImgareaselects', 'render', 'removePage');
     this.ui = stuff.ui;
+    this.listenTo(this.collection, 'remove', this.removePage)
+  },
+
+  removePage: function(pageModel){   
+    var page_view = this.page_views[pageModel.get('number')];
+
+    page_view.$el.fadeOut(200, function(){ 
+
+      // move all the stuff for the following pages' imgAreaSelect objects up.
+      deleted_page_height = page_view.$el.height();
+      deleted_page_top = page_view.$el.offset()["top"];
+
+      $('div.imgareaselect').each(function(){
+        if( $(this).offset()["top"] > (deleted_page_top + deleted_page_height) ){
+          $(this).offset({top: $(this).offset()["top"] - deleted_page_height });
+        }
+      });
+
+      //TODO: edit imgAreaSelect to:
+      // (a) not be position fixed (so I don't have to move their location manualy)
+      //   e.g. something like _(Tabula.ui.imgAreaSelects).each(function(ias){ ias.adjust(); });
+      // (b) listen on document, no matter how many exist on the page.
+
+      page_view.imgAreaSelect.remove();
+      page_view.remove() 
+    });
   },
 
   render: function(){
     return this;
   },
-
-  //TODO: delegate creating imgareaselect to each child page_view. 
 
   createImgareaselects : function(tableGuessesTmp, pages){
     var selectsNotYetLoaded = _(pages).filter(function(page){ return !page['deleted']}).length;
@@ -447,21 +475,16 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   },
   template: Handlebars.compile($('#templates #page-template').html()) , 
   'events': {
-    'click i.delete-page': 'delete_page',
     'click i.rotate-left i.rotate-right': 'rotate_page',
   },
 
   initialize: function(stuff){
     this.ui = stuff.ui;
-    _.bindAll(this, 'createImgareaselect', 'rotate_page', 'delete_page', 
+    _.bindAll(this, 'createImgareaselect', 'rotate_page', 
       '_onSelectStart', '_onSelectChange', '_onSelectEnd', '_onSelectCancel', 'render');
   },
 
   render: function(){
-    if(this.model.get('deleted')){
-         return;
-    }
-
     this.$el.html(this.template({
                     'number': this.model.get('number'),
                     'image_url': this.model.get('image_url')
@@ -486,7 +509,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     }
 
     this.$image = this.$el.find('img');
-    return this.$image.imgAreaSelect({
+    var ias = this.$image.imgAreaSelect({
       handles: true,
       instance: true,
       allowOverlaps: false,
@@ -499,6 +522,8 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       onSelectCancel: this._onSelectCancel,
       onInit: drawDetectedTablesIfAllAreLoaded
     });
+    this.imgAreaSelect = ias;
+    return ias;
   },
 
   _onSelectStart: function(img, iasSelection) {
@@ -522,37 +547,46 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     }
   },
 
-  //TODO: deal with this.
   _onSelectEnd: function(img, iasSelection) {
     var selection = Tabula.ui.pdf_document.selections.updateOrCreateByIasId(iasSelection, this.model.get('number'), this.$image.width());
 
-    //TODO: deal with invalid/too-small iasSelections somehow (including thumbnails)
+    // deal with invalid/too-small iasSelections somehow (including thumbnails)
     if (iasSelection.width == 0 && iasSelection.height == 0) {
         $('#thumb-' + $(img).attr('id') + ' #iasSelection-show-' + iasSelection.id).css('display', 'none');
-    }
-    //TODO: this is dumb, get rid of it. (This just means that very small selections appear on the page
-    // but don't actually ever get queried.)
-    if (iasSelection.height * iasSelection.width < 5000) return; 
-    
-    //TODO: deal with this.
-    // create button for repeating lassos, only if there are more pages after this
-    if (this.pageCount > $(img).data('page')) {
-        var but_id = $(img).attr('id') + '-' + iasSelection.id;
-        $('body').append('<button class="btn repeat-lassos" id="'+but_id+'">Repeat this iasSelection</button>');
-        var img_pos = $(img).offset();
-        $('button#' + but_id)
-            .css({
-                position: 'absolute',
-                top: img_pos.top + iasSelection.y1 + iasSelection.height - $('button#' + but_id).height() * 1.5,
-                left: img_pos.left + iasSelection.x1 + iasSelection.width + 5
-            })
-            .data('selection', iasSelection);
+        selection.destroy();
     }
 
-    if(!this.shouldPreviewDataAutomatically){
+    //this was a bad idea. commented out in case we soon decide we want it back. 8/16/14 / JBM
+    // (This just means that very small selections appear on the page
+    // but don't actually ever get queried.)
+    // if (iasSelection.height * iasSelection.width < 5000) return; 
+    
+    // old repeat-lasso button code
+    // create button for repeating lassos, only if there are more pages after this
+    // if (this.pageCount > $(img).data('page')) {
+    //     var but_id = $(img).attr('id') + '-' + iasSelection.id;
+    //     $('body').append('<button class="btn repeat-lassos" id="'+but_id+'">Repeat this Selection</button>');
+    //     var img_pos = $(img).offset();
+    //     $('button#' + but_id)
+    //         .css({
+    //             position: 'absolute',
+    //             top: img_pos.top + iasSelection.y1 + iasSelection.height - $('button#' + but_id).height() * 1.5,
+    //             left: img_pos.left + iasSelection.x1 + iasSelection.width + 5
+    //         })
+    //         .data('selection', iasSelection);
+    // }
+
+    //TODO: fix opacity on the handles for the imgareaselect objects
+    if(this.model != this.model.collection.last()){                   // if this is not the last page
+      var but_id = this.model.get('number') + '-' + iasSelection.id;  //create a "Repeat this Selection" button
+      var button = $('<button class="btn repeat-lassos" id="'+but_id+'">Repeat this Selection</button>');
+      iasSelection.$el.append(button);
+    }
+
+    if(!Tabula.ui.options.get('multiselect_mode')){
         selection.queryForData();
     }
-    Tabula.ui.components['control_panel'].render(); // deal with buttons that need blurred out if there's zero selections, etc.
+    Tabula.ui.components['control_panel'].render(); // deals with buttons that need blurred out if there's zero selections, etc.
   },
 
   // iasSelection
@@ -560,53 +594,17 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     // remove repeat lassos button
     var but_id = $(img).attr('id') + '-' + iasSelection.id;
     $('button#' + but_id).remove();
+
     // find and remove the canceled selection from the collection of selections. (triggering remove events).
-    var selection = Tabula.ui.pdf_document.selections.findWhere({iasId: iasSelection.id, page_number: this.model.get('number')});
-    console.log("cancel2", selection.cid.toString(), selection.get('iasId'), selection.get('page_number').toString());
-    Tabula.ui.pdf_document.selections.remove(selection);
+    selectionId = (this.model.get('number') * 100000) + iasSelection.id;
+    var selection = Tabula.ui.pdf_document.selections.get(selectionId); 
+    removed_selection = Tabula.ui.pdf_document.selections.remove(selection);
 
     Tabula.ui.components['control_panel'].render(); // deal with buttons that need blurred out if there's zero selections, etc.
   },
 
   rotate_page: function(t) {
       alert('not implemented');
-  },
-
-  delete_page: function(t) {
-    //var page_thumbnail = self.document_view.ui.sidebar.thumbnail_views[page_number] //TODO: make this work, delete the next line.
-    var page_thumbnail = $(t.target).parent().parent();
-    //var page_number = this.page_number //TODO: make this work.
-    var page_number = page_thumbnail.data('page').split('-')[1];
-    var that = this;
-
-    if (!confirm('Delete page ' + page_number + '?')) return;
-
-    $.post('/pdf/' + PDF_ID + '/page/' + page_number,
-           { _method: 'delete' },
-           function () {
-
-              // delete the deleted page's imgAreaSelect object
-              this.ui.imgAreaSelects[page_number-1].remove();
-              delete this.ui.imgAreaSelects[page_number-1];
-
-              // move all the stuff for the following pages' imgAreaSelect objects up.
-              deleted_page_height = $('img.page-image#page-' + page_number).height();
-              deleted_page_top = $('img.page-image#page-' + page_number).offset()["top"];
-
-              $('img.page-image#page-' + page_number)
-                 .fadeOut(200,
-                          function() { $(this).remove(); });
-              page_thumbnail
-                 .fadeOut(200,
-                          function() { $(this).remove(); });
-
-              $('div.imgareaselect').each(function(){
-                if( $(this).offset()["top"] > (deleted_page_top + deleted_page_height) ){
-                  $(this).offset({top: $(this).offset()["top"] - deleted_page_height });
-                }
-              });
-               that.pageCount -= 1;
-           });
   },
 });
 
@@ -710,7 +708,6 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     $('.followyouaroundbar').affix({top: 70 });
 
     var numOfSelectionsOnPage = this.ui.totalSelections();
-    console.log('numOfSelectionsOnPage', numOfSelectionsOnPage);
     this.$el.html(this.template({
                   'if_multiselect_checked': this.ui.options.get('multiselect_mode') ? '' : 'checked="checked"',
                   'disable_clear_all_selections': numOfSelectionsOnPage <= 0 ? 'disabled="disabled"' : '' ,
@@ -725,36 +722,40 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 Tabula.SidebarView = Backbone.View.extend({ // only one
   tagName: 'ul',
   className: 'thumbnail-list',
-  thumbnail_views: [],
+  thumbnail_views: {},
   ui: null, // defined on initialize
   initialize: function(stuff){
     this.ui = stuff.ui;
-    _.bindAll(this, 'addThumbnail', 'removeThumbnail', 'changeThumbnail')
-    //TODO: the methods for handling these
+    _.bindAll(this, 'addSelectionThumbnail', 'removeSelectionThumbnail', 'changeSelectionThumbnail', 'removeThumbnail')
+
+    this.listenTo(this.collection, 'remove', this.removeThumbnail)
+
     this.listenTo(this.ui.pdf_document.selections, 'all', this.render);
-    this.listenTo(this.ui.pdf_document.selections, 'add', this.addThumbnail); // render a thumbnail selection
-    this.listenTo(this.ui.pdf_document.selections, 'change', this.changeThumbnail); // render a thumbnail selection
-    this.listenTo(this.ui.pdf_document.selections, 'remove', this.removeThumbnail); // remove a thumbnail selection
-    //TODO: this.listenTo(this.ui.pdf_document.selections, 'reset', this.addAll); // remove all, then render new ones
+    this.listenTo(this.ui.pdf_document.selections, 'add', this.addSelectionThumbnail); // render a thumbnail selection
+    this.listenTo(this.ui.pdf_document.selections, 'change', this.changeSelectionThumbnail); // render a thumbnail selection
+    this.listenTo(this.ui.pdf_document.selections, 'remove', this.removeSelectionThumbnail); // remove a thumbnail selection
   },
-  addThumbnail: function (new_selection){
-    //TODO: sometimes thumbnails get drawn on the wrong page!!
-    console.log(new_selection, new_selection.get('page_number'));
-    this.thumbnail_views[new_selection.get('page_number') - 1].createSelectionThumbnail(new_selection)
+  addSelectionThumbnail: function (new_selection){
+    this.thumbnail_views[new_selection.get('page_number')].createSelectionThumbnail(new_selection)
   },
-  changeThumbnail: function (selection){
-    this.thumbnail_views[selection.get('page_number') - 1].changeSelectionThumbnail(selection)
+  changeSelectionThumbnail: function (selection){
+    this.thumbnail_views[selection.get('page_number')].changeSelectionThumbnail(selection)
   },
-  removeThumbnail: function (selection){
-    console.log("removeThumbnail", selection);
-    this.thumbnail_views[selection.get('page_number') - 1].removeSelectionThumbnail(selection)
-  }
+  removeSelectionThumbnail: function (selection){
+    this.thumbnail_views[selection.get('page_number')].removeSelectionThumbnail(selection)
+  },
+
+  removeThumbnail: function(pageModel){
+    var thumbnail_view = this.thumbnail_views[pageModel.get('number')];
+    thumbnail_view.$el.fadeOut(200, function(){ thumbnail_view.remove() });
+  },
 });
 
 Tabula.ThumbnailView = Backbone.View.extend({ // one per page
   'events': {
     //TODO:  on load, create an empty div with class 'selection-show' to be the selection thumbnail.
     'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
+    'click i.delete-page': 'delete_page',
   },
   tagName: 'li',
   className: "thumbnail pdf-page",
@@ -770,16 +771,12 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     _.bindAll(this, 'render', 'createSelectionThumbnail', 'changeSelectionThumbnail', 'removeSelectionThumbnail');
   },
 
-  render: function(){
-    if(this.model.get('deleted')){
-         return;
-    }
+  delete_page: function(){
+    if (!confirm('Delete page ' + this.model.get('number') + '?')) return;
+    Tabula.ui.pdf_document.page_collection.remove( this.model );
+  },
 
-    // TODO: redundant?
-    // this.$el.attr('data-page', this.model.get('number'))
-    //         .attr('data-original-width', this.model.get('width'))
-    //         .attr('data-original-height', this.model.get('height'))
-    //         .attr('data-rotation', this.model.get('rotation'));
+  render: function(){
     this.$el.html(this.template({
                     'number': this.model.get('number'),
                     'image_url': this.model.get('image_url')
@@ -814,7 +811,6 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
   },
 
   removeSelectionThumbnail: function(selection){
-    console.log('remove', selection);
     var $sshow = this.$el.find('#selection-show-' + selection.cid);
     $sshow.remove();
   }
@@ -848,6 +844,7 @@ Tabula.UI = Backbone.View.extend({
       });
 
       this.options = new Tabula.Options();
+      this.listenTo(this.options, 'change', this.options.write);
 
       this.createTour();
 
@@ -855,11 +852,29 @@ Tabula.UI = Backbone.View.extend({
       this.listenTo(this.pdf_document.page_collection, 'add', this.addOne);
       this.listenTo(this.pdf_document.page_collection, 'reset', this.addAll);
 
-      this.components['document_view'] = new Tabula.DocumentView({ui: this}); //creates page_views
+      this.listenTo(this.pdf_document.page_collection, 'remove', this.removePage);
+
+
+
+      this.components['document_view'] = new Tabula.DocumentView({ui: this, collection: this.pdf_document.page_collection}); //creates page_views
       this.components['control_panel'] = new Tabula.ControlPanelView({ui: this});
-      this.components['sidebar_view'] = new Tabula.SidebarView({ui: this});
+      this.components['sidebar_view'] = new Tabula.SidebarView({ui: this, collection: this.pdf_document.page_collection});
 
       this.pdf_document.page_collection.fetch();
+    },
+
+    removePage: function(removedPageModel){
+      $.post('/pdf/' + PDF_ID + '/page/' + removedPageModel.get('number'),
+           { _method: 'delete' },
+           function () {
+               Tabula.ui.pageCount -= 1;
+           });
+
+      // removing the views is handled by the views themselves.
+
+      //remove selections
+      var selections = this.pdf_document.selections.where({page_number: removedPageModel.get('number')});
+      this.pdf_document.selections.remove(selections);
     },
 
     createDataView: function(){
@@ -875,10 +890,13 @@ Tabula.UI = Backbone.View.extend({
     },
 
     addOne: function(page) {
+      if(page.get('deleted')){
+        return;
+      }
       var page_view = new Tabula.PageView({model: page, collection: this.pdf_document.page_collection});
       var thumbnail_view = new Tabula.ThumbnailView({model: page, collection: this.pdf_document.page_collection})
-      this.components['document_view'].page_views.push(page_view);
-      this.components['sidebar_view'].thumbnail_views.push(thumbnail_view);
+      this.components['document_view'].page_views[ page.get('number') ] =  page_view;
+      this.components['sidebar_view'].thumbnail_views[ page.get('number') ] = thumbnail_view;
       this.components['document_view'].$el.append(page_view.render().el); // is this a good idea? TODO: 
       this.components['sidebar_view'].$el.append(thumbnail_view.render().el); // is this a good idea? TODO: 
     },
@@ -1162,6 +1180,8 @@ Tabula.UI = Backbone.View.extend({
 
 $(function () {
   Tabula.ui = new Tabula.UI();
+
+  //TODO: event delegate the .repeat-lasso events;
 });
 
 

@@ -172,6 +172,13 @@
     top: 10px !important;
   }
 
+/* selections */
+.repeat-lassos.btn {
+  position: absolute;
+  right: -165px;
+  bottom: -35px;
+}
+
 /* front page */
 
   ul#uploadedfiles {
