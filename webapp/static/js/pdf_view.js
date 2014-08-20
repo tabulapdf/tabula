@@ -109,7 +109,6 @@ Tabula.Options = Backbone.Model.extend({
     this.set('extraction_method', null); // don't write this one to localStorage
     this.set('show_advanced_options', localStorage.getItem("tabula-show-advanced-options")  !== "false");
     this.set('show-directions', localStorage.getItem("tabula-show-directions")  !== "false");
-    console.log("optoins", this);
   },
   write: function(){
     localStorage.setItem("tabula-multiselect-mode", this.get('multiselect_mode'));
@@ -140,6 +139,22 @@ Tabula.Selections = Backbone.Collection.extend({
     this.url = '/pdfs/' + PDF_ID + '/tables.json?_=' + Math.round(+new Date()).toString();
     _.bindAll(this, 'updateOrCreateByIasId');
   },
+
+  parse: function(response){
+    // a JSON list of pages, which is just a list of coords
+    // var tables = [];
+    // _(response).each(function(page_tables, listIndex){
+    //   var pageIndex = listIndex + 1;
+    //   _(page_tables).each(function(table_coords){
+    //     var selection = {};
+    //     selection[page_number] = pageIndex;
+    //     //need imageWidth
+    //     tables.push(selection);
+    //   });
+    //   return
+    // });
+    
+  }
 
   updateOrCreateByIasId: function(iasSelection, pageNumber, imageWidth){
     var selectionId = pageNumber * 100000 + iasSelection.id;
@@ -662,7 +677,17 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     var list_of_all_coords = Tabula.ui.pdf_document.selections.invoke("toCoords"); 
                                                             // map(function(selection){ return selection.toCoords(); };
 
-                    //TODO: make global extraction method selector for Query All Data -- or make it selection-by-selection
+    //TODO: make global extraction method selector for Query All Data -- or make it selection-by-selection
+    // actually, how to handle extraction method is a bit of an open question.
+    // should we support in the UI extraction methods per selection?
+    // if so, what does the modal show if its showing results from more than one selection? 
+    // maybe it only shows them if they match?
+    // or not at all ever?
+    // but then we need to make it clearer in the UI that you are "editing" a selection.
+    // which will require different reactions with multiselect mode:
+    // when you finish a query, then still pop up its data.
+    // when you click or move an already-selected query, then you're "editing" it?
+    // hmm.
     Tabula.ui.query = new Tabula.Query({list_of_coords: list_of_all_coords, extraction_method: 'guess'}); 
     Tabula.ui.createDataView();
     Tabula.ui.query.doQuery();
@@ -824,6 +849,7 @@ Tabula.UI = Backbone.View.extend({
       this.components['sidebar_view'] = new Tabula.SidebarView({ui: this, collection: this.pdf_document.page_collection});
 
       this.pdf_document.page_collection.fetch();
+      this.pdf_document.selections.fetch(); // tables, maybe.
     },
 
     removePage: function(removedPageModel){
