@@ -159,7 +159,7 @@ Tabula.Selections = Backbone.Collection.extend({
     //   return
     // });
     return []; // no matter what (parsed tables.json stuff here goes to the imgAreaSelects, which create the selections)
-  }
+  },
 
   updateOrCreateByIasId: function(iasSelection, pageNumber, imageWidth){
     var selectionId = pageNumber * 100000 + iasSelection.id;
