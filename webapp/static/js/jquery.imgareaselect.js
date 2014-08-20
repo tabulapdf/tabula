@@ -201,7 +201,7 @@ $.imgAreaSelect = function (img, options) {
         this.$closeBtn.css({ zIndex: zIndex + 3 || 3 });
         this.$area.add(this.$border).css({ position: 'absolute', fontSize: 0 });
 
-        $parent.append(this.$closeBtn);
+        this.$box.append(this.$closeBtn);
         this.$box.append(this.$area.add(this.$border).add(this.$areaOpera)).append(this.$handles);
     }; //ends the object
 
@@ -259,7 +259,12 @@ $.imgAreaSelect = function (img, options) {
          */
         this.$area.add(this.$border).add(this.$handles).css({ left: 0, top: 0 });
 
-        this.$closeBtn.css({left: left + this.selection.x2 + 4, top: top + this.selection.y1 - 20});
+        this.$closeBtn.css({ right: '-10px',
+                             top: '-17px',
+                             position: 'absolute', 
+                             'text-align': 'right',
+                            });
+
 
         /* Set border dimensions */
         this.$border
