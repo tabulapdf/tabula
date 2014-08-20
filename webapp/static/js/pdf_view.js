@@ -72,10 +72,10 @@ Tabula.Selection = Backbone.Model.extend({
     Tabula.ui.query.doQuery();
   },
 
-  repeatLassos: function(e) {
-    this.pdf_document.page_collection.each(function(page){
-      if(this.get('page_number') < page.get('page_number')){          // for each page after this one,
-        imgAreaSelectAPIObj = this.ui.imgAreaSelects[page.get('page_number') - 1]
+  repeatLassos: function() {
+    Tabula.ui.pdf_document.page_collection.each(_.bind(function(page){
+      if(this.get('page_number') < page.get('number')){          // for each page after this one,
+        imgAreaSelectAPIObj = Tabula.ui.imgAreaSelects[page.get('number')]
         if (imgAreaSelectAPIObj === false) return;
 
         imgAreaSelectAPIObj.cancelSelections();                      // notify the imgAreaSelect of the new selection
@@ -87,13 +87,13 @@ Tabula.Selection = Backbone.Model.extend({
         imgAreaSelectAPIObj.update();
 
         new_selection = this.clone();                                // and create a new Selection.
-        new_selection.set('page_number', page.get('page_number'));
-        new_selection.set('id', page.get('page_number') * 100000 + iasSelection.id);
-        new_selection.id = page.get('page_number') * 100000 + iasSelection.id;
+        new_selection.set('page_number', page.get('number'));
+        new_selection.set('id', page.get('number') * 100000 + iasSelection.id);
+        new_selection.id = page.get('number') * 100000 + iasSelection.id;
         this.collection.add(new_selection);
         /* which causes thumbnails to be created, Download All button to know about these selections. */
       }
-    });
+    }, this));
 
     //TODO: notify UI to remove each repeated selection's Repeat Lassos button.
     // Old code for that: 
@@ -259,6 +259,7 @@ Tabula.DataView = Backbone.View.extend({  //only one, is the data modal.
   },
 
   renderUnlessMultiSelect: function(){
+    //TODO: loading modal isn't properly loaded when a search is started.
     console.log('multiselectMode', Tabula.ui.options.get('multiselect_mode'));
     if(!Tabula.ui.options.get('multiselect_mode')){
       this.render();
@@ -449,18 +450,21 @@ Tabula.DocumentView = Backbone.View.extend({ //only one
     function drawDetectedTablesIfAllAreLoaded(){
       selectsNotYetLoaded--;
       if(selectsNotYetLoaded == 0){
-        for(var imageIndex=0; imageIndex < this.ui.imgAreaSelects.length; imageIndex++){
+        for(var imageIndex=0; imageIndex < _(this.ui.imgAreaSelects).size(); imageIndex++){
           var pageIndex = imageIndex + 1;
-          if(this.ui.imgAreaSelects[imageIndex]){ //not undefined
+          if(this.ui.imgAreaSelects[pageIndex]){ //not undefined
             this.drawDetectedTables( $('img#page-' + pageIndex), tableGuesses );
           }
         }
       }
     }
 
-    this.ui.imgAreaSelects = _(this.page_collection).map(function(page_view, i){
-      return page_view.createImgareaselect(null, drawDetectedTablesIfAllAreLoaded);
-    });
+    console.log("what Jeremy thinks is dead code is actually getting executed.")
+    this.ui.imgAreaSelects = _.extend({}, _(this.page_collection).map(function(page_view, i){
+      var ret = {};
+      ret[page_view.model.get('number')] = page_view.createImgareaselect(null, drawDetectedTablesIfAllAreLoaded)
+      return ret;
+    }) );
   }
 
 });
@@ -499,7 +503,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     }
 
 
-    Tabula.ui.imgAreaSelects.push( this.createImgareaselect() ); //TODO: is this gross?
+    Tabula.ui.imgAreaSelects[this.model.get('number')] = this.createImgareaselect() ;
     return this;
   },
 
@@ -580,6 +584,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     if(this.model != this.model.collection.last()){                   // if this is not the last page
       var but_id = this.model.get('number') + '-' + iasSelection.id;  //create a "Repeat this Selection" button
       var button = $('<button class="btn repeat-lassos" id="'+but_id+'">Repeat this Selection</button>');
+      button.data("selectionId", (this.model.get('number') * 100000) + iasSelection.id )
       iasSelection.$el.append(button);
     }
 
@@ -596,7 +601,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     $('button#' + but_id).remove();
 
     // find and remove the canceled selection from the collection of selections. (triggering remove events).
-    selectionId = (this.model.get('number') * 100000) + iasSelection.id;
+    var selectionId = (this.model.get('number') * 100000) + iasSelection.id;
     var selection = Tabula.ui.pdf_document.selections.get(selectionId); 
     removed_selection = Tabula.ui.pdf_document.selections.remove(selection);
 
@@ -827,7 +832,7 @@ Tabula.UI = Backbone.View.extend({
     lastQuery: [{}],
     pageCount: undefined,
     components: {},
-    imgAreaSelects: [],
+    imgAreaSelects: {},
 
     global_options: null,
 
@@ -910,9 +915,9 @@ Tabula.UI = Backbone.View.extend({
         return 0;
       }
 
-      return _.reduce(this.imgAreaSelects, function(memo, s){
-        if(s){
-          return memo + s.getSelections().length;
+      return _.reduce(this.imgAreaSelects, function(memo, imgAreaSelect, pageNum){
+        if(imgAreaSelect){
+          return memo + imgAreaSelect.getSelections().length;
         }else{
           return memo;
         }
@@ -1124,7 +1129,7 @@ Tabula.UI = Backbone.View.extend({
       //$img = $(e);
       var imageIndex = $img.data('page');
       arrayIndex = imageIndex - 1;
-      var imgAreaSelectAPIObj = this.ui.imgAreaSelects[arrayIndex];
+      var imgAreaSelectAPIObj = this.ui.imgAreaSelects[imageIndex];
 
       var thumb_width = $img.width();
       var thumb_height = $img.height();
@@ -1181,7 +1186,13 @@ Tabula.UI = Backbone.View.extend({
 $(function () {
   Tabula.ui = new Tabula.UI();
 
-  //TODO: event delegate the .repeat-lasso events;
+  $('body'). // imgareaselect selections are fixed positioned in CSS, just attached to the body in DOM
+    on("click", ".imgareaselect-box .repeat-lassos", function(e){
+      var selectionId = $(e.currentTarget).data('selectionId');
+      var selection = Tabula.ui.pdf_document.selections.get(selectionId);
+      console.log("evnet!", selection)
+      selection.repeatLassos();
+    });
 });
 
 
