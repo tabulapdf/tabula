@@ -73,6 +73,7 @@ Tabula.Selection = Backbone.Model.extend({
         y2: this.get('y2') * scale,
         page: this.get('page_number'),
         extraction_method: this.get('extractionMethod') || 'guess',
+        selection_id: this.id
     };
     return selection_coords;
   },
@@ -195,15 +196,18 @@ Tabula.Query = Backbone.Model.extend({
         success: _.bind(function(resp) {
           this.set('data', resp);
 
-          // this only happens on the first select, when we don't know what the extraction method is yet
-          // (because it's set by the heuristic).
-          // TODO: only set this on the modal, not globally
-          // TODO: only do this if only one coord_set is in this query.
-          // TODO: let radio buttons all be unset.
-          Tabula.ui.options.set('extraction_method', resp[0]["extraction_method"]);
+          // this only needs to happen on the first select, when we don't know what the extraction method is yet
+          // (because it's set by the heuristic on the server-side).
+          // TODO: only execute it when one of the list_of_coords has guess or undefined as its extraction_method
+          _(_.zip(this.get('list_of_coords'), resp)).each(function(stuff, i){
+            var coord_set = stuff[0];
+            var resp_item = stuff[1];
+            Tabula.ui.pdf_document.selections.get(coord_set.selection_id).
+                set('extraction_method', resp_item["extraction_method"]);
+            coord_set["extraction_method"] = resp_item["extraction_method"];
+          });
 
           this.trigger("tabula:query-success");
-          console.log('query-success');
 
           if (options !== undefined && _.isFunction(options.success)){
             Tabula.ui.options.success(resp);
@@ -241,10 +245,10 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
   extractionMethod: "guess",
 
   initialize: function(stuff){
-    _.bindAll(this, 'render', 'renderLoading', 'renderFooter', 'renderTable', 'showAdvancedOptions','hideAdvancedOptions', 'dropDownOrUp', 'queryWithToggledExtractionMethod', 'trash', 'hideAndTrash', 'renderUnlessMultiSelect');
+    _.bindAll(this, 'render', 'renderLoading', 'renderFooter', 'renderTable', 'showAdvancedOptions','hideAdvancedOptions', 'dropDownOrUp', 'queryWithToggledExtractionMethod', 'trash', 'hideAndTrash');
     this.ui = stuff.ui;
-    this.listenTo(this.model, 'tabula:query-start', this.renderUnlessMultiSelect);
-    this.listenTo(this.model, 'tabula:query-success', this.renderUnlessMultiSelect);
+    this.listenTo(this.model, 'tabula:query-start', this.render);
+    this.listenTo(this.model, 'tabula:query-success', this.render);
     this.$modalBody = this.$el.find('.modal-body');
   },
 
@@ -267,14 +271,6 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
     return this;
   },
 
-  renderUnlessMultiSelect: function(){
-    //TODO: loading modal isn't properly loaded when a search is started.
-    // console.log('multiselectMode', Tabula.ui.options.get('multiselect_mode'));
-    // if(!Tabula.ui.options.get('multiselect_mode')){
-      this.render();
-    // }
-  },
-
   render: function(){
     this.$el.modal('show'); //bootstrap stuff
 
@@ -292,8 +288,11 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
   },
 
   renderFooter: function(){
+    var uniq_extraction_methods = _.uniq(_(this.model.get('list_of_coords')).pluck('extraction_method'));
+    console.log(uniq_extraction_methods, this.model.get('list_of_coords'), _(this.model.get('list_of_coords')).pluck('extraction_method'));
+
     templateOptions = {
-      extractionMethodDisabled: _.isNull(this.model.data) ? 'disabled="disabled"' : '',
+      extractionMethodDisabled: _.isNull(this.model.data) || uniq_extraction_methods.length > 1 ? 'disabled="disabled"' : '',
       pdf_id: PDF_ID,
       list_of_coords: JSON.stringify(this.model.get('list_of_coords')),
       copyDisabled: Tabula.ui.flash_borked ? 'disabled="disabled" data-toggle="tooltip" title="'+Tabula.ui.flash_borken_message+'"' : '',
@@ -309,7 +308,11 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
     }
 
     this.$el.find(".modal-footer-container").html(this.template(templateOptions));
-    this.$el.find('#' + this.ui.options.get('extraction_method') + '-method-btn').button('toggle');
+
+    // this has to happen after the footer is already in the page, for bootstrap reasons.
+    if (uniq_extraction_methods.length == 1){
+      this.$el.find('#' + uniq_extraction_methods[0] + '-method-btn').button('toggle');
+    }
   },
 
   renderTable: function(){
@@ -404,14 +407,17 @@ Tabula.DocumentView = Backbone.View.extend({ //only one
   ui: null, //added on create
   page_views: {},
 
-  /* when the Directions area is closed, the pages themselves move up, because they're just normally positioned.
-   * The selections on those images, though, do not, and need to be moved up separately.
+  /* when the Directions area is closed, the pages themselves move up, because they're just static positioned.
+   * The selections on those images, though, do not move up, and need to be moved up separately, since they're fixed.
    */
   // TODO: also move up the repeat lasso button (or change the HTML structure so that this method does that)
   moveSelectionsUp: function(){
-    $('div.imgareaselect').each(function(){ 
-      $(this).offset({top: $(this).offset()["top"] - $(directionsRow).height() }); 
+    var directionsRow = $('#directionsRow')
+    var height = directionsRow.height()
+    $('div.imgareaselect-box').each(function(){
+      $(this).offset({top: $(this).offset()["top"] - height }); 
     });
+    directionsRow.remove();
   },
 
   initialize: function(stuff){
@@ -849,7 +855,7 @@ Tabula.UI = Backbone.View.extend({
 
 
 
-      this.components['document_view'] = new Tabula.DocumentView({ui: this, collection: this.pdf_document.page_collection}); //creates page_views
+      this.components['document_view'] = new Tabula.DocumentView({el: '#main-container' , ui: this, collection: this.pdf_document.page_collection}); //creates page_views
       this.components['control_panel'] = new Tabula.ControlPanelView({ui: this});
       this.components['sidebar_view'] = new Tabula.SidebarView({ui: this, collection: this.pdf_document.page_collection});
 
@@ -913,7 +919,7 @@ Tabula.UI = Backbone.View.extend({
     },
 
     render : function(){
-      $('#main-container').append(this.components['document_view'].render().el);
+      this.components['document_view'].render();
       $('#control-panel-container').append(this.components['control_panel'].render().el);
       $('.sidebar-nav.well').append(this.components['sidebar_view'].render().el);
 
