@@ -141,6 +141,11 @@ Tabula.Selections = Backbone.Collection.extend({
   },
 
   parse: function(response){
+
+    // Plan of attack for table detection.
+    // Parse doesn't create the selections directly
+    // it instead sends the details to the imgAreaSelects via drawDetectedTables
+
     // a JSON list of pages, which is just a list of coords
     // var tables = [];
     // _(response).each(function(page_tables, listIndex){
@@ -153,7 +158,7 @@ Tabula.Selections = Backbone.Collection.extend({
     //   });
     //   return
     // });
-    
+    return []; // no matter what (parsed tables.json stuff here goes to the imgAreaSelects, which create the selections)
   }
 
   updateOrCreateByIasId: function(iasSelection, pageNumber, imageWidth){
@@ -298,7 +303,6 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
 
   renderFooter: function(){
     var uniq_extraction_methods = _.uniq(_(this.model.get('list_of_coords')).pluck('extraction_method'));
-    console.log(uniq_extraction_methods, this.model.get('list_of_coords'), _(this.model.get('list_of_coords')).pluck('extraction_method'));
 
     templateOptions = {
       extractionMethodDisabled: _.isNull(this.model.data) || uniq_extraction_methods.length > 1 ? 'disabled="disabled"' : '',
@@ -849,7 +853,7 @@ Tabula.UI = Backbone.View.extend({
       this.components['sidebar_view'] = new Tabula.SidebarView({ui: this, collection: this.pdf_document.page_collection});
 
       this.pdf_document.page_collection.fetch();
-      this.pdf_document.selections.fetch(); // tables, maybe.
+      //this.pdf_document.selections.fetch(); // TODO: pre-detected tables, maybe.
     },
 
     removePage: function(removedPageModel){
