@@ -57,7 +57,6 @@ Tabula.Selection = Backbone.Model.extend({
 
   toCoords: function(){
     var page = Tabula.ui.pdf_document.page_collection.at(this.get('page_number') - 1);
-    //TODO: break out query handling into a new method.
     var imageWidth = this.get('imageWidth');
 
     var pdf_width = page.get('width'); 
@@ -100,12 +99,6 @@ Tabula.Selection = Backbone.Model.extend({
         /* which causes thumbnails to be created, Download All button to know about these selections. */
       }
     }, this));
-
-    //TODO: notify UI to remove each repeated selection's Repeat Lassos button.
-    // Old code for that: 
-    //   //remove the button
-    //   $(e.currentTarget).fadeOut(500, function() { $(this).remove(); });
-
   },
 });
 
@@ -402,7 +395,7 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
 
 Tabula.DocumentView = Backbone.View.extend({ //only one
   events: {
-    'click button.close#directions' : 'moveSelectionsUp',
+    'click button.close#directions' : 'closeDirections',
   },
   ui: null, //added on create
   page_views: {},
@@ -410,8 +403,9 @@ Tabula.DocumentView = Backbone.View.extend({ //only one
   /* when the Directions area is closed, the pages themselves move up, because they're just static positioned.
    * The selections on those images, though, do not move up, and need to be moved up separately, since they're fixed.
    */
-  // TODO: also move up the repeat lasso button (or change the HTML structure so that this method does that)
-  moveSelectionsUp: function(){
+  closeDirections: function(){
+    this.ui.options.set('show-directions', false);
+
     var directionsRow = $('#directionsRow')
     var height = directionsRow.height()
     $('div.imgareaselect-box').each(function(){
@@ -452,6 +446,9 @@ Tabula.DocumentView = Backbone.View.extend({ //only one
   },
 
   render: function(){
+    if(this.ui.options.get('show-directions') === false){
+      this.$el.find('#directions').remove();
+    }
     return this;
   },
 
@@ -592,7 +589,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     //         .data('selection', iasSelection);
     // }
 
-    //TODO: fix opacity on the handles for the imgareaselect objects
     if(this.model != this.model.collection.last()){                   // if this is not the last page
       var but_id = this.model.get('number') + '-' + iasSelection.id;  //create a "Repeat this Selection" button
       var button = $('<button class="btn repeat-lassos" id="'+but_id+'">Repeat this Selection</button>');
@@ -627,16 +623,8 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
 
 /* I'm not sure having a SelectionView makes sense. But, 
- * TODO: ssomething needs to manage the repeat lasso button
- * AND, something should create the selection thumbnail (without managing it in three places)
+ * TODO: ssomething needs to manage the repeat lasso button other than the body element.
  */
-// Tabula.SelectionView = Backbone.View.extend({ // multiple per page of the PDF
-//   events: {
-//     'click button.repeat-lassos': 'repeatLassos',
-//   }
-//   page_view: null, //added on create. //TODO: do this.
-
-// });
 
 Tabula.ControlPanelView = Backbone.View.extend({ // only one
   events: {
@@ -657,6 +645,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     this.render();
   },
 
+  /* in case there's a PDF with a complex format that's repeated on multiple pages */
   repeatFirstPageLassos: function(){
     alert('not yet implemented');
     return;
@@ -688,10 +677,6 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     _.bindAll(this, 'updateShouldPreviewDataAutomaticallyButton', 'query_all_data', 'render');
   },
 
-
-  /*TODO: get the parent, get the document_view, get all of its children, get all of their imgAreaSelects
-   * then loop over all of them.
-   */
   query_all_data : function(){
     var list_of_all_coords = Tabula.ui.pdf_document.selections.invoke("toCoords"); 
                                                             // map(function(selection){ return selection.toCoords(); };
@@ -752,7 +737,7 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
 
 Tabula.ThumbnailView = Backbone.View.extend({ // one per page
   'events': {
-    //TODO:  on load, create an empty div with class 'selection-show' to be the selection thumbnail.
+    // on load, create an empty div with class 'selection-show' to be the selection thumbnail.
     'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
     'click i.delete-page': 'delete_page',
   },
@@ -832,8 +817,6 @@ Tabula.UI = Backbone.View.extend({
 
     model: Tabula.Document,
 
-    //TODO: add the little Help box above the pages.
-
     initialize: function(){
       _.bindAll(this, 'render', 'hasPredetectedTables', 'addOne', 'addAll', 'totalSelections',
         'createDataView','trashDataView');
@@ -896,8 +879,8 @@ Tabula.UI = Backbone.View.extend({
       var thumbnail_view = new Tabula.ThumbnailView({model: page, collection: this.pdf_document.page_collection})
       this.components['document_view'].page_views[ page.get('number') ] =  page_view;
       this.components['sidebar_view'].thumbnail_views[ page.get('number') ] = thumbnail_view;
-      this.components['document_view'].$el.append(page_view.render().el); // is this a good idea? TODO: 
-      this.components['sidebar_view'].$el.append(thumbnail_view.render().el); // is this a good idea? TODO: 
+      this.components['document_view'].$el.append(page_view.render().el); 
+      this.components['sidebar_view'].$el.append(thumbnail_view.render().el);
     },
 
     addAll: function() {
@@ -925,17 +908,8 @@ Tabula.UI = Backbone.View.extend({
 
       $('.has-tooltip').tooltip();
 
-      //TODO: render, but hide, the dataview too.
-
-      query_parameters = {};
-
       this.pageCount = this.pdf_document.page_collection.size();
 
-      /* TODO: do this stuff somewhere
-       * this.setAdvancedOptionsShown();
-       */
-
-      // render out the components, as necessary
       return this;
     },
 
