@@ -81,7 +81,7 @@
       <div class="modal-footer">
         <div id="basic-options" class="modal-footer-row" style="width: 100%;">
           <span class="modal-footer-row-label">
-          <label class="has-tooltip show-advanced-options toggle-advanced-options" style="display: inline;" data-placement="right" data-toggle="tooltip" title="Show Advanced Options"><i class="icon-wrench"></i> Need More Options?</label>
+          <label class="has-tooltip show-advanced-options" data-placement="right" data-toggle="tooltip" title="Show Advanced Options"><i class="icon-wrench"></i> Need More Options?</label>
           
           </span>
           <!-- TODO: just a copy-to-clipboard-as-tsv option and download-as-csv -->
@@ -95,13 +95,13 @@
         <div id="advanced-options" class="modal-footer-row" style="width: 100%;">
           <!-- TODO: extraction method selector, download as... button, tabula-extractor hooks -->
           <span class="modal-footer-row-label">
-            <label class="has-tooltip hide-advanced-options toggle-advanced-options" style="display: inline;" data-placement="right" data-toggle="tooltip" title="Hide Advanced Options"><i class="icon-remove"></i> Too Many Options? </label>
+            <label class="has-tooltip hide-advanced-options" style="display: inline;" data-placement="right" data-toggle="tooltip" title="Hide Advanced Options"><i class="icon-remove"></i> Too Many Options? </label>
             
           </span>
           <label class="has-tooltip" style="display: inline;" for="extraction-method-btns" data-placement="left" data-toggle="tooltip" title="Advanced Users: Tabula has two different extraction methods for extracting data from different kinds of tables. It tries to select the right one automatically, but sometimes chooses incorrectly. Try switching the method if the extracted data doesn't come out right."><i class="icon-question-sign" ></i>Extraction Method: </label>
           <div class="btn-group" data-toggle="buttons-radio" id="extraction-method-btns" {{extractionMethodDisabled}} >
-            <button type="button" class="btn btn-warning extraction-method-btn" id="original-method-btn">Original</button>
-            <button type="button" class="btn btn-warning extraction-method-btn" id="spreadsheet-method-btn">Spreadsheet</button>
+            <button type="button" class="btn btn-warning extraction-method-btn" data-method="original" id="original-method-btn">Original</button>
+            <button type="button" class="btn btn-warning extraction-method-btn" data-method="spreadsheet" id="spreadsheet-method-btn">Spreadsheet</button>
           </div>
 
           <div class="btn-group">
