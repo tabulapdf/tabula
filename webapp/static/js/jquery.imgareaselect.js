@@ -265,7 +265,6 @@ $.imgAreaSelect = function (img, options) {
                              'text-align': 'right',
                             });
 
-
         /* Set border dimensions */
         this.$border
             .width(max(this.w - this.$border.outerWidth() + this.$border.innerWidth(), 0))
