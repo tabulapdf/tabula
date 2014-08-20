@@ -45,10 +45,17 @@ Tabula.Selection = Backbone.Model.extend({
   pdf_id: PDF_ID,
 
   initialize: function(){
-    _.bindAll(this, 'queryForData', 'repeatLassos')
+    _.bindAll(this, 'queryForData', 'repeatLassos', 'toCoords')
   },
 
   queryForData: function(){
+    var selection_coords = this.toCoords();
+    Tabula.ui.query = new Tabula.Query({list_of_coords: [selection_coords], extraction_method: this.get('extractionMethod')}); 
+    Tabula.ui.createDataView();
+    Tabula.ui.query.doQuery();
+  },
+
+  toCoords: function(){
     var page = Tabula.ui.pdf_document.page_collection.at(this.get('page_number') - 1);
     //TODO: break out query handling into a new method.
     var imageWidth = this.get('imageWidth');
@@ -67,9 +74,7 @@ Tabula.Selection = Backbone.Model.extend({
         page: this.get('page_number'),
         extraction_method: this.get('extractionMethod') || 'guess',
     };
-    Tabula.ui.query = new Tabula.Query({list_of_coords: [selection_coords], selection: this.get('extractionMethod')}); 
-    Tabula.ui.createDataView();
-    Tabula.ui.query.doQuery();
+    return selection_coords;
   },
 
   repeatLassos: function() {
@@ -153,7 +158,6 @@ Tabula.Selections = Backbone.Collection.extend({
                                       'extractionMethod': Tabula.ui.options.extraction_method,
                                       'pdf_document': this.pdf_document}, 
                                       _.omit(iasSelection, 'id', '$el'))
-        console.log('create', iasSelection);
         selection = new Tabula.Selection(new_selection_args);
         this.add(selection);
       }
@@ -173,13 +177,14 @@ Tabula.Query = Backbone.Model.extend({
 
   initialize: function(){
     // should be inited with list_of_coords
-    _.bindAll(this, 'doQuery');
+    _.bindAll(this, 'doQuery', 'setExtractionMethod');
   },
 
   doQuery: function(options) {
     this.query_data = {
       'coords': JSON.stringify(this.get('list_of_coords')),
-      'extraction_method': Tabula.ui.options.get('extraction_method')
+      // ignored by backend 'extraction_method': Tabula.ui.options.get('extraction_method')
+      // because each element of list_of_coords has its own extraction_method key/value
     }
 
     this.trigger("tabula:query-start");
@@ -189,7 +194,6 @@ Tabula.Query = Backbone.Model.extend({
         data: this.query_data,
         success: _.bind(function(resp) {
           this.set('data', resp);
-          this.trigger("tabula:query-success");
 
           // this only happens on the first select, when we don't know what the extraction method is yet
           // (because it's set by the heuristic).
@@ -197,6 +201,9 @@ Tabula.Query = Backbone.Model.extend({
           // TODO: only do this if only one coord_set is in this query.
           // TODO: let radio buttons all be unset.
           Tabula.ui.options.set('extraction_method', resp[0]["extraction_method"]);
+
+          this.trigger("tabula:query-success");
+          console.log('query-success');
 
           if (options !== undefined && _.isFunction(options.success)){
             Tabula.ui.options.success(resp);
@@ -212,16 +219,18 @@ Tabula.Query = Backbone.Model.extend({
         }, this),
       });
   },
+  setExtractionMethod: function(extractionMethod){
+    _(this.get('list_of_coords')).each(function(coord_set){ coord_set['extraction_method'] = extractionMethod});
+  }
 })
 
-Tabula.DataView = Backbone.View.extend({  //only one, is the data modal.
+Tabula.DataView = Backbone.View.extend({  //one per query object.
   el: '#data-modal',
   $loading: $('#loading'),
   template: Handlebars.compile($('#templates #modal-footer-template').html()), 
   events: {
     'click .download-dropdown': 'dropDownOrUp',
     'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod',
-    'click .toggle-advanced-options': 'toggleAdvancedOptionsShown',
     'click .show-advanced-options': 'showAdvancedOptions',
     'click .hide-advanced-options': 'hideAdvancedOptions',
     'hidden': 'trash'
@@ -232,7 +241,7 @@ Tabula.DataView = Backbone.View.extend({  //only one, is the data modal.
   extractionMethod: "guess",
 
   initialize: function(stuff){
-    _.bindAll(this, 'render', 'renderLoading', 'renderFooter', 'renderTable', 'showAdvancedOptions','hideAdvancedOptions', 'dropDownOrUp', 'queryWithToggledExtractionMethod', 'getOppositeExtractionMethod', 'trash', 'hideAndTrash', 'renderUnlessMultiSelect');
+    _.bindAll(this, 'render', 'renderLoading', 'renderFooter', 'renderTable', 'showAdvancedOptions','hideAdvancedOptions', 'dropDownOrUp', 'queryWithToggledExtractionMethod', 'trash', 'hideAndTrash', 'renderUnlessMultiSelect');
     this.ui = stuff.ui;
     this.listenTo(this.model, 'tabula:query-start', this.renderUnlessMultiSelect);
     this.listenTo(this.model, 'tabula:query-success', this.renderUnlessMultiSelect);
@@ -260,10 +269,10 @@ Tabula.DataView = Backbone.View.extend({  //only one, is the data modal.
 
   renderUnlessMultiSelect: function(){
     //TODO: loading modal isn't properly loaded when a search is started.
-    console.log('multiselectMode', Tabula.ui.options.get('multiselect_mode'));
-    if(!Tabula.ui.options.get('multiselect_mode')){
+    // console.log('multiselectMode', Tabula.ui.options.get('multiselect_mode'));
+    // if(!Tabula.ui.options.get('multiselect_mode')){
       this.render();
-    }
+    // }
   },
 
   render: function(){
@@ -289,14 +298,18 @@ Tabula.DataView = Backbone.View.extend({  //only one, is the data modal.
       list_of_coords: JSON.stringify(this.model.get('list_of_coords')),
       copyDisabled: Tabula.ui.flash_borked ? 'disabled="disabled" data-toggle="tooltip" title="'+Tabula.ui.flash_borken_message+'"' : '',
     }
-    //TODO: on create, show/hide advanced options area as necessary from this.ui.options
+
+    //on create, show/hide advanced options area as necessary from this.ui.options
+    if(this.ui.options.get('show_advanced_options')){
+      this.$el.addClass("advanced-options-shown");
+    }
 
     if (Tabula.ui.flash_borked){
       this.$el.find('#copy-csv-to-clipboard').addClass('has-tooltip');
     }
 
-    $('#' + this.ui.options.get('extraction_method') + '-method-btn').button('toggle');
     this.$el.find(".modal-footer-container").html(this.template(templateOptions));
+    this.$el.find('#' + this.ui.options.get('extraction_method') + '-method-btn').button('toggle');
   },
 
   renderTable: function(){
@@ -315,7 +328,11 @@ Tabula.DataView = Backbone.View.extend({  //only one, is the data modal.
     this.$modalBody.html(tableHTML);
 
     if(!Tabula.ui.client){
-      Tabula.ui.client = new ZeroClipboard();
+      try{
+        Tabula.ui.client = new ZeroClipboard();
+      }catch(e){  
+        this.$el.find('#copy-csv-to-clipboard').hide(); 
+      }
     }
 
     Tabula.ui.client.on( 'ready', _.bind(function(event) {
@@ -348,7 +365,7 @@ Tabula.DataView = Backbone.View.extend({  //only one, is the data modal.
     var $el = $(e.currentTarget);
     $ul = $el.parent().find('ul');
 
-    window.setTimeout(function(){ // if we upgrade to bootstrap 3.0
+    window.setTimeout(function(){      // if we upgrade to bootstrap 3.0
                                        // we don't need this gross timeout and can, instead,
                                        // listen for the `dropdown's shown.bs.dropdown` event
       if(!isElementInViewport($ul)){
@@ -358,37 +375,26 @@ Tabula.DataView = Backbone.View.extend({  //only one, is the data modal.
     }, 100);
   },
 
+  // wth. These aren't working right.
   showAdvancedOptions: function(){
+    console.log('showAdvancedOptions')
     this.ui.options.set('show_advanced_options', true);
-    var $advancedOptions = $('#advanced-options');
-    var $advancedShowButton = $('#basic-options .show-advanced-options');
-    $advancedOptions.slideDown();
-    $advancedShowButton.hide();
+    this.$el.addClass("advanced-options-shown");
+    this.delegateEvents(); // you can't bind events to hidden elements, so we have to re-bind the events when we show these pieces.
   },
   hideAdvancedOptions: function(){
+    console.log('hideAdvancedOptions')
     this.ui.options.set('show_advanced_options', false);
-    var $advancedOptions = $('#advanced-options');
-    var $advancedShowButton = $('#basic-options .show-advanced-options');
-    $advancedOptions.slideUp();
-    $advancedShowButton.show();
+    this.$el.removeClass("advanced-options-shown");
+    this.delegateEvents(this.events); // you can't bind events to hidden elements, so we have to re-bind the events when we show these pieces.
   },
 
   queryWithToggledExtractionMethod: function(e){
-    this.ui.options.set('extraction_method', this.getOppositeExtractionMethod());
-    Tabula.ui.query.set('extraction_method', this.getOppositeExtractionMethod());
+    var extractionMethod = $(e.currentTarget).data('method');
+    this.ui.options.set('extraction_method', extractionMethod);
+    Tabula.ui.query.setExtractionMethod(extractionMethod);
     Tabula.ui.query.doQuery();
   },
-
-  getOppositeExtractionMethod: function(){
-    if (this.ui.options.get('extraction_method') == "guess"){
-      return; // this should never happen.
-    }
-    else if (this.ui.options.get('extraction_method') == "original") {
-      return "spreadsheet";
-    }
-    return "original";
-  },
-
 });
 
 Tabula.DocumentView = Backbone.View.extend({ //only one
@@ -681,31 +687,13 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
    * then loop over all of them.
    */
   query_all_data : function(){
-    list_of_all_coords = [];
-    this.ui.imgAreaSelects.forEach(function(imgAreaSelectAPIObj){
-      if (imgAreaSelectAPIObj === false) return;
+    var list_of_all_coords = Tabula.ui.pdf_document.selections.invoke("toCoords"); 
+                                                            // map(function(selection){ return selection.toCoords(); };
 
-      var thumb_width = imgAreaSelectAPIObj.getImg().width();
-      var thumb_height = imgAreaSelectAPIObj.getImg().height();
-
-      var pdf_width = parseInt(imgAreaSelectAPIObj.getImg().data('original-width'));
-      var pdf_height = parseInt(imgAreaSelectAPIObj.getImg().data('original-height'));
-      var pdf_rotation = parseInt(imgAreaSelectAPIObj.getImg().data('rotation'));
-
-      var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / thumb_width;
-
-      imgAreaSelectAPIObj.getSelections().forEach(function(selection){
-          new_coord = {
-              x1: selection.x1 * scale,
-              x2: selection.x2 * scale,
-              y1: selection.y1 * scale,
-              y2: selection.y2 * scale,
-              page: imgAreaSelectAPIObj.getImg().data('page')
-          }
-          list_of_all_coords.push(new_coord);
-      });
-    });
-    this.doQuery(PDF_ID, list_of_all_coords);
+                    //TODO: make global extraction method selector for Query All Data -- or make it selection-by-selection
+    Tabula.ui.query = new Tabula.Query({list_of_coords: list_of_all_coords, extraction_method: 'guess'}); 
+    Tabula.ui.createDataView();
+    Tabula.ui.query.doQuery();
   },
 
   render: function(){
@@ -1190,7 +1178,6 @@ $(function () {
     on("click", ".imgareaselect-box .repeat-lassos", function(e){
       var selectionId = $(e.currentTarget).data('selectionId');
       var selection = Tabula.ui.pdf_document.selections.get(selectionId);
-      console.log("evnet!", selection)
       selection.repeatLassos();
     });
 });

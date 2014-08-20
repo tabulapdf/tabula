@@ -99,6 +99,14 @@
     display: none;
   }
 
+  .advanced-options-shown #advanced-options{
+    display: block;
+  }
+
+  .advanced-options-shown #basic-options .show-advanced-options{
+    display: none;
+  }
+
   .toggle-advanced-options{
     cursor: select;
     color: #666;
