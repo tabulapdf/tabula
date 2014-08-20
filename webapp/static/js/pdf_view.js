@@ -102,18 +102,19 @@ Tabula.Selection = Backbone.Model.extend({
   },
 });
 
-//TODO: write this to localStorage sometimes.
-//TODO: get values here from localStroage on startup
 Tabula.Options = Backbone.Model.extend({
   initialize: function(){
     _.bindAll(this, 'write');
-    this.set('multiselect_mode', localStorage.getItem("tabula-multiselect-mode"));
+    this.set('multiselect_mode', localStorage.getItem("tabula-multiselect-mode") !== "false");
     this.set('extraction_method', null); // don't write this one to localStorage
-    this.set('show_advanced_options', localStorage.getItem("tabula-show-advanced-options"))
+    this.set('show_advanced_options', localStorage.getItem("tabula-show-advanced-options")  !== "false");
+    this.set('show-directions', localStorage.getItem("tabula-show-directions")  !== "false");
+    console.log("optoins", this);
   },
   write: function(){
     localStorage.setItem("tabula-multiselect-mode", this.get('multiselect_mode'));
     localStorage.setItem("tabula-show-advanced-options", this.get('show_advanced_options'));
+    localStorage.setItem("tabula-show-directions", this.get('show-directions'));
   }
 });
 
@@ -446,8 +447,8 @@ Tabula.DocumentView = Backbone.View.extend({ //only one
   },
 
   render: function(){
-    if(this.ui.options.get('show-directions') === false){
-      this.$el.find('#directions').remove();
+    if(!this.ui.options.get('show-directions')){
+      this.$el.find('#directionsRow').remove();
     }
     return this;
   },
@@ -568,26 +569,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
         $('#thumb-' + $(img).attr('id') + ' #iasSelection-show-' + iasSelection.id).css('display', 'none');
         selection.destroy();
     }
-
-    //this was a bad idea. commented out in case we soon decide we want it back. 8/16/14 / JBM
-    // (This just means that very small selections appear on the page
-    // but don't actually ever get queried.)
-    // if (iasSelection.height * iasSelection.width < 5000) return; 
-    
-    // old repeat-lasso button code
-    // create button for repeating lassos, only if there are more pages after this
-    // if (this.pageCount > $(img).data('page')) {
-    //     var but_id = $(img).attr('id') + '-' + iasSelection.id;
-    //     $('body').append('<button class="btn repeat-lassos" id="'+but_id+'">Repeat this Selection</button>');
-    //     var img_pos = $(img).offset();
-    //     $('button#' + but_id)
-    //         .css({
-    //             position: 'absolute',
-    //             top: img_pos.top + iasSelection.y1 + iasSelection.height - $('button#' + but_id).height() * 1.5,
-    //             left: img_pos.left + iasSelection.x1 + iasSelection.width + 5
-    //         })
-    //         .data('selection', iasSelection);
-    // }
 
     if(this.model != this.model.collection.last()){                   // if this is not the last page
       var but_id = this.model.get('number') + '-' + iasSelection.id;  //create a "Repeat this Selection" button
