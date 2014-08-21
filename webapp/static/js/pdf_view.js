@@ -59,11 +59,11 @@ Tabula.Selection = Backbone.Model.extend({
     var page = Tabula.ui.pdf_document.page_collection.at(this.get('page_number') - 1);
     var imageWidth = this.get('imageWidth');
 
-    var pdf_width = page.get('width'); 
-    var pdf_height = page.get('height'); 
+    var original_pdf_width = page.get('width'); 
+    var original_pdf_height = page.get('height'); 
     var pdf_rotation = page.get('rotation');
 
-    var scale = (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width) / imageWidth;
+    var scale = (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width) / imageWidth;
 
     var selection_coords = {
         x1: this.get('x1') * scale,
@@ -146,18 +146,37 @@ Tabula.Selections = Backbone.Collection.extend({
     // Parse doesn't create the selections directly
     // it instead sends the details to the imgAreaSelects via drawDetectedTables
 
-    // a JSON list of pages, which is just a list of coords
-    // var tables = [];
-    // _(response).each(function(page_tables, listIndex){
-    //   var pageIndex = listIndex + 1;
-    //   _(page_tables).each(function(table_coords){
-    //     var selection = {};
-    //     selection[page_number] = pageIndex;
-    //     //need imageWidth
-    //     tables.push(selection);
-    //   });
-    //   return
-    // });
+    // a JSON list of pages, which are each just a list of coords
+    var tables = [];
+    _(response).each(_.bind(function(page_tables, listIndex){
+      var pageIndex = listIndex + 1;
+      var pageView = Tabula.ui.components['document_view'].page_views[pageIndex];
+      var page = pageView.model;
+
+      var image_width = pageView.$el.find('img').width();
+      var thumb_height = pageView.$el.find('img').height();
+      var original_pdf_width = page.get('width');
+      var original_pdf_height = page.get('height');
+      var pdf_rotation = page.get('rotation');
+
+      var scale = (original_pdf_width / image_width);
+
+      _(page_tables).each(_.bind(function(tableCoords){
+        var my_x2 = tableCoords[0] + tableCoords[2];
+        var my_y2 = tableCoords[1] + tableCoords[3];
+
+        selection = pageView.imgAreaSelect.createNewSelection( Math.floor(tableCoords[0] / scale),
+                                      Math.floor(tableCoords[1] / scale),
+                                      Math.floor(my_x2 / scale),
+                                      Math.floor(my_y2 / scale));
+        pageView.imgAreaSelect.setOptions({show: true});
+        pageView.imgAreaSelect.update();
+
+        // put the selection into the selections collection
+        this.updateOrCreateByIasId(selection, page.get('number'), image_width);
+      }, this));
+      pageView.imgAreaSelect.setOptions({show: true});
+    }, this));
     return []; // no matter what (parsed tables.json stuff here goes to the imgAreaSelects, which create the selections)
   },
 
@@ -852,8 +871,11 @@ Tabula.UI = Backbone.View.extend({
       this.components['control_panel'] = new Tabula.ControlPanelView({ui: this});
       this.components['sidebar_view'] = new Tabula.SidebarView({ui: this, collection: this.pdf_document.page_collection});
 
-      this.pdf_document.page_collection.fetch();
-      //this.pdf_document.selections.fetch(); // TODO: pre-detected tables, maybe.
+      this.pdf_document.page_collection.fetch({
+        success: _.bind(function(){
+          this.pdf_document.selections.fetch(); // TODO: pre-detected tables, maybe.
+        }, this),
+      });
     },
 
     removePage: function(removedPageModel){
@@ -976,15 +998,15 @@ Tabula.UI = Backbone.View.extend({
         $('body').append(newCanvas);
 
         var pdf_rotation = parseInt($(image).data('rotation'));
-        var pdf_width = parseInt($(image).data('original-width'));
-        var pdf_height = parseInt($(image).data('original-height'));
+        var original_pdf_width = parseInt($(image).data('original-width'));
+        var original_pdf_height = parseInt($(image).data('original-height'));
         var thumb_width = $(image).width();
 
-        var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width);
+        var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
 
         var lq = $.extend(this.lastQuery,
                           {
-                              pdf_page_width: pdf_width,
+                              pdf_page_width: original_pdf_width,
                               render_page: render == true,
                               clean_rulings: clean == true,
                               show_intersections: show_intersections == true
@@ -1025,11 +1047,11 @@ Tabula.UI = Backbone.View.extend({
 
       var thumb_width = $(image).width();
       var thumb_height = $(image).height();
-      var pdf_width = parseInt($(image).data('original-width'));
-      var pdf_height = parseInt($(image).data('original-height'));
+      var original_pdf_width = parseInt($(image).data('original-width'));
+      var original_pdf_height = parseInt($(image).data('original-height'));
       var pdf_rotation = parseInt($(image).data('rotation'));
 
-      var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width);
+      var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
 
       $.get(url,
             this.lastQuery,
@@ -1068,11 +1090,11 @@ Tabula.UI = Backbone.View.extend({
 
       var thumb_width = $(image).width();
       var thumb_height = $(image).height();
-      var pdf_width = parseInt($(image).data('original-width'));
-      var pdf_height = parseInt($(image).data('original-height'));
+      var original_pdf_width = parseInt($(image).data('original-width'));
+      var original_pdf_height = parseInt($(image).data('original-height'));
       var pdf_rotation = parseInt($(image).data('rotation'));
 
-      var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? pdf_height : pdf_width);
+      var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
 
       var list_of_coords = JSON.parse(this.lastQuery.coords);
 
@@ -1113,11 +1135,11 @@ Tabula.UI = Backbone.View.extend({
       var thumb_width = $img.width();
       var thumb_height = $img.height();
 
-      var pdf_width = parseInt($img.data('original-width'));
-      var pdf_height = parseInt($img.data('original-height'));
+      var original_pdf_width = parseInt($img.data('original-width'));
+      var original_pdf_height = parseInt($img.data('original-height'));
       var pdf_rotation = parseInt($img.data('rotation'));
 
-      var scale = (pdf_width / thumb_width);
+      var scale = (original_pdf_width / thumb_width);
 
       $(tableGuesses[arrayIndex]).each(function(tableGuessIndex, tableGuess){
 
