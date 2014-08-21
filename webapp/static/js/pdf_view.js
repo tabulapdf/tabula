@@ -143,7 +143,7 @@ Tabula.Selections = Backbone.Collection.extend({
   parse: function(response){
     // a JSON list of pages, which are each just a list of coords
     var tables = [];
-    _(response).each(_.bind(function(page_tables, listIndex){
+    selections = _(response).map(_.bind(function(page_tables, listIndex){
       var pageIndex = listIndex + 1;
       var pageView = Tabula.ui.components['document_view'].page_views[pageIndex];
       var page = pageView.model;
@@ -153,18 +153,14 @@ Tabula.Selections = Backbone.Collection.extend({
       var pdf_rotation = page.get('rotation');
 
       pageView.createTables = _.bind(function(){
-
-        console.log("createTables new");
-
         var image_width = pageView.$el.find('img').width();
         var thumb_height = pageView.$el.find('img').height();
         var scale = (original_pdf_width / image_width);
-
-        _(page_tables).each(_.bind(function(tableCoords){
+        selections = _(page_tables).map(_.bind(function(tableCoords){
           var my_x2 = tableCoords[0] + tableCoords[2];
           var my_y2 = tableCoords[1] + tableCoords[3];
 
-          selection = pageView.imgAreaSelect.createNewSelection( Math.floor(tableCoords[0] / scale),
+          iasSelection = pageView.imgAreaSelect.createNewSelection( Math.floor(tableCoords[0] / scale),
                                         Math.floor(tableCoords[1] / scale),
                                         Math.floor(my_x2 / scale),
                                         Math.floor(my_y2 / scale));
@@ -172,35 +168,39 @@ Tabula.Selections = Backbone.Collection.extend({
           pageView.imgAreaSelect.update();
 
           // put the selection into the selections collection
-          this.updateOrCreateByIasId(selection, page.get('number'), image_width);
+          selection = this.updateOrCreateByIasId(iasSelection, page.get('number'), image_width);
+          return selection;
         }, this));
         pageView.imgAreaSelect.setOptions({show: true});
+        return selections;
       }, this);
 
       if (pageView.iasAlreadyInited){
-        pageView.createTables();
+        selections = pageView.createTables();
+      }else{
+        selections = [];
       }
-
+      return selections;
     }, this));
-    return []; // no matter what (parsed tables.json stuff here goes to the imgAreaSelects, which create the selections)
+    return _.flatten(selections);
   },
 
   updateOrCreateByIasId: function(iasSelection, pageNumber, imageWidth){
     var selectionId = pageNumber * 100000 + iasSelection.id;
     var selection = this.get(selectionId); 
-      if(selection){ // if it already exists
-        selection.set(_.omit(iasSelection, 'id'));
-      }else{
-        new_selection_args = _.extend({'page_number': pageNumber, 
-                                      'imageWidth': imageWidth, 
-                                      'id': selectionId,
-                                      'extractionMethod': Tabula.ui.options.extraction_method,
-                                      'pdf_document': this.pdf_document}, 
-                                      _.omit(iasSelection, 'id', '$el'))
-        selection = new Tabula.Selection(new_selection_args);
-        this.add(selection);
-      }
-      return selection;
+    if(selection){ // if it already exists
+      selection.set(_.omit(iasSelection, 'id'));
+    }else{
+      new_selection_args = _.extend({'page_number': pageNumber, 
+                                    'imageWidth': imageWidth, 
+                                    'id': selectionId,
+                                    'extractionMethod': Tabula.ui.options.extraction_method,
+                                    'pdf_document': this.pdf_document}, 
+                                    _.omit(iasSelection, 'id', '$el'))
+      selection = new Tabula.Selection(new_selection_args);
+      this.add(selection);
+    }
+    return selection;
   }
 
 
@@ -253,6 +253,7 @@ Tabula.Query = Backbone.Model.extend({
 
           }, this),
         error: _.bind(function(xhr, status, error) {
+          console.log("error!");
           Tabula.ui.components['data_view'].hideAndTrash();
           $('#modal-error textarea').html(xhr.responseText);
           $('#modal-error').modal('show');
@@ -273,8 +274,7 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
   events: {
     'click .download-dropdown': 'dropDownOrUp',
     'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod',
-    'click .show-advanced-options': 'showAdvancedOptions',
-    'click .hide-advanced-options': 'hideAdvancedOptions',
+    'click .toggle-advanced-options': 'toggleAdvancedOptions',
     'hidden': 'trash'
     //N.B.: Download button (and format-specific download buttons) are an HTML form.
     //TODO: handle flash clipboard thingy here.
@@ -283,7 +283,7 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
   extractionMethod: "guess",
 
   initialize: function(stuff){
-    _.bindAll(this, 'render', 'renderLoading', 'renderFooter', 'renderTable', 'showAdvancedOptions','hideAdvancedOptions', 'dropDownOrUp', 'queryWithToggledExtractionMethod', 'trash', 'hideAndTrash');
+    _.bindAll(this, 'render', 'renderLoading', 'renderFooter', 'renderTable', 'toggleAdvancedOptions', 'dropDownOrUp', 'queryWithToggledExtractionMethod', 'trash', 'hideAndTrash');
     this.ui = stuff.ui;
     this.listenTo(this.model, 'tabula:query-start', this.render);
     this.listenTo(this.model, 'tabula:query-success', this.render);
@@ -295,8 +295,7 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
     this.trash();
   },
 
-  trash: function(){
-    this.undelegateEvents();
+  trash: function(e){
     Tabula.ui.trashDataView();
     return this;
   },
@@ -415,19 +414,17 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
     }, 100);
   },
 
-  // wth. These aren't working right.
-  showAdvancedOptions: function(){
-    console.log('showAdvancedOptions')
-    this.ui.options.set('show_advanced_options', true);
-    this.$el.addClass("advanced-options-shown");
-    this.delegateEvents(); // you can't bind events to hidden elements, so we have to re-bind the events when we show these pieces.
+  toggleAdvancedOptions: function(e){
+    console.log('toggle');
+    this.ui.options.set('show_advanced_options', !this.ui.options.get('show_advanced_options'));
+    if(this.ui.options.get('show_advanced_options')){
+      this.$el.addClass("advanced-options-shown");
+    }else{
+      this.$el.removeClass("advanced-options-shown");
+    }
+    return false;
   },
-  hideAdvancedOptions: function(){
-    console.log('hideAdvancedOptions')
-    this.ui.options.set('show_advanced_options', false);
-    this.$el.removeClass("advanced-options-shown");
-    this.delegateEvents(this.events); // you can't bind events to hidden elements, so we have to re-bind the events when we show these pieces.
-  },
+
 
   queryWithToggledExtractionMethod: function(e){
     var extractionMethod = $(e.currentTarget).data('method');
@@ -552,7 +549,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       onSelectChange: this._onSelectChange,
       onSelectEnd: this._onSelectEnd,
       onSelectCancel: this._onSelectCancel,
-      onInit: _.bind(function(){ console.log('onInit'); this.createTables() }, this)
+      onInit: _.bind(function(){ this.createTables() }, this)
     });
     this.imgAreaSelect = ias;
     return ias;
@@ -560,7 +557,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
   createTables: function(asfd){
     this.iasAlreadyInited = true;
-    console.log("createTables default", this.iasAlreadyInited);
   },
 
   _onSelectStart: function(img, iasSelection) {
@@ -822,8 +818,6 @@ Tabula.UI = Backbone.View.extend({
     hasPredetectedTables: false,
     global_options: null,
 
-    model: Tabula.Document,
-
     initialize: function(){
       _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections',
         'createDataView','trashDataView');
@@ -840,10 +834,7 @@ Tabula.UI = Backbone.View.extend({
       this.listenTo(this.pdf_document.page_collection, 'all', this.render);
       this.listenTo(this.pdf_document.page_collection, 'add', this.addOne);
       this.listenTo(this.pdf_document.page_collection, 'reset', this.addAll);
-
       this.listenTo(this.pdf_document.page_collection, 'remove', this.removePage);
-
-
 
       this.components['document_view'] = new Tabula.DocumentView({el: '#main-container' , ui: this, collection: this.pdf_document.page_collection}); //creates page_views
       this.components['control_panel'] = new Tabula.ControlPanelView({ui: this});
