@@ -1203,7 +1203,7 @@ $.imgAreaSelect = function (img, options) {
 
                 if (options.show) {
                     shown = true;
-                    s.adjust();
+                    adjust();
                     s.update();
                     s.$box/*.add(s.$outer)*/.hide().fadeIn(options.fadeSpeed||0);
                 }
