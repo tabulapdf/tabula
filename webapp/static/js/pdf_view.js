@@ -141,11 +141,6 @@ Tabula.Selections = Backbone.Collection.extend({
   },
 
   parse: function(response){
-
-    // Plan of attack for table detection.
-    // Parse doesn't create the selections directly
-    // it instead sends the details to the imgAreaSelects via drawDetectedTables
-
     // a JSON list of pages, which are each just a list of coords
     var tables = [];
     _(response).each(_.bind(function(page_tables, listIndex){
@@ -153,29 +148,39 @@ Tabula.Selections = Backbone.Collection.extend({
       var pageView = Tabula.ui.components['document_view'].page_views[pageIndex];
       var page = pageView.model;
 
-      var image_width = pageView.$el.find('img').width();
-      var thumb_height = pageView.$el.find('img').height();
       var original_pdf_width = page.get('width');
       var original_pdf_height = page.get('height');
       var pdf_rotation = page.get('rotation');
 
-      var scale = (original_pdf_width / image_width);
+      pageView.createTables = _.bind(function(){
 
-      _(page_tables).each(_.bind(function(tableCoords){
-        var my_x2 = tableCoords[0] + tableCoords[2];
-        var my_y2 = tableCoords[1] + tableCoords[3];
+        console.log("createTables new");
 
-        selection = pageView.imgAreaSelect.createNewSelection( Math.floor(tableCoords[0] / scale),
-                                      Math.floor(tableCoords[1] / scale),
-                                      Math.floor(my_x2 / scale),
-                                      Math.floor(my_y2 / scale));
+        var image_width = pageView.$el.find('img').width();
+        var thumb_height = pageView.$el.find('img').height();
+        var scale = (original_pdf_width / image_width);
+
+        _(page_tables).each(_.bind(function(tableCoords){
+          var my_x2 = tableCoords[0] + tableCoords[2];
+          var my_y2 = tableCoords[1] + tableCoords[3];
+
+          selection = pageView.imgAreaSelect.createNewSelection( Math.floor(tableCoords[0] / scale),
+                                        Math.floor(tableCoords[1] / scale),
+                                        Math.floor(my_x2 / scale),
+                                        Math.floor(my_y2 / scale));
+          pageView.imgAreaSelect.setOptions({show: true});
+          pageView.imgAreaSelect.update();
+
+          // put the selection into the selections collection
+          this.updateOrCreateByIasId(selection, page.get('number'), image_width);
+        }, this));
         pageView.imgAreaSelect.setOptions({show: true});
-        pageView.imgAreaSelect.update();
+      }, this);
 
-        // put the selection into the selections collection
-        this.updateOrCreateByIasId(selection, page.get('number'), image_width);
-      }, this));
-      pageView.imgAreaSelect.setOptions({show: true});
+      if (pageView.iasAlreadyInited){
+        pageView.createTables();
+      }
+
     }, this));
     return []; // no matter what (parsed tables.json stuff here goes to the imgAreaSelects, which create the selections)
   },
@@ -454,7 +459,7 @@ Tabula.DocumentView = Backbone.View.extend({ //only one
   },
 
   initialize: function(stuff){
-    _.bindAll(this, 'createImgareaselects', 'render', 'removePage');
+    _.bindAll(this, 'render', 'removePage');
     this.ui = stuff.ui;
     this.listenTo(this.collection, 'remove', this.removePage)
   },
@@ -490,38 +495,13 @@ Tabula.DocumentView = Backbone.View.extend({ //only one
     }
     return this;
   },
-
-  createImgareaselects : function(tableGuessesTmp, pages){
-    var selectsNotYetLoaded = _(pages).filter(function(page){ return !page['deleted']}).length;
-    this.ui.tableGuesses = tableGuessesTmp;
-
-    function drawDetectedTablesIfAllAreLoaded(){
-      selectsNotYetLoaded--;
-      if(selectsNotYetLoaded == 0){
-        for(var imageIndex=0; imageIndex < _(this.ui.imgAreaSelects).size(); imageIndex++){
-          var pageIndex = imageIndex + 1;
-          if(this.ui.imgAreaSelects[pageIndex]){ //not undefined
-            this.drawDetectedTables( $('img#page-' + pageIndex), tableGuesses );
-          }
-        }
-      }
-    }
-
-    console.log("what Jeremy thinks is dead code is actually getting executed.")
-    this.ui.imgAreaSelects = _.extend({}, _(this.page_collection).map(function(page_view, i){
-      var ret = {};
-      ret[page_view.model.get('number')] = page_view.createImgareaselect(null, drawDetectedTablesIfAllAreLoaded)
-      return ret;
-    }) );
-  }
-
 });
-
 //TODO: switch back to underscore templates, remove handlebars dependency
 
 Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   document_view: null, //added on create
   className: 'row pdf-page',
+  iasAlreadyInited: false,
   id: function(){
     return 'page-' + this.model.get('number');
   },
@@ -532,7 +512,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
   initialize: function(stuff){
     this.ui = stuff.ui;
-    _.bindAll(this, 'createImgareaselect', 'rotate_page', 
+    _.bindAll(this, 'createImgareaselect', 'rotate_page', 'createTables',
       '_onSelectStart', '_onSelectChange', '_onSelectEnd', '_onSelectCancel', 'render');
   },
 
@@ -555,7 +535,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     return this;
   },
 
-  createImgareaselect: function(tableGuessesTmp, drawDetectedTablesIfAllAreLoaded){
+  createImgareaselect: function(){
     if (this.model.get('deleted')) {
       return false;
     }
@@ -572,10 +552,15 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       onSelectChange: this._onSelectChange,
       onSelectEnd: this._onSelectEnd,
       onSelectCancel: this._onSelectCancel,
-      onInit: drawDetectedTablesIfAllAreLoaded
+      onInit: _.bind(function(){ console.log('onInit'); this.createTables() }, this)
     });
     this.imgAreaSelect = ias;
     return ias;
+  },
+
+  createTables: function(asfd){
+    this.iasAlreadyInited = true;
+    console.log("createTables default", this.iasAlreadyInited);
   },
 
   _onSelectStart: function(img, iasSelection) {
@@ -642,7 +627,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
 
 /* I'm not sure having a SelectionView makes sense. But, 
- * TODO: ssomething needs to manage the repeat lasso button other than the body element.
+ * TODO: something needs to manage the repeat lasso button other than the body element.
  */
 
 Tabula.ControlPanelView = Backbone.View.extend({ // only one
@@ -668,12 +653,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   repeatFirstPageLassos: function(){
     alert('not yet implemented');
     return;
-    /* TODO:
-     * get ui, get document_view, get first page_view:
-     * either:
-     * - repeat first selection
-     * - repeat all selections
-    */
+    /* TODO: write this */
   },
 
   clear_all_selection: function(){
@@ -684,11 +664,8 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   restore_detected_tables: function(){
-    for(var imageIndex=0; imageIndex < this.ui.imgAreaSelects.length; imageIndex++){
-      var pageIndex = imageIndex + 1;
-      this.drawDetectedTables( $('img#page-' + pageIndex), tableGuesses );
-    }
-    this.toggleClearAllAndRestorePredetectedTablesButtons();
+    this.ui.pdf_document.selections.reset();
+    this.ui.pdf_document.selections.fetch();
   },
 
   initialize: function(stuff){
@@ -698,9 +675,9 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 
   query_all_data : function(){
     var list_of_all_coords = Tabula.ui.pdf_document.selections.invoke("toCoords"); 
-                                                            // map(function(selection){ return selection.toCoords(); };
 
-    //TODO: make global extraction method selector for Query All Data -- or make it selection-by-selection
+    //TODO: figure out how to handle extraction methods when there are multiple selections
+    // should it be set globally, or per selection?
     // actually, how to handle extraction method is a bit of an open question.
     // should we support in the UI extraction methods per selection?
     // if so, what does the modal show if its showing results from more than one selection? 
@@ -725,7 +702,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
                   'if_multiselect_checked': this.ui.options.get('multiselect_mode') ? '' : 'checked="checked"',
                   'disable_clear_all_selections': numOfSelectionsOnPage <= 0 ? 'disabled="disabled"' : '' ,
                   'disable_download_all': numOfSelectionsOnPage <= 0 ? 'disabled="disabled"' : '',
-                  'show_restore_detected-tables': this.ui.hasPredetectedTables() && numOfSelectionsOnPage <= 0,
+                  'show_restore_detected_tables': (this.ui.hasPredetectedTables && numOfSelectionsOnPage <= 0) ? '' : 'display: none;',
                   }));
 
     return this;
@@ -842,12 +819,13 @@ Tabula.UI = Backbone.View.extend({
     components: {},
     imgAreaSelects: {},
 
+    hasPredetectedTables: false,
     global_options: null,
 
     model: Tabula.Document,
 
     initialize: function(){
-      _.bindAll(this, 'render', 'hasPredetectedTables', 'addOne', 'addAll', 'totalSelections',
+      _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections',
         'createDataView','trashDataView');
 
       this.pdf_document = new Tabula.Document({
@@ -873,7 +851,11 @@ Tabula.UI = Backbone.View.extend({
 
       this.pdf_document.page_collection.fetch({
         success: _.bind(function(){
-          this.pdf_document.selections.fetch(); // TODO: pre-detected tables, maybe.
+          this.pdf_document.selections.fetch({
+            success: _.bind(function(){
+              this.hasPredetectedTables = true;
+            }, this)
+          });
         }, this),
       });
     },
@@ -898,10 +880,6 @@ Tabula.UI = Backbone.View.extend({
 
     trashDataView: function(){
       this.components['data_view'] = null;
-    },
-
-    hasPredetectedTables: function(){
-      return false; !_(tableGuesses).isEmpty()
     },
 
     addOne: function(page) {
@@ -1122,67 +1100,7 @@ Tabula.UI = Backbone.View.extend({
     debugTextChunks: function(image) {
       return this._debugRectangularShapes(image, '/debug/' + PDF_ID + '/text_chunks');
     },
-
-    // doQuery was here
-    drawDetectedTables: function($img, tableGuesses){
-      alert("not yet reimplemented"); return; //TODO:
-
-      //$img = $(e);
-      var imageIndex = $img.data('page');
-      arrayIndex = imageIndex - 1;
-      var imgAreaSelectAPIObj = this.ui.imgAreaSelects[imageIndex];
-
-      var thumb_width = $img.width();
-      var thumb_height = $img.height();
-
-      var original_pdf_width = parseInt($img.data('original-width'));
-      var original_pdf_height = parseInt($img.data('original-height'));
-      var pdf_rotation = parseInt($img.data('rotation'));
-
-      var scale = (original_pdf_width / thumb_width);
-
-      $(tableGuesses[arrayIndex]).each(function(tableGuessIndex, tableGuess){
-
-        var my_x2 = tableGuess[0] + tableGuess[2];
-        var my_y2 = tableGuess[1] + tableGuess[3];
-
-        selection = imgAreaSelectAPIObj.createNewSelection( Math.floor(tableGuess[0] / scale),
-                                      Math.floor(tableGuess[1] / scale),
-                                      Math.floor(my_x2 / scale),
-                                      Math.floor(my_y2 / scale));
-        imgAreaSelectAPIObj.setOptions({show: true});
-        imgAreaSelectAPIObj.update();
-
-
-        //create a red box for this selection.
-        if(selection){ //selection is undefined if it overlaps an existing selection.
-            this.createSelectionThumbnail($img, selection); //TODO: api changed.
-        }
-
-      });
-      //imgAreaSelectAPIObj.createNewSelection(50, 50, 300, 300); //for testing overlaps from API.
-      imgAreaSelectAPIObj.setOptions({show: true});
-      imgAreaSelectAPIObj.update();
-    },
-
 });
-
-// old fetch code
-// /* pdfs/<PDF_ID>/tables.json may or may not exist, depending on whether the user chooses to use table autodetection. */
-// getTablesJson : function(){
-//   $.getJSON("/pdfs/" + PDF_ID + "/pages.json?_=" + Math.round(+new Date()).toString(),
-//       _.bind(function(pages){
-//         $.getJSON("/pdfs/" + PDF_ID + "/tables.json",
-//           _.bind(function(tableGuesses){
-//             this.render();
-//             this.components['document_view'].createImgareaselects(tableGuesses, pages);
-//             //TODO: draw selections on thumbnails (also on lines below, in error callbacks)
-//           }, this)).
-//           error( _.bind(function(){ this.components['document_view'].createImgareaselects([], pages) }, this));
-//       }, this) ).
-//       error( _.bind(function(){ this.components['document_view'].createImgareaselects([], []) }, this));
-// },
-
 
 $(function () {
   Tabula.ui = new Tabula.UI();
