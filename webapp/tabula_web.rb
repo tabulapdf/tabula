@@ -240,7 +240,6 @@ Cuba.define do
       end
       tables = tables.flatten(1)
 
-
       case req.params['format']
       when 'csv'
         res['Content-Type'] = 'text/csv'

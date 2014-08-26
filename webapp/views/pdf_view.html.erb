@@ -97,15 +97,13 @@
           <span style="display: none;">Copied!</span>
 
           <button class="btn btn-primary" type="button" id="copy-csv-to-clipboard" {{{copyDisabled}}}>Copy to Clipboard</button>
-          <button class="btn btn-primary download-btn" id="download-data" action='/pdf/{{pdf_id}}/data?format=csv' value="CSV">Download CSV</button>
+          <button class="btn btn-primary download-btn" id="download-data" data-action='/pdf/{{pdf_id}}/data?format=csv' value="CSV">Download CSV</button>
 
           <button id="close-modal" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
         </div>
         <div id="advanced-options" class="modal-footer-row" style="width: 100%;">
-          <!-- TODO: extraction method selector, download as... button, tabula-extractor hooks -->
           <span class="modal-footer-row-label">
             <label class="has-tooltip hide-advanced-options toggle-advanced-options" style="display: inline;" data-placement="right" data-toggle="tooltip" title="Hide Advanced Options"><i class="icon-remove"></i> Too Many Options? </label>
-            
           </span>
           <label class="has-tooltip" style="display: inline;" for="extraction-method-btns" data-placement="left" data-toggle="tooltip" title="Advanced Users: Tabula has two different extraction methods for extracting data from different kinds of tables. It tries to select the right one automatically, but sometimes chooses incorrectly. Try switching the method if the extracted data doesn't come out right."><i class="icon-question-sign" ></i>Extraction Method: </label>
           <div class="btn-group" data-toggle="buttons-radio" id="extraction-method-btns" {{extractionMethodDisabled}} >
@@ -116,10 +114,10 @@
           <div class="btn-group">
               <button class="btn btn-primary download-dropdown dropdown-toggle" data-toggle="dropdown">Download Data As... <span class="caret"></span></button> <!-- TODO: add JSON -->
               <ul class="dropdown-menu">
-                <li><input class="linklike download-btn" action="/pdf/{{pdf_id}}/data?format=csv" type="submit" id="download-csv" value="CSV"></li>
-                <li><input class="linklike download-btn" action="/pdf/{{pdf_id}}/data?format=tsv" type="submit" id="download-tsv" value="TSV"></li>
-                <li><input class="linklike download-btn" action="/pdf/{{pdf_id}}/data?format=script" type="submit" id="download-script" value="tabula-extractor Script"></li>
-                <li><input class="linklike download-btn" action="/pdf/{{pdf_id}}/data?format=bbox" type="submit" id="download-bbox" value="Bounding Boxes JSON"></li>
+                <li><input class="linklike download-btn" data-action="/pdf/{{pdf_id}}/data?format=csv" type="submit" id="download-csv" value="CSV"></li>
+                <li><input class="linklike download-btn" data-action="/pdf/{{pdf_id}}/data?format=tsv" type="submit" id="download-tsv" value="TSV"></li>
+                <li><input class="linklike download-btn" data-action="/pdf/{{pdf_id}}/data?format=script" type="submit" id="download-script" value="tabula-extractor Script"></li>
+                <li><input class="linklike download-btn" data-action="/pdf/{{pdf_id}}/data?format=bbox" type="submit" id="download-bbox" value="Bounding Boxes JSON"></li>
               </ul>
           </div>
         </div>
