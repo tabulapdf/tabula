@@ -160,19 +160,22 @@ Tabula.Selections = Backbone.Collection.extend({
           var my_x2 = tableCoords[0] + tableCoords[2];
           var my_y2 = tableCoords[1] + tableCoords[3];
 
-          iasSelection = pageView.imgAreaSelect.createNewSelection( Math.floor(tableCoords[0] / scale),
+          var iasSelection = pageView.imgAreaSelect.createNewSelection( Math.floor(tableCoords[0] / scale),
                                         Math.floor(tableCoords[1] / scale),
                                         Math.floor(my_x2 / scale),
                                         Math.floor(my_y2 / scale));
           pageView.imgAreaSelect.setOptions({show: true});
           pageView.imgAreaSelect.update();
+          if (!iasSelection){
+            return null;
+          }
 
           // put the selection into the selections collection
           selection = this.updateOrCreateByIasId(iasSelection, page.get('number'), image_width);
           return selection;
         }, this));
         pageView.imgAreaSelect.setOptions({show: true});
-        return selections;
+        return _(selections).select(function(s){ return !!s; });
       }, this);
 
       if (pageView.iasAlreadyInited){
@@ -275,7 +278,8 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
     'click .download-dropdown': 'dropDownOrUp',
     'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod',
     'click .toggle-advanced-options': 'toggleAdvancedOptions',
-    'hidden': 'trash'
+    'click .download-btn': 'setFormAction',
+    'hidden': 'handleHidden',
     //N.B.: Download button (and format-specific download buttons) are an HTML form.
     //TODO: handle flash clipboard thingy here.
   },
@@ -283,11 +287,25 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
   extractionMethod: "guess",
 
   initialize: function(stuff){
-    _.bindAll(this, 'render', 'renderLoading', 'renderFooter', 'renderTable', 'toggleAdvancedOptions', 'dropDownOrUp', 'queryWithToggledExtractionMethod', 'trash', 'hideAndTrash');
+    _.bindAll(this, 'render', 'renderLoading', 'renderFooter', 'renderTable', 'toggleAdvancedOptions', 'dropDownOrUp', 'queryWithToggledExtractionMethod', 'handleHidden', 'trash', 'hideAndTrash', 'setFormAction');
     this.ui = stuff.ui;
     this.listenTo(this.model, 'tabula:query-start', this.render);
     this.listenTo(this.model, 'tabula:query-success', this.render);
     this.$modalBody = this.$el.find('.modal-body');
+  },
+
+  // turns out, bootstrap sucks and when the Tooltips are hidden,
+  // they fire the same 'hidden' event as the modal.
+  handleHidden: function(e){
+    if($(e.target).attr('id') == "data-modal" ) {
+      console.log('hidden', e);
+      this.trash();
+    }
+  },
+
+  setFormAction: function(e){
+    var formActionUrl = $(e.currentTarget).data('action');
+    this.$el.find('form').attr('action', formActionUrl);
   },
 
   hideAndTrash: function(){
@@ -404,7 +422,7 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
     var $el = $(e.currentTarget);
     $ul = $el.parent().find('ul');
 
-    window.setTimeout(function(){      // if we upgrade to bootstrap 3.0
+    window.setTimeout(function(){      // TODO: if we upgrade to bootstrap 3.0
                                        // we don't need this gross timeout and can, instead,
                                        // listen for the `dropdown's shown.bs.dropdown` event
       if(!isElementInViewport($ul)){
@@ -414,8 +432,9 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
     }, 100);
   },
 
+  //TODO: this still doesn't quite work. Even numbered times I click it, it doesn't work.
   toggleAdvancedOptions: function(e){
-    console.log('toggle');
+    console.log("toggle", 'e')
     this.ui.options.set('show_advanced_options', !this.ui.options.get('show_advanced_options'));
     if(this.ui.options.get('show_advanced_options')){
       this.$el.addClass("advanced-options-shown");
@@ -660,7 +679,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   restore_detected_tables: function(){
-    this.ui.pdf_document.selections.reset();
+    this.ui.pdf_document.selections.reset([]);
     this.ui.pdf_document.selections.fetch();
   },
 
@@ -870,6 +889,9 @@ Tabula.UI = Backbone.View.extend({
     },
 
     trashDataView: function(){
+      // the modal HTML stays on the page, so undelegate the events we bound to it via Backbone
+      // (but keeping the Bootstrap events)
+      this.components['data_view'].undelegateEvents(); 
       this.components['data_view'] = null;
     },
 
@@ -930,7 +952,7 @@ Tabula.UI = Backbone.View.extend({
       Tabula.tour.addSteps([
         {
           content: "Click and drag to select each table in your document. Once you've selected it, a window to preview your data will appear, along with options to download it as a spreadsheet.",
-          element: ".page-image#page-1",
+          element: "#page-div-1 .page-image",
           title: "Select Tables",
           placement: 'right'
         },
