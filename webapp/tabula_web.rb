@@ -125,34 +125,16 @@ Cuba.define do
   end
 
   on get do
-    on root do
-      workspace_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
-      workspace = if File.exists?(workspace_file)
-                    File.open(workspace_file) { |f| JSON.load(f) }
-                  else
-                    []
-                  end
-
-      res.write view("index.html",
-                     workspace: workspace)
-    end
-
-
     on 'pdfs' do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
     end
 
+    on root do
+      res.write File.read("webapp/index.html")
+    end
+
     on "pdf/:file_id" do |file_id|
-      document_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
-      unless File.directory?(document_dir)
-        res.status = 404
-      else
-        res.write view("pdf_view.html",
-                       pages: File.open(File.join(document_dir, 'pages.json')) { |f|
-                         JSON.parse(f.read)
-                       },
-                       file_id: file_id)
-      end
+      res.write File.read("webapp/index.html")
     end
 
   end # /get
@@ -164,7 +146,7 @@ Cuba.define do
       unless is_valid_pdf?(req.params['file'][:tempfile].path)
         res.status = 400
         res.write view("upload_error.html",
-                       :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
+                       :message => "")
         next # halt this handler
       end
 
