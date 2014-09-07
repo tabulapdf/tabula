@@ -44,7 +44,7 @@ function processStatus(data) {
 
 
 $(function() {
-    if(false) // already loaded{
+    if(false) // already loaded
         statusComplete();
     }else{
         window.spinpots = {

@@ -146,7 +146,7 @@ Cuba.define do
       unless is_valid_pdf?(req.params['file'][:tempfile].path)
         res.status = 400
         res.write view("upload_error.html",
-                       :message => "")
+                       :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
         next # halt this handler
       end
 

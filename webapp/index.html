@@ -298,7 +298,7 @@
           <% _(workspace).each(function(file){ %>
             <li>
               <a href="/pdf/<%= file['id'] %>"><%= file['file'] %></a> 
-              <span>(<%= file['time'] %>)</span>
+              <span>(<%= new Date(parseInt(file['time']) * 1000) %>)</span> <!-- .toUTCString().slice(4, -7) -->
               <button class="icon-remove"></button>
             </li>
           <% }) %>
