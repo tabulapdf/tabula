@@ -43,7 +43,7 @@ class TabulaJobProgress < Cuba
       else
         s = batch.find { |uuid, job| job.working? }
         res.write view("upload_status.html",
-                       :status => !s.nil? ? s.last.message : 'completed',
+                       :status => !s.nil? ? s.last.message : ['completed'],
                        :pct_complete => (batch.inject(0.0) { |sum, (uuid, job)| sum + job.pct_complete } / batch.size).to_i,
                        :upload_id => batch_id,
                        :file_id => req.params['file_id'])
