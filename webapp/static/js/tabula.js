@@ -16,12 +16,12 @@ var TabulaRouter = Backbone.Router.extend({
     $('#fork-me-ribbon').show();
     $.getJSON('/pdfs/workspace.json', function(workspace){
       if( workspace.length > 0){
-        $('#uploaded-files-container').html( _.template( $('#uploaded-files-template').html() )({workspace: workspace }));
+        $('#uploaded-files-container').html( _.template( $('#uploaded-files-template').html().replace(/nestedscript/g, 'script') )({workspace: workspace }));
       }else{
         $('#uploaded-files-container').html( $('<p>No uploaded files yet.</p>') );
       }
     })
-    $('#tabula').html( _.template( $('#upload-template').html() )({TABULA_VERSION: TABULA_VERSION }) );
+    $('#tabula').html( _.template( $('#upload-template').html().replace(/nestedscript/g, 'script') )({TABULA_VERSION: TABULA_VERSION }) );
   },
 
   // TODO: requires interacting with resque.
@@ -49,8 +49,8 @@ var TabulaRouter = Backbone.Router.extend({
   // },
 
   view: function(file_id) {
-    $('body').prepend( _.template( $('#navbar-template').html() )({}) ); // navbar.
-    $('#tabula').html( _.template( $('#pdf-view-template').html() )({}) );
+    $('body').prepend( _.template( $('#navbar-template').html().replace(/nestedscript/g, 'script') )({}) ); // navbar.
+    $('#tabula').html( _.template( $('#pdf-view-template').html().replace(/nestedscript/g, 'script') )({}) );
 
     $.ajax({
       url: "/js/pdf_view.js",

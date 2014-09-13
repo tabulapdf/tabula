@@ -273,7 +273,7 @@ Tabula.Query = Backbone.Model.extend({
 Tabula.DataView = Backbone.View.extend({  //one per query object.
   el: '#data-modal',
   $loading: $('#loading'),
-  template: _.template($('#templates #modal-footer-template').html()), 
+  template: _.template($('#templates #modal-footer-template').html().replace(/nestedscript/g, 'script')), 
   events: {
     'click .download-dropdown': 'dropDownOrUp',
     'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod',
@@ -446,6 +446,7 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
 
 
   queryWithToggledExtractionMethod: function(e){
+    this.model.set('data', null);
     var extractionMethod = $(e.currentTarget).data('method');
     this.pdf_view.options.set('extraction_method', extractionMethod);
     Tabula.pdf_view.query.setExtractionMethod(extractionMethod);
@@ -520,7 +521,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   id: function(){
     return 'page-' + this.model.get('number');
   },
-  template: _.template($('#templates #page-template').html()) , 
+  template: _.template($('#templates #page-template').html().replace(/nestedscript/g, 'script')) , 
   'events': {
     'click i.rotate-left i.rotate-right': 'rotate_page',
   },
@@ -654,7 +655,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
   className: 'followyouaroundbar',
 
-  template: _.template($('#templates #control-panel-template').html()),
+  template: _.template($('#templates #control-panel-template').html().replace(/nestedscript/g, 'script')),
 
   shouldPreviewDataAutomatically: !$('#should-preview-data-checkbox').is(':checked'),
 
@@ -769,7 +770,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
 
   // initialize: function(){
   // },
-  template: _.template($('#templates #thumbnail-template').html()),
+  template: _.template($('#templates #thumbnail-template').html().replace(/nestedscript/g, 'script')),
 
   initialize: function(){
     _.bindAll(this, 'render', 'createSelectionThumbnail', 'changeSelectionThumbnail', 'removeSelectionThumbnail');
