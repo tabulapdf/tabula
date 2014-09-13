@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- TABULA VERSION: <%= $TABULA_VERSION %> -->
+<!-- TABULA VERSION: (currently unimplemented, try asking for TABULA_VERSION in the console.) -->
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" media="screen">
@@ -13,6 +13,8 @@
     <script type="text/javascript" src="/js/vendor/jcanvas.min.js"></script> <!-- for debug, I think? -JBM -->
     <script type="text/javascript" src="/js/vendor/spin.min.js"></script>
     <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/file-library.js"></script>
+    <script type="text/javascript" src="/js/update-notifications.js"></script>
   </head>
   <body data-spy="scroll" data-target=".nav.sidebar-nav" data-offset="0">
     <div class="ribbon-wrapper-green" id="dev-mode-ribbon" style="display: none;"><div class="ribbon-green">DEV mode</div></div>
@@ -265,14 +267,8 @@
                   </div>
                 </div>
               </div>
-              <script type="text/javascript"> 
-                  var TABULA_VERSION = '<%= TABULA_VERSION %>';
-              </script>
-              <script type="text/javascript" src="/js/file-library.js"></script>
-              <script type="text/javascript" src="/js/update-notifications.js"></script>
-
               <br><br><hr>
-              <p><strong>Tabula</strong> was created by <a href="http://jazzido.com/" target="_blank">Manuel Aristarán</a> with the help of <a href="http://propublica.org">ProPublica</a>, <a href="http://blogs.lanacion.com.ar/data/">La Nación DATA</a> and <a href="http://www.mozillaopennews.org/">Knight-Mozilla OpenNews</a></p>
+              <p><strong>Tabula</strong> was created by <a href="http://jazzido.com/" target="_blank">Manuel Aristarán</a>, <a href="https://mike.tig.as/" target="_blank">Mike Tigas</a> and <a href="http://jeremybmerrill.com/" target="_blank">Jeremy B. Merrill</a>with the support of <a href="http://propublica.org">ProPublica</a>, <a href="http://blogs.lanacion.com.ar/data/">La Nación DATA</a>, <a href="http://www.mozillaopennews.org/">Knight-Mozilla OpenNews</a>, <a href="http://nytimes.com">The New York Times</a> and <a href="http://www.knightfoundation.org/">The Knight Foundation</a></p>
             </div>
           </div>
         </div>
@@ -298,7 +294,7 @@
           <% _(workspace).each(function(file){ %>
             <li>
               <a href="/pdf/<%= file['id'] %>"><%= file['file'] %></a> 
-              <span>(<%= new Date(parseInt(file['time']) * 1000) %>)</span> <!-- .toUTCString().slice(4, -7) -->
+              <span>(<%= new Date(parseInt(file['time']) * 1000).toUTCString().slice(5, -7) %>)</span> <!-- .toUTCString().slice(4, -7) -->
               <button class="icon-remove"></button>
             </li>
           <% }) %>

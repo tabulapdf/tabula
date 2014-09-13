@@ -1,7 +1,7 @@
 var Tabula;
 Tabula = Tabula || {};
 
-var TABULA_VERSION = "TODO";
+TABULA_VERSION = "TODO";
 
 var TabulaRouter = Backbone.Router.extend({
   routes: {
