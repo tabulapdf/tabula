@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- TABULA VERSION: (currently unimplemented, try asking for TABULA_VERSION in the console.) -->
+<!-- TABULA VERSION: ask for it on the console. -->
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" media="screen">
@@ -13,8 +13,6 @@
     <script type="text/javascript" src="/js/vendor/jcanvas.min.js"></script> <!-- for debug, I think? -JBM -->
     <script type="text/javascript" src="/js/vendor/spin.min.js"></script>
     <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/js/file-library.js"></script>
-    <script type="text/javascript" src="/js/update-notifications.js"></script>
   </head>
   <body data-spy="scroll" data-target=".nav.sidebar-nav" data-offset="0">
     <div class="ribbon-wrapper-green" id="dev-mode-ribbon" style="display: none;"><div class="ribbon-green">DEV mode</div></div>
@@ -127,7 +125,7 @@
                 </div>
               </div>
 
-              <div class="row" id="#document">
+              <div class="row" id="document">
                 <!-- pages go here -->
               </div>
 
@@ -163,33 +161,32 @@
 
         </div>
 
-        <script type="text/javascript" src="/js/jquery.imgareaselect.js"></script>
-        <script type="text/javascript" src="/js/vendor/bootstrap-tour.min.js"></script>
+        <nestedscript type="text/javascript" src="/js/jquery.imgareaselect.js"></nestedscript>
+        <nestedscript type="text/javascript" src="/js/vendor/bootstrap-tour.min.js"></nestedscript>
 
-        <script type="text/javascript" src="/js/vendor/ZeroClipboard.min.js"></script>
-        <script type="text/javascript" src="/js/vendor/table2CSV.js"></script>
-        <!-- <script type="text/javascript" src="/js/pdf_view.js"></script> --> <!-- cachebuster: last update time of JS. -->
-        <script type="text/javascript">
-                                                                                             var SPINNER_OPTS = {
-                      lines: 10, // The number of lines to draw
-                      length: 5, // The length of each line
-                      width: 2, // The line thickness
-                      radius: 5, // The radius of the inner circle
-                      corners: 1, // Corner roundness (0..1)
-                      rotate: 0, // The rotation offset
-                      direction: 1, // 1: clockwise, -1: counterclockwise
-                      color: '#000', // #rgb or #rrggbb
-                      speed: 1.1, // Rounds per second
-                      trail: 60, // Afterglow percentage
-                      shadow: false, // Whether to render a shadow
-                      hwaccel: true, // Whether to use hardware acceleration
-                      className: 'spinner', // The CSS class to assign to the spinner
-                      zIndex: 2e9, // The z-index (defaults to 2000000000)
-                      top: 'auto', // Top position relative to parent in px
-                      left: 'auto' // Left position relative to parent in px
-                  };
+        <nestedscript type="text/javascript" src="/js/vendor/ZeroClipboard.min.js"></nestedscript>
+        <nestedscript type="text/javascript" src="/js/vendor/table2CSV.js"></nestedscript>
+        <nestedscript type="text/javascript">
+          var SPINNER_OPTS = {
+              lines: 10, // The number of lines to draw
+              length: 5, // The length of each line
+              width: 2, // The line thickness
+              radius: 5, // The radius of the inner circle
+              corners: 1, // Corner roundness (0..1)
+              rotate: 0, // The rotation offset
+              direction: 1, // 1: clockwise, -1: counterclockwise
+              color: '#000', // #rgb or #rrggbb
+              speed: 1.1, // Rounds per second
+              trail: 60, // Afterglow percentage
+              shadow: false, // Whether to render a shadow
+              hwaccel: true, // Whether to use hardware acceleration
+              className: 'spinner', // The CSS class to assign to the spinner
+              zIndex: 2e9, // The z-index (defaults to 2000000000)
+              top: 'auto', // Top position relative to parent in px
+              left: 'auto' // Left position relative to parent in px
+          };
          new Spinner(SPINNER_OPTS).spin($('#spinner').get(0));
-        </script>
+        </nestedscript>
       </script>
 
       <script type="text/template" id="navbar-template">
@@ -267,6 +264,12 @@
                   </div>
                 </div>
               </div>
+              <nestedscript type="text/javascript"> 
+                  var TABULA_VERSION = '<%= TABULA_VERSION %>';
+              </nestedscript>
+              <nestedscript type="text/javascript" src="/js/file-library.js"></nestedscript>
+              <nestedscript type="text/javascript" src="/js/update-notifications.js"></nestedscript>
+
               <br><br><hr>
               <p><strong>Tabula</strong> was created by <a href="http://jazzido.com/" target="_blank">Manuel Aristarán</a>, <a href="https://mike.tig.as/" target="_blank">Mike Tigas</a> and <a href="http://jeremybmerrill.com/" target="_blank">Jeremy B. Merrill</a>with the support of <a href="http://propublica.org">ProPublica</a>, <a href="http://blogs.lanacion.com.ar/data/">La Nación DATA</a>, <a href="http://www.mozillaopennews.org/">Knight-Mozilla OpenNews</a>, <a href="http://nytimes.com">The New York Times</a> and <a href="http://www.knightfoundation.org/">The Knight Foundation</a></p>
             </div>
