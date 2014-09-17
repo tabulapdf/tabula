@@ -54,15 +54,16 @@ If you have a problem, check [Known Issues](#knownissues) first, then [report an
 
   `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -jar tabula.jar`
 
-  Tabula binds to port 8080 by default. You can change it with the `jetty.port` property:
-
-  `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Djetty.port=9999 -jar tabula.jar`
-
 If the program fails to run, double-check that you have [Java installed][jre_download]
 and then try again.
 
 [jre_download]: https://www.java.com/download/
 [tabula_dl]: http://jazzido.github.io/tabula/
+
+Tabula binds to port 8080 by default. You can change it with the `jetty.port` property:
+
+`java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Djetty.port=9999 -jar tabula.jar`
+
 
 ## <a name="knownissues">Known issues</a>
 
@@ -79,8 +80,8 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
 
 [gatekeeper]: http://support.apple.com/kb/HT5290
 
-* <a name='lines'>**org.jruby.exceptions.RaiseException: (NoMethodError) undefined method `lines' for []:Array**</a> (All platforms):
-  This error means that the area you selected didn't contain any text or a table that Tabula can understand. You probably have an image-based PDF (or a text-based PDF containing an image of a table). We'll fix the error on the next release, but Tabula won't be able to extract any data from image-based PDFs at any point in the near future. (Though you can try OCRing the PDF.)
+* <a name='lines'>**org.jruby.exceptions.RaiseException: (NoMethodError) undefined method `lines' for []:Array**</a> (All platforms): 
+  This error means that the area you selected didn't contain any text or a table that Tabula can understand. You probably have an image-based PDF (or a text-based PDF containing an image of a table). If you upgrade to the [latest version of Tabula](https://github.com/tabulapdf/tabula/releases), you'll get a friendlier error message, but please note that Tabula won't be able to extract any data from image-based PDFs at any point in the near future. (Though you can try OCRing the PDF and then trying Tabula again.)
 
 * <a name='encoding'>**org.jruby.exceptions.RaiseException: (Encoding::CompatibilityError) incompatible character encodings:**</a> (Windows):
   Your Windows computer expects a type of encoding other than Unicode or Windows's English encoding. You can fix this by entering a few simple commands in the Command Prompt. (The commands won't affect anything besides Tabula.)
@@ -89,6 +90,12 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
   2. type `cd` and then the path to the directory that contains `tabula.exe`, e.g. `cd C:\Users\Username\Downloads`
   3. Change that terminal's codepage to Unicode by typing: `chcp 65001`
   4. Run Tabula by typing `tabula.exe`
+
+* <a name='portproblems'>**A browser tab opens, but something other than Tabula loads there. Or Tabula doesn't start.**</a>
+  It's possible another program is using port 8080, whichh Tabula binds to by default. You can try closing the other program, or change the port Tabula uses by running Tabula from the terminal with the `jetty.port` property:
+
+  `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Djetty.port=9999 -jar tabula.jar`
+
 
 ## Running Tabula from source (for developers)
 
