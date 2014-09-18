@@ -18,7 +18,7 @@ a simple web interface ([Check out this short screencast](https://erika.makes.or
 
 **Caveat**: Tabula only works on text-based PDFs, not scanned documents. If you can click-and-drag to select text in your table in a PDF viewer (even if the output is disorganized trash), then your PDF is text-based and Tabula should work.
 
-**Security Concerns?**: Tabula is designed with security in mind. Your PDF and the extracted data *never* touch the net -- when you use Tabula, as long as your browser's URL bar says "localhost", all processing takes place on your local machine. Tabula does download a list of Tabula versions from our server to alert you if Tabula has been updated (and we use hits to that list to count how often Tabula is being used); it also downloads a few badges and assets from the web.
+**Security Concerns?**: Tabula is designed with security in mind. Your PDF and the extracted data *never* touch the net -- when you use Tabula, as long as your browser's URL bar says "localhost" or "127.0.0.1", all processing takes place on your local machine. Tabula does download a list of Tabula versions from our server to alert you if Tabula has been updated (and we use hits to that list to count how often Tabula is being used); it also downloads a few badges and assets from the web.
 
 ## Using Tabula
 
