@@ -298,7 +298,6 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
   // they fire the same 'hidden' event as the modal.
   handleHidden: function(e){
     if($(e.target).attr('id') == "data-modal" ) {
-      console.log('hidden', e);
       this.trash();
     }
   },
@@ -391,29 +390,30 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
         this.$el.find('#copy-csv-to-clipboard').hide(); 
       }
     }
+    if( !Tabula.pdf_view.flash_borked ){
+        Tabula.pdf_view.client.on( 'ready', _.bind(function(event) {
+          Tabula.pdf_view.client.clip( this.$el.find("#copy-csv-to-clipboard") );
 
-    Tabula.pdf_view.client.on( 'ready', _.bind(function(event) {
-      Tabula.pdf_view.client.clip( this.$el.find("#copy-csv-to-clipboard") );
+          Tabula.pdf_view.client.on( 'copy', _.bind(function(event) {
+            var clipboard = event.clipboardData;
+            var tableData = this.$el.find('.modal-body table').table2CSV({delivery: null})
+            clipboard.setData( 'text/plain', tableData );
+          }, this) );
 
-      Tabula.pdf_view.client.on( 'copy', _.bind(function(event) {
-        var clipboard = event.clipboardData;
-        var tableData = this.$el.find('.modal-body table').table2CSV({delivery: null})
-        clipboard.setData( 'text/plain', tableData );
-      }, this) );
+          Tabula.pdf_view.client.on( 'aftercopy', function(event) {
+            $('#data-modal #copy-csv-to-clipboard').css('display', 'inline').delay(900).fadeOut('slow');
+          } );
+        }, this) );
 
-      Tabula.pdf_view.client.on( 'aftercopy', function(event) {
-        $('#data-modal #copy-csv-to-clipboard').css('display', 'inline').delay(900).fadeOut('slow');
-      } );
-    }, this) );
-
-    Tabula.pdf_view.client.on( 'error', _.bind(function(event) {
-      //disable all clipboard buttons, add tooltip, event.message
-      Tabula.pdf_view.flash_borked = true;
-      Tabula.pdf_view.flash_borken_message = event.message;
-      this.$el.find('#copy-csv-to-clipboard').addClass('has-tooltip').tooltip();
-      console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
-      ZeroClipboard.destroy();
-    },this) );
+        Tabula.pdf_view.client.on( 'error', _.bind(function(event) {
+          //disable all clipboard buttons, add tooltip, event.message
+          Tabula.pdf_view.flash_borked = true;
+          Tabula.pdf_view.flash_borken_message = event.message;
+          this.$el.find('#copy-csv-to-clipboard').addClass('has-tooltip').tooltip();
+          console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
+          ZeroClipboard.destroy();
+        },this) );
+    }
 
     return this;
   },
@@ -432,9 +432,7 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
     }, 100);
   },
 
-  //TODO: this still doesn't quite work. Even numbered times I click it, it doesn't work.
   toggleAdvancedOptions: function(e){
-    console.log("toggle", 'e')
     this.pdf_view.options.set('show_advanced_options', !this.pdf_view.options.get('show_advanced_options'));
     if(this.pdf_view.options.get('show_advanced_options')){
       this.$el.addClass("advanced-options-shown");
@@ -1104,7 +1102,6 @@ Tabula.PDFView = Backbone.View.extend({
       Tabula.pdf_view.query.doQuery({
         success: _.bind(function(data) {
                    var colors = this.colors;
-                   console.log(list_of_coords);
                    $.each(data[0].vertical_separators, function(i, vert) {
                      newCanvas.drawLine({
                        strokeStyle: colors[i % colors.length],
