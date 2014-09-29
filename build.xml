@@ -5,7 +5,7 @@
   <property name="build.dir" value="build"/>
   <property name="mac.dir" value="${build.dir}/mac" />
   <property name="windows.dir" value="${build.dir}/windows" />
-  <property name="full_version" value="0.9.4.0"/>
+  <property name="full_version" value="0.9.6.0"/>
   <property name="launch4j.dir" location="${build.dir}/../launch4j"  />
   <property name="launch4j.bindir" location="${build.dir}/../launch4j/bin" />
 
@@ -27,7 +27,7 @@
         shortname="Tabula"
         mainclass="WarMain"
         version="${full_version}"
-        infostring="© 2012-2013 Manuel Aristarán"
+        infostring="© 2012-2014 Manuel Aristarán"
         aboutmenuname="Tabula"
         icon="${build.dir}/icons/tabula.icns"
         workingdirectory="$APP_PACKAGE/Contents/Resources"
@@ -84,11 +84,11 @@
             fileVersion="${full_version}"
             txtFileVersion="${full_version}"
             fileDescription="tabula"
-            copyright="© 2012-2013 Manuel Aristarán"
+            copyright="© 2012-2014 Manuel Aristarán"
             productVersion="${full_version}"
             txtProductVersion="${full_version}"
             productName="Tabula"
-            companyName="Tabula team"
+            companyName="Tabula Team"
             internalName="tabula"
             originalFilename="tabula.exe"
             />
