@@ -12,6 +12,6 @@ platform :jruby do
 
   group :development do
     gem "rake"
-    gem "warbler"
+    gem "warbler", "1.4.2" # >=1.4.3 breaks Windows, see issue #203
   end
 end
