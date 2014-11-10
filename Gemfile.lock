@@ -1,12 +1,12 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    cuba (3.1.1)
+    cuba (3.3.0)
       rack
-    jruby-jars (1.7.12)
-    jruby-rack (1.1.14)
+    jruby-jars (1.7.16.1)
+    jruby-rack (1.1.16)
     rack (1.5.2)
-    rake (10.3.1)
+    rake (10.3.2)
     rubyzip (1.0.0)
     rufus-lru (1.0.5)
     tabula-extractor (0.7.5-java)
@@ -29,4 +29,4 @@ DEPENDENCIES
   rufus-lru
   tabula-extractor (~> 0.7.5)
   tilt
-  warbler
+  warbler (= 1.4.2)
