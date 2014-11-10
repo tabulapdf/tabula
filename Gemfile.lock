@@ -3,13 +3,13 @@ GEM
   specs:
     cuba (3.3.0)
       rack
-    jruby-jars (1.7.12)
+    jruby-jars (1.7.15)
     jruby-rack (1.1.16)
     rack (1.5.2)
     rake (10.3.2)
     rubyzip (1.1.6)
     rufus-lru (1.0.5)
-    tabula-extractor (0.7.4-java)
+    tabula-extractor (0.7.5-java)
       trollop (~> 2.0)
     tilt (2.0.1)
     trollop (2.0)
@@ -24,9 +24,10 @@ PLATFORMS
 
 DEPENDENCIES
   cuba
+  jruby-jars (= 1.7.15)
   rack
   rake
   rufus-lru
   tabula-extractor (~> 0.7.5)
   tilt
-  warbler (= 1.4.2)
+  warbler
