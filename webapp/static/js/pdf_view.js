@@ -28,6 +28,17 @@ Tabula.Pages = Backbone.Collection.extend({
   initialize: function(){
     this.url = '/pdfs/' + PDF_ID + '/pages.json?_=' + Math.round(+new Date()).toString();
   },
+  hasText: function(){
+    has_text = false;
+    for (i=0;i < this.size();i++){
+      if(this.at(i).get('hasText')){
+        has_text = true;
+        break;
+      }
+    }
+    return has_text;
+  }
+
 
 });
 
@@ -859,6 +870,12 @@ Tabula.PDFView = Backbone.View.extend({
 
       this.pdf_document.page_collection.fetch({
         success: _.bind(function(){
+
+          if(!this.pdf_document.page_collection.hasText()){
+            console.log("Scanned PDF detected")
+            alert("Is this PDF scanned? It has no embedded text that Tabula can understand. Unfortunately, this means Tabula won't work. Sorry. ")
+          }
+
           this.pdf_document.selections.fetch({
             success: _.bind(function(){
               this.hasPredetectedTables = true;
