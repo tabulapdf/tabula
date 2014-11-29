@@ -458,6 +458,7 @@ Tabula.DocumentView = Backbone.View.extend({ //only one
   },
   pdf_view: null, //added on create
   page_views: {},
+  rectangular_selector: null,
 
   /* when the Directions area is closed, the pages themselves move up, because they're just static positioned.
    * The selections on those images, though, do not move up, and need to be moved up separately, since they're fixed.
@@ -476,13 +477,29 @@ Tabula.DocumentView = Backbone.View.extend({ //only one
   initialize: function(stuff){
     _.bindAll(this, 'render', 'removePage');
     this.pdf_view = stuff.pdf_view;
-    this.listenTo(this.collection, 'remove', this.removePage)
+    this.listenTo(this.collection, 'remove', this.removePage);
+
+    // attach rectangularSelector to main page container
+    this.rectangular_selector = new RectangularSelector(
+      this.$el,
+      {
+        selector: '#main-container .pdf-page img',
+        end: _.bind(function(d) {
+          var pv = this.page_views[$(d.pageView).data('page')];
+          var rs = new ResizableSelection({
+            position: d.absolutePos,
+            target: $(d.pageView)
+          });
+          this.$el.append(rs.el);
+        }, this)
+      }
+    );
   },
 
-  removePage: function(pageModel){   
+  removePage: function(pageModel){
     var page_view = this.page_views[pageModel.get('number')];
 
-    page_view.$el.fadeOut(200, function(){ 
+    page_view.$el.fadeOut(200, function(){
 
       // move all the stuff for the following pages' imgAreaSelect objects up.
       deleted_page_height = page_view.$el.height();
@@ -500,7 +517,7 @@ Tabula.DocumentView = Backbone.View.extend({ //only one
       // (b) listen on document, no matter how many exist on the page.
 
       page_view.imgAreaSelect.remove();
-      page_view.remove() 
+      page_view.remove();
     });
   },
 
@@ -519,14 +536,18 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   id: function(){
     return 'page-' + this.model.get('number');
   },
-  template: _.template($('#templates #page-template').html().replace(/nestedscript/g, 'script')) , 
+  template: _.template($('#templates #page-template').html().replace(/nestedscript/g, 'script')) ,
+
+  /* we don't need this yet, disabling
   'events': {
     'click i.rotate-left i.rotate-right': 'rotate_page',
   },
+  */
 
   initialize: function(stuff){
     this.pdf_view = stuff.pdf_view;
-    _.bindAll(this, 'createImgareaselect', 'rotate_page', 'createTables',
+    //_.bind(this, 'createImgareaselect');
+    _.bindAll(this, 'rotate_page', 'createTables',
       '_onSelectStart', '_onSelectChange', '_onSelectEnd', '_onSelectCancel', 'render');
   },
 
@@ -545,7 +566,8 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     }
 
 
-    Tabula.pdf_view.imgAreaSelects[this.model.get('number')] = this.createImgareaselect() ;
+    // XXX Disable until we set new selection widget
+    // Tabula.pdf_view.imgAreaSelects[this.model.get('number')] = this.createImgareaselect() ;
     return this;
   },
 
