@@ -18,7 +18,7 @@ Tabula.Page = Backbone.Model.extend({
   initialize: function(){
     this.set('number_zero_indexed', this.get('number') - 1);
     this.set('image_url', '/pdfs/' + PDF_ID + '/document_560_' + this.get('number') + '.png');
-  },
+  }
 });
 
 Tabula.Pages = Backbone.Collection.extend({
@@ -635,7 +635,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     if(this.model != this.model.collection.last()) {
       var but_id = this.model.get('number') + '-' + selection.id;  //create a "Repeat this Selection" button
       var button = $('<button class="btn repeat-lassos" id="'+but_id+'">Repeat this Selection</button>');
-      button.data("selectionId", (this.model.get('number') * 100000) + selection.id );
+      button.data("selectionId", selection.id);
       selection.$el.append(button);
     }
 
@@ -655,8 +655,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
                                 _.findWhere(this.selections, { id: selection.id}));
 
     // find and remove the canceled selection from the collection of selections. (triggering remove events).
-    var selectionId = (this.model.get('number') * 100000) + selection.id;
-    var sel = Tabula.pdf_view.pdf_document.selections.get(selectionId);
+    var sel = Tabula.pdf_view.pdf_document.selections.get(selection.id);
     removed_selection = Tabula.pdf_view.pdf_document.selections.remove(sel);
 
     Tabula.pdf_view.components['control_panel'].render(); // deal with buttons that need blurred out if there's zero selections, etc.
@@ -838,10 +837,12 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     var $sshow = this.$el.find('#selection-show-' + selection.cid);
     var thumbScale = this.$img.width() / selection.get('imageWidth');
 
-    $sshow.css('top', selection.get('y1') * thumbScale + 'px')
-        .css('left', selection.get('x1') * thumbScale + 'px')
-        .css('width', ((selection.get('x2') - selection.get('x1')) * thumbScale) + 'px')
-        .css('height', ((selection.get('y2') - selection.get('y1')) * thumbScale) + 'px');
+    var s = selection.attributes.getDims().relativePos;
+
+    $sshow.css('top', s.top * thumbScale + 'px')
+      .css('left', s.left * thumbScale + 'px')
+      .css('width', s.width * thumbScale + 'px')
+      .css('height', s.height * thumbScale + 'px');
   },
 
   removeSelectionThumbnail: function(selection){
