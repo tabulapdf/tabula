@@ -490,8 +490,12 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     directionsRow.remove();
   },
 
+  _selectionsGetter: function(target) {
+    return this.page_views[$(target).data('page')].selections;
+  },
+
   initialize: function(stuff){
-    _.bindAll(this, 'render', 'removePage', '_onRectangularSelectorEnd');
+    _.bindAll(this, 'render', 'removePage', '_onRectangularSelectorEnd', '_selectionsGetter');
     this.pdf_view = stuff.pdf_view;
     this.listenTo(this.collection, 'remove', this.removePage);
 
@@ -501,11 +505,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
       {
         selector: '#main-container .pdf-page img',
         end: this._onRectangularSelectorEnd,
-        areas: _.bind(function(target) {
-          return _.pluck(
-            this.page_views[$(target).data('page')].selections,
-            'absolutePos');
-        }, this)
+        areas: this._selectionsGetter
       }
     );
   },
@@ -516,7 +516,8 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     var pv = this.page_views[page_number];
     var rs = new ResizableSelection({
       position: d.absolutePos,
-      target: $(d.pageView)
+      target: $(d.pageView),
+      areas: this._selectionsGetter
     });
     rs.on({
       resize: _.debounce(pv._onSelectChange, 100),
