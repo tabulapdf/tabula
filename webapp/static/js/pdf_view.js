@@ -865,12 +865,16 @@ Tabula.PDFView = Backbone.View.extend({
       this.components['control_panel'] = new Tabula.ControlPanelView({pdf_view: this});
       this.components['sidebar_view'] = new Tabula.SidebarView({pdf_view: this, collection: this.pdf_document.page_collection});
 
+      $('#document').append($('#loading').show())
+
       this.pdf_document.page_collection.fetch({
         success: _.bind(function(){
+          $('#loading').detach();
           this.pdf_document.selections.fetch({
             success: _.bind(function(){
               this.hasPredetectedTables = true;
-            }, this)
+            }, this),
+            // error: function(){ console.log("no predetected tables (404 on tables.json)")}
           });
         }, this),
         error: _.bind(function(){
