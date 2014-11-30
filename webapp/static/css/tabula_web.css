@@ -53,7 +53,7 @@
   }
 
   .thumbnail-list li img {
-      display: block; 
+      display: block;
       position: relative; top: 0; left: 0;
   }
 
@@ -243,7 +243,7 @@
 
 
 /* dev mode ribbon */
- 
+
   .ribbon-wrapper-green {
     width: 85px;
     height: 88px;
@@ -253,7 +253,7 @@
     right: -3px;
     z-index: 10000;
   }
-   
+
   .ribbon-green {
     font: bold 15px Sans-Serif;
     color: #333;
@@ -269,26 +269,26 @@
     top: 15px;
     width: 120px;
     background-color: #BFDC7A;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#BFDC7A), to(#8EBF45)); 
-    background-image: -webkit-linear-gradient(top, #BFDC7A, #8EBF45); 
-    background-image:    -moz-linear-gradient(top, #BFDC7A, #8EBF45); 
-    background-image:     -ms-linear-gradient(top, #BFDC7A, #8EBF45); 
-    background-image:      -o-linear-gradient(top, #BFDC7A, #8EBF45); 
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#BFDC7A), to(#8EBF45));
+    background-image: -webkit-linear-gradient(top, #BFDC7A, #8EBF45);
+    background-image:    -moz-linear-gradient(top, #BFDC7A, #8EBF45);
+    background-image:     -ms-linear-gradient(top, #BFDC7A, #8EBF45);
+    background-image:      -o-linear-gradient(top, #BFDC7A, #8EBF45);
     color: #6a6340;
     -webkit-box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
     -moz-box-shadow:    0px 0px 3px rgba(0,0,0,0.3);
     box-shadow:         0px 0px 3px rgba(0,0,0,0.3);
   }
-   
+
   .ribbon-green:before, .ribbon-green:after {
     content: "";
-    border-top:   3px solid #6e8900;   
+    border-top:   3px solid #6e8900;
     border-left:  3px solid transparent;
     border-right: 3px solid transparent;
     position:absolute;
     bottom: -3px;
   }
-   
+
   .ribbon-green:before {
     left: 0;
   }
@@ -404,14 +404,14 @@ div.table-region button[name=close] {
   border: 0;
   background-color: transparent;
   padding: 0;
-  font-size: 15px;
+  font-size: 20px;
   position: relative;
   top: -20px;
-  left: 98%;
+  left: 100%;
 }
 
 div.table-region button[name=close]:hover {
-  background-color: #eee;
+  color: red;
 }
 
 

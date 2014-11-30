@@ -29,83 +29,97 @@
       selector: options.selector || 'div.page-view canvas',
       start: function() {},
       end: function() {},
-      drag: function() {}
+      drag: function() {},
+      areas: []
     }, options);
     var fullSelector = options.selector + ', .selection-box';
     var self = this;
     this.box = $('<div></div>').addClass('selection-box').appendTo($('body'));
-    this.areas = {};
+
+    var _mousedown = function(event) {
+      if (event.which !== 1) return;
+      target = this;
+      isDragging = true;
+      start = { x: event.pageX, y: event.pageY };
+      self.box.css({
+        'top': start.y,
+        'left': start.x,
+        'width': 0,
+        'height': 0,
+        'visibility': 'visible'
+      });
+      options.start(event);
+      return false;
+    };
+
+    var _mousemove = function(event) {
+      if (!isDragging || ($(event.target).is(options.selector) && event.target !== target)) {
+        return;
+      }
+      var ds = {
+        'left': Math.min(start.x, event.pageX),
+        'top': Math.min(start.y, event.pageY),
+        'width': Math.abs(start.x - event.pageX),
+        'height': Math.abs(start.y - event.pageY)
+      };
+
+      if (checkOverlaps(ds,
+                        _.values(
+                          _.isFunction(options.areas) ? options.areas(target) : options.areas)
+                       )
+         ) {
+        self.box.css(ds);
+        options.drag(ds);
+      }
+    };
+
+    var _mouseup = function(event) {
+      if (isDragging) { // selection ended
+        if (event.which !== 1) return;
+        var targetPageView, allTargets = $(options.selector);
+
+        for (var i = 0; i < allTargets.length; i++) {
+          if (allTargets.get(i) === target) {
+            targetPageView = allTargets.get(i);
+            break;
+          }
+        }
+
+        var cOffset = $(target).offset();
+
+        var d = {
+          'absolutePos': _.extend(cOffset,
+                                  {
+                                    'top': parseFloat(self.box.css('top')),
+                                    'left': parseFloat(self.box.css('left')),
+                                    'width': parseFloat(self.box.css('width')),
+                                    'height': parseFloat(self.box.css('height'))
+                                  }),
+          'relativePos': {
+            'width': parseFloat(self.box.css('width')),
+            'height': parseFloat(self.box.css('height')),
+            'top': parseFloat(self.box.css('top')) - cOffset.top,
+            'left': parseFloat(self.box.css('left')) - cOffset.left
+          },
+          'pageView': targetPageView
+        };
+        options.end(d);
+      }
+      target = null;
+      start = null;
+      isDragging = false;
+      self.box.css('visibility', 'hidden');
+    };
 
     $(document).on({
-      mousedown: function(event) {
-        target = this;
-        isDragging = true;
-        start = { x: event.pageX, y: event.pageY };
-        self.box.css({
-          'top': event.clientY,
-          'left': event.clientX,
-          'width': 0,
-          'height': 0,
-          'visibility': 'visible'
-        });
-        options.start(event);
-        return false;
-      },
-
-      mousemove: function(event) {
-        if (!isDragging || ($(event.target).is(options.selector) && event.target !== target)) {
-          return;
-        }
-        var ds = {
-          'left': Math.min(start.x, event.pageX),
-          'top': Math.min(start.y, event.pageY),
-          'width': Math.abs(start.x - event.pageX),
-          'height': Math.abs(start.y - event.pageY)
-        };
-
-        if (checkOverlaps(ds, _.values(self.areas))) {
-          self.box.css(ds);
-          options.drag(ds);
-        }
-      },
-
-      mouseup: function(event) {
-        if (isDragging) { // selection ended
-          var targetPageView, allTargets = $(options.selector);
-
-          for (var i = 0; i < allTargets.length; i++) {
-            if (allTargets.get(i) === target) {
-              targetPageView = allTargets.get(i);
-              break;
-            }
-          }
-
-          var cOffset = $(target).offset();
-
-          var d = {
-            'absolutePos': _.extend(cOffset,
-                                    {
-                                      'top': parseFloat(self.box.css('top')),
-                                      'left': parseFloat(self.box.css('left')),
-                                      'width': parseFloat(self.box.css('width')),
-                                      'height': parseFloat(self.box.css('height'))
-                                    }),
-            'relativePos': {
-              'width': parseFloat(self.box.css('width')),
-              'height': parseFloat(self.box.css('height')),
-              'top': parseFloat(self.box.css('top')) - cOffset.top,
-              'left': parseFloat(self.box.css('left')) - cOffset.left
-            },
-            'pageView': targetPageView
-          };
-          options.end(d);
-        }
-        target = null;
-        start = null;
-        isDragging = false;
-        self.box.css('visibility', 'hidden');
-      }
+      mousedown: _mousedown,
+      mousemove: _mousemove,
+      mouseup: _mouseup
     }, fullSelector);
+
+    // global mouseup listener so we can end the selection
+    // if the user mouseups outside the target area
+    $(document).on('mouseup', _mouseup);
   };
 
   return rectangularSelector;

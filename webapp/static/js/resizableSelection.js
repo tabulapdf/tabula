@@ -50,7 +50,6 @@
 
     render: function() {
       this.$el.append(this.template);
-      console.log(this.$el);
       return this;
     },
 
@@ -61,13 +60,24 @@
 
 
     getDims: function() {
-      var o = this.$el.offset();
+      var o = { top: parseFloat(this.$el.css('top')),
+                left: parseFloat(this.$el.css('left')) };
+      var targetPos = $(this.pageView).offset();
       return {
         id: this.id,
-        top: o.top,
-        left: o.left,
-        width: this.$el.width(),
-        height: this.$el.height()
+        "$el": this.$el,
+        absolutePos: {
+          top: o.top,
+          left: o.left,
+          width: this.$el.width(),
+          height: this.$el.height()
+        },
+        relativePos: {
+          top: o.top - targetPos.top,
+          left: o.left - targetPos.left,
+          width: this.$el.width(),
+          height: this.$el.height()
+        }
       };
     },
 
@@ -78,6 +88,7 @@
       }
       else {
         this.resizing = d[1];
+        this.trigger('start', this);
       }
     },
 
@@ -85,7 +96,7 @@
       if (!this.resizing) return;
       var ev = event;
       var css = {};
-      var oldDims = this.getDims();
+      var oldDims = this.getDims().absolutePos;
 
       if (this.resizing.indexOf('n') !== -1) {
         css.height = oldDims.height + oldDims.top - ev.pageY;
@@ -104,6 +115,7 @@
       }
 
       this.$el.css(css);
+      this.trigger('resize', this.getDims());
       if (!this.checkOverlaps()) {
         this.$el.css(oldDims);
       }
@@ -119,7 +131,7 @@
     // returns true if this tableView does not overlap
     // with any other on the same page
     checkOverlaps: function() {
-      var thisDims = this.getDims();
+      var thisDims = this.getDims().absolutePos;
       return _.every(
         _.reject(this.pageView.selections, function(s) {
           return s.id === this.id;
