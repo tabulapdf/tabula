@@ -3,7 +3,6 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="/css/imgareaselect-default.css" />
     <link rel="stylesheet" type="text/css" href="/css/tabula_web.css" />
     <link rel="stylesheet" type="text/css" href="/css/bootstrap-tour.css" />
     <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
@@ -42,7 +41,7 @@
 
       <script type="text/template" id="page-template" >
         <div class="row pdf-page" id="page-div-<%= number %>">
-          <img class="page-image" src="<%= image_url %>"> 
+          <img class="page-image" draggable="false" src="<%= image_url %>">
           <br>
         </div>
       </script>
@@ -74,7 +73,7 @@
             <div id="basic-options" class="modal-footer-row" style="width: 100%;">
               <span class="modal-footer-row-label">
               <label class="has-tooltip show-advanced-options toggle-advanced-options" data-placement="right" data-toggle="tooltip" title="Show Advanced Options"><i class="icon-wrench"></i> Need More Options?</label>
-              
+
               </span>
               <!-- TODO: just a copy-to-clipboard-as-tsv option and download-as-csv -->
               <span style="display: none;">Copied!</span>
@@ -151,7 +150,7 @@
         </div>
 
         <div id="data-modal" class="modal dialog-modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-          <div class="modal-header">  
+          <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             <h3 id="myModalLabel">Extracted tabular data</h3>
           </div>
@@ -163,7 +162,6 @@
 
         </div>
 
-        <nestedscript type="text/javascript" src="/js/jquery.imgareaselect.js"></nestedscript>
         <nestedscript type="text/javascript" src="/js/vendor/bootstrap-tour.min.js"></nestedscript>
         <nestedscript type="text/javascript" src="/js/resizableSelection.js"></nestedscript>
         <nestedscript type="text/javascript" src="/js/rectangularSelector.js"></nestedscript>
@@ -268,7 +266,7 @@
                   </div>
                 </div>
               </div>
-              <nestedscript type="text/javascript"> 
+              <nestedscript type="text/javascript">
                   var TABULA_VERSION = '<%= TABULA_VERSION %>';
               </nestedscript>
               <nestedscript type="text/javascript" src="/js/file-library.js"></nestedscript>
@@ -300,7 +298,7 @@
         <ul id="uploadedfiles">
           <% _(workspace).each(function(file){ %>
             <li>
-              <a href="/pdf/<%= file['id'] %>"><%= file['file'] %></a> 
+              <a href="/pdf/<%= file['id'] %>"><%= file['file'] %></a>
               <span>(<%= new Date(parseInt(file['time']) * 1000).toUTCString().slice(5, -7) %>)</span> <!-- .toUTCString().slice(4, -7) -->
               <button class="icon-remove"></button>
             </li>
