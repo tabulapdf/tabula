@@ -318,7 +318,6 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
   },
 
   renderLoading: function(){
-    $('#switch-method').prop('disabled', true);
     this.$modalBody.prepend(this.$loading.show());
     this.$el.find('.modal-body table').css('visibility', 'hidden');
     this.$modalBody.css('overflow', 'hidden');
@@ -330,10 +329,10 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
 
     if(!this.model.get('data')){
       this.renderLoading();
-      this.renderFooter();
+      this.renderFooter(true);
     }else{
       this.renderTable();
-      this.renderFooter();
+      this.renderFooter(false);
     }
 
     this.$el.find('.has-tooltip').tooltip();
@@ -341,7 +340,7 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
     return this;
   },
 
-  renderFooter: function(){
+  renderFooter: function(loading){
     var uniq_extraction_methods = _.uniq(_(this.model.get('list_of_coords')).pluck('extraction_method'));
 
     templateOptions = {
@@ -359,12 +358,21 @@ Tabula.DataView = Backbone.View.extend({  //one per query object.
     if (Tabula.pdf_view.flash_borked){
       this.$el.find('#copy-csv-to-clipboard').addClass('has-tooltip');
     }
-
-    this.$el.find(".modal-footer-container").html(this.template(templateOptions));
+    var modalFooter = this.$el.find(".modal-footer-container");
+    modalFooter.html(this.template(templateOptions));
 
     // this has to happen after the footer is already in the page, for bootstrap reasons.
     if (uniq_extraction_methods.length == 1){
       this.$el.find('#' + uniq_extraction_methods[0] + '-method-btn').button('toggle');
+    }
+
+    // disable/enable buttons based on whether data has loaded yet.
+    if(loading){
+      $('.extraction-method-btn').prop('disabled', true).addClass('disabled');
+      modalFooter.find(".btn").prop('disabled', true).addClass('disabled');
+    }else{
+      $('.extraction-method-btn').prop('disabled', false).removeClass('disabled');
+      modalFooter.find(".btn").prop('disabled', false).removeClass('disabled');
     }
   },
 
@@ -879,16 +887,21 @@ Tabula.PDFView = Backbone.View.extend({
       this.components['control_panel'] = new Tabula.ControlPanelView({pdf_view: this});
       this.components['sidebar_view'] = new Tabula.SidebarView({pdf_view: this, collection: this.pdf_document.page_collection});
 
+      $('#document').append($('#loading').show())
+
       this.pdf_document.page_collection.fetch({
         success: _.bind(function(){
+          $('#loading').detach();
           this.pdf_document.selections.fetch({
             success: _.bind(function(){
               this.hasPredetectedTables = true;
-            }, this)
+            }, this),
+            // error: function(){ console.log("no predetected tables (404 on tables.json)")}
           });
         }, this),
         error: _.bind(function(){
-          console.log('404'); //TODO: make this a real 404.
+          console.log('404'); //TODO: make this a real 404, with the right error code, etc.
+          $('#tabula').html("<h1>Error: We couldn't find your document.</h1><h2>Double-check the URL and try again?</h2><p>And if it doesn't work, <a href='https://github.com/tabulapdf/tabula/issues/new'> report a bug</a> and explain <em>exactly</em> what steps you took that caused this problem");
         }),
       });
 
