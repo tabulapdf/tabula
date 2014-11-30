@@ -36,6 +36,7 @@
     initialize: function(options) {
       this.bounds = options.bounds;
       this.pageView = options.target;
+      this.areas = options.areas;
 
       this.id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now();
 
@@ -63,7 +64,7 @@
       var o = { top: parseFloat(this.$el.css('top')),
                 left: parseFloat(this.$el.css('left')) };
       var targetPos = $(this.pageView).offset();
-      return {
+      this.cachedDims = {
         id: this.id,
         "$el": this.$el,
         absolutePos: {
@@ -79,6 +80,7 @@
           height: this.$el.height()
         }
       };
+      return this.cachedDims;
     },
 
     mouseDownResize: function(event) {
@@ -133,23 +135,17 @@
     checkOverlaps: function() {
       var thisDims = this.getDims().absolutePos;
       return _.every(
-        _.reject(this.pageView.selections, function(s) {
+        _.reject(this.areas(this.pageView), function(s) {
           return s.id === this.id;
         }, this),
         function(s) {
-          var sDims = s.getDims();
+          var sDims = s.getDims().absolutePos;
           return thisDims.left + thisDims.width < sDims.left ||
             sDims.left + sDims.width < thisDims.left ||
             thisDims.top + thisDims.height < sDims.top ||
             sDims.top + sDims.height < thisDims.top;
         }, this);
-    },
-
-    remove: function() {
-      this.trigger('remove', this);
-      Backbone.View.prototype.remove.call(this);
     }
-
   });
 
   return ResizableSelection;
