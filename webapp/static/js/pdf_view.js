@@ -878,7 +878,8 @@ Tabula.PDFView = Backbone.View.extend({
           });
         }, this),
         error: _.bind(function(){
-          console.log('404'); //TODO: make this a real 404.
+          console.log('404'); //TODO: make this a real 404, with the right error code, etc.
+          $('#tabula').html("<h1>Error: We couldn't find your document.</h1><h2>Double-check the URL and try again?</h2><p>And if it doesn't work, <a href='https://github.com/tabulapdf/tabula/issues/new'> report a bug</a> and explain <em>exactly</em> what steps you took that caused this problem");
         }),
       });
 
