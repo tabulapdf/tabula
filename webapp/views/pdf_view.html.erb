@@ -61,15 +61,15 @@
     </div>
   </script>
 
-  <script type="text/template" id="thumbnail-template">
-    <a href="#page-{{ number }}"><img src="{{ image_url }}" width="100"></a>
-    <span>
-      <i title="delete this page" class="icon-remove delete-page"></i>
-      <!-- i title="rotate this page right" class="icon-repeat rotate-left"></i>
-      <i title="rotate this page left" class="icon-repeat flip rotate-right"></i -->
-    </span>
-    <br>Page {{ number }}
-  </script>
+      <div id="basic-options" class="modal-footer-row" style="width: 100%;">
+        <span class="modal-footer-row-label">
+        <label class="has-tooltip toggle-advanced-options" style="display: inline;" data-placement="right" data-toggle="tooltip" title="Show Advanced Options">
+          <i class="icon-wrench"></i>
+          <strong>Show Advanced Options</strong>
+        </label>
+        </span>
+        <!-- TODO: just a copy-to-clipboard-as-tsv option and download-as-csv -->
+        <span style="display: none;">Copied!</span>
 
   <script type="text/template" id="control-panel-template">
     <button id="all-data" type="button" class="btn btn-success" data-position="left" data-intro="When you've selected all of the tables in your PDF, click this button to preview the data from all of the selections and download it." {{{disable_download_all}}}>Download All Data</button>

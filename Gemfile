@@ -8,10 +8,11 @@ platform :jruby do
   gem "rack"
   gem "tilt"
   gem "rufus-lru"
-  gem "tabula-extractor", '~>0.7.4', :require => "tabula"
+  gem "tabula-extractor", '~>0.7.5', :require => "tabula"
 
   group :development do
     gem "rake"
     gem "warbler"
+    gem "jruby-jars", "1.7.15" ##1.7.16.1 doesn't work, see issue #203
   end
 end
