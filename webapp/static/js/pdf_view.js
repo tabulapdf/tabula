@@ -525,6 +525,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     });
     pv._onSelectEnd(rs);
     this.$el.append(rs.el);
+    rs.$el.css('z-index', 100 - this._selectionsGetter($(d.pageView)).length);
   },
 
   removePage: function(pageModel){
@@ -607,8 +608,8 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     this.iasAlreadyInited = true;
   },
 
-  _onSelectStart: function(iasSelection) {
-    Tabula.pdf_view.pdf_document.selections.updateOrCreateByIasId(iasSelection,
+  _onSelectStart: function(selection) {
+    Tabula.pdf_view.pdf_document.selections.updateOrCreateByIasId(selection,
                                                                   this.model.get('number'),
                                                                   this.$image.width());
   },
