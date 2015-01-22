@@ -1,14 +1,39 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    autoprefixer-rails (5.0.0.1)
+      execjs
+    bootstrap-sass (3.3.3)
+      autoprefixer-rails (>= 5.0.0.1)
+      sass (>= 3.2.19)
+    chunky_png (1.3.3)
+    compass (1.0.3)
+      chunky_png (~> 1.2)
+      compass-core (~> 1.0.2)
+      compass-import-once (~> 1.0.5)
+      rb-fsevent (>= 0.9.3)
+      rb-inotify (>= 0.9)
+      sass (>= 3.3.13, < 3.5)
+    compass-core (1.0.3)
+      multi_json (~> 1.0)
+      sass (>= 3.3.0, < 3.5)
+    compass-import-once (1.0.5)
+      sass (>= 3.2, < 3.5)
     cuba (3.3.0)
       rack
+    execjs (2.2.2)
+    ffi (1.9.6-java)
     jruby-jars (1.7.15)
     jruby-rack (1.1.16)
+    multi_json (1.10.1)
     rack (1.5.2)
     rake (10.3.2)
+    rb-fsevent (0.9.4)
+    rb-inotify (0.9.5)
+      ffi (>= 0.5.0)
     rubyzip (1.1.6)
     rufus-lru (1.0.5)
+    sass (3.4.10)
     tabula-extractor (0.7.5-java)
       trollop (~> 2.0)
     tilt (2.0.1)
@@ -23,6 +48,8 @@ PLATFORMS
   java
 
 DEPENDENCIES
+  bootstrap-sass
+  compass
   cuba
   jruby-jars (= 1.7.15)
   rack
