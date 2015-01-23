@@ -4,9 +4,6 @@ var clip = null;
 
 PDF_ID = window.location.pathname.split('/')[2];
 
-// bootstrap 2 only, fix for multiple modal recursion error: http://stackoverflow.com/questions/13649459/twitter-bootstrap-multiple-modal-error
-$.fn.modal.Constructor.prototype.enforceFocus = function () {};
-
 ZeroClipboard.config( { swfPath: "/swf/ZeroClipboard.swf" } );
 
 Tabula.Page = Backbone.Model.extend({
@@ -271,54 +268,51 @@ Tabula.Query = Backbone.Model.extend({
   },
   setExtractionMethod: function(extractionMethod){
     _(this.get('list_of_coords')).each(function(coord_set){ coord_set['extraction_method'] = extractionMethod; });
+  },
+  getDataArray: function(){
+    // this.data is a list of responses (because we sent a list of coordinate sets)
+    // $.each( _.pluck(this.model.get('data'), 'data'), function(i, rows) {
+    //   $.each(rows, function(j, row) {
+    //     tableHTML += '<tr><td>' + _.pluck(row, 'text').join('</td><td>') + '</td></tr>';
+    //   });
+    // });
+    if (!this.get('data')){ return []; }
+    return _(this.get('data')).chain().pluck('data').map(function(table){
+      return _(table).chain().map(function(row){
+        return _.pluck(row, 'text');
+      }).flatten(true).value();
+    }).value();
+
   }
 });
 
 Tabula.DataView = Backbone.View.extend({  // one per query object.
-  el: '#data-modal',
-  $loading: $('#loading'),
-  template: _.template($('#templates #modal-footer-template').html().replace(/nestedscript/g, 'script')),
+  el: '#tabula',
+  // $loading: $('#loading'),
+  template: _.template($('#templates #export-page-template').html().replace(/nestedscript/g, 'script')),
+
   events: {
-    'click .download-dropdown': 'dropDownOrUp',
     'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod',
-    'click .toggle-advanced-options': 'toggleAdvancedOptions',
-    'click .download-btn': 'setFormAction',
-    'hidden': 'handleHidden',
+    'click #download-data': 'setFormAction',
     //N.B.: Download button (and format-specific download buttons) are an HTML form.
     //TODO: handle flash clipboard thingy here.
   },
   pdf_view: null, //added on create
   extractionMethod: "guess",
+  $loading: $('#loading'),
 
   initialize: function(stuff){
-    _.bindAll(this, 'render', 'renderLoading', 'renderFooter', 'renderTable', 'toggleAdvancedOptions', 'dropDownOrUp', 'queryWithToggledExtractionMethod', 'handleHidden', 'trash', 'hideAndTrash', 'setFormAction');
+    _.bindAll(this, 'render', 'renderFlashClipboardNonsense', 'queryWithToggledExtractionMethod', 'setFormAction');
     this.pdf_view = stuff.pdf_view;
     this.listenTo(this.model, 'tabula:query-start', this.render);
     this.listenTo(this.model, 'tabula:query-success', this.render);
     this.$modalBody = this.$el.find('.modal-body');
-  },
-
-  // turns out, bootstrap sucks and when the Tooltips are hidden,
-  // they fire the same 'hidden' event as the modal.
-  handleHidden: function(e){
-    if($(e.target).attr('id') == "data-modal" ) {
-      this.trash();
-    }
+    // TODO: just destroy the current PDFView (or just hide?) and put this in its place.
   },
 
   setFormAction: function(e){
     var formActionUrl = $(e.currentTarget).data('action');
     this.$el.find('form').attr('action', formActionUrl);
-  },
-
-  hideAndTrash: function(){
-    this.$el.modal('hide');
-    this.trash();
-  },
-
-  trash: function(e){
-    Tabula.pdf_view.trashDataView();
-    return this;
   },
 
   renderLoading: function(){
@@ -329,15 +323,40 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   },
 
   render: function(){
-    this.$el.modal('show'); //bootstrap stuff
+    var uniq_extraction_methods = _.uniq(_(this.model.get('list_of_coords')).pluck('extraction_method'));
+    
+    //TODO: move flash_borked to this object (dataview) away from pdf_view
 
+    // TODO: move this into the template
     if(!this.model.get('data')){
       this.renderLoading();
-      this.renderFooter(true);
-    }else{
-      this.renderTable();
-      this.renderFooter(false);
     }
+
+    this.$el.html(this.template({
+      pdf_id: PDF_ID,
+      list_of_coords: JSON.stringify(this.model.get('list_of_coords')),
+      data: this.model.getDataArray(),
+      loading: !this.model.get('data') // does nothing rn
+    }));
+    this.$el.find('#control-panel-container').html(
+      _.template($('#templates #export-control-panel-template').html().replace(/nestedscript/g, 'script'))(
+        {
+          pdf_id: PDF_ID,
+          copyDisabled: Tabula.pdf_view.flash_borked ? 'disabled="disabled" data-toggle="tooltip" title="'+Tabula.pdf_view.flash_borken_message+'"' : ''
+        }
+    ));
+    this.$el.find('#sidebar').html(
+      _.template($('#templates #export-page-sidebar-template').html().replace(/nestedscript/g, 'script')) (
+        {
+          pdf_id: PDF_ID,
+          disableExtractionMethodButtons: _.isNull(this.model.data) || uniq_extraction_methods.length > 1 ? 'disabled="disabled"' : '',
+        }
+    ));
+    this.renderFlashClipboardNonsense();
+    this.$loading = this.$loading.detach();                           // TODO: do in the template
+    this.$el.find('#table-container').css('visibility', 'visible');   // TODO: do in the template
+
+    // TODO: do renderFooter stuff here.
 
     this.$el.find('.has-tooltip').tooltip();
 
@@ -345,26 +364,6 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   },
 
   renderFooter: function(loading){
-    var uniq_extraction_methods = _.uniq(_(this.model.get('list_of_coords')).pluck('extraction_method'));
-
-    templateOptions = {
-      extractionMethodDisabled: _.isNull(this.model.data) || uniq_extraction_methods.length > 1 ? 'disabled="disabled"' : '',
-      pdf_id: PDF_ID,
-      list_of_coords: JSON.stringify(this.model.get('list_of_coords')),
-      copyDisabled: Tabula.pdf_view.flash_borked ? 'disabled="disabled" data-toggle="tooltip" title="'+Tabula.pdf_view.flash_borken_message+'"' : ''
-    };
-
-    //on create, show/hide advanced options area as necessary from this.pdf_view.options
-    if(this.pdf_view.options.get('show_advanced_options')){
-      this.$el.addClass("advanced-options-shown");
-    }
-
-    if (Tabula.pdf_view.flash_borked){
-      this.$el.find('#copy-csv-to-clipboard').addClass('has-tooltip');
-    }
-    var modalFooter = this.$el.find(".modal-footer-container");
-    modalFooter.html(this.template(templateOptions));
-
     // this has to happen after the footer is already in the page, for bootstrap reasons.
     if (uniq_extraction_methods.length == 1){
       this.$el.find('#' + uniq_extraction_methods[0] + '-method-btn').button('toggle');
@@ -380,21 +379,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     }
   },
 
-  renderTable: function(){
-    this.$loading = this.$loading.detach();
-    this.$el.find('.modal-body table').css('visibility', 'visible');
-    this.$modalBody.css('overflow', 'auto');
-
-    var tableHTML = '<table class="table table-condensed table-bordered">';
-    // this.data is a list of responses (because we sent a list of coordinate sets)
-    $.each(_.pluck(this.model.get('data'), 'data'), function(i, rows) {
-      $.each(rows, function(j, row) {
-        tableHTML += '<tr><td>' + _.pluck(row, 'text').join('</td><td>') + '</td></tr>';
-      });
-    });
-    tableHTML += '</table>';
-    this.$modalBody.html(tableHTML);
-
+  renderFlashClipboardNonsense: function(){
     if(!Tabula.pdf_view.client){
       try{
         Tabula.pdf_view.client = new ZeroClipboard();
@@ -434,31 +419,6 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     return this;
   },
 
-  dropDownOrUp: function(e){
-    var $el = $(e.currentTarget);
-    $ul = $el.parent().find('ul');
-
-    window.setTimeout(function(){      // TODO: if we upgrade to bootstrap 3.0
-                                       // we don't need this gross timeout and can, instead,
-                                       // listen for the `dropdown's shown.bs.dropdown` event
-      if(!isElementInViewport($ul)){
-        $el.addClass('dropup');
-        $ul.addClass('bottom-up');
-      }
-    }, 100);
-  },
-
-  toggleAdvancedOptions: function(e){
-    this.pdf_view.options.set('show_advanced_options', !this.pdf_view.options.get('show_advanced_options'));
-    if(this.pdf_view.options.get('show_advanced_options')){
-      this.$el.addClass("advanced-options-shown");
-    }else{
-      this.$el.removeClass("advanced-options-shown");
-    }
-    return false;
-  },
-
-
   queryWithToggledExtractionMethod: function(e){
     this.model.set('data', null);
     var extractionMethod = $(e.currentTarget).data('method');
@@ -476,19 +436,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   page_views: {},
   rectangular_selector: null,
 
-  /* when the Directions area is closed, the pages themselves move up, because they're just static positioned.
-   * The selections on those images, though, do not move up, and need to be moved up separately, since they're fixed.
-   */
-  closeDirections: function(){
-    this.pdf_view.options.set('show-directions', false);
-
-    var directionsRow = $('#directionsRow');
-    var height = directionsRow.height();
-    $('div.imgareaselect-box').each(function(){
-      $(this).offset({top: $(this).offset()["top"] - height });
-    });
-    directionsRow.remove();
-  },
 
   _selectionsGetter: function(target) {
     return this.page_views[$(target).data('page')].selections;
@@ -503,7 +450,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     this.rectangular_selector = new RectangularSelector(
       this.$el,
       {
-        selector: '#main-container .pdf-page img',
+        selector: '#pages-container .pdf-page img',
         end: this._onRectangularSelectorEnd,
         areas: this._selectionsGetter
       }
@@ -562,7 +509,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
 
 Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   document_view: null, //added on create
-  className: 'row pdf-page',
+  className: 'pdf-page',
   iasAlreadyInited: false,
   selections: null,
 
@@ -682,7 +629,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
   className: 'followyouaroundbar',
 
-  template: _.template($('#templates #control-panel-template').html().replace(/nestedscript/g, 'script')),
+  template: _.template($('#templates #select-control-panel-template').html().replace(/nestedscript/g, 'script')),
 
   shouldPreviewDataAutomatically: !$('#should-preview-data-checkbox').is(':checked'),
 
@@ -869,7 +816,7 @@ Tabula.PDFView = Backbone.View.extend({
 
     initialize: function(){
       _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections',
-        'createDataView','trashDataView');
+        'createDataView');
 
       this.pdf_document = new Tabula.Document({
         pdf_id: PDF_ID,
@@ -878,14 +825,12 @@ Tabula.PDFView = Backbone.View.extend({
       this.options = new Tabula.Options();
       this.listenTo(this.options, 'change', this.options.write);
 
-      this.createTour();
-
       this.listenTo(this.pdf_document.page_collection, 'all', this.render);
       this.listenTo(this.pdf_document.page_collection, 'add', this.addOne);
       this.listenTo(this.pdf_document.page_collection, 'reset', this.addAll);
       this.listenTo(this.pdf_document.page_collection, 'remove', this.removePage);
 
-      this.components['document_view'] = new Tabula.DocumentView({el: '#main-container' , pdf_view: this, collection: this.pdf_document.page_collection}); //creates page_views
+      this.components['document_view'] = new Tabula.DocumentView({el: '#pages-container' , pdf_view: this, collection: this.pdf_document.page_collection}); //creates page_views
       this.components['control_panel'] = new Tabula.ControlPanelView({pdf_view: this});
       this.components['sidebar_view'] = new Tabula.SidebarView({pdf_view: this, collection: this.pdf_document.page_collection});
 
@@ -933,19 +878,13 @@ Tabula.PDFView = Backbone.View.extend({
       this.components['data_view'] = new Tabula.DataView({pdf_view: this, model: Tabula.pdf_view.query});
     },
 
-    trashDataView: function(){
-      // the modal HTML stays on the page, so undelegate the events we bound to it via Backbone
-      // (but keeping the Bootstrap events)
-      this.components['data_view'].undelegateEvents();
-      this.components['data_view'] = null;
-    },
-
     addOne: function(page) {
       if(page.get('deleted')){
         return;
       }
       var page_view = new Tabula.PageView({model: page, collection: this.pdf_document.page_collection});
       var thumbnail_view = new Tabula.ThumbnailView({model: page, collection: this.pdf_document.page_collection});
+      // TODO: (2015): if this is the active page, give this thumbnail_view class="active"
       this.components['document_view'].page_views[ page.get('number') ] =  page_view;
       this.components['sidebar_view'].thumbnail_views[ page.get('number') ] = thumbnail_view;
       this.components['document_view'].$el.append(page_view.render().el);
@@ -971,54 +910,13 @@ Tabula.PDFView = Backbone.View.extend({
     render : function(){
       this.components['document_view'].render();
       $('#control-panel-container').append(this.components['control_panel'].render().el);
-      $('.sidebar-nav.well').append(this.components['sidebar_view'].render().el);
+      $('#sidebar').append(this.components['sidebar_view'].render().el);
 
       $('.has-tooltip').tooltip();
 
       this.pageCount = this.pdf_document.page_collection.size();
 
       return this;
-    },
-
-    createTour: function(){
-      Tabula.tour = new Tour(
-        {
-          storage: false,
-          onStart: function(){
-            $('a#help-start').text("Close Help");
-          },
-          onEnd: function(){
-            $('a#help-start').text("Help");
-          }
-        });
-
-      Tabula.tour.addSteps([
-        {
-          content: "Click and drag to select each table in your document. Once you've selected it, a window to preview your data will appear, along with options to download it as a spreadsheet.",
-          element: "#page-div-1 .page-image",
-          title: "Select Tables",
-          placement: 'right'
-        },
-        {
-          element: "#all-data",
-          title: "Download Data",
-          content: "When you've selected all of the tables in your PDF, click this button to preview the data from all of the selections and download it.",
-          placement: 'left'
-        },
-        {
-          element: "#should-preview-data-checkbox",
-          title: "Preview Data Automatically?",
-          content: "After you select each table on a page, a data preview window will appear automatically. If you want to select multiple tables without interruption, uncheck this box to suppress the preview window.",
-          placement: 'left'
-        },
-        {
-          element: "#thumb-page-2",
-          title: "Page Shortcuts",
-          content: "Click a thumbnail to skip directly to that page.",
-          placement: 'right',
-          parent: 'body'
-        }
-      ]);
     },
 
     debugRulings: function(image, render, clean, show_intersections) {
