@@ -3,6 +3,7 @@
 @import "bootstrap-variables";
 @import "bootstrap";
 @import "bootstrap/theme";
+@import "selectors";
 
 @font-face {  // this may not the most Bootstrappy way to do this? not sure why they aren't loading without this
 	font-family: 'Glyphicons Halflings';
@@ -47,7 +48,7 @@ body {
 		position: absolute;
 		content: "";
 		display: block;
-		background-image: url("../assets/tabula-logo.png");
+		background-image: url("../img/logo.png");
 		background-repeat: no-repeat;
 		background-size: 25px 30px;
 		width: 25px;
@@ -221,7 +222,7 @@ form {
 				cursor: pointer;
 			}
 		}
-		.selection {
+		.selection-box, .table-region {
 			border: 1px dashed rgba(255,87,0,0.8);
 			background: rgba(255,87,0,0.2);
 			&:hover {
@@ -260,7 +261,7 @@ form {
 		max-width: 1024px;
 		@include box-shadow ( 0 0 2em rgba(0,0,0,0.4) );
 		position: relative;
-		.selection {
+		.selection-box, .table-region {
 			border: 6px dashed rgba(224,1,1,0.8);
 			background: rgba(224,1,1,0.2);
 			.selection-panel {
@@ -291,16 +292,8 @@ form {
 	}
 }
 
-.selection-mock {
-	width: 40%;
-	height: 30%;
-	position: absolute;
-	top: 18%;
-	left: 19%;
-}
 
-
-body#page-selections {
+body.page-selections {
 	padding-top: 50px;
 	background: $gray-light;
 	#main-pane {
@@ -308,7 +301,7 @@ body#page-selections {
 	}
 }
 
-body#page-export {
+body.page-export {
 	padding-top: 50px;
 	background: white;
 	#sidebar {

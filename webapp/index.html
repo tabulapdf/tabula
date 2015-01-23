@@ -13,7 +13,7 @@
     <title>TKTK | Tabula</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="stylesheets/styles.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -21,20 +21,15 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <!-- 
     <script type="text/javascript" src="/js/vendor/jquery.min.js"></script>
     <script type="text/javascript" src="/js/vendor/underscore-min.js"></script>
     <script type="text/javascript" src="/js/vendor/backbone-min.js"></script>
-    <script type="text/javascript" src="/js/vendor/spin.min.js"></script>
-    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script> -->
-
+    <script type="text/javascript" src="/js/vendor/bootstrap.js"></script>
   </head>
 
 
   <body data-spy="scroll" data-target=".nav.sidebar-nav" data-offset="0">
     <div class="ribbon-wrapper-green" id="dev-mode-ribbon" style="display: none;"><div class="ribbon-green">DEV mode</div></div>
-
-    <a href="https://github.com/tabulapdf/tabula" style="display: none;" id="fork-me-ribbon"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
 
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -44,14 +39,14 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="about.html">My Files</a></li>
-            <li><a href="about.html" class="active">About</a></li> <!-- TODO: remember to add/remove the active class depending on whic hpage we're on. -->
-            <li><a href="help.html">Help</a></li>
+            <li><a href="/">My Files</a></li>
+            <li><a href="/about" class="active">About</a></li> <!-- TODO: remember to add/remove the active class depending on whic hpage we're on. -->
+            <li><a href="help">Help</a></li>
             <li><a href="https://github.com/tabulapdf/tabula">Github</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Mockup Pages <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="import.html">Import</a></li>
+                <li><a href="import.html">Import</a></li> <!-- TODO: -->
                 <li><a href="selections.html"> Make Selection(s)</a></li>
                 <li><a href="export.html">Preview and Export</a></li>
               </ul>
@@ -69,13 +64,10 @@
     </div>
 
 
-
     <div id="templates">
-
       <script type="text/template" id="page-template" >
-        <div class="row pdf-page" id="page-div-<%= number %>">
-          <img class="page-image" draggable="false" src="<%= image_url %>">
-          <br>
+        <div class="page" id="page-div-<%= number %>">
+          <img src="<%= image_url %>" draggable="false">
         </div>
       </script>
       <script type="text/template" id="thumbnail-template" >
@@ -87,141 +79,107 @@
         </span>
         <br>Page <%= number %>
       </script>
-      <script type="text/template" id="control-panel-template" >
-        <button id="all-data" type="button" class="btn btn-success" data-position="left" data-intro="When you've selected all of the tables in your PDF, click this button to preview the data from all of the selections and download it." <%=disable_download_all%>>Download All Data</button>
-          <!-- <button id="repeat-lassos" type="button" class="btn btn-primary">Repeat Page 1 Lassos</button> -->
-        <button id="clear-all-selections" type="button" class="btn btn-danger" <%=disable_clear_all_selections%>>Clear All Selections</button>
-        <button id="restore-detected-tables" type="button" class="btn btn-warning" style="<%=show_restore_detected_tables%>">Autodetect Tables</button>
-        <br /><input type="checkbox" id="should-preview-data-checkbox" <%=if_multiselect_checked%> > <label id="should-preview-data-label" for="should-preview-data-checkbox">Preview Data Automatically? <a class="tooltip-modal has-tooltip" href="#" data-placement="left" data-toggle="tooltip" title="If checked, after you create or change a selection area, the data will appear immediately in a preview window. Uncheck if you want to select multiple tables without interruption. (Formerly named Multi-Select Mode)" ><i class="icon-question-sign" ></i></a></label>
-        <br />
-        <a href="#" id="help-start">Help</a>
+
+
+      <script type="text/template" id="export-control-panel-template">
+        <label for="format">Export Format:</label>
+        <select name="format" class="form-control">
+          <option value="csv">CSV</option>
+          <option value="tsv">TSV</option>
+          <option value="json">JSON</option>
+          <option value="json">JSONX</option>
+          <option value="xml">XML</option>
+        </select>
+        <a href="#"><button type="button" id="download-data" class="btn btn-default" data-action='/pdf/<%=pdf_id%>/data?format=csv'>
+          <span class="glyphicon glyphicon-download"></span>
+          Export
+        </button></a>
+        <a href="#"><button type="button" id="copy-csv-to-clipboard" class="btn btn-default" <%=copyDisabled%> >
+          <span class="glyphicon glyphicon-paperclip"></span>
+           Copy to Clipboard
+        </button></a>
       </script>
-      <script type="text/template" id="modal-footer-template" >
-        <form id="download-form" action="/pdf/<%=pdf_id%>/data?format=csv" method="post">
-          <!-- the whole modal footer has to be inside a <form> so that the various download buttons work -->
-          <div id="hidden-fields">
-          <input type='hidden' class='data-query' name='coords' value='<%=list_of_coords%>' >
+
+      <script type="text/template" id="select-control-panel-template" >
+        <a href="#"><button id="restore-detected-tables" type="button" class="btn btn-default" <%= show_restore_detected_tables %>><span class="glyphicon glyphicon-flash"></span> Autodetect Tables</button></a>
+        <a href="#"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
+        <a href="#"><button type="button" id="all-data" class="btn btn-default" <%= disable_download_all %>><span class="glyphicon glyphicon-eye-open"></span> Preview & Export Extracted Data</button></a>
+      </script>
+
+      <script type="text/template" id="export-page-sidebar-template">
+          <h4>Is the extracted data incorrect?</h4>
+
+          <p>You can revise your selected cells or try an alternate extraction method.</p>
+
+          <h5>Revise Selected Cells</h5>
+          <p>Data has been extracted from the cells you selected in the previous step. You can revise your selection(s) to add or remove cells.</p>
+          <p>
+            <a href="selections.html"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Revise selection(s)</button></a>
+          </p>
+
+          <h5>Choose Alternate Extraction Method</h5>
+
+          <p>The current preview uses the <strong>Stream</strong> extraction method. If the data is not mapped to the correct cells, try the <strong>Lattice</strong> method instead.</p>
+
+          <div class="btn-group" data-toggle="buttons-radio" id="extraction-method-btns" <%=disableExtractionMethodButtons%> >
+            <button type="button" class="btn btn-default extraction-method-btn" disabled="disabled" data-method="original" ><span class="glyphicon glyphicon-th stream"></span> Stream</button>
+            <button type="button" class="btn btn-default extraction-method-btn" data-method="spreadsheet"><span class="glyphicon glyphicon-th lattice"></span> Lattice</button>
           </div>
-          <div class="modal-footer">
-            <div id="basic-options" class="modal-footer-row" style="width: 100%;">
-              <span class="modal-footer-row-label">
-              <label class="has-tooltip show-advanced-options toggle-advanced-options" data-placement="right" data-toggle="tooltip" title="Show Advanced Options"><i class="icon-wrench"></i> Need More Options?</label>
 
-              </span>
-              <!-- TODO: just a copy-to-clipboard-as-tsv option and download-as-csv -->
-              <span style="display: none;">Copied!</span>
+          <p>
+            Stream looks for <em>whitespace</em> between columns, while Lattice looks for <em>boundary lines</em> between columns.
+          </p>
 
-              <button class="btn btn-primary" type="button" id="copy-csv-to-clipboard" <%=copyDisabled%>>Copy to Clipboard</button>
-              <button class="btn btn-primary download-btn" id="download-data" data-action='/pdf/<%=pdf_id%>/data?format=csv' value="CSV">Download CSV</button>
+         <h5>Still look wrong?</h5>
+          <p><a href="#">Contact the developers</a> and tell us what you tried to do that didn’t work.</p>
+      </script>
 
-              <button id="close-modal" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
+      <!-- TODO: abstract out commonalities of select/export page templates -->
+      <script type="text/template" id="export-page-template">
+        <div id="sidebar">
+        </div>
+
+        <div id="main-pane">
+          <form id="download-form" action="/pdf/<%=pdf_id%>/data?format=csv" method="post">
+            <div id="hidden-fields">
+              <input type='hidden' class='data-query' name='coords' value='<%=list_of_coords%>' >
             </div>
-            <div id="advanced-options" class="modal-footer-row" style="width: 100%;">
-              <span class="modal-footer-row-label">
-                <label class="has-tooltip hide-advanced-options toggle-advanced-options" style="display: inline;" data-placement="right" data-toggle="tooltip" title="Hide Advanced Options"><i class="icon-remove"></i> Too Many Options? </label>
-              </span>
-              <label class="has-tooltip" style="display: inline;" for="extraction-method-btns" data-placement="left" data-toggle="tooltip" title="Advanced Users: Tabula has two different extraction methods for extracting data from different kinds of tables. It tries to select the right one automatically, but sometimes chooses incorrectly. Try switching the method if the extracted data doesn't come out right."><i class="icon-question-sign" ></i>Extraction Method: </label>
-              <div class="btn-group" data-toggle="buttons-radio" id="extraction-method-btns" <%=extractionMethodDisabled%> >
-                <button type="button" class="btn btn-warning extraction-method-btn" data-method="original" id="original-method-btn">Original</button>
-                <button type="button" class="btn btn-warning extraction-method-btn" data-method="spreadsheet" id="spreadsheet-method-btn">Spreadsheet</button>
-              </div>
 
-              <div class="btn-group">
-                  <button class="btn btn-primary download-dropdown dropdown-toggle" data-toggle="dropdown">Download Data As... <span class="caret"></span></button> <!-- TODO: add JSON -->
-                  <ul class="dropdown-menu">
-                    <li><input class="linklike download-btn" data-action="/pdf/<%=pdf_id%>/data?format=csv" type="submit" id="download-csv" value="CSV"></li>
-                    <li><input class="linklike download-btn" data-action="/pdf/<%=pdf_id%>/data?format=tsv" type="submit" id="download-tsv" value="TSV"></li>
-                    <li><input class="linklike download-btn" data-action="/pdf/<%=pdf_id%>/data?format=script" type="submit" id="download-script" value="tabula-extractor Script"></li>
-                    <li><input class="linklike download-btn" data-action="/pdf/<%=pdf_id%>/data?format=bbox" type="submit" id="download-bbox" value="Bounding Boxes JSON"></li>
-                  </ul>
-              </div>
+            <div id="control-panel-container">
             </div>
-          </div>
-        </form>
+
+           <h2>Preview of Extracted Tabular Data</h2>
+            <div id="table-container">
+              <table class="table table-bordered">
+                <tbody>
+                <% _(data).each(function(row){ %>
+                  <tr>
+                    <% _(row).each(function(cell){ %>
+                      <td><%= cell %></td>
+                    <% }) %>
+                  </tr>
+                <% }) %>
+                </tbody>
+            </table>
+            </div>
+          </form>
+        </div>
       </script>
 
       <script type="text/template" id="pdf-view-template" >
-        <div class="container-fluid" id="tabula-app">
-          <div class="row-fluid">
-            <div class="span2">
-              <div class="nav well sidebar-nav affix">
-              </div>
-            </div> <!-- /sidebar container -->
-
-            <div class="span6" id="main-container">
-
-              <! -- help thingy -->
-              <div id="directionsRow" class="row">
-                <div class="alert alert-info span7" >
-                  <button id="directions" type="button" class="close">×</button>
-                  <p><strong>How to use</strong>: make a rectangular selection over a table on the PDF pages. That's it!</p>
-                  <p><strong>Hint</strong>: table headers are (still) problematic. Try to exclude it from your selection.</p>
-                </div>
-              </div>
-
-              <div class="row" id="document">
-                <!-- pages go here -->
-              </div>
-
-            </div> <!-- /main container -->
-
-            <div class="span2" id="control-panel-container">
-            </div> <!-- followyouaround bar container -->
+        <div id="sidebar">
+          <!-- thumbnails get rendered here by JS -->
+        </div>
+        <div id="main-pane">
+          <div id="control-panel-container">
+          </div>
+ 
+          <div id="pages-container">
           </div>
         </div>
-
-        <div id="modal-error" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel">Sorry, there's been an error</h3>
-            </div>
-            <div class="modal-body">
-                <p><strong>Tabula</strong> couldn't finish processing your request. We'd appreciate if you could <a href="https://github.com/tabulapdf/tabula/issues/new">report this error in our issue tracker</a>. If possible, please include the document that caused the error and the text below.</p>
-                <textarea></textarea>
-            </div>
-            <div class="modal-footer"></div>
-        </div>
-
-        <div id="data-modal" class="modal dialog-modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">Extracted tabular data</h3>
-          </div>
-          <div class="alert alert-success" id="loading"><span id="spinner"></span><span style="position: relative; left: 16px; font-size: 24px;">Loading...</span></div>
-          <div class="modal-body">
-          </div>
-          <div class="modal-footer-container">
-          </div>
-
-        </div>
-
-        <nestedscript type="text/javascript" src="/js/vendor/bootstrap-tour.min.js"></nestedscript>
-        <nestedscript type="text/javascript" src="/js/resizableSelection.js"></nestedscript>
-        <nestedscript type="text/javascript" src="/js/rectangularSelector.js"></nestedscript>
-
-        <nestedscript type="text/javascript" src="/js/vendor/ZeroClipboard.min.js"></nestedscript>
-        <nestedscript type="text/javascript" src="/js/vendor/table2CSV.js"></nestedscript>
-        <nestedscript type="text/javascript">
-          var SPINNER_OPTS = {
-              lines: 10, // The number of lines to draw
-              length: 5, // The length of each line
-              width: 2, // The line thickness
-              radius: 5, // The radius of the inner circle
-              corners: 1, // Corner roundness (0..1)
-              rotate: 0, // The rotation offset
-              direction: 1, // 1: clockwise, -1: counterclockwise
-              color: '#000', // #rgb or #rrggbb
-              speed: 1.1, // Rounds per second
-              trail: 60, // Afterglow percentage
-              shadow: false, // Whether to render a shadow
-              hwaccel: true, // Whether to use hardware acceleration
-              className: 'spinner', // The CSS class to assign to the spinner
-              zIndex: 2e9, // The z-index (defaults to 2000000000)
-              top: 'auto', // Top position relative to parent in px
-              left: 'auto' // Left position relative to parent in px
-          };
-         new Spinner(SPINNER_OPTS).spin($('#spinner').get(0));
-        </nestedscript>
+        <nestedscript type="text/javascript" src="/js/resizableSelection.js"></nestedscript> 
+        <nestedscript type="text/javascript" src="/js/rectangularSelector.js"></nestedscript> 
+        <nestedscript type="text/javascript" src="/js/vendor/ZeroClipboard.min.js"></nestedscript> 
       </script>
 
       <script type="text/template" id="navbar-template">
@@ -247,96 +205,66 @@
       </script>
 
       <script type="text/template" id="upload-template">
-        <div class="container-fluid">
-          <div class="row-fluid">
-            <div class="span6 offset3">
+        <div class="container">
+          <div class="jumbotron">
+              <h4>Import one or more PDFs</h4>
+              <form action="/upload" method="post" enctype="multipart/form-data" class="form-inline">
 
-              <ul class="unstyled inline">
-                <li>
-                  <iframe src="http://ghbtns.com/github-btn.html?user=jazzido&repo=tabula&type=fork&count=true"allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
-                </li>
-                <li>
-                  <iframe src="http://ghbtns.com/github-btn.html?user=jazzido&repo=tabula&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
-                </li>
-              </ul>
-              <div class="hero-unit" style="padding-left:50px;">
-                <img src="/img/logo.png" class="big-retina-illustration pull-left" style="margin:10px 10px 0 0; width:70px;">
-                <h1>Tabula </h1>
-                <p>Liberate data tables trapped inside PDF files</p>
-              </div> <!-- /hero-unit -->
+              <div class="input-group">
+              <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
+                  <span class="input-group-btn">
+                      <span class="btn btn-primary btn-file">
+                          Browse&hellip; <input type="file" id="file" name="file" multiple accept="application/pdf">
+                      </span>
+                  </span>
+                  <input type="text" class="form-control" readonly>
+              </div>
+                 <button type="submit" class="btn btn-default">Import</button>
+              </form>
 
-              <div class="alert alert-warning alert-dismissable" id="update-alert" style="display: none;">
-                  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                  <strong>New version!</strong> <a href="">Tabula <span id="new-version">version</span></a> is available (you have <span id="installed-version"><%= TABULA_VERSION %></span>)
+              <h4><% if(importing){ %><em>Importing…</em><% }else{ %> Upload Progress<% } %></h4>
+              <div class="progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= pct_complete %>%;"><span class="sr-only"> <%= pct_complete %>% Complete </span></div>
               </div>
 
-              <div class="alert alert-warning alert-dismissable" id="custom-alert" style="display: none;">
-                  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                  <strong>New version!</strong> <span class="custom-alert-body"></span>
-              </div>
+              <hr>
 
-              <div id="demo">
+              <h4>Imported PDFs</h4>
 
-                <div class="row-fluid">
-                  <div class="span6">
-                    <div class="page-header">
-                      <h4>Upload a PDF</h4>
-                    </div>
-                    <form action="/upload" enctype="multipart/form-data" method="post">
-                      <input type="checkbox" name="autodetect-tables" id="autodetect-tables">
-                      <label for="autodetect-tables" style="display: inline;">Auto-Detect Tables</label>
-                      <div id="autodetect-explainer" class="explanation-label">Table auto-detection can be time-consuming, especially for large PDFs.</div>
-                      <input name="file" type="file" id="file" accept="application/pdf">
-                      <input type="submit" class="btn btn-primary" value="Submit">
-                    </form>
-                  </div>
+              <table class="table file-list tablesorter" id="fileTable">
+                <thead>
+                  <tr>
+                    <th>File Name</th>
+                    <th>Size</th>
+                    <th>Pages</th>
+                    <th>Date Added</th>
+                    <th>Remove</th>
+                    <th>Process</th>
+                  </tr>
+                </thead>
+                <tbody id="uploaded-files-container">
+                </tbody>
+              </table>
 
-                  <div class="span6">
-                    <div class="page-header">
-                      <h4>Uploaded files</h4>
-                    </div>
-                    <div id="uploaded-files-container"></div>
-                  </div>
-                </div>
-              </div>
-              <nestedscript type="text/javascript">
-                  var TABULA_VERSION = '<%= TABULA_VERSION %>';
-              </nestedscript>
-              <nestedscript type="text/javascript" src="/js/file-library.js"></nestedscript>
-              <nestedscript type="text/javascript" src="/js/update-notifications.js"></nestedscript>
+          </div> <!-- /jumbotron -->
+        </div> <!-- /container -->
 
-              <br><br><hr>
-              <p><strong>Tabula</strong> was created by <a href="http://jazzido.com/" target="_blank">Manuel Aristarán</a>, <a href="https://mike.tig.as/" target="_blank">Mike Tigas</a> and <a href="http://jeremybmerrill.com/" target="_blank">Jeremy B. Merrill</a>with the support of <a href="http://propublica.org">ProPublica</a>, <a href="http://blogs.lanacion.com.ar/data/">La Nación DATA</a>, <a href="http://www.mozillaopennews.org/">Knight-Mozilla OpenNews</a>, <a href="http://nytimes.com">The New York Times</a> and <a href="http://www.knightfoundation.org/">The Knight Foundation</a></p>
-            </div>
-          </div>
-        </div>
-
-        <div id="notifications-modal" class="modal dialog-modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">Welcome to Tabula!</h3>
-          </div>
-          <div class="modal-body">
-            <p>Would you like this app to show Tabula announcements and updates</p>
-            <p style="font-size: small;">If you select yes, Tabula will load a feed of release info and a feed of announcements from Github. Tabula never sends your documents or any of your personal information or data to any remote server. We use traffic statistics from these feeds to count how many people are using Tabula.</p>
-            <p><input type="checkbox" name="update_notifications" id="update-notifications">Yes, please notify me.</p>
-            <button type="button" class="btn" onclick="$('#notifications-modal').modal('hide')">Close</button>
-          </div>
-          <div class="modal-footer" style="position: relative">
-          </div>
-        </div>
+        <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
+        <nestedscript type="text/javascript" src="/js/vendor/upload-group.js"></nestedscript> 
+        <nestedscript type="text/javascript" src="/js/vendor/jquery.tablesorter.min.js"></nestedscript>
       </script>
 
       <script type="text/template" id="uploaded-files-template">
-        <ul id="uploadedfiles">
           <% _(workspace).each(function(file){ %>
-            <li>
-              <a href="/pdf/<%= file['id'] %>"><%= file['file'] %></a>
-              <span>(<%= new Date(parseInt(file['time']) * 1000).toUTCString().slice(5, -7) %>)</span> <!-- .toUTCString().slice(4, -7) -->
-              <button class="icon-remove"></button>
-            </li>
+            <tr>
+              <td><%= file['file'] %></td>
+              <td>TK kB</td> <!-- TODO size -->
+              <td>TK</td>     <!-- TODO page count -->
+              <td><%= new Date(parseInt(file['time']) * 1000).toUTCString().slice(5, -7) %></td>
+              <td><a href="#"><span class="glyphicon glyphicon-remove"></span></a></td>
+              <td><a href="/pdf/<%= file['id'] %>"><button type="button" class="btn btn-sm btn-success">Extract Data</button></a></td>
+            </tr>
           <% }) %>
-        </ul>
       </script>
 
       <script type="text/template" id="upload-error-template" >
@@ -353,25 +281,6 @@
         </div>
       </script>
 
-      <script type="text/template" id="upload-status-template">
-        <div class="container-fluid">
-          <div class="row-fluid">
-            <div class="span6 offset3">
-              <div class="hero-unit">
-                <h1>Tabula</h1>
-                <h2>Processing File</h2>
-                <div class="progress progress-striped active">
-                  <div class="bar" style="width: <%= pct_complete %>%; "></div>
-                </div>
-                <div id="spinner" style="display:block;float:left;width:2em;height:1em;margin:3px 0 0 0"></div>
-
-                <p><span id="percent"><%= pct_complete %>%</span><span id="message"><% if status %>: <%= status.first %><% elsif pct_complete == 0 %>: waiting to be processed...<% end %></span></p>
-              </div> <!-- /hero-unit -->
-            </div>
-          </div>
-        </div>
-      </script>
-
     </div> <!-- /templates -->
 
 
@@ -381,21 +290,6 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
 
- 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="javascripts/bootstrap.js"></script>
-
-    <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
-    <script type="text/javascript" src="javascripts/upload-group.js"></script> 
-
-    <!-- we're using this: https://github.com/christianbach/tablesorter -->
-    <script type="text/javascript" src="javascripts/jquery.tablesorter.min.js"></script> 
-    <script>
-      $(document).ready(function() 
-          { 
-              $("#fileTable").tablesorter( { headers: { 4: { sorter: false}, 5: {sorter: false} } } ); 
-          } 
-      ); 
     </script> <!-- TODO: move this to tabula.js, only run it if we're in upload page viewer -->
 
     <script type="text/javascript" src="/js/tabula.js"></script> <!-- actually starts Tabula -->
