@@ -15,6 +15,9 @@
     <!-- Bootstrap core CSS -->
     <link href="/css/styles.css" rel="stylesheet">
 
+    <!-- Selector-specific CSS -->
+    <link href="/css/selectors.css" rel="stylesheet">
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -42,13 +45,13 @@
             <li><a href="/">My Files</a></li>
             <li><a href="/about" class="active">About</a></li> <!-- TODO: remember to add/remove the active class depending on whic hpage we're on. -->
             <li><a href="help">Help</a></li>
-            <li><a href="https://github.com/tabulapdf/tabula">Github</a></li>
+            <li><a href="https://github.com/tabulapdf/tabula">Source Code</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Mockup Pages <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="import.html">Import</a></li> <!-- TODO: -->
-                <li><a href="selections.html"> Make Selection(s)</a></li>
-                <li><a href="export.html">Preview and Export</a></li>
+                <li><a href="mockup/import.html">Import</a></li> <!-- TODO: -->
+                <li><a href="mockup/selections.html"> Make Selection(s)</a></li>
+                <li><a href="mockup/export.html">Preview and Export</a></li>
               </ul>
             </li>
           </ul>
@@ -71,33 +74,37 @@
         </div>
       </script>
       <script type="text/template" id="thumbnail-template" >
-        <a href="#page-<%= number %>"><img src="<%= image_url %>" width="100"></a>
-        <span>
-          <i title="delete this page" class="icon-remove delete-page"></i>
+        <a href="#page-<%= number %>"><img src="<%= image_url %>"></a>
+        <div class="remove">
+          <span class="glyphicon glyphicon-remove delete-page"></span>
           <!-- i title="rotate this page right" class="icon-repeat rotate-left"></i>
           <i title="rotate this page left" class="icon-repeat flip rotate-right"></i -->
-        </span>
-        <br>Page <%= number %>
+        </div>
+        <p><%= number %></p>
       </script>
 
-
       <script type="text/template" id="export-control-panel-template">
-        <label for="format">Export Format:</label>
-        <select name="format" class="form-control">
-          <option value="csv">CSV</option>
-          <option value="tsv">TSV</option>
-          <option value="json">JSON</option>
-          <option value="json">JSONX</option>
-          <option value="xml">XML</option>
-        </select>
-        <a href="#"><button type="button" id="download-data" class="btn btn-default" data-action='/pdf/<%=pdf_id%>/data?format=csv'>
-          <span class="glyphicon glyphicon-download"></span>
-          Export
-        </button></a>
-        <a href="#"><button type="button" id="copy-csv-to-clipboard" class="btn btn-default" <%=copyDisabled%> >
-          <span class="glyphicon glyphicon-paperclip"></span>
-           Copy to Clipboard
-        </button></a>
+        <form id="download-form" action="/pdf/<%=pdf_id%>/data?format=csv" method="post">
+          <div id="hidden-fields">
+            <input type='hidden' class='data-query' name='coords' value='<%=list_of_coords%>' >
+          </div>
+          <label for="format">Export Format:</label>
+          <select name="format" class="form-control">
+            <option value="csv">CSV</option>
+            <option value="tsv">TSV</option>
+            <option value="json">JSON</option>
+            <option value="json">💩SV</option>
+            <option value="xml">XML</option>
+          </select>
+          <a href="#"><button type="submit" id="download-data" class="btn btn-default" data-action='/pdf/<%=pdf_id%>/data?format=csv'>
+            <span class="glyphicon glyphicon-download"></span>
+            Export
+          </button></a>
+          <a href="#"><button type="button" id="copy-csv-to-clipboard" class="btn btn-default" <%=copyDisabled%> >
+            <span class="glyphicon glyphicon-paperclip"></span>
+             Copy to Clipboard
+          </button></a>
+        </form>
       </script>
 
       <script type="text/template" id="select-control-panel-template" >
@@ -114,7 +121,7 @@
           <h5>Revise Selected Cells</h5>
           <p>Data has been extracted from the cells you selected in the previous step. You can revise your selection(s) to add or remove cells.</p>
           <p>
-            <a href="selections.html"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Revise selection(s)</button></a>
+            <button type="button" class="btn btn-default" id="revise-selections"><span class="glyphicon glyphicon-arrow-left"></span> Revise selection(s)</button>
           </p>
 
           <h5>Choose Alternate Extraction Method</h5>
@@ -131,7 +138,7 @@
           </p>
 
          <h5>Still look wrong?</h5>
-          <p><a href="#">Contact the developers</a> and tell us what you tried to do that didn’t work.</p>
+          <p><a href="http://www.github.com/tabulapdf/tabula/issues/new">Contact the developers</a> and tell us what you tried to do that didn’t work.</p>
       </script>
 
       <!-- TODO: abstract out commonalities of select/export page templates -->
@@ -140,17 +147,12 @@
         </div>
 
         <div id="main-pane">
-          <form id="download-form" action="/pdf/<%=pdf_id%>/data?format=csv" method="post">
-            <div id="hidden-fields">
-              <input type='hidden' class='data-query' name='coords' value='<%=list_of_coords%>' >
-            </div>
-
-            <div id="control-panel-container">
+            <div id="control-panel">
             </div>
 
            <h2>Preview of Extracted Tabular Data</h2>
             <div id="table-container">
-              <table class="table table-bordered">
+              <table class="table table-bordered extracted-table">
                 <tbody>
                 <% _(data).each(function(row){ %>
                   <tr>
@@ -162,7 +164,6 @@
                 </tbody>
             </table>
             </div>
-          </form>
         </div>
       </script>
 
@@ -171,7 +172,7 @@
           <!-- thumbnails get rendered here by JS -->
         </div>
         <div id="main-pane">
-          <div id="control-panel-container">
+          <div id="control-panel">
           </div>
  
           <div id="pages-container">

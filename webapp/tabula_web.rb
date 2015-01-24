@@ -47,7 +47,7 @@ MAX_CACHE_ENTRIES = 10
 Cuba.plugin Cuba::Render
 Cuba.settings[:render].store(:views, File.expand_path("views", File.dirname(__FILE__)))
 Cuba.use Rack::MethodOverride
-Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/swf"]
+Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/swf", "/fonts"]
 Cuba.use Rack::ContentLength
 Cuba.use Rack::Reloader
 
@@ -187,7 +187,7 @@ Cuba.define do
       GenerateThumbnailJob.create(:file_id => file_id,
                                   :file => file,
                                   :output_dir => file_path,
-                                  :thumbnail_sizes => [560],
+                                  :thumbnail_sizes => [800],
                                   :batch => job_batch)
 
       res.redirect "/queue/#{job_batch}?file_id=#{file_id}"

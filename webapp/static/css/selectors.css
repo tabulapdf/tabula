@@ -16,7 +16,6 @@
 /* rectangularSelector.js classes */
 /* line 15, ../sass/selectors.scss */
 .selection-box {
-  border: 1px dotted black;
   z-index: 42;
   position: absolute;
   width: 0;
@@ -24,7 +23,7 @@
   visibility: hidden;
 }
 
-/* line 24, ../sass/selectors.scss */
+/* line 23, ../sass/selectors.scss */
 div.table-region {
   position: absolute;
   top: 0;
@@ -33,7 +32,7 @@ div.table-region {
   background-color: rgba(100, 100, 100, 0.2);
 }
 
-/* line 32, ../sass/selectors.scss */
+/* line 31, ../sass/selectors.scss */
 div.table-region .resize-handle {
   position: absolute;
   background-repeat: no-repeat;
@@ -41,7 +40,7 @@ div.table-region .resize-handle {
   background-position: center center;
 }
 
-/* line 39, ../sass/selectors.scss */
+/* line 38, ../sass/selectors.scss */
 div.table-region .n-border {
   width: 100%;
   top: 0;
@@ -49,12 +48,12 @@ div.table-region .n-border {
   height: 5px;
 }
 
-/* line 45, ../sass/selectors.scss */
+/* line 44, ../sass/selectors.scss */
 div.table-region .n-border:hover {
   cursor: n-resize;
 }
 
-/* line 49, ../sass/selectors.scss */
+/* line 48, ../sass/selectors.scss */
 div.table-region .nw-border {
   width: 5px;
   height: 5px;
@@ -62,12 +61,12 @@ div.table-region .nw-border {
   left: 0;
 }
 
-/* line 54, ../sass/selectors.scss */
+/* line 53, ../sass/selectors.scss */
 div.table-region .nw-border:hover {
   cursor: nw-resize;
 }
 
-/* line 58, ../sass/selectors.scss */
+/* line 57, ../sass/selectors.scss */
 div.table-region .ne-border {
   width: 5px;
   height: 5px;
@@ -75,24 +74,24 @@ div.table-region .ne-border {
   right: 0;
 }
 
-/* line 63, ../sass/selectors.scss */
+/* line 62, ../sass/selectors.scss */
 div.table-region .ne-border:hover {
   cursor: ne-resize;
 }
 
-/* line 67, ../sass/selectors.scss */
+/* line 66, ../sass/selectors.scss */
 div.table-region .s-border {
   width: 100%;
   bottom: 0px;
   height: 5px;
 }
 
-/* line 73, ../sass/selectors.scss */
+/* line 72, ../sass/selectors.scss */
 div.table-region .s-border:hover {
   cursor: s-resize;
 }
 
-/* line 77, ../sass/selectors.scss */
+/* line 76, ../sass/selectors.scss */
 div.table-region .sw-border {
   width: 5px;
   height: 5px;
@@ -100,12 +99,12 @@ div.table-region .sw-border {
   left: 0;
 }
 
-/* line 82, ../sass/selectors.scss */
+/* line 81, ../sass/selectors.scss */
 div.table-region .sw-border:hover {
   cursor: sw-resize;
 }
 
-/* line 86, ../sass/selectors.scss */
+/* line 85, ../sass/selectors.scss */
 div.table-region .se-border {
   width: 5px;
   height: 5px;
@@ -113,31 +112,31 @@ div.table-region .se-border {
   right: 0;
 }
 
-/* line 91, ../sass/selectors.scss */
+/* line 90, ../sass/selectors.scss */
 div.table-region .se-border:hover {
   cursor: se-resize;
 }
 
-/* line 95, ../sass/selectors.scss */
+/* line 94, ../sass/selectors.scss */
 div.table-region .w-border {
   height: 100%;
   left: 0;
   width: 5px;
 }
 
-/* line 101, ../sass/selectors.scss */
+/* line 100, ../sass/selectors.scss */
 div.table-region .w-border:hover {
   cursor: w-resize;
 }
 
-/* line 105, ../sass/selectors.scss */
+/* line 104, ../sass/selectors.scss */
 div.table-region .e-border {
   height: 100%;
   right: 0px;
   width: 5px;
 }
 
-/* line 111, ../sass/selectors.scss */
+/* line 110, ../sass/selectors.scss */
 div.table-region button[name=close] {
   font-weight: bold;
   border: 0;
@@ -149,12 +148,12 @@ div.table-region button[name=close] {
   left: 100%;
 }
 
-/* line 122, ../sass/selectors.scss */
+/* line 121, ../sass/selectors.scss */
 div.table-region button[name=close]:hover {
   color: red;
 }
 
-/* line 128, ../sass/selectors.scss */
+/* line 127, ../sass/selectors.scss */
 div.table-region .e-border:hover {
   cursor: e-resize;
 }

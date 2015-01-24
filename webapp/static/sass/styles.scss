@@ -14,6 +14,8 @@
 	     url('../fonts/bootstrap/glyphicons-halflings-regular.svg#webfont') format('svg');
 }
 
+$sidebarWidth: 195px;
+
 body {
 	padding-top: 70px;
 }
@@ -162,7 +164,7 @@ form {
 
 #sidebar {
 	background: $gray-lighter;
-	width: 180px;
+	width: $sidebarWidth;
 	padding: 1em 0 0;
 	height: calc(100% - 51px);
 	text-align: center;
@@ -184,49 +186,53 @@ form {
 	p {
 		font-size: .9em;
 	}
-	div.page  {
-		margin: 0 auto 1.25em;
-		display: block;
-		width: 90%;
-		padding: 1em .5em .5em 1em;
-		position: relative;
-		img {
+	.thumbnail-list {
+		padding-left: 0px;
+
+		.page  {
+			margin: 0 auto 1.25em;
 			display: block;
-			width: 100%;
-		}
-		p {
-			margin-top: .25em;
-			color: $gray;
-			line-height: 1;
-		}
-		&:hover {
+			width: 90%;
+			padding: 1em .5em .5em 1em;
+			position: relative;
 			img {
-				cursor: pointer;
-				@include box-shadow ( 0 0 0 .1em rgba(0,0,0,0.1) );
+				display: block;
+				width: 100%;
 			}
-		}	
-		&.active {
-			img {
-				@include box-shadow ( 0 0 0 .1em $brand-info );
+			p {
+				margin-top: .25em;
+				color: $gray;
+				line-height: 1;
 			}
-		}
-		.remove {
-			position: absolute;
-			left: -.25em; 
-			top: 1em;
-			height: 1em;
-			display: block;
-			line-height: 1;
-			font-size: 1em;
 			&:hover {
-				cursor: pointer;
+				img {
+					cursor: pointer;
+					@include box-shadow ( 0 0 0 .1em rgba(0,0,0,0.1) );
+				}
+			}	
+			&.active {
+				img {
+					@include box-shadow ( 0 0 0 .1em $brand-info );
+				}
 			}
-		}
-		.selection-box, .table-region {
-			border: 1px dashed rgba(255,87,0,0.8);
-			background: rgba(255,87,0,0.2);
-			&:hover {
-				cursor: pointer;
+			.remove {
+				position: absolute;
+				left: -.25em; 
+				top: 1em;
+				height: 1em;
+				display: block;
+				line-height: 1;
+				font-size: 1em;
+				&:hover {
+					cursor: pointer;
+				}
+			}
+			.selection-box, .table-region {
+				border: 1px dashed rgba(255,87,0,0.8);
+				background: rgba(255,87,0,0.2);
+				&:hover {
+					cursor: pointer;
+				}
 			}
 		}
 	}
@@ -235,7 +241,7 @@ form {
 #control-panel {
 	position: fixed;
 	top: 50px;
-	left: 180px;
+	left: $sidebarWidth;
 	width: 100%;
 	z-index: 3;
 	background: #d9edf7;
@@ -251,44 +257,45 @@ form {
 #main-pane {
 	background: $gray-light;
 	padding: 4.25em 2em 2em 2em;
-	left: 180px; 
+	left: $sidebarWidth; 
 	height: 100%;
 	width: calc(100% - 200px);
 	position: relative;
 	z-index: 1;
-	div.page {
+	.page {
 		width: 100%;
 		max-width: 1024px;
 		@include box-shadow ( 0 0 2em rgba(0,0,0,0.4) );
 		position: relative;
-		.selection-box, .table-region {
-			border: 6px dashed rgba(224,1,1,0.8);
-			background: rgba(224,1,1,0.2);
-			.selection-panel {
-				display: none;
-				position: absolute;
-				bottom: -2.8em;
-				left: 0;
-				min-width: 320px;
-				button:hover {
-						cursor: pointer;
-				}
-			}
-			&:hover {
-				cursor: move;
-				.selection-panel {
-					display: block;
-				}	
-			}
-		}
 		img {
 			margin: 2em 0;
 			display: block;
 			width: 100%;
+			max-width: 800px;
 			&:hover {
 				cursor: crosshair;
 			}
 		}		
+	}
+	.selection-box, .table-region {
+		border: 6px dashed rgba(224,1,1,0.8);
+		background: rgba(224,1,1,0.2);
+		.selection-panel {
+			display: none;
+			position: absolute;
+			bottom: -2.8em;
+			left: 0;
+			min-width: 320px;
+			button:hover {
+					cursor: pointer;
+			}
+		}
+		&:hover {
+			cursor: move;
+			.selection-panel {
+				display: block;
+			}	
+		}
 	}
 }
 
