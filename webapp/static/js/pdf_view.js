@@ -257,8 +257,8 @@ Tabula.Query = Backbone.Model.extend({
 
           }, this),
         error: _.bind(function(xhr, status, error) {
+          //TODO: write this.
           console.log("error!");
-          Tabula.pdf_view.components['data_view'].hideAndTrash();
           $('#modal-error textarea').html(xhr.responseText);
           $('#modal-error').modal('show');
           if (options !== undefined && _.isFunction(options.error))
@@ -287,7 +287,7 @@ Tabula.Query = Backbone.Model.extend({
 });
 
 Tabula.DataView = Backbone.View.extend({  // one per query object.
-  el: '#tabula',
+  el: '#tabula-dataview',
   // $loading: $('#loading'),
   template: _.template($('#templates #export-page-template').html().replace(/nestedscript/g, 'script')),
 
@@ -311,7 +311,10 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   },
 
   closeAndRenderSelectionView: function(){
-    alert('TODO: not yet implemented ')
+    this.$el.empty();
+    this.undelegateEvents();
+    this.pdf_view.render();
+    this.pdf_view.$el.show();
   },
 
   setFormAction: function(e){
@@ -333,6 +336,8 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     //TODO: move flash_borked to this object (dataview) away from pdf_view
     $('body').removeClass('page-selections');
     $('body').addClass('page-export');
+
+    this.pdf_view.$el.hide();
 
     // TODO: move this into the template
     if(!this.model.get('data')){
