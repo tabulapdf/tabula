@@ -296,29 +296,34 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     'click #download-data': 'setFormAction',
     //N.B.: Download button (and format-specific download buttons) are an HTML form.
     //TODO: handle flash clipboard thingy here.
+    'click #revise-selections': 'closeAndRenderSelectionView'
   },
   pdf_view: null, //added on create
   extractionMethod: "guess",
   $loading: $('#loading'),
 
   initialize: function(stuff){
-    _.bindAll(this, 'render', 'renderFlashClipboardNonsense', 'queryWithToggledExtractionMethod', 'setFormAction');
+    _.bindAll(this, 'render', 'renderFlashClipboardNonsense', 'queryWithToggledExtractionMethod', 'closeAndRenderSelectionView', 'setFormAction');
     this.pdf_view = stuff.pdf_view;
     this.listenTo(this.model, 'tabula:query-start', this.render);
     this.listenTo(this.model, 'tabula:query-success', this.render);
-    this.$modalBody = this.$el.find('.modal-body');
     // TODO: just destroy the current PDFView (or just hide?) and put this in its place.
+  },
+
+  closeAndRenderSelectionView: function(){
+    alert('TODO: not yet implemented ')
   },
 
   setFormAction: function(e){
     var formActionUrl = $(e.currentTarget).data('action');
-    this.$el.find('form').attr('action', formActionUrl);
+    console.log('setFormActoin', formActionUrl, this.$el.find('#download-form'))
+    this.$el.find('#download-form').attr('action', formActionUrl);
   },
 
   renderLoading: function(){
-    this.$modalBody.prepend(this.$loading.show());
-    this.$el.find('.modal-body table').css('visibility', 'hidden');
-    this.$modalBody.css('overflow', 'hidden');
+    this.$el.prepend(this.$loading.show());
+    this.$el.find('table.extracted-table').css('visibility', 'hidden');
+    this.$el.css('overflow', 'hidden');
     return this;
   },
 
@@ -326,6 +331,8 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     var uniq_extraction_methods = _.uniq(_(this.model.get('list_of_coords')).pluck('extraction_method'));
     
     //TODO: move flash_borked to this object (dataview) away from pdf_view
+    $('body').removeClass('page-selections');
+    $('body').addClass('page-export');
 
     // TODO: move this into the template
     if(!this.model.get('data')){
@@ -334,14 +341,14 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
     this.$el.html(this.template({
       pdf_id: PDF_ID,
-      list_of_coords: JSON.stringify(this.model.get('list_of_coords')),
       data: this.model.getDataArray(),
       loading: !this.model.get('data') // does nothing rn
     }));
-    this.$el.find('#control-panel-container').html(
+    this.$el.find('#control-panel').html(
       _.template($('#templates #export-control-panel-template').html().replace(/nestedscript/g, 'script'))(
         {
           pdf_id: PDF_ID,
+          list_of_coords: JSON.stringify(this.model.get('list_of_coords')),
           copyDisabled: Tabula.pdf_view.flash_borked ? 'disabled="disabled" data-toggle="tooltip" title="'+Tabula.pdf_view.flash_borken_message+'"' : ''
         }
     ));
@@ -627,7 +634,6 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     'click #all-data': 'query_all_data',
     'click #repeat-lassos': 'repeatLassos',
   },
-  className: 'followyouaroundbar',
 
   template: _.template($('#templates #select-control-panel-template').html().replace(/nestedscript/g, 'script')),
 
@@ -685,9 +691,6 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   render: function(){
-    // makes the "follow you around bar" actually follow you around. ("sticky nav")
-    $('.followyouaroundbar').affix({top: 70 });
-
     var numOfSelectionsOnPage = this.pdf_view.totalSelections();
     this.$el.html(this.template({
                   'if_multiselect_checked': this.pdf_view.options.get('multiselect_mode') ? '' : 'checked="checked"',
@@ -739,10 +742,12 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     'click i.delete-page': 'delete_page',
   },
   tagName: 'li',
-  className: "thumbnail pdf-page",
+  className: "page-thumbnail pdf-page page", //TODO: get rid of either pdf-page or page class (it's just duplicative)
   id: function(){
     return 'thumb-page-' + this.model.get('number');
   },
+
+  // TODO: add 'active' class if page is active
 
   // initialize: function(){
   // },
@@ -909,7 +914,7 @@ Tabula.PDFView = Backbone.View.extend({
 
     render : function(){
       this.components['document_view'].render();
-      $('#control-panel-container').append(this.components['control_panel'].render().el);
+      $('#control-panel').append(this.components['control_panel'].render().el);
       $('#sidebar').append(this.components['sidebar_view'].render().el);
 
       $('.has-tooltip').tooltip();
