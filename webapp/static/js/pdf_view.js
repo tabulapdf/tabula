@@ -634,9 +634,9 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 Tabula.ControlPanelView = Backbone.View.extend({ // only one
   events: {
     'click #should-preview-data-checkbox' : 'updateShouldPreviewDataAutomaticallyButton',
-    'click #clear-all-selections': 'clear_all_selection',
-    'click #restore-detected-tables': 'restore_detected_tables',
-    'click #all-data': 'query_all_data',
+    'click #clear-all-selections': 'clearAllSelections',
+    'click #restore-detected-tables': 'restoreDetectedTables',
+    'click #all-data': 'queryAllData',
     'click #repeat-lassos': 'repeatLassos',
   },
 
@@ -656,7 +656,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     /* TODO: write this */
   },
 
-  clear_all_selection: function(){
+  clearAllSelections: function(){
     _.each(this.pdf_view.components.document_view.page_views,
            function(pv,i,l) {
              _.each(pv.selections, function(s, j, sels) {
@@ -665,17 +665,17 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
            });
   },
 
-  restore_detected_tables: function(){
+  restoreDetectedTables: function(){
     this.pdf_view.pdf_document.selections.reset([]);
     this.pdf_view.pdf_document.selections.fetch();
   },
 
   initialize: function(stuff){
     this.pdf_view = stuff.pdf_view;
-    _.bindAll(this, 'updateShouldPreviewDataAutomaticallyButton', 'query_all_data', 'render');
+    _.bindAll(this, 'updateShouldPreviewDataAutomaticallyButton', 'queryAllData', 'render');
   },
 
-  query_all_data : function(){
+  queryAllData : function(){
     var list_of_all_coords = Tabula.pdf_view.pdf_document.selections.invoke("toCoords");
 
     //TODO: figure out how to handle extraction methods when there are multiple selections
