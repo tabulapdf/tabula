@@ -101,6 +101,7 @@ def upload(req)
                               :output_dir => file_path,
                               :batch => job_batch)
 
+
   GenerateThumbnailJob.create(:file_id => file_id,
                               :file => file,
                               :output_dir => file_path,
@@ -196,8 +197,12 @@ Cuba.define do
       # Make sure this is a PDF, before doing anything
       unless is_valid_pdf?(req.params['file'][:tempfile].path)
         res.status = 400
-        res.write view("upload_error.html",
-                       :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
+        res.write(JSON.dump({
+          :success => false,
+          :file_id => file_id,
+          :upload_id => job_batch,
+          :error => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. Please try again."
+          }))
         next # halt this handler
       end
 

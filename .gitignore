@@ -1,6 +1,7 @@
 static/pdfs
 local_settings.rb
 tabula.war
+.sass-cache
 
 lib/jars/javacv*
 .ruby-gemset

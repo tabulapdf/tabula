@@ -15,7 +15,12 @@ class GeneratePageIndexJob < Tabula::Background::Job
 
     extractor = Tabula::Extraction::PagesInfoExtractor.new(file)
     File.open(output_dir + "/pages.json", 'w') do |f|
-      f.puts extractor.pages.to_a.to_json
+      page_data = extractor.pages.to_a
+      unless page_data.any?(&:has_text?)
+        at(0, 100, "No text data found") 
+        raise Tabula::NoTextDataException, "no text data found"
+      end
+      f.puts page_data.to_json
     end
 
     at(100, 100, "complete")
