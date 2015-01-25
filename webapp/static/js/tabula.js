@@ -29,12 +29,18 @@ var TabulaRouter = Backbone.Router.extend({
       }
     })
 
-    $('#tabula-app').html( _.template( $('#upload-template').html().replace(/nestedscript/g, 'script') )({
-      TABULA_VERSION: TABULA_VERSION,
-      pct_complete: 0,
-      importing: false
-    }) );
-    $("#fileTable").tablesorter( { headers: { 4: { sorter: false}, 5: {sorter: false} } } ); 
+    $.ajax({
+      url: "/js/upload.js",
+      dataType: "script",
+      async: true,
+      success: function(data, status, jqxhr){
+        new Tabula.Upload({el: $('#tabula-app')[0]}).render();
+        $("#fileTable").tablesorter( { headers: { 4: { sorter: false}, 5: {sorter: false} } } ); 
+      },
+      error: function(a,b,c){
+        console.log(a,b,c);
+      }
+    });
   },
 
   // TODO: requires interacting with resque.
@@ -78,28 +84,6 @@ var TabulaRouter = Backbone.Router.extend({
       }
     });
   },
-
-  // extract: function(file_id, ) {
-  //   $('body').prepend( _.template( $('#navbar-template').html().replace(/nestedscript/g, 'script') )({}) ); // navbar.
-  //   $('body').addClass('page-export')
-  //   $('#tabula-app').html( _.template( $('#page-export-template').html().replace(/nestedscript/g, 'script') )({}) );
-  
-  //   $.ajax({
-  //     url: "/js/pdf_extract.js",
-  //     dataType: "script",
-  //     async: true,
-  //     success: function(data, status, jqxhr){
-
-
-  //       Tabula.pdf_view = new Tabula.PDFView({pdf_id: file_id});
-
-
-  //     },
-  //     error: function(a,b,c){
-  //       console.log(a,b,c);
-  //     }
-  //   });
-  // }
 });
 
 if(TABULA_VERSION.slice(0,3) == "rev"){

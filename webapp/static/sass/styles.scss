@@ -168,7 +168,8 @@ form {
 	padding: 1em 0 0;
 	height: calc(100% - 51px);
 	text-align: center;
-	overflow: scroll;
+	overflow-y: scroll;
+	overflow-x: hidden;
 	position: fixed;  
 	left: 0;
 	top: 51px;
@@ -345,4 +346,8 @@ body.page-export {
 
 .jumbotron.about p{
 	font-size:1.1em;
+}
+
+div.spinner {
+	top: 10px !important;
 }

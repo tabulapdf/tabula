@@ -282,8 +282,9 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   events: {
     'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod',
     'click #download-data': 'setFormAction',
-    //N.B.: Download button (and format-specific download buttons) are an HTML form.
+    //N.B.: Download button (and format-specific download buttons) are an HTML form, so not handled here.
     //TODO: handle flash clipboard thingy here.
+    // 'click #copy-csv-to-clipboard': 
     'click #revise-selections': 'closeAndRenderSelectionView'
   },
   pdf_view: null, //added on create
@@ -383,16 +384,12 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     if( !Tabula.pdf_view.flash_borked ){
         Tabula.pdf_view.client.on( 'ready', _.bind(function(event) {
           Tabula.pdf_view.client.clip( this.$el.find("#copy-csv-to-clipboard") );
-
           Tabula.pdf_view.client.on( 'copy', _.bind(function(event) {
             var clipboard = event.clipboardData;
             var tableData = this.$el.find('.extracted-data').table2CSV({delivery: null});
+            console.log(clipboard, tableData)
             clipboard.setData( 'text/plain', tableData );
           }, this) );
-
-          Tabula.pdf_view.client.on( 'aftercopy', function(event) {
-            $('#data-modal #copy-csv-to-clipboard').css('display', 'inline').delay(900).fadeOut('slow');
-          } );
 
           this.$el.find('.modal-footer button').prop('disabled', '');
 

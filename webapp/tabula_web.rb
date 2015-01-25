@@ -70,6 +70,45 @@ else
   CACHE = NoCache.new
 end
 
+def upload(req)
+  original_filename = req.params['file'][:filename]
+  file_id = Digest::SHA1.hexdigest(Time.now.to_s)
+  file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
+  FileUtils.mkdir(file_path)
+  begin
+    FileUtils.mv(req.params['file'][:tempfile].path,
+                 File.join(file_path, 'document.pdf'))
+  rescue Errno::EACCES # move fails on windows sometimes
+    FileUtils.cp_r(req.params['file'][:tempfile].path,
+                   File.join(file_path, 'document.pdf'))
+    FileUtils.rm_rf(req.params['file'][:tempfile].path)
+
+  end
+
+  file = File.join(file_path, 'document.pdf')
+
+  job_batch = SecureRandom.uuid
+
+  GenerateDocumentMetadataJob.create(:filename => original_filename,
+                                     :id => file_id,
+                                     :batch => job_batch)
+
+  DetectTablesJob.create(:filename => file,
+                         :output_dir => file_path,
+                         :batch => job_batch)
+
+  GeneratePageIndexJob.create(:file => file,
+                              :output_dir => file_path,
+                              :batch => job_batch)
+
+  GenerateThumbnailJob.create(:file_id => file_id,
+                              :file => file,
+                              :output_dir => file_path,
+                              :thumbnail_sizes => [800],
+                              :batch => job_batch)
+  return [job_batch, file_id]
+end
+
 Cuba.define do
 
   if TabulaSettings::ENABLE_DEBUG_METHODS
@@ -141,7 +180,6 @@ Cuba.define do
 
   on post do
     on 'upload' do
-
       # Make sure this is a PDF, before doing anything
       unless is_valid_pdf?(req.params['file'][:tempfile].path)
         res.status = 400
@@ -150,43 +188,25 @@ Cuba.define do
         next # halt this handler
       end
 
-      original_filename = req.params['file'][:filename]
-      file_id = Digest::SHA1.hexdigest(Time.now.to_s)
-      file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
-      FileUtils.mkdir(file_path)
-      begin
-        FileUtils.mv(req.params['file'][:tempfile].path,
-                     File.join(file_path, 'document.pdf'))
-      rescue Errno::EACCES # move fails on windows sometimes
-        FileUtils.cp_r(req.params['file'][:tempfile].path,
-                       File.join(file_path, 'document.pdf'))
-        FileUtils.rm_rf(req.params['file'][:tempfile].path)
+      job_batch, file_id = *upload(req)
+      res.redirect "/queue/#{job_batch}?file_id=#{file_id}"
+    end
 
+    on 'upload.json' do
+      # Make sure this is a PDF, before doing anything
+      unless is_valid_pdf?(req.params['file'][:tempfile].path)
+        res.status = 400
+        res.write view("upload_error.html",
+                       :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
+        next # halt this handler
       end
 
-      file = File.join(file_path, 'document.pdf')
-
-      job_batch = SecureRandom.uuid
-
-      GenerateDocumentMetadataJob.create(:filename => original_filename,
-                                         :id => file_id,
-                                         :batch => job_batch)
-
-      DetectTablesJob.create(:filename => file,
-                             :output_dir => file_path,
-                             :batch => job_batch)
-
-      GeneratePageIndexJob.create(:file => file,
-                                  :output_dir => file_path,
-                                  :batch => job_batch)
-
-      GenerateThumbnailJob.create(:file_id => file_id,
-                                  :file => file,
-                                  :output_dir => file_path,
-                                  :thumbnail_sizes => [800],
-                                  :batch => job_batch)
-
-      res.redirect "/queue/#{job_batch}?file_id=#{file_id}"
+      job_batch, file_id = *upload(req)
+      res.write(JSON.dump({
+          :success => true,
+          :file_id => file_id,
+          :upload_id => job_batch
+        }))
     end
 
     on "pdf/:file_id/data" do |file_id|
