@@ -45,30 +45,6 @@ var TabulaRouter = Backbone.Router.extend({
     });
   },
 
-  // TODO: requires interacting with resque.
-  // uploadError: function(){
-  //   $('body').prepend( _.template( $('#navbar-template').html() )({}) ); // navbar.
-  //   //TODO: there's another errorMsg: "Sorry, your file upload could not be processed. Please double-check that the file you uploaded is a valid PDF file and try again."
-  //   var errorMsg = "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.";
-  //   $('#tabula-app').html( _.template( $('#upload-error-template').html() )({message: errorMsg}) );
-  // },
-
-  // status: function(file_id){
-  //   $('body').prepend( _.template( $('#navbar-template').html() )({}) ); // navbar.
-  //   $('#tabula-app').html( _.template( $('#upload-status-template').html() )({}) );
-  //   $.ajax({
-  //     url: "/js/upload_status.js",
-  //     dataType: "script",
-  //     async: true,
-  //     success: function(data, status, jqxhr){
-  //       //TODO: rewrite upload_status.js as a Backbone view.
-  //     },
-  //     error: function(a,b,c){
-  //       console.log(a,b,c);
-  //     }
-  //   });
-  // },
-
   view: function(file_id) {
     $('nav li a').removeClass('active');
     $('body').prepend( _.template( $('#navbar-template').html().replace(/nestedscript/g, 'script') )({}) ); // navbar.

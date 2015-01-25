@@ -16,9 +16,18 @@ class TabulaJobProgress < Cuba
         res.status = 404
         message[:status] = "error"
         message[:message] = "No such job"
+        message[:error_type] = "no-such-job"
         message[:pct_complete] = 0
-      elsif batch.any? { |uuid, job| job.failed? }
+      elsif batch.any?{|uuid, job| job.failed? && job.kind_of?(GeneratePageIndexJob) && job.message.first.include?("NoTextDataException") }
         message[:status] = "error"
+        message[:error_type] = "no-text"
+        message[:message] = "Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned... Tabula can't be able to extract any data from image-based PDFs. (Though you can try OCRing the PDF with a tool like Tesseract and then trying Tabula again.)"
+        message[:pct_complete] = 99
+        res.write message.to_json
+      elsif batch.any? { |uuid, job| job.failed? }
+        job =  batch.find{|uuid, job| job.failed? }.last
+        message[:status] = "error"
+        message[:error_type] = "unknown"
         message[:message] = "Sorry, your file upload could not be processed. Please double-check that the file you uploaded is a valid PDF file and try again."
         message[:pct_complete] = 99
         res.write message.to_json

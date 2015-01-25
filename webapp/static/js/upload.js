@@ -99,12 +99,16 @@ Tabula.UploadStatusChecker = Backbone.View.extend({
                 this.message = data.message;
                 this.pct_complete = data.pct_complete;
                 this.render();
-                if (data.status == "error") {
-                    window.location.reload(true);
+                if (data.status == "error" && data.error_type == "unknown") {
+                    // window.location.reload(true);
+                } else if (data.status == "error" && data.error_type == "no-text") {
+                    console.log('no text');
+                    window.clearTimeout(this.timer);
+                    alert("Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned... Tabula can't be able to extract any data from image-based PDFs. (Though you can try OCRing the PDF with a tool like Tesseract and then trying Tabula again.)") //TODO: something prettier.
                 } else if (data.pct_complete >= 100) {
                     this.statusComplete(data.file_id);
                 } else {
-                    setTimeout(this.checkStatus, 1000);
+                    this.timer = setTimeout(this.checkStatus, 1000);
                 }
             }, this),
             error: function(xhr, status, err) {
@@ -113,7 +117,6 @@ Tabula.UploadStatusChecker = Backbone.View.extend({
         });
     },
     render: function(){
-      console.log('render', this.pct_complete, this.message, this.pct_complete, this.$el)
         if(this.pct_complete <= 0){
             this.$el.find('h4').text("Upload Progress");
         }else if(this.pct_complete >= 100){
