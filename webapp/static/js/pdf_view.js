@@ -269,8 +269,8 @@ Tabula.Query = Backbone.Model.extend({
     var data = _(this.get('data')).chain().pluck('data').map(function(table){
       return _(table).chain().map(function(row){
         return _.pluck(row, 'text');
-      }).flatten(true).value();
-    }).value();
+      }).value();
+    }).flatten(true).value();
     return data.length == 1 && data[0].length == 0 ? [] : data; // checking whether there's no data, i.e. data == [[]]
   }
 });
@@ -388,7 +388,6 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
           Tabula.pdf_view.client.on( 'copy', _.bind(function(event) {
             var clipboard = event.clipboardData;
             var tableData = this.$el.find('.extracted-data').table2CSV({delivery: null});
-            console.log(clipboard, tableData)
             clipboard.setData( 'text/plain', tableData );
           }, this) );
 

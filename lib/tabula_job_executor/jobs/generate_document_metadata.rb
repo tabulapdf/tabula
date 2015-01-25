@@ -29,7 +29,7 @@ class GenerateDocumentMetadataJob < Tabula::Background::Job
         tmp.write JSON.generate(workspace)
       }
     rescue
-      puts "Failed to save wokspace!"
+      puts "Failed to save workspace!"
       return
     end
 
