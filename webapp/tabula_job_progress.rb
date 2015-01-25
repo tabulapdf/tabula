@@ -1,5 +1,10 @@
 require_relative '../lib/tabula_job_executor/executor.rb'
 
+# if this is true, then the progress bar will complete (and give the user their PDF to interact with) before
+# the autodetect tables job is done. the JS UI will handle checking periodiclaly if the autodetect tables job 
+# is done yet; when it is, it'll be enabled.
+FINISH_BEFORE_AUTODETECT_IS_DONE = false
+
 class TabulaJobProgress < Cuba
   define do
     on ":upload_id/json" do |batch_id|
@@ -18,7 +23,7 @@ class TabulaJobProgress < Cuba
         message[:pct_complete] = 99
         res.write message.to_json
       else
-        s = batch.find { |uuid, job| job.working? }
+        s = batch.find { |uuid, job| job.working? && (!FINISH_BEFORE_AUTODETECT_IS_DONE || !job.kind_of?(DetectTablesJob) ) }
         message[:status] = !s.nil? ? s.last.status['status'] : 'completed'
         message[:message] = !s.nil? && !s.last.message.nil? ? s.last.message.first : ''
         message[:pct_complete] = (batch.inject(0.0) { |sum, (uuid, job)| sum + job.pct_complete } / batch.size).to_i
