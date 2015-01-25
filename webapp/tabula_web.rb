@@ -94,6 +94,7 @@ Cuba.define do
       index = File.open(index_fname) { |f| JSON.load(f) }
       index.find { |p| p['number'] == page_number.to_i }['deleted'] = true
       File.open(index_fname, 'w') { |f| f.write JSON.generate(index) }
+      res.write '' # Firefox complains about an empty response without this.
     end
 
     # delete an uploaded file
@@ -113,7 +114,7 @@ Cuba.define do
       tmp.flush; tmp.close
       FileUtils.cp(tmp.path, workspace_file)
       tmp.unlink
-
+      res.write '' # Firefox complains about an empty response without this.
     end
 
   end
@@ -129,12 +130,11 @@ Cuba.define do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
     end
 
-    on root do
-      res.write File.read("webapp/index.html")
-    end
 
-    on "pdf/:file_id" do |file_id|
-      res.write File.read("webapp/index.html")
+    [root, "about", "pdf/:file_id", "help"].each do |paths_to_single_page_app|
+      on paths_to_single_page_app do
+        res.write File.read("webapp/index.html")
+      end
     end
 
   end # /get
@@ -166,19 +166,15 @@ Cuba.define do
 
       file = File.join(file_path, 'document.pdf')
 
-      # fire off background jobs; in different orders if we're doing autodetection
-
       job_batch = SecureRandom.uuid
 
       GenerateDocumentMetadataJob.create(:filename => original_filename,
                                          :id => file_id,
                                          :batch => job_batch)
 
-      if req.params['autodetect-tables']
-        DetectTablesJob.create(:filename => file,
-                               :output_dir => file_path,
-                               :batch => job_batch)
-      end
+      DetectTablesJob.create(:filename => file,
+                             :output_dir => file_path,
+                             :batch => job_batch)
 
       GeneratePageIndexJob.create(:file => file,
                                   :output_dir => file_path,

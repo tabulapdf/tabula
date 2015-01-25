@@ -77,25 +77,26 @@ Tabula.Selection = Backbone.Model.extend({
     return selection_coords;
   },
 
-  // XXX Refactor for ResizableSelection
+  // TODO: Refactor for ResizableSelection
   repeatLassos: function() {
+    alert("functionality temporarily disabled"); return;
     Tabula.pdf_view.pdf_document.page_collection.each(_.bind(function(page){
       if(this.get('page_number') < page.get('number')){          // for each page after this one,
-        imgAreaSelectAPIObj = Tabula.pdf_view.imgAreaSelects[page.get('number')];
-        if (imgAreaSelectAPIObj === false) return;
+        // imgAreaSelectAPIObj = Tabula.pdf_view.imgAreaSelects[page.get('number')];
+        // if (imgAreaSelectAPIObj === false) return;
 
-        imgAreaSelectAPIObj.cancelSelections();                      // notify the imgAreaSelect of the new selection
-        iasSelection = imgAreaSelectAPIObj.createNewSelection(this.get('x1'),
-                                                              this.get('y1'),
-                                                              this.get('x2'),
-                                                              this.get('y2'));
-        imgAreaSelectAPIObj.setOptions({show: true});
-        imgAreaSelectAPIObj.update();
+        // imgAreaSelectAPIObj.cancelSelections();                      // notify the imgAreaSelect of the new selection
+        // vendorSelection = imgAreaSelectAPIObj.createNewSelection(this.get('x1'),
+        //                                                       this.get('y1'),
+        //                                                       this.get('x2'),
+        //                                                       this.get('y2'));
+        // imgAreaSelectAPIObj.setOptions({show: true});
+        // imgAreaSelectAPIObj.update();
 
         new_selection = this.clone();                                // and create a new Selection.
         new_selection.set('page_number', page.get('number'));
-        new_selection.set('id', page.get('number') * 100000 + iasSelection.id);
-        new_selection.id = page.get('number') * 100000 + iasSelection.id;
+        new_selection.set('id', page.get('number') * 100000 + vendorSelection.id);
+        new_selection.id = page.get('number') * 100000 + vendorSelection.id;
         this.collection.add(new_selection);
         /* which causes thumbnails to be created, Download All button to know about these selections. */
       }
@@ -138,7 +139,7 @@ Tabula.Selections = Backbone.Collection.extend({
   url: null, //set on init
   initialize: function(){
     this.url = '/pdfs/' + PDF_ID + '/tables.json?_=' + Math.round(+new Date()).toString();
-    _.bindAll(this, 'updateOrCreateByIasId');
+    _.bindAll(this, 'updateOrCreateByVendorSelectorId');
   },
 
   parse: function(response){
@@ -161,22 +162,10 @@ Tabula.Selections = Backbone.Collection.extend({
           var my_x2 = tableCoords[0] + tableCoords[2];
           var my_y2 = tableCoords[1] + tableCoords[3];
 
-          var iasSelection = pageView.imgAreaSelect.createNewSelection( Math.floor(tableCoords[0] / scale),
-                                        Math.floor(tableCoords[1] / scale),
-                                        Math.floor(my_x2 / scale),
-                                        Math.floor(my_y2 / scale));
-
-          pageView.imgAreaSelect.setOptions({show: true});
-          pageView.imgAreaSelect.update();
-          if (!iasSelection){
-            return null;
-          }
-
           // put the selection into the selections collection
-          selection = this.updateOrCreateByIasId(iasSelection, page.get('number'), image_width);
+          selection = this.updateOrCreateByVendorSelectorId(vendorSelection, page.get('number'), image_width);
           return selection;
         }, this));
-        pageView.imgAreaSelect.setOptions({show: true});
         return _(selections).select(function(s){ return !!s; });
       }, this);
 
@@ -190,18 +179,18 @@ Tabula.Selections = Backbone.Collection.extend({
     return _.flatten(selections);
   },
 
-  updateOrCreateByIasId: function(iasSelection, pageNumber, imageWidth){
-    var selection = this.get(iasSelection.id);
+  updateOrCreateByVendorSelectorId: function(vendorSelection, pageNumber, imageWidth){
+    var selection = this.get(vendorSelection.id);
 
     if (selection) { // if it already exists
-      selection.set(_.omit(iasSelection, 'id'));
+      selection.set(_.omit(vendorSelection, 'id'));
     }
     else {
       new_selection_args = _.extend({'page_number': pageNumber,
                                     'imageWidth': imageWidth,
                                     'extractionMethod': Tabula.pdf_view.options.extraction_method,
                                     'pdf_document': this.pdf_document},
-                                    iasSelection);
+                                    vendorSelection);
       selection = new Tabula.Selection(new_selection_args);
       this.add(selection);
     }
@@ -277,18 +266,17 @@ Tabula.Query = Backbone.Model.extend({
     //   });
     // });
     if (!this.get('data')){ return []; }
-    return _(this.get('data')).chain().pluck('data').map(function(table){
+    var data = _(this.get('data')).chain().pluck('data').map(function(table){
       return _(table).chain().map(function(row){
         return _.pluck(row, 'text');
       }).flatten(true).value();
     }).value();
-
+    return data.length == 1 && data[0].length == 0 ? [] : data; // checking whether there's no data, i.e. data == [[]]
   }
 });
 
 Tabula.DataView = Backbone.View.extend({  // one per query object.
   el: '#tabula-dataview',
-  // $loading: $('#loading'),
   template: _.template($('#templates #export-page-template').html().replace(/nestedscript/g, 'script')),
 
   events: {
@@ -300,7 +288,6 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   },
   pdf_view: null, //added on create
   extractionMethod: "guess",
-  $loading: $('#loading'),
 
   initialize: function(stuff){
     _.bindAll(this, 'render', 'renderFlashClipboardNonsense', 'queryWithToggledExtractionMethod', 'closeAndRenderSelectionView', 'setFormAction');
@@ -319,15 +306,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
   setFormAction: function(e){
     var formActionUrl = $(e.currentTarget).data('action');
-    console.log('setFormActoin', formActionUrl, this.$el.find('#download-form'))
     this.$el.find('#download-form').attr('action', formActionUrl);
-  },
-
-  renderLoading: function(){
-    this.$el.prepend(this.$loading.show());
-    this.$el.find('table.extracted-table').css('visibility', 'hidden');
-    this.$el.css('overflow', 'hidden');
-    return this;
   },
 
   render: function(){
@@ -339,15 +318,10 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
     this.pdf_view.$el.hide();
 
-    // TODO: move this into the template
-    if(!this.model.get('data')){
-      this.renderLoading();
-    }
-
     this.$el.html(this.template({
       pdf_id: PDF_ID,
       data: this.model.getDataArray(),
-      loading: !this.model.get('data') // does nothing rn
+      loading: !this.model.get('data')
     }));
     this.$el.find('#control-panel').html(
       _.template($('#templates #export-control-panel-template').html().replace(/nestedscript/g, 'script'))(
@@ -365,30 +339,37 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
         }
     ));
     this.renderFlashClipboardNonsense();
-    this.$loading = this.$loading.detach();                           // TODO: do in the template
-    this.$el.find('#table-container').css('visibility', 'visible');   // TODO: do in the template
+    if(!this.model.get('data')) this.startSpinner();
 
-    // TODO: do renderFooter stuff here.
+    if (uniq_extraction_methods.length == 1){
+      this.$el.find('#' + uniq_extraction_methods[0] + '-method-btn').button('toggle');
+    }
 
     this.$el.find('.has-tooltip').tooltip();
 
     return this;
   },
 
-  renderFooter: function(loading){
-    // this has to happen after the footer is already in the page, for bootstrap reasons.
-    if (uniq_extraction_methods.length == 1){
-      this.$el.find('#' + uniq_extraction_methods[0] + '-method-btn').button('toggle');
-    }
-
-    // disable/enable buttons based on whether data has loaded yet.
-    if(loading){
-      $('.extraction-method-btn').prop('disabled', true).addClass('disabled');
-      modalFooter.find(".btn").prop('disabled', true).addClass('disabled');
-    }else{
-      $('.extraction-method-btn').prop('disabled', false).removeClass('disabled');
-      modalFooter.find(".btn").prop('disabled', false).removeClass('disabled');
-    }
+  startSpinner: function(){ 
+    var SPINNER_OPTS = {
+      lines: 10, // The number of lines to draw
+      length: 5, // The length of each line
+      width: 2, // The line thickness
+      radius: 5, // The radius of the inner circle
+      corners: 1, // Corner roundness (0..1)
+      rotate: 0, // The rotation offset
+      direction: 1, // 1: clockwise, -1: counterclockwise
+      color: '#000', // #rgb or #rrggbb
+      speed: 1.1, // Rounds per second
+      trail: 60, // Afterglow percentage
+      shadow: false, // Whether to render a shadow
+      hwaccel: true, // Whether to use hardware acceleration
+      className: 'spinner', // The CSS class to assign to the spinner
+      zIndex: 2e9, // The z-index (defaults to 2000000000)
+      top: 'auto', // Top position relative to parent in px
+      left: 'auto' // Left position relative to parent in px
+    };
+    new Spinner(SPINNER_OPTS).spin($('#spinner').get(0));  
   },
 
   renderFlashClipboardNonsense: function(){
@@ -405,7 +386,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
           Tabula.pdf_view.client.on( 'copy', _.bind(function(event) {
             var clipboard = event.clipboardData;
-            var tableData = this.$el.find('.modal-body table').table2CSV({delivery: null});
+            var tableData = this.$el.find('.extracted-data').table2CSV({delivery: null});
             clipboard.setData( 'text/plain', tableData );
           }, this) );
 
@@ -491,22 +472,8 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     var page_view = this.page_views[pageModel.get('number')];
 
     page_view.$el.fadeOut(200, function(){
-
-      // move all the stuff for the following pages' imgAreaSelect objects up.
       deleted_page_height = page_view.$el.height();
       deleted_page_top = page_view.$el.offset()["top"];
-
-      $('div.imgareaselect').each(function(){
-        if( $(this).offset()["top"] > (deleted_page_top + deleted_page_height) ) {
-          $(this).offset({top: $(this).offset()["top"] - deleted_page_height });
-        }
-      });
-
-      //TODO: edit imgAreaSelect to:
-      // (a) not be position fixed (so I don't have to move their location manualy)
-      //   e.g. something like _(Tabula.pdf_view.imgAreaSelects).each(function(ias){ ias.adjust(); });
-      // (b) listen on document, no matter how many exist on the page.
-      page_view.imgAreaSelect.remove();
       page_view.remove();
     });
   },
@@ -568,26 +535,26 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   },
 
   _onSelectStart: function(selection) {
-    Tabula.pdf_view.pdf_document.selections.updateOrCreateByIasId(selection,
+    Tabula.pdf_view.pdf_document.selections.updateOrCreateByVendorSelectorId(selection,
                                                                   this.model.get('number'),
                                                                   this.$image.width());
   },
 
   _onSelectChange: function(selection) {
-    Tabula.pdf_view.pdf_document.selections.updateOrCreateByIasId(selection,
+    Tabula.pdf_view.pdf_document.selections.updateOrCreateByVendorSelectorId(selection,
                                                                   this.model.get('number'),
                                                                   this.$image.width());
   },
 
   _onSelectEnd: function(selection) {
-    var sel = Tabula.pdf_view.pdf_document.selections.updateOrCreateByIasId(selection,
+    var sel = Tabula.pdf_view.pdf_document.selections.updateOrCreateByVendorSelectorId(selection,
                                                                             this.model.get('number'),
                                                                             this.$image.width());
     this.selections.push(selection);
 
     // deal with invalid/too-small selections somehow (including thumbnails)
     if (selection.width === 0 && selection.height === 0) {
-      $('#thumb-' + this.$image.attr('id') + ' #iasSelection-show-' + selection.id).css('display', 'none');
+      $('#thumb-' + this.$image.attr('id') + ' #vendorSelection-show-' + selection.id).css('display', 'none');
       selection.remove();
     }
 
@@ -605,7 +572,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     Tabula.pdf_view.components['control_panel'].render(); // deals with buttons that need blurred out if there's zero selections, etc.
   },
 
-  // iasSelection
+  // vendorSelection
   _onSelectCancel: function(selection) {
     // remove repeat lassos button
     var but_id = this.$image.attr('id') + '-' + selection.id;
@@ -744,7 +711,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
   'events': {
     // on load, create an empty div with class 'selection-show' to be the selection thumbnail.
     'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
-    'click i.delete-page': 'delete_page',
+    'click i.delete-page': 'deletePage',
   },
   tagName: 'li',
   className: "page-thumbnail pdf-page page", //TODO: get rid of either pdf-page or page class (it's just duplicative)
@@ -762,7 +729,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     _.bindAll(this, 'render', 'createSelectionThumbnail', 'changeSelectionThumbnail', 'removeSelectionThumbnail');
   },
 
-  delete_page: function(){
+  deletePage: function(){
     if (!confirm('Delete page ' + this.model.get('number') + '?')) return;
     Tabula.pdf_view.pdf_document.page_collection.remove( this.model );
   },
@@ -844,11 +811,8 @@ Tabula.PDFView = Backbone.View.extend({
       this.components['control_panel'] = new Tabula.ControlPanelView({pdf_view: this});
       this.components['sidebar_view'] = new Tabula.SidebarView({pdf_view: this, collection: this.pdf_document.page_collection});
 
-      $('#document').append($('#loading').show())
-
       this.pdf_document.page_collection.fetch({
         success: _.bind(function(){
-          $('#loading').detach();
           this.pdf_document.selections.fetch({
             success: _.bind(function(){
               this.hasPredetectedTables = true;
@@ -862,8 +826,8 @@ Tabula.PDFView = Backbone.View.extend({
         }),
       });
 
-      $('body'). // imgareaselect selections are fixed positioned in CSS, just attached to the body in DOM
-        on("click", ".imgareaselect-box .repeat-lassos", function(e){
+      $('body').
+        on("click", ".repeat-lassos", function(e){
           var selectionId = $(e.currentTarget).data('selectionId');
           var selection = Tabula.pdf_view.pdf_document.selections.get(selectionId);
           selection.repeatLassos();

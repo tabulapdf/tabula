@@ -264,9 +264,10 @@ form {
 	z-index: 1;
 	.page {
 		width: 100%;
-		max-width: 1024px;
+		max-width: 800px;
 		@include box-shadow ( 0 0 2em rgba(0,0,0,0.4) );
 		position: relative;
+		margin: 0 auto;
 		img {
 			margin: 2em 0;
 			display: block;
@@ -340,4 +341,8 @@ body.page-export {
 			margin-top: 2em;
 		}
 	}
+}
+
+.jumbotron.about p{
+	font-size:1.1em;
 }
