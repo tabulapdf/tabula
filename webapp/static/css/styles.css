@@ -9609,3 +9609,13 @@ body.page-export #main-pane table {
 div.spinner {
   top: 10px !important;
 }
+
+/* line 355, ../sass/styles.scss */
+#progress-container h4 {
+  display: inline-block;
+}
+
+/* line 358, ../sass/styles.scss */
+#progress-container #message {
+  color: #aaa;
+}

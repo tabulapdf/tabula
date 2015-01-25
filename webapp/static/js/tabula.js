@@ -8,34 +8,36 @@ var TabulaRouter = Backbone.Router.extend({
     "":                            "upload",
     "/":                           "upload",
     "pdf/:file_id":                "view",
-    // "pdf/:file_id/export":         "export",
-    "queue/:file_id":              'status', //TK, renders navbar
-    "error":                       'uploadError', //TK, renders navbar
-    "help":                       'help',
-    "about":                       'about' //TK, renders navbar
+    "queue/:file_id":              'status',
+    "error":                       'uploadError',
+    "help":                        'help',
+    "about":                       'about'
   },
 
   help: function(){
+    document.title="Help | Tabula";
+    $('nav li a').removeClass('active'); $('nav #help-nav').addClass('active');
     $('#tabula-app').html( _.template( $('#help-template').html().replace(/nestedscript/g, 'script') )({
     }) );
   },
 
-  upload: function() {
-    $.getJSON('/pdfs/workspace.json', function(workspace){
-      if( workspace.length > 0){
-        $('#uploaded-files-container').html( _.template( $('#uploaded-files-template').html().replace(/nestedscript/g, 'script') )({workspace: workspace }));
-      }else{
-        $('#uploaded-files-container').html( $('<p>No uploaded files yet.</p>') );
-      }
-    })
+  about: function(){
+    document.title="About | Tabula";
+    $('nav li a').removeClass('active'); $('nav #about-nav').addClass('active');
+    $('#tabula-app').html( _.template( $('#about-template').html().replace(/nestedscript/g, 'script') )({
+    }) );
+  },
 
+
+  upload: function() {
+    document.title="Import | Tabula";
+    $('nav li a').removeClass('active'); $('nav #upload-nav').addClass('active');
     $.ajax({
       url: "/js/upload.js",
       dataType: "script",
       async: true,
       success: function(data, status, jqxhr){
         new Tabula.Upload({el: $('#tabula-app')[0]}).render();
-        $("#fileTable").tablesorter( { headers: { 4: { sorter: false}, 5: {sorter: false} } } ); 
       },
       error: function(a,b,c){
         console.log(a,b,c);
@@ -68,6 +70,7 @@ var TabulaRouter = Backbone.Router.extend({
   // },
 
   view: function(file_id) {
+    $('nav li a').removeClass('active');
     $('body').prepend( _.template( $('#navbar-template').html().replace(/nestedscript/g, 'script') )({}) ); // navbar.
     $('body').addClass('page-selections')
     $('#tabula-app').html( _.template( $('#pdf-view-template').html().replace(/nestedscript/g, 'script') )({}) );

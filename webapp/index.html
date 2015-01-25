@@ -10,7 +10,7 @@
     <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
 
-    <title>TKTK | Tabula</title>
+    <title>Tabula</title>
 
     <link href="/css/styles.css" rel="stylesheet">
 
@@ -41,9 +41,9 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/">My Files</a></li>
-            <li><a href="/about" class="active">About</a></li> <!-- TODO: remember to add/remove the active class depending on whic hpage we're on. -->
-            <li><a href="/help">Help</a></li>
+            <li><a id="upload-nav" href="/">My Files</a></li>
+            <li><a id="about-nav" href="/about">About</a></li>
+            <li><a id="help-nav" href="/help">Help</a></li>
             <li><a href="https://github.com/tabulapdf/tabula">Source Code</a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -223,10 +223,11 @@
               </form>
 
               <div id="progress-container">
-              <h4>Upload Progress</h4>
-              <div class="progress">
-                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= pct_complete %>%;"><span class="sr-only"> <%= pct_complete %>% Complete </span></div>
-              </div>
+                <h4>Upload Progress</h4>
+                <span id="message"></span>
+                <div class="progress">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= pct_complete %>%;"><span class="sr-only"> <%= pct_complete %>% Complete </span></div>
+                </div>
 
               </div>
 
@@ -255,6 +256,7 @@
         <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
         <nestedscript type="text/javascript" src="/js/vendor/upload-group.js"></nestedscript> 
         <nestedscript type="text/javascript" src="/js/vendor/jquery.tablesorter.min.js"></nestedscript>
+        <nestedscript type="text/javascript" src="/js/vendor/spin.min.js"></nestedscript> 
       </script>
 
       <script type="text/template" id="uploaded-files-template">
@@ -264,7 +266,7 @@
               <td>TK kB</td> <!-- TODO size -->
               <td>TK</td>     <!-- TODO page count -->
               <td><%= new Date(parseInt(file['time']) * 1000).toUTCString().slice(5, -7) %></td>
-              <td><a href="#"><i class="glyphicon glyphicon-remove"></i></a></td>
+              <td><a href="javascript:"><i data-filename=<%= file['file'] %> data-pdfid=<%= file['id'] %> class="glyphicon glyphicon-remove delete-pdf"></i></a></td>
               <td><a href="/pdf/<%= file['id'] %>"><button type="button" class="btn btn-sm btn-success">Extract Data</button></a></td>
             </tr>
           <% }) %>
