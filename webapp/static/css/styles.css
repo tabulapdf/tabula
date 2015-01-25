@@ -9484,7 +9484,8 @@ form {
   top: 50px;
   left: 195px;
   width: 100%;
-  z-index: 3;
+  z-index: 101;
+  /* gotta be >100, which is the max z-index for selections */
   background: #d9edf7;
   padding: 1em;
   -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.075);
