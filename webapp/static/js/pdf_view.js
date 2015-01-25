@@ -14,7 +14,7 @@ Tabula.Page = Backbone.Model.extend({
   pdf_document: null,
   initialize: function(){
     this.set('number_zero_indexed', this.get('number') - 1);
-    this.set('image_url', '/pdfs/' + PDF_ID + '/document_560_' + this.get('number') + '.png');
+    this.set('image_url', '/pdfs/' + PDF_ID + '/document_800_' + this.get('number') + '.png');
   }
 });
 
@@ -311,6 +311,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   },
 
   render: function(){
+    document.title="Export Data | Tabula";
     var uniq_extraction_methods = _.uniq(_(this.model.get('list_of_coords')).pluck('extraction_method'));
     
     //TODO: move flash_borked to this object (dataview) away from pdf_view
@@ -879,6 +880,7 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     render : function(){
+      document.title="Select Tables | Tabula";
       this.components['document_view'].render();
       $('#control-panel').append(this.components['control_panel'].render().el);
       $('#sidebar').append(this.components['sidebar_view'].render().el);
