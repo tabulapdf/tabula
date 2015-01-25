@@ -12,7 +12,7 @@
 
     <title>TKTK | Tabula</title>
 
-    <!-- Bootstrap core CSS -->
+    <!-- Bootstrap core CSS --> <a href="https://github.com/tabulapdf/tabula"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
     <link href="/css/styles.css" rel="stylesheet">
 
     <!-- Selector-specific CSS -->
@@ -44,16 +44,8 @@
           <ul class="nav navbar-nav">
             <li><a href="/">My Files</a></li>
             <li><a href="/about" class="active">About</a></li> <!-- TODO: remember to add/remove the active class depending on whic hpage we're on. -->
-            <li><a href="help">Help</a></li>
+            <li><a href="/help">Help</a></li>
             <li><a href="https://github.com/tabulapdf/tabula">Source Code</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Mockup Pages <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="mockup/import.html">Import</a></li> <!-- TODO: -->
-                <li><a href="mockup/selections.html"> Make Selection(s)</a></li>
-                <li><a href="mockup/export.html">Preview and Export</a></li>
-              </ul>
-            </li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -77,7 +69,7 @@
       <script type="text/template" id="thumbnail-template" >
         <a href="#page-<%= number %>"><img src="<%= image_url %>"></a>
         <div class="remove">
-          <span class="glyphicon glyphicon-remove delete-page"></span>
+          <i class="glyphicon glyphicon-remove delete-page"></i>
           <!-- i title="rotate this page right" class="icon-repeat rotate-left"></i>
           <i title="rotate this page left" class="icon-repeat flip rotate-right"></i -->
         </div>
@@ -98,20 +90,20 @@
             <option value="xml">XML</option>
           </select>
           <a href="#"><button type="submit" id="download-data" class="btn btn-default" data-action='/pdf/<%=pdf_id%>/data?format=csv'>
-            <span class="glyphicon glyphicon-download"></span>
+            <i class="glyphicon glyphicon-download"></i>
             Export
           </button></a>
           <a href="#"><button type="button" id="copy-csv-to-clipboard" class="btn btn-default" <%=copyDisabled%> >
-            <span class="glyphicon glyphicon-paperclip"></span>
+            <i class="glyphicon glyphicon-paperclip"></i>
              Copy to Clipboard
           </button></a>
         </form>
       </script>
 
       <script type="text/template" id="select-control-panel-template" >
-        <a href="#"><button id="restore-detected-tables" type="button" class="btn btn-default" <%= show_restore_detected_tables %>><span class="glyphicon glyphicon-flash"></span> Autodetect Tables</button></a>
-        <a href="#"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
-        <a href="#"><button type="button" id="all-data" class="btn btn-default" <%= disable_download_all %>><span class="glyphicon glyphicon-eye-open"></span> Preview & Export Extracted Data</button></a>
+        <a href="#"><button id="restore-detected-tables" type="button" class="btn btn-default" <%= show_restore_detected_tables %>><i class="glyphicon glyphicon-flash"></i> Autodetect Tables</button></a>
+        <a href="#"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><i class="glyphicon glyphicon-remove-circle"></i> Clear All Selections</button></a>
+        <a href="#"><button type="button" id="all-data" class="btn btn-default" <%= disable_download_all %>><i class="glyphicon glyphicon-eye-open"></i> Preview & Export Extracted Data</button></a>
       </script>
 
       <script type="text/template" id="export-page-sidebar-template">
@@ -122,7 +114,7 @@
           <h5>Revise Selected Cells</h5>
           <p>Data has been extracted from the cells you selected in the previous step. You can revise your selection(s) to add or remove cells.</p>
           <p>
-            <button type="button" class="btn btn-default" id="revise-selections"><span class="glyphicon glyphicon-arrow-left"></span> Revise selection(s)</button>
+            <button type="button" class="btn btn-default" id="revise-selections"><i class="glyphicon glyphicon-arrow-left"></i> Revise selection(s)</button>
           </p>
 
           <h5>Choose Alternate Extraction Method</h5>
@@ -130,8 +122,8 @@
           <p>The current preview uses the <strong>Stream</strong> extraction method. If the data is not mapped to the correct cells, try the <strong>Lattice</strong> method instead.</p>
 
           <div class="btn-group" data-toggle="buttons-radio" id="extraction-method-btns" <%=disableExtractionMethodButtons%> >
-            <button type="button" class="btn btn-default extraction-method-btn" disabled="disabled" data-method="original" ><span class="glyphicon glyphicon-th stream"></span> Stream</button>
-            <button type="button" class="btn btn-default extraction-method-btn" data-method="spreadsheet"><span class="glyphicon glyphicon-th lattice"></span> Lattice</button>
+            <button type="button" id="original-method-btn" class="btn btn-default extraction-method-btn" data-method="original" ><i class="glyphicon glyphicon-th stream"></i> Stream</button>
+            <button type="button" id="spreadsheet-method-btn" class="btn btn-default extraction-method-btn" data-method="spreadsheet"><i class="glyphicon glyphicon-th lattice"></i> Lattice</button>
           </div>
 
           <p>
@@ -153,7 +145,8 @@
 
            <h2>Preview of Extracted Tabular Data</h2>
             <div id="table-container">
-              <table class="table table-bordered extracted-table">
+            <% if(data.length){ %>
+              <table class="table table-bordered extracted-data">
                 <tbody>
                 <% _(data).each(function(row){ %>
                   <tr>
@@ -163,6 +156,11 @@
                   </tr>
                 <% }) %>
                 </tbody>
+            <% } else if (loading) { %>
+             <div class="alert alert-success" id="loading"><span id="spinner"></span><span style="position: relative; left: 16px; font-size: 24px;">Loading...</span></div>
+            <% } else { %>
+              <span class="no-data">No data.</span>
+            <% } %>
             </table>
             </div>
         </div>
@@ -179,6 +177,7 @@
           <div id="pages-container">
           </div>
         </div>
+        <nestedscript type="text/javascript" src="/js/vendor/spin.min.js"></nestedscript> 
         <nestedscript type="text/javascript" src="/js/resizableSelection.js"></nestedscript> 
         <nestedscript type="text/javascript" src="/js/rectangularSelector.js"></nestedscript> 
         <nestedscript type="text/javascript" src="/js/vendor/ZeroClipboard.min.js"></nestedscript> 
@@ -263,7 +262,7 @@
               <td>TK kB</td> <!-- TODO size -->
               <td>TK</td>     <!-- TODO page count -->
               <td><%= new Date(parseInt(file['time']) * 1000).toUTCString().slice(5, -7) %></td>
-              <td><a href="#"><span class="glyphicon glyphicon-remove"></span></a></td>
+              <td><a href="#"><i class="glyphicon glyphicon-remove"></i></a></td>
               <td><a href="/pdf/<%= file['id'] %>"><button type="button" class="btn btn-sm btn-success">Extract Data</button></a></td>
             </tr>
           <% }) %>
@@ -282,6 +281,42 @@
           </div>
         </div>
       </script>
+
+      <script type="text/template" id="about-template">
+        <div class="container">
+           <a href="https://github.com/tabulapdf/tabula"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+
+          <div class="jumbotron about">
+
+            <h1>About Tabula</h1>
+            <p>Tabula is a tool for liberating data tables trapped inside PDF files</p>
+
+            <p>Tabula was created by journalists for journalists and anyone else working with data locked away in PDFs. Tabula will always be free and open source.</p>
+            <p>If you’ve ever tried to do anything with data provided to you in PDFs, you know how painful it is — there's no easy way to copy-and-paste rows of data out of PDF files. Tabula allows you to extract that data into a CSV or Microsoft Excel spreadsheet using a simple, easy-to-use interface. Tabula works on Mac, Windows and Linux.</p>
+            <p>Caveat: Tabula only works on text-based PDFs, not scanned documents. If you can click-and-drag to select text in your table in a PDF viewer (even if the output is disorganized trash), then your PDF is text-based and Tabula should work.</p>
+            <p>Security Concerns? Tabula is designed with security in mind. Your PDF and the extracted data never touch the net -- when you use Tabula, as long as your browser's URL bar says "localhost" or "127.0.0.1", all processing takes place on your local machine. Tabula does download a list of Tabula versions from our server to alert you if Tabula has been updated (and we use hits to that list to count how often Tabula is being used); it also downloads a few badges and assets from the web.</p>
+
+            <h2>Who Uses Tabula?</h2>
+            <p>Tabula is used to power investigative reporting at news organizations of all sizes, including ProPublica, The Times of London, Foreign Policy, La Nación (Argentina) and the St. Paul (MN) Pioneer Press.</p>
+            <p>Grassroots organizations like SchoolCuts.org rely on Tabula to turn clunky documents into human-friendly public resources.</p>
+            <p>And researchers of all kinds use Tabula to turn PDF reports into Excel spreadsheets, CSVs, and JSON files for use in analysis and database applications.</p>
+
+            <h2>Credits</h2>
+            <p>Tabula was created by <a href="http://jazzido.com/" target="_blank">Manuel Aristarán</a>, <a href="https://mike.tig.as/" target="_blank">Mike Tigas</a> and <a href="http://jeremybmerrill.com/" target="_blank">Jeremy B. Merrill</a> with the support of <a href="http://propublica.org">ProPublica</a>, <a href="http://blogs.lanacion.com.ar/data/">La Nación DATA</a>, <a href="http://www.mozillaopennews.org/">Knight-Mozilla OpenNews</a>, <a href="http://nytimes.com">The New York Times</a> and <a href="http://www.knightfoundation.org/">The Knight Foundation</a>.</p>
+          </div> <!-- /jumbotron -->
+        </div> <!-- /container -->
+       </script>
+
+      <script type="text/template" id="help-template">
+        <div class="container">
+          <div class="jumbotron help">
+          <h1>Having trouble with Tabula</h1>
+
+          <p> Help text TK </p>
+          </div> <!-- /jumbotron -->
+        </div> <!-- /container -->
+       </script>
+
 
     </div> <!-- /templates -->
 

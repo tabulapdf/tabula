@@ -10,11 +10,17 @@ var TabulaRouter = Backbone.Router.extend({
     "pdf/:file_id":                "view",
     // "pdf/:file_id/export":         "export",
     "queue/:file_id":              'status', //TK, renders navbar
-    "error":                       'uploadError' //TK, renders navbar
+    "error":                       'uploadError', //TK, renders navbar
+    "help":                       'help',
+    "about":                       'about' //TK, renders navbar
+  },
+
+  help: function(){
+    $('#tabula-app').html( _.template( $('#help-template').html().replace(/nestedscript/g, 'script') )({
+    }) );
   },
 
   upload: function() {
-    $('#fork-me-ribbon').show();
     $.getJSON('/pdfs/workspace.json', function(workspace){
       if( workspace.length > 0){
         $('#uploaded-files-container').html( _.template( $('#uploaded-files-template').html().replace(/nestedscript/g, 'script') )({workspace: workspace }));
