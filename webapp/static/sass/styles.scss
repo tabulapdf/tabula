@@ -89,7 +89,11 @@ form {
 	margin-bottom: 3em;
 }
 
-.file-list {
+#file-list-container {
+	max-height: 500px;
+	overflow-y: scroll;
+
+	.file-list {
 	thead tr th {
 		text-align: center;
 		cursor: pointer;
@@ -154,6 +158,8 @@ form {
 		}
 	}
 }	
+
+}
 
 .glyphicon-remove {
 	color: $gray-light;
