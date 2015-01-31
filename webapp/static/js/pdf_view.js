@@ -248,6 +248,8 @@ Tabula.Query = Backbone.Model.extend({
         error: _.bind(function(xhr, status, error) {
           //TODO: write this.
           console.log("error!");
+          //TODO add changes from cc5f964
+
           $('#modal-error textarea').html(xhr.responseText);
           $('#modal-error').modal('show');
           if (options !== undefined && _.isFunction(options.error))
