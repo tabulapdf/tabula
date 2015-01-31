@@ -248,8 +248,15 @@ Tabula.Query = Backbone.Model.extend({
         error: _.bind(function(xhr, status, error) {
           //TODO: write this.
           console.log("error!");
-          //TODO add changes from cc5f964
-
+          var error_text = xhr.responseText;
+          window.raw_xhr_responseText = xhr.responseText; // for consoles, etc.
+          if(error_text.indexOf("DOCTYPE") != -1){ // we're in Jar/Jetty/whatever land, not rackup land
+            var error_html = $('<div></div>').html( error_text );
+            var summary = error_html.find('#summary').text().trim();
+            var meta = error_html.find('#meta').text().trim();
+            var info = error_html.find('#info').text().trim();
+            error_text = [summary, meta, info].join("<br />");
+          }
           $('#modal-error textarea').html(xhr.responseText);
           $('#modal-error').modal('show');
           if (options !== undefined && _.isFunction(options.error))
