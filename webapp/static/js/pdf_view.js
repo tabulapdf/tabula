@@ -460,7 +460,17 @@ Tabula.PDFView = Backbone.View.extend({
             }, this),
           error: _.bind(function(xhr, status, error) {
             $('#data-modal').modal('hide');
-            $('#modal-error textarea').html(xhr.responseText);
+
+            var error_text = xhr.responseText;
+            window.raw_xhr_responseText = xhr.responseText;
+            if(error_text.indexOf("DOCTYPE") != -1){ // we're in Jar/Jetty/whatever land, not rackup land
+              var error_html = $('<div></div>').html( error_text );
+              var summary = error_html.find('#summary').text().trim();
+              var meta = error_html.find('#meta').text().trim();
+              var info = error_html.find('#info').text().trim();
+              error_text = [summary, meta, info].join("<br />");
+            }
+            $('#modal-error textarea').html(error_text);
             $('#modal-error').modal();
             if (options !== undefined && _.isFunction(options.error))
               options.error(resp);
