@@ -78,7 +78,7 @@ body {
 
   var total_downloads = 0;
 
-  d3.json("https://api.github.com/repos/jazzido/tabula/releases", function(error, data) {
+  d3.json("https://api.github.com/repos/tabulapdf/tabula/releases", function(error, data) {
 
       var platformNames = ['mac', 'win', 'jar'];
       color.domain(platformNames);
@@ -88,11 +88,12 @@ body {
       data.forEach(function(d, i) {
           var y0 = 0;
           d.platforms = platformNames.map(function(name) {
+              var t = d.assets.filter(function(a) {
+                  return a.name.indexOf(name) !== -1;
+              });
               return { name: name,
                        y0: y0,
-                       y1: y0 += +d.assets.filter(function(a) {
-                           return a.label.indexOf(name) !== -1;
-                       })[0].download_count };
+                       y1: y0 += t.length > 0 ? t[0].download_count : 0 };
           });
           d.total = d3.sum(d.platforms.map(function(x) { return x.y1 - x.y0; }));
           var next_release_date = i == data.length - 1 ? new Date() : new Date(data[i+1].created_at);
@@ -100,8 +101,6 @@ body {
           d.avg_downloads = d.total / days_between_releases;
           total_downloads += d.total;
       });
-
-      console.log(data);
 
       x.domain(data.map(function(d) { return d.name; }));
       y.domain([0, d3.max(data, function(d) { return d.total; })]);
