@@ -265,8 +265,8 @@
           <% _(workspace).each(function(file){ %>
             <tr>
               <td><%= file['file'] %></td>
-              <td>TK kB</td> <!-- TODO size -->
-              <td>TK</td>     <!-- TODO page count -->
+              <td><%= file['size'] ? Math.floor(file['size'] / 1024) : '??' %> kB</td>
+              <td><%= file['page_count'] || '??' %></td>
               <td><%= new Date(parseInt(file['time']) * 1000).toUTCString().slice(5, -7) %></td>
               <td><a href="javascript:"><i data-filename=<%= file['file'] %> data-pdfid=<%= file['id'] %> class="glyphicon glyphicon-remove delete-pdf"></i></a></td>
               <td><a href="/pdf/<%= file['id'] %>"><button type="button" class="btn btn-sm btn-success">Extract Data</button></a></td>

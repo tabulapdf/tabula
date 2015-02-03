@@ -25,9 +25,8 @@ rescue LoadError
 end
 
 require_relative '../lib/tabula_job_executor/executor.rb'
-require_relative '../lib/tabula_job_executor/jobs/generate_document_metadata.rb'
+require_relative '../lib/tabula_job_executor/jobs/generate_document_data.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
-require_relative '../lib/tabula_job_executor/jobs/generate_page_index.rb'
 require_relative '../lib/tabula_job_executor/jobs/detect_tables.rb'
 
 
@@ -89,18 +88,15 @@ def upload(req)
 
   job_batch = SecureRandom.uuid
 
-  GenerateDocumentMetadataJob.create(:filename => original_filename,
-                                     :id => file_id,
-                                     :batch => job_batch)
+  GenerateDocumentDataJob.create(:filename => file,
+                                 :original_filename => original_filename,
+                                 :id => file_id,
+                                 :output_dir => file_path,
+                                 :batch => job_batch)
 
   DetectTablesJob.create(:filename => file,
                          :output_dir => file_path,
                          :batch => job_batch)
-
-  GeneratePageIndexJob.create(:file => file,
-                              :output_dir => file_path,
-                              :batch => job_batch)
-
 
   GenerateThumbnailJob.create(:file_id => file_id,
                               :file => file,
