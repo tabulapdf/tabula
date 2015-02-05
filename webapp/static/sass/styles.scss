@@ -234,13 +234,6 @@ form {
 					cursor: pointer;
 				}
 			}
-			.selection-box, .table-region {
-				border: 1px dashed rgba(255,87,0,0.8);
-				background: rgba(255,87,0,0.2);
-				&:hover {
-					cursor: pointer;
-				}
-			}
 		}
 	}
 }
