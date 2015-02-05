@@ -33,11 +33,11 @@ var TabulaRouter = Backbone.Router.extend({
     document.title="Import | Tabula";
     $('nav li a').removeClass('active'); $('nav #upload-nav').addClass('active');
     $.ajax({
-      url: "/js/upload.js",
+      url: "/js/library.js",
       dataType: "script",
       async: true,
       success: function(data, status, jqxhr){
-        new Tabula.Upload({el: $('#tabula-app')[0]}).render();
+        new Tabula.Library({el: $('#tabula-app')[0]}).render();
       },
       error: function(a,b,c){
         console.log(a,b,c);

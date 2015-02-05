@@ -1,6 +1,16 @@
 Tabula = Tabula || {};
 
-Tabula.Upload = Backbone.View.extend({
+Tabula.UploadedFile = Backbone.Model.extend({
+
+});
+
+Tabula.FilesCollection = Backbone.Collection.extend({
+    model: Tabula.UploadedFile,
+    url: '/pdfs/workspace.json',
+});
+
+
+Tabula.Library = Backbone.View.extend({
     events: {
         "submit form#upload": 'uploadPDF',
         'click #uploaded-files-container .delete-pdf': 'deletePDF'
@@ -8,8 +18,10 @@ Tabula.Upload = Backbone.View.extend({
     template: _.template( $('#upload-template').html().replace(/nestedscript/g, 'script')),
     workspace: [],
     initialize: function(){
-      _.bindAll(this, 'uploadPDF', 'render', 'getWorkspace');
-      this.getWorkspace(this.render);
+      _.bindAll(this, 'uploadPDF', 'render', 'renderFileLibrary');
+      this.files_collection = new Tabula.FilesCollection([]);
+      this.files_collection.fetch({silent: true, success: this.renderFileLibrary});
+      this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
     },
     uploadPDF: function(e){
         var formdata = new FormData($('form#upload')[0]);
@@ -37,13 +49,6 @@ Tabula.Upload = Backbone.View.extend({
         return false; // don't actually submit the form
     },
 
-    getWorkspace: function(cb){
-      $.getJSON('/pdfs/workspace.json', _.bind(function(workspace){
-        this.workspace = workspace;
-        if(cb) cb();
-      }, this));
-    },
-
     deletePDF: function(e) {
       var btn = $(e.currentTarget);
       var tr = btn.parents('tr');
@@ -58,18 +63,24 @@ Tabula.Upload = Backbone.View.extend({
             });
     },
 
+    renderFileLibrary: function(added_model){
+      //TODO: make added_model flash
+      if(this.files_collection.length > 0){
+        $('#uploaded-files-container').html( _.template( $('#uploaded-files-template').html().replace(/nestedscript/g, 'script') )({
+            workspace: this.files_collection.models.map(function(i){ return i.attributes; }) 
+        }));
+      }else{
+        $('#uploaded-files-container').html( $('<p>No uploaded files yet.</p>') );
+      }
+      $("#fileTable").tablesorter( { headers: { 4: { sorter: false}, 5: {sorter: false} } } ); 
+    },
+
     render: function(){
       $('#tabula-app').html( this.template({
         TABULA_VERSION: TABULA_VERSION,
         pct_complete: 0,
         importing: false
       }) );
-      if(this.workspace.length > 0){
-        $('#uploaded-files-container').html( _.template( $('#uploaded-files-template').html().replace(/nestedscript/g, 'script') )({workspace: this.workspace }));
-      }else{
-        $('#uploaded-files-container').html( $('<p>No uploaded files yet.</p>') );
-      }
-      $("#fileTable").tablesorter( { headers: { 4: { sorter: false}, 5: {sorter: false} } } ); 
     }
 })
 
