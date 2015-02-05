@@ -370,8 +370,8 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?1418769458);
-  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?&1418769458#iefix) format("embedded-opentype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff2) format("woff2"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff?1418769458) format("woff"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.ttf?1418769458) format("truetype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.svg?1418769458#glyphicons_halflingsregular) format("svg");
+  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?1423021007);
+  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?&1423021007#iefix) format("embedded-opentype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff2) format("woff2"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff?1423021007) format("woff"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.ttf?1423021007) format("truetype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.svg?1423021007#glyphicons_halflingsregular) format("svg");
 }
 /* line 22, ../../../../../.rbenv/versions/jruby-1.7.15/lib/ruby/gems/shared/gems/bootstrap-sass-3.3.3/assets/stylesheets/bootstrap/_glyphicons.scss */
 .glyphicon {
@@ -9483,7 +9483,7 @@ form {
   cursor: pointer;
 }
 
-/* line 248, ../sass/styles.scss */
+/* line 249, ../sass/styles.scss */
 #control-panel {
   position: fixed;
   top: 50px;
@@ -9496,19 +9496,18 @@ form {
   -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.075);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.075);
 }
-/* line 257, ../sass/styles.scss */
+/* line 258, ../sass/styles.scss */
 #control-panel button {
   margin-right: 1.25em;
 }
 
-/* line 264, ../sass/styles.scss */
+/* line 265, ../sass/styles.scss */
 #main-pane {
   background: #777777;
   padding: 4.25em 2em 2em 2em;
-  left: 195px;
+  margin-left: 195px;
   height: 100%;
   width: calc(100% - 200px);
-  position: relative;
   z-index: 1;
 }
 /* line 272, ../sass/styles.scss */
