@@ -245,6 +245,7 @@ form {
 	}
 }
 
+
 #control-panel {
 	position: fixed;
 	top: 50px;
@@ -264,10 +265,9 @@ form {
 #main-pane {
 	background: $gray-light;
 	padding: 4.25em 2em 2em 2em;
-	left: $sidebarWidth; 
+	margin-left: $sidebarWidth; 
 	height: 100%;
 	width: calc(100% - 200px);
-	position: relative;
 	z-index: 1;
 	.page {
 		width: 100%;
