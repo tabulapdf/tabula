@@ -1,6 +1,12 @@
-Tabula = Tabula || {};
+Tabula = window.Tabula || {};
 
 Tabula.UploadedFile = Backbone.Model.extend({
+  size: null,
+  page_count: null,
+  initialize: function(){
+    this.set('size', this.get('size') || null);
+    this.set('page_count', this.get('page_count') || null)
+  }
 
 });
 
@@ -9,70 +15,87 @@ Tabula.FilesCollection = Backbone.Collection.extend({
     url: '/pdfs/workspace.json',
 });
 
+Tabula.File = Backbone.View.extend({
+  tagName: 'tr',
+  events: {
+    'click .delete-pdf': 'deletePDF'
+  },
+  template: _.template( $('#uploaded-file-template').html().replace(/nestedscript/g, 'script')),
+  initialize: function(){
+    _.bindAll(this, 'render', 'deletePDF');
+  },
+  render: function(){
+    this.$el.append(this.template(this.model.attributes));
+    return this;
+  },
+  deletePDF: function(e) {
+    var btn = $(e.currentTarget);
+    var tr = btn.parents('tr');
+
+    if (!confirm('Delete file "'+btn.data('filename')+'"?')) return;
+    var pdf_id = btn.data('pdfid');
+
+    $.post('/pdf/' + pdf_id,
+          { _method: 'delete' },
+          function() {
+            tr.fadeOut(200, function() { $(this).remove(); });
+          });
+    },
+})
+
 
 Tabula.Library = Backbone.View.extend({
     events: {
         "submit form#upload": 'uploadPDF',
-        'click #uploaded-files-container .delete-pdf': 'deletePDF'
     },
     template: _.template( $('#upload-template').html().replace(/nestedscript/g, 'script')),
-    workspace: [],
     initialize: function(){
       _.bindAll(this, 'uploadPDF', 'render', 'renderFileLibrary');
       this.files_collection = new Tabula.FilesCollection([]);
-      this.files_collection.fetch({silent: true, success: this.renderFileLibrary});
+      this.files_collection.fetch({silent: true, success: _.bind(function(){ this.render(); this.renderFileLibrary(); }, this) });
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
     },
     uploadPDF: function(e){
-        var formdata = new FormData($('form#upload')[0]);
-        $.ajax({
-            url: $('form#upload').attr('action'),
-            type: 'POST',
-            success: _.bind(function (res) {
-                var data = JSON.parse(res);
-                this.checker = new Tabula.UploadStatusChecker({
-                    el: this.$el.find('#progress-container'),
-                    file_id: data.file_id,
-                    upload_id: data.upload_id,
-                });
-                this.checker.checkStatus();
-                this.checker.render();
-            }, this),
-            error: function(a,b,c){ console.log('error', a,b,c)},
-            data: formdata,
+      $(e.currentTarget).find('button').attr('disabled', 'disabled');
 
-            cache: false,
-            contentType: false,
-            processData: false
-        });
-        e.preventDefault();
-        return false; // don't actually submit the form
-    },
+      var formdata = new FormData($('form#upload')[0]);
+      $.ajax({
+          url: $('form#upload').attr('action'),
+          type: 'POST',
+          success: _.bind(function (res) {
+              var data = JSON.parse(res);
+              this.checker = new Tabula.UploadStatusChecker({
+                  el: this.$el.find('#progress-container'),
+                  file_id: data.file_id,
+                  upload_id: data.upload_id,
+              });
+              this.checker.checkStatus();
+              this.checker.render();
+          }, this),
+          error: function(a,b,c){ console.log('error', a,b,c)},
+          data: formdata,
 
-    deletePDF: function(e) {
-      var btn = $(e.currentTarget);
-      var tr = btn.parents('tr');
-
-      if (!confirm('Delete file "'+btn.data('filename')+'"?')) return;
-      var pdf_id = btn.data('pdfid');
-
-      $.post('/pdf/' + pdf_id,
-            { _method: 'delete' },
-            function() {
-              tr.fadeOut(200, function() { $(this).remove(); });
-            });
+          cache: false,
+          contentType: false,
+          processData: false
+      });
+      e.preventDefault();
+      return false; // don't actually submit the form
     },
 
     renderFileLibrary: function(added_model){
-      //TODO: make added_model flash
       if(this.files_collection.length > 0){
-        $('#uploaded-files-container').html( _.template( $('#uploaded-files-template').html().replace(/nestedscript/g, 'script') )({
-            workspace: this.files_collection.models.map(function(i){ return i.attributes; }) 
-        }));
+        this.files_collection.each(function(uploaded_file){
+          var file_element = new Tabula.File({model: uploaded_file}).render().el;
+          if(added_model == uploaded_file){
+            $(file_element).addClass('flash');
+          }
+          $('#uploaded-files-container').append(file_element);
+        })
+        $("#fileTable").tablesorter( { headers: { 4: { sorter: false}, 5: {sorter: false} } } ); 
       }else{
         $('#uploaded-files-container').html( $('<p>No uploaded files yet.</p>') );
       }
-      $("#fileTable").tablesorter( { headers: { 4: { sorter: false}, 5: {sorter: false} } } ); 
     },
 
     render: function(){
@@ -81,6 +104,7 @@ Tabula.Library = Backbone.View.extend({
         pct_complete: 0,
         importing: false
       }) );
+      return this;
     }
 })
 
@@ -98,7 +122,9 @@ Tabula.UploadStatusChecker = Backbone.View.extend({
         if (!!this.spinobj) {
             this.spinobj.stop()
         };
-        window.location = '/pdf/' + file_id;
+        Tabula.library.files_collection.fetch({ success: Tabula.library.renderFileLibrary });
+        $('form#upload').find('button').removeAttr('disabled');
+        // window.location = '/pdf/' + file_id;
     },
 
     checkStatus: function() {

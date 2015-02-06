@@ -1,5 +1,5 @@
 var Tabula;
-Tabula = Tabula || {};
+window.Tabula = Tabula || {};
 
 TABULA_VERSION = "TODO";
 
@@ -37,7 +37,7 @@ var TabulaRouter = Backbone.Router.extend({
       dataType: "script",
       async: true,
       success: function(data, status, jqxhr){
-        new Tabula.Library({el: $('#tabula-app')[0]}).render();
+        Tabula.library = new Tabula.Library({el: $('#tabula-app')[0]}).render();
       },
       error: function(a,b,c){
         console.log(a,b,c);
