@@ -124,7 +124,7 @@ Tabula.UploadStatusChecker = Backbone.View.extend({
         if (!!this.spinobj) {
             this.spinobj.stop()
         };
-        Tabula.library.files_collection.fetch({ success: Tabula.library.renderFileLibrary });
+        Tabula.library.files_collection.fetch();
         $('form#upload').find('button').removeAttr('disabled');
         // window.location = '/pdf/' + file_id;
     },
