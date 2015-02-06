@@ -9289,17 +9289,21 @@ form {
   font-weight: bold;
   text-align: left;
 }
+/* line 158, ../sass/styles.scss */
+#file-list-container .file-list tbody tr td a {
+  color: #333;
+}
 
-/* line 164, ../sass/styles.scss */
+/* line 167, ../sass/styles.scss */
 .glyphicon-remove {
   color: #777777;
 }
-/* line 166, ../sass/styles.scss */
+/* line 169, ../sass/styles.scss */
 .glyphicon-remove:hover {
   color: #d9534f;
 }
 
-/* line 171, ../sass/styles.scss */
+/* line 174, ../sass/styles.scss */
 #sidebar {
   background: #eeeeee;
   width: 195px;
@@ -9315,26 +9319,26 @@ form {
   -webkit-box-shadow: inset -0.25em 0 0.5em -0.25em rgba(0, 0, 0, 0.1);
   box-shadow: inset -0.25em 0 0.5em -0.25em rgba(0, 0, 0, 0.1);
 }
-/* line 184, ../sass/styles.scss */
+/* line 187, ../sass/styles.scss */
 #sidebar h5 {
   border-top: 1px solid #777777;
   padding-top: 1em;
   margin-top: 1em;
 }
-/* line 189, ../sass/styles.scss */
+/* line 192, ../sass/styles.scss */
 #sidebar .btn-group button {
   width: 83px;
   margin-bottom: 10px;
 }
-/* line 193, ../sass/styles.scss */
+/* line 196, ../sass/styles.scss */
 #sidebar p {
   font-size: .9em;
 }
-/* line 196, ../sass/styles.scss */
+/* line 199, ../sass/styles.scss */
 #sidebar .thumbnail-list {
   padding-left: 0px;
 }
-/* line 199, ../sass/styles.scss */
+/* line 202, ../sass/styles.scss */
 #sidebar .thumbnail-list .page {
   margin: 0 auto 1.25em;
   display: block;
@@ -9342,29 +9346,29 @@ form {
   padding: 1em .5em .5em 1em;
   position: relative;
 }
-/* line 205, ../sass/styles.scss */
+/* line 208, ../sass/styles.scss */
 #sidebar .thumbnail-list .page img {
   display: block;
   width: 100%;
 }
-/* line 209, ../sass/styles.scss */
+/* line 212, ../sass/styles.scss */
 #sidebar .thumbnail-list .page p {
   margin-top: .25em;
   color: #555555;
   line-height: 1;
 }
-/* line 215, ../sass/styles.scss */
+/* line 218, ../sass/styles.scss */
 #sidebar .thumbnail-list .page:hover img {
   cursor: pointer;
   -webkit-box-shadow: 0 0 0 0.1em rgba(0, 0, 0, 0.1);
   box-shadow: 0 0 0 0.1em rgba(0, 0, 0, 0.1);
 }
-/* line 221, ../sass/styles.scss */
+/* line 224, ../sass/styles.scss */
 #sidebar .thumbnail-list .page.active img {
   -webkit-box-shadow: 0 0 0 0.1em #5bc0de;
   box-shadow: 0 0 0 0.1em #5bc0de;
 }
-/* line 225, ../sass/styles.scss */
+/* line 228, ../sass/styles.scss */
 #sidebar .thumbnail-list .page .remove {
   position: absolute;
   left: -.25em;
@@ -9374,12 +9378,12 @@ form {
   line-height: 1;
   font-size: 1em;
 }
-/* line 233, ../sass/styles.scss */
+/* line 236, ../sass/styles.scss */
 #sidebar .thumbnail-list .page .remove:hover {
   cursor: pointer;
 }
 
-/* line 242, ../sass/styles.scss */
+/* line 245, ../sass/styles.scss */
 #control-panel {
   position: fixed;
   top: 50px;
@@ -9392,12 +9396,12 @@ form {
   -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.075);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.075);
 }
-/* line 251, ../sass/styles.scss */
+/* line 254, ../sass/styles.scss */
 #control-panel button {
   margin-right: 1.25em;
 }
 
-/* line 258, ../sass/styles.scss */
+/* line 261, ../sass/styles.scss */
 #main-pane {
   background: #777777;
   padding: 4.25em 2em 2em 2em;
@@ -9406,7 +9410,7 @@ form {
   width: calc(100% - 200px);
   z-index: 1;
 }
-/* line 265, ../sass/styles.scss */
+/* line 268, ../sass/styles.scss */
 #main-pane .page {
   width: 100%;
   max-width: 800px;
@@ -9415,23 +9419,23 @@ form {
   position: relative;
   margin: 0 auto;
 }
-/* line 271, ../sass/styles.scss */
+/* line 274, ../sass/styles.scss */
 #main-pane .page img {
   margin: 2em 0;
   display: block;
   width: 100%;
   max-width: 800px;
 }
-/* line 276, ../sass/styles.scss */
+/* line 279, ../sass/styles.scss */
 #main-pane .page img:hover {
   cursor: crosshair;
 }
-/* line 281, ../sass/styles.scss */
+/* line 284, ../sass/styles.scss */
 #main-pane .selection-box, #main-pane .table-region {
   border: 6px dashed rgba(224, 1, 1, 0.8);
   background: rgba(224, 1, 1, 0.2);
 }
-/* line 284, ../sass/styles.scss */
+/* line 287, ../sass/styles.scss */
 #main-pane .selection-box .selection-panel, #main-pane .table-region .selection-panel {
   display: none;
   position: absolute;
@@ -9439,40 +9443,40 @@ form {
   left: 0;
   min-width: 320px;
 }
-/* line 290, ../sass/styles.scss */
+/* line 293, ../sass/styles.scss */
 #main-pane .selection-box .selection-panel button:hover, #main-pane .table-region .selection-panel button:hover {
   cursor: pointer;
 }
-/* line 294, ../sass/styles.scss */
+/* line 297, ../sass/styles.scss */
 #main-pane .selection-box:hover, #main-pane .table-region:hover {
   cursor: move;
 }
-/* line 296, ../sass/styles.scss */
+/* line 299, ../sass/styles.scss */
 #main-pane .selection-box:hover .selection-panel, #main-pane .table-region:hover .selection-panel {
   display: block;
 }
 
-/* line 304, ../sass/styles.scss */
+/* line 307, ../sass/styles.scss */
 body.page-selections {
   padding-top: 50px;
   background: #777777;
 }
-/* line 307, ../sass/styles.scss */
+/* line 310, ../sass/styles.scss */
 body.page-selections #main-pane {
   background: #777777;
 }
 
-/* line 312, ../sass/styles.scss */
+/* line 315, ../sass/styles.scss */
 body.page-export {
   padding-top: 50px;
   background: white;
 }
-/* line 315, ../sass/styles.scss */
+/* line 318, ../sass/styles.scss */
 body.page-export #sidebar {
   text-align: left;
   padding: .5em;
 }
-/* line 318, ../sass/styles.scss */
+/* line 321, ../sass/styles.scss */
 body.page-export #sidebar span.lattice.glyphicon {
   color: #ededed;
   background: #666;
@@ -9480,54 +9484,54 @@ body.page-export #sidebar span.lattice.glyphicon {
   border: solid #666;
   border-width: 0 0 1px 1px;
 }
-/* line 326, ../sass/styles.scss */
+/* line 329, ../sass/styles.scss */
 body.page-export #main-pane {
   background: white;
   padding-top: 5.5em;
 }
-/* line 330, ../sass/styles.scss */
+/* line 333, ../sass/styles.scss */
 body.page-export #main-pane #control-panel form {
   display: inline-block;
   margin-bottom: 0;
 }
-/* line 333, ../sass/styles.scss */
+/* line 336, ../sass/styles.scss */
 body.page-export #main-pane #control-panel form .form-control {
   width: 100px;
   margin-right: 1em;
   display: inline-block;
 }
-/* line 340, ../sass/styles.scss */
+/* line 343, ../sass/styles.scss */
 body.page-export #main-pane table {
   margin-top: 2em;
 }
 
-/* line 346, ../sass/styles.scss */
+/* line 349, ../sass/styles.scss */
 .jumbotron.about p {
   font-size: 1.1em;
 }
 
-/* line 350, ../sass/styles.scss */
+/* line 353, ../sass/styles.scss */
 div.spinner {
   top: 10px !important;
 }
 
-/* line 354, ../sass/styles.scss */
+/* line 357, ../sass/styles.scss */
 #progress-container h4 {
   display: inline-block;
 }
 
-/* line 357, ../sass/styles.scss */
+/* line 360, ../sass/styles.scss */
 #progress-container #message {
   color: #aaa;
 }
 
-/* line 364, ../sass/styles.scss */
+/* line 367, ../sass/styles.scss */
 .flash {
-  -moz-animation: flash 1s ease-out;
+  -moz-animation: flash 2s ease-out;
   -moz-animation-iteration-count: 1;
-  -webkit-animation: flash 1s ease-out;
+  -webkit-animation: flash 2s ease-out;
   -webkit-animation-iteration-count: 1;
-  -ms-animation: flash 1s ease-out;
+  -ms-animation: flash 2s ease-out;
   -ms-animation-iteration-count: 1;
 }
 

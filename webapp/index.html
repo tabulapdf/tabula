@@ -262,7 +262,7 @@
       </script>
 
       <script type="text/template" id="uploaded-file-template">
-        <td><%= file %></td>
+        <td><a href='/pdf/<%= id %>'><%= file %></a></td>
         <td><%= size ? Math.floor(size / 1024) : '??' %> kB</td>
         <td><%= page_count || '??' %></td>
         <td><%= new Date(parseInt(time) * 1000).toUTCString().slice(5, -7) %></td>

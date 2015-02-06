@@ -18,6 +18,7 @@ Tabula.FilesCollection = Backbone.Collection.extend({
 
 Tabula.File = Backbone.View.extend({
   tagName: 'tr',
+  className: 'uploaded-file',
   events: {
     'click .delete-pdf': 'deletePDF'
   },

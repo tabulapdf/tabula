@@ -148,12 +148,15 @@ form {
 		&:hover {
 			background: #d9edf7;
 		}
-		td {
+		td{
 			line-height: 2.25;
 			text-align: center;
 			&:first-of-type {
 				font-weight: bold;
 				text-align: left;
+			}
+			a {
+				color: #333; 
 			}
 		}
 	}
