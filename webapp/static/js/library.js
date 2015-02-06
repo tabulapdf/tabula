@@ -13,6 +13,7 @@ Tabula.UploadedFile = Backbone.Model.extend({
 Tabula.FilesCollection = Backbone.Collection.extend({
     model: Tabula.UploadedFile,
     url: '/pdfs/workspace.json',
+    comparator: function(i){ return -i.get('time')}
 });
 
 Tabula.File = Backbone.View.extend({
@@ -84,6 +85,7 @@ Tabula.Library = Backbone.View.extend({
     },
 
     renderFileLibrary: function(added_model){
+      $('#uploaded-files-container').empty();
       if(this.files_collection.length > 0){
         this.files_collection.each(function(uploaded_file){
           var file_element = new Tabula.File({model: uploaded_file}).render().el;
@@ -92,7 +94,7 @@ Tabula.Library = Backbone.View.extend({
           }
           $('#uploaded-files-container').append(file_element);
         })
-        $("#fileTable").tablesorter( { headers: { 4: { sorter: false}, 5: {sorter: false} } } ); 
+        $("#fileTable").tablesorter( { headers: { 3: { sorter: "usLongDate" },  4: { sorter: false}, 5: {sorter: false} } } ); 
       }else{
         $('#uploaded-files-container').html( $('<p>No uploaded files yet.</p>') );
       }
