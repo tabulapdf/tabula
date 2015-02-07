@@ -49,6 +49,7 @@ Tabula.Selection = Backbone.Model.extend({
   // controlling a view (Manuel)
   queryForData: function(){
     var selection_coords = this.toCoords();
+    console.log(selection_coords);
     Tabula.pdf_view.query = new Tabula.Query({list_of_coords: [selection_coords], extraction_method: this.get('extractionMethod')});
     Tabula.pdf_view.createDataView();
     Tabula.pdf_view.query.doQuery();
