@@ -675,7 +675,10 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
                   'if_multiselect_checked': this.pdf_view.options.get('multiselect_mode') ? '' : 'checked="checked"',
                   'disable_clear_all_selections': numOfSelectionsOnPage <= 0 ? 'disabled="disabled"' : '' ,
                   'disable_download_all': numOfSelectionsOnPage <= 0 ? 'disabled="disabled"' : '',
-                  'show_restore_detected_tables': (this.pdf_view.hasPredetectedTables && numOfSelectionsOnPage <= 0) ? '' : 'display: none;',
+
+                  // three states: autodetection still incomplete, autodetection done but no tables found, autodetection done and tables found
+                  'restore_detected_tables': this.pdf_view.hasAutodetectedTables ? "autodetect-finished" : "autodetect-in-progress",
+                  'disable_detected_tables': numOfSelectionsOnPage <= 0 ? 'disabled="disabled"' : ''
                   }));
 
     return this;
@@ -795,12 +798,12 @@ Tabula.PDFView = Backbone.View.extend({
     pageCount: undefined,
     components: {},
 
-    hasPredetectedTables: false,
+    hasAutodetectedTables: false,
     global_options: null,
 
     initialize: function(){
       _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections',
-        'createDataView');
+        'createDataView', 'checkForAutodetectedTables');
 
       this.pdf_document = new Tabula.Document({
         pdf_id: PDF_ID,
@@ -820,12 +823,7 @@ Tabula.PDFView = Backbone.View.extend({
 
       this.pdf_document.page_collection.fetch({
         success: _.bind(function(){
-          this.pdf_document.selections.fetch({
-            success: _.bind(function(){
-              this.hasPredetectedTables = true;
-            }, this),
-            // error: function(){ console.log("no predetected tables (404 on tables.json)")}
-          });
+          this.checkForAutodetectedTables();
         }, this),
         error: _.bind(function(){
           console.log('404'); //TODO: make this a real 404, with the right error code, etc.
@@ -839,6 +837,21 @@ Tabula.PDFView = Backbone.View.extend({
           var selection = Tabula.pdf_view.pdf_document.selections.get(selectionId);
           selection.repeatLassos();
         });
+    },
+
+    checkForAutodetectedTables: function(){
+      console.log('check')
+      this.pdf_document.selections.fetch({
+        success: _.bind(function(){
+          this.hasAutodetectedTables = true;
+          window.clearTimeout(this.autodetect_timer);
+          this.render();
+        }, this),
+        error: _.bind(function(){ 
+          console.log("no predetected tables (404 on tables.json)")
+          this.autodetect_timer = window.setTimeout(this.checkForAutodetectedTables, 2000);
+        }, this)
+      });
     },
 
     removePage: function(removedPageModel){

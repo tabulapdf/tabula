@@ -370,8 +370,8 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?1423021007);
-  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?&1423021007#iefix) format("embedded-opentype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff2) format("woff2"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff?1423021007) format("woff"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.ttf?1423021007) format("truetype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.svg?1423021007#glyphicons_halflingsregular) format("svg");
+  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?1423417607);
+  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?&1423417607#iefix) format("embedded-opentype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff2) format("woff2"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff?1423417607) format("woff"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.ttf?1423417607) format("truetype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.svg?1423417607#glyphicons_halflingsregular) format("svg");
 }
 /* line 22, ../../../../../.rbenv/versions/jruby-1.7.15/lib/ruby/gems/shared/gems/bootstrap-sass-3.3.3/assets/stylesheets/bootstrap/_glyphicons.scss */
 .glyphicon {
@@ -9525,7 +9525,31 @@ div.spinner {
   color: #aaa;
 }
 
-/* line 367, ../sass/styles.scss */
+/* line 364, ../sass/styles.scss */
+.autodetect-in-progress i.glyphicon-refresh {
+  -webkit-transition: -webkit-transform 600s;
+  transition: transform 600s;
+  -webkit-transform: rotate(3600deg);
+  transform: rotate(3600deg);
+  display: inline;
+}
+
+/* line 371, ../sass/styles.scss */
+.autodetect-in-progress i.glyphicon-flash {
+  display: none;
+}
+
+/* line 374, ../sass/styles.scss */
+.autodetect-finished i.glyphicon-flash {
+  display: inline;
+}
+
+/* line 377, ../sass/styles.scss */
+.autodetect-finished i.glyphicon-refresh {
+  display: none;
+}
+
+/* line 381, ../sass/styles.scss */
 .flash {
   -moz-animation: flash 2s ease-out;
   -moz-animation-iteration-count: 1;
