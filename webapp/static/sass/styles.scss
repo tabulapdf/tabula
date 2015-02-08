@@ -361,8 +361,22 @@ div.spinner {
 	color: #aaa;
 }
 
-
-
+.autodetect-in-progress i.glyphicon-refresh {
+	-webkit-transition: -webkit-transform 600s;
+  transition:  transform 600s;
+  -webkit-transform: rotate(3600deg);
+  transform: rotate(3600deg);
+	display: inline;
+}
+.autodetect-in-progress i.glyphicon-flash {
+	display: none;
+}
+.autodetect-finished i.glyphicon-flash {
+	display: inline;
+}
+.autodetect-finished i.glyphicon-refresh {
+	display: none;
+}
 
 .flash{
   -moz-animation: flash 2s ease-out;
