@@ -15,6 +15,7 @@ Tabula.Page = Backbone.Model.extend({
   initialize: function(){
     this.set('number_zero_indexed', this.get('number') - 1);
     this.set('image_url', '/pdfs/' + PDF_ID + '/document_800_' + this.get('number') + '.png');
+    this.set('small_image_url',  '/pdfs/' + PDF_ID + '/document_560_' + this.get('number') + '.png');
   }
 });
 
@@ -534,6 +535,19 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
     this.$image = this.$el.find('img');
 
+    // if user loads a PDF processed in Tabula <= 0.9.7, thumbnails were baked out at
+    // a lower resolution, so we'll use those and upscale.
+    // TODO: once we have a page info API, we can use that to determine deterministicaly
+    // which size image to use.
+    window.setTimeout(_.bind(function(){
+      if(!this.$el.find('img')[0].naturalWidth){
+        this.$el.html(this.template({
+                        'number': this.model.get('number'),
+                        'image_url': this.model.get('small_image_url')
+                      }));
+      }
+    },this), 1000)
+
     return this;
   },
 
@@ -758,6 +772,19 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     // stash some selectors (which don't exist at init)
     this.$img = this.$el.find('img');
     this.img = this.$img[0];
+    
+    // if user loads a PDF processed in Tabula <= 0.9.7, thumbnails were baked out at
+    // a lower resolution, so we'll use those and upscale.
+    // TODO: once we have a page info API, we can use that to determine deterministicaly
+    // which size image to use.
+    window.setTimeout(_.bind(function(){
+      if(!this.$el.find('img')[0].naturalWidth){
+        this.$el.html(this.template({
+                        'number': this.model.get('number'),
+                        'image_url': this.model.get('small_image_url')
+                      }));
+      }
+    },this), 1000)
 
     return this;
   },
