@@ -437,7 +437,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   page_views: {},
   rectangular_selector: null,
 
-
   _selectionsGetter: function(target) {
     return this.page_views[$(target).data('page')].selections;
   },
@@ -772,7 +771,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     // stash some selectors (which don't exist at init)
     this.$img = this.$el.find('img');
     this.img = this.$img[0];
-    
+
     // if user loads a PDF processed in Tabula <= 0.9.7, thumbnails were baked out at
     // a lower resolution, so we'll use those and upscale.
     // TODO: once we have a page info API, we can use that to determine deterministicaly
