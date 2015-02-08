@@ -370,8 +370,8 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?1423417607);
-  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?&1423417607#iefix) format("embedded-opentype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff2) format("woff2"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff?1423417607) format("woff"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.ttf?1423417607) format("truetype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.svg?1423417607#glyphicons_halflingsregular) format("svg");
+  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?1423423809);
+  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?&1423423809#iefix) format("embedded-opentype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff2) format("woff2"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff?1423423809) format("woff"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.ttf?1423423809) format("truetype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.svg?1423423809#glyphicons_halflingsregular) format("svg");
 }
 /* line 22, ../../../../../.rbenv/versions/jruby-1.7.15/lib/ruby/gems/shared/gems/bootstrap-sass-3.3.3/assets/stylesheets/bootstrap/_glyphicons.scss */
 .glyphicon {
@@ -9102,103 +9102,103 @@ div.table-region .resize-handle {
   position: absolute;
 }
 
-/* line 49, ../sass/selectors.scss */
+/* line 50, ../sass/selectors.scss */
 div.table-region .n-border {
   width: 100%;
   top: 0;
   left: 0;
-  height: 5px;
+  height: 10px;
 }
 
-/* line 55, ../sass/selectors.scss */
+/* line 56, ../sass/selectors.scss */
 div.table-region .n-border:hover {
   cursor: n-resize;
 }
 
-/* line 59, ../sass/selectors.scss */
+/* line 60, ../sass/selectors.scss */
 div.table-region .nw-border {
-  width: 5px;
-  height: 5px;
-  top: 0;
-  left: 0;
+  width: 10px;
+  height: 10px;
+  top: -5px;
+  left: -5px;
 }
 
-/* line 64, ../sass/selectors.scss */
+/* line 65, ../sass/selectors.scss */
 div.table-region .nw-border:hover {
   cursor: nw-resize;
 }
 
-/* line 68, ../sass/selectors.scss */
+/* line 69, ../sass/selectors.scss */
 div.table-region .ne-border {
-  width: 5px;
-  height: 5px;
-  top: 0;
-  right: 0;
+  width: 10px;
+  height: 10px;
+  top: -5px;
+  right: -5px;
 }
 
-/* line 73, ../sass/selectors.scss */
+/* line 74, ../sass/selectors.scss */
 div.table-region .ne-border:hover {
   cursor: ne-resize;
 }
 
-/* line 77, ../sass/selectors.scss */
+/* line 78, ../sass/selectors.scss */
 div.table-region .s-border {
   width: 100%;
   bottom: 0px;
-  height: 5px;
+  height: 10px;
 }
 
-/* line 83, ../sass/selectors.scss */
+/* line 84, ../sass/selectors.scss */
 div.table-region .s-border:hover {
   cursor: s-resize;
 }
 
-/* line 87, ../sass/selectors.scss */
+/* line 88, ../sass/selectors.scss */
 div.table-region .sw-border {
-  width: 5px;
-  height: 5px;
-  bottom: 0;
-  left: 0;
+  width: 10px;
+  height: 10px;
+  bottom: -5px;
+  left: -5px;
 }
 
-/* line 92, ../sass/selectors.scss */
+/* line 93, ../sass/selectors.scss */
 div.table-region .sw-border:hover {
   cursor: sw-resize;
 }
 
-/* line 96, ../sass/selectors.scss */
+/* line 97, ../sass/selectors.scss */
 div.table-region .se-border {
-  width: 5px;
-  height: 5px;
-  bottom: 0;
-  right: 0;
+  width: 10px;
+  height: 10px;
+  bottom: -5px;
+  right: -5px;
 }
 
-/* line 101, ../sass/selectors.scss */
+/* line 102, ../sass/selectors.scss */
 div.table-region .se-border:hover {
   cursor: se-resize;
 }
 
-/* line 105, ../sass/selectors.scss */
+/* line 106, ../sass/selectors.scss */
 div.table-region .w-border {
   height: 100%;
   left: 0;
-  width: 5px;
+  width: 10px;
 }
 
-/* line 111, ../sass/selectors.scss */
+/* line 112, ../sass/selectors.scss */
 div.table-region .w-border:hover {
   cursor: w-resize;
 }
 
-/* line 115, ../sass/selectors.scss */
+/* line 116, ../sass/selectors.scss */
 div.table-region .e-border {
   height: 100%;
   right: 0px;
-  width: 5px;
+  width: 10px;
 }
 
-/* line 121, ../sass/selectors.scss */
+/* line 123, ../sass/selectors.scss */
 div.table-region button[name=close] {
   font-weight: bold;
   border: 0;
@@ -9210,12 +9210,12 @@ div.table-region button[name=close] {
   left: 100%;
 }
 
-/* line 132, ../sass/selectors.scss */
+/* line 134, ../sass/selectors.scss */
 div.table-region button[name=close]:hover {
   color: red;
 }
 
-/* line 138, ../sass/selectors.scss */
+/* line 140, ../sass/selectors.scss */
 div.table-region .e-border:hover {
   cursor: e-resize;
 }
