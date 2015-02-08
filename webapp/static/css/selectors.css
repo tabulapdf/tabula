@@ -41,6 +41,107 @@
   z-index: 21;
 }
 
+/* line 42, ../sass/selectors.scss */
+div.table-region .resize-handle {
+  position: absolute;
+}
+
+/* line 49, ../sass/selectors.scss */
+div.table-region .n-border {
+  width: 100%;
+  top: 0;
+  left: 0;
+  height: 5px;
+}
+
+/* line 55, ../sass/selectors.scss */
+div.table-region .n-border:hover {
+  cursor: n-resize;
+}
+
+/* line 59, ../sass/selectors.scss */
+div.table-region .nw-border {
+  width: 5px;
+  height: 5px;
+  top: 0;
+  left: 0;
+}
+
+/* line 64, ../sass/selectors.scss */
+div.table-region .nw-border:hover {
+  cursor: nw-resize;
+}
+
+/* line 68, ../sass/selectors.scss */
+div.table-region .ne-border {
+  width: 5px;
+  height: 5px;
+  top: 0;
+  right: 0;
+}
+
+/* line 73, ../sass/selectors.scss */
+div.table-region .ne-border:hover {
+  cursor: ne-resize;
+}
+
+/* line 77, ../sass/selectors.scss */
+div.table-region .s-border {
+  width: 100%;
+  bottom: 0px;
+  height: 5px;
+}
+
+/* line 83, ../sass/selectors.scss */
+div.table-region .s-border:hover {
+  cursor: s-resize;
+}
+
+/* line 87, ../sass/selectors.scss */
+div.table-region .sw-border {
+  width: 5px;
+  height: 5px;
+  bottom: 0;
+  left: 0;
+}
+
+/* line 92, ../sass/selectors.scss */
+div.table-region .sw-border:hover {
+  cursor: sw-resize;
+}
+
+/* line 96, ../sass/selectors.scss */
+div.table-region .se-border {
+  width: 5px;
+  height: 5px;
+  bottom: 0;
+  right: 0;
+}
+
+/* line 101, ../sass/selectors.scss */
+div.table-region .se-border:hover {
+  cursor: se-resize;
+}
+
+/* line 105, ../sass/selectors.scss */
+div.table-region .w-border {
+  height: 100%;
+  left: 0;
+  width: 5px;
+}
+
+/* line 111, ../sass/selectors.scss */
+div.table-region .w-border:hover {
+  cursor: w-resize;
+}
+
+/* line 115, ../sass/selectors.scss */
+div.table-region .e-border {
+  height: 100%;
+  right: 0px;
+  width: 5px;
+}
+
 /* line 121, ../sass/selectors.scss */
 div.table-region button[name=close] {
   font-weight: bold;
