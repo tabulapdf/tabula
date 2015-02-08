@@ -50,7 +50,6 @@ Tabula.Selection = Backbone.Model.extend({
   // controlling a view (Manuel)
   queryForData: function(){
     var selection_coords = this.toCoords();
-    console.log(selection_coords);
     Tabula.pdf_view.query = new Tabula.Query({list_of_coords: [selection_coords], extraction_method: this.get('extractionMethod')});
     Tabula.pdf_view.createDataView();
     Tabula.pdf_view.query.doQuery();
@@ -220,6 +219,10 @@ Tabula.Query = Backbone.Model.extend({
       // ignored by backend 'extraction_method': Tabula.pdf_view.options.get('extraction_method')
       // because each element of list_of_coords has its own extraction_method key/value
     };
+
+    // print selection coordinates to the console
+    // way easier FOR NOW than downloading the script/JSON
+    console.log(_.map(this.get('list_of_coords'), function(l){ return [l.y1, l.x1, l.y2, l.x2].join(', ') }).join("\n") );
 
     this.trigger("tabula:query-start");
     $.ajax({
@@ -527,11 +530,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
                         .attr('data-original-width', this.model.get('width'))
                         .attr('data-original-height', this.model.get('height'))
                         .attr('data-rotation', this.model.get('rotation'));
-    if(this.model.number == 1){
-      this.$el.find('img').attr('data-position', "right")
-         .attr('data-intro', "Click and drag to select each table in your document. Once you've selected it, a window to preview your data will appear, along with options to download it as a spreadsheet.");
-    }
-
     this.$image = this.$el.find('img');
 
     // if user loads a PDF processed in Tabula <= 0.9.7, thumbnails were baked out at
@@ -544,6 +542,11 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
                         'number': this.model.get('number'),
                         'image_url': this.model.get('small_image_url')
                       }));
+        this.$el.find('img').attr('data-page', this.model.get('number'))
+                            .attr('data-original-width', this.model.get('width'))
+                            .attr('data-original-height', this.model.get('height'))
+                            .attr('data-rotation', this.model.get('rotation'));
+        this.$image = this.$el.find('img');
       }
     },this), 1000)
 
@@ -763,11 +766,6 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
                     'image_url': this.model.get('image_url')
                   }));
 
-    if(this.model.get('number') == 1){
-      this.$el.find('img').attr('data-position', "right")
-         .attr('data-intro', "Click a thumbnail to skip directly to that page.");
-    }
-
     // stash some selectors (which don't exist at init)
     this.$img = this.$el.find('img');
     this.img = this.$img[0];
@@ -782,6 +780,8 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
                         'number': this.model.get('number'),
                         'image_url': this.model.get('small_image_url')
                       }));
+      this.$img = this.$el.find('img');
+      this.img = this.$img[0];
       }
     },this), 1000)
 
