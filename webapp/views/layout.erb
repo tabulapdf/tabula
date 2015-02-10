@@ -12,7 +12,7 @@
     <% if $TABULA_VERSION.start_with?('rev') %>
         <div class="ribbon-wrapper-green"><div class="ribbon-green">DEV mode</div></div>
     <% end %>
-    <% if req.path != "/" %>
+    <% if request.path != "/" %>
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
@@ -51,6 +51,6 @@
     </script>
 
     <br>    <br>    <br>
-    <%= content %>
+    <%= yield %>
   </body>
 </html>
