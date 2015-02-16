@@ -48,13 +48,31 @@ div.table-region .resize-handle {
 }
 
 div.table-region .n-border {
-  width: 100%;
-  top: 0; left: 0;
+  width: calc(100% - 10px);
+  top: -5px;
+  left: 5px;
   height: 10px;
 }
 
-div.table-region .n-border:hover {
-  cursor: n-resize;
+div.table-region .s-border {
+  width: calc(100% - 10px);
+  bottom: -5px;
+  left: 5px;
+  height: 10px;
+}
+
+div.table-region .w-border {
+  height: calc(100% - 10px);;
+  left: -5px;
+  top: 5px;
+  width: 10px;
+}
+
+div.table-region .e-border {
+  height: calc(100% - 10px);
+  top: 5px;
+  right: -5px;
+  width: 10px;
 }
 
 div.table-region .nw-border {
@@ -62,27 +80,9 @@ div.table-region .nw-border {
   top: -5px; left: -5px;
 }
 
-div.table-region .nw-border:hover {
-  cursor: nw-resize;
-}
-
 div.table-region .ne-border {
   width: 10px; height: 10px;
   top: -5px; right: -5px;
-}
-
-div.table-region .ne-border:hover {
-  cursor: ne-resize;
-}
-
-div.table-region .s-border {
-  width: 100%;
-  bottom: 0px;
-  height: 10px;
-}
-
-div.table-region .s-border:hover {
-  cursor: s-resize;
 }
 
 div.table-region .sw-border {
@@ -90,34 +90,36 @@ div.table-region .sw-border {
   bottom: -5px; left: -5px;
 }
 
-div.table-region .sw-border:hover {
-  cursor: sw-resize;
-}
-
 div.table-region .se-border {
   width: 10px; height: 10px;
   bottom: -5px; right: -5px;
 }
 
+div.table-region .n-border:hover {
+  cursor: n-resize;
+}
+div.table-region .nw-border:hover {
+  cursor: nw-resize;
+}
+div.table-region .ne-border:hover {
+  cursor: ne-resize;
+}
+div.table-region .s-border:hover {
+  cursor: s-resize;
+}
+div.table-region .sw-border:hover {
+  cursor: sw-resize;
+}
 div.table-region .se-border:hover {
   cursor: se-resize;
 }
-
-div.table-region .w-border {
-  height: 100%;
-  left: 0;
-  width: 10px;
-}
-
 div.table-region .w-border:hover {
   cursor: w-resize;
 }
-
-div.table-region .e-border {
-  height: 100%;
-  right: 0px;
-  width: 10px;
+div.table-region .e-border:hover {
+  cursor: e-resize;
 }
+
 
 
 div.table-region button[name=close] {
@@ -137,6 +139,3 @@ div.table-region button[name=close]:hover {
 
 
 
-div.table-region .e-border:hover {
-  cursor: e-resize;
-}
