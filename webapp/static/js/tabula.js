@@ -57,6 +57,7 @@ var TabulaRouter = Backbone.Router.extend({
       async: true,
       success: function(data, status, jqxhr){
         Tabula.pdf_view = new Tabula.PDFView({pdf_id: file_id});
+        Tabula.pdf_view.getData();
       },
       error: function(a,b,c){
         console.log(a,b,c);

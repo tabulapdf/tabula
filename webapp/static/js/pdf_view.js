@@ -3,6 +3,7 @@ Tabula = Tabula || {};
 var clip = null;
 
 PDF_ID = window.location.pathname.split('/')[2];
+Tabula.LazyLoad = 5; // max number of pages around the cursor to show (2x Tabula.LazyLoad pages are shown)
 
 ZeroClipboard.config( { swfPath: "/swf/ZeroClipboard.swf" } );
 
@@ -105,18 +106,14 @@ Tabula.Selection = Backbone.Model.extend({
   },
 });
 
+// Not currently used at all.
 Tabula.Options = Backbone.Model.extend({
   initialize: function(){
     _.bindAll(this, 'write');
-    this.set('multiselect_mode', localStorage.getItem("tabula-multiselect-mode") !== "false");
-    this.set('extraction_method', null); // don't write this one to localStorage
-    this.set('show_advanced_options', localStorage.getItem("tabula-show-advanced-options")  !== "false");
-    this.set('show-directions', localStorage.getItem("tabula-show-directions")  !== "false");
+    // this.set('multiselect_mode', localStorage.getItem("tabula-multiselect-mode") !== "false");
   },
   write: function(){
-    localStorage.setItem("tabula-multiselect-mode", this.get('multiselect_mode'));
-    localStorage.setItem("tabula-show-advanced-options", this.get('show_advanced_options'));
-    localStorage.setItem("tabula-show-directions", this.get('show-directions'));
+    // localStorage.setItem("tabula-multiselect-mode", this.get('multiselect_mode'));
   }
 });
 
@@ -149,11 +146,16 @@ Tabula.Selections = Backbone.Collection.extend({
     selections = _(response).map(_.bind(function(page_tables, listIndex){
       var pageIndex = listIndex + 1;
       var pageView = Tabula.pdf_view.components['document_view'].page_views[pageIndex];
-      var page = pageView.model;
+      var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: pageIndex});
 
       var original_pdf_width = page.get('width');
       var original_pdf_height = page.get('height');
       var pdf_rotation = page.get('rotation');
+
+      // TODO: create selection models for pages that aren't lazyloaded, but obviously don't display them.
+      if(Tabula.LazyLoad && !pageView){
+        return []
+      }
 
       pageView.createTables = _.bind(function(){
         var image_width = pageView.$el.find('img').width();
@@ -434,7 +436,6 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
 Tabula.DocumentView = Backbone.View.extend({ // Singleton
   events: {
-    'click button.close#directions' : 'closeDirections'
   },
   pdf_view: null, //added on create
   page_views: {},
@@ -489,10 +490,44 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   },
 
   render: function(){
-    if(!this.pdf_view.options.get('show-directions')){
-      this.$el.find('#directionsRow').remove();
+    if(!Tabula.LazyLoad){ // ordinary behavior
+      _(this.page_views).each(_.bind(function(page_view, index){
+        var already_on_page = $('#page-' + parseInt(index)+1).length
+        if(!already_on_page) this.$el.append(page_view.render().el);
+      }, this));
+    }else{
+      for (number=Tabula.pdf_view.lazyLoadCursor-1;number>0;number--){
+        var page_view = this.page_views[number];
+        var already_on_page = $('#page-' + number).length;
+        if(already_on_page){
+          if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
+            $('#page-' + number).remove();
+            console.log('remove', number)
+          }
+        }else{
+          if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
+              this.$el.prepend(page_view.render().el);
+              console.log('prepend ' + number);
+          }
+        }
+      }
+      for (number=Tabula.pdf_view.lazyLoadCursor+1;number<_(this.page_views).keys().length;number++){
+        var page_view = this.page_views[number];
+        var already_on_page = $('#page-' + number).length
+        if(already_on_page){
+          if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
+            $('#page-' + number).remove();
+            console.log('remove', number)
+          }
+        }else{
+          if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
+              this.$el.append(page_view.render().el);
+              console.log('append ' + number);
+          }
+        }
+      }
+      return this;
     }
-    return this;
   }
 });
 
@@ -508,11 +543,9 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
   template: _.template($('#templates #page-template').html().replace(/nestedscript/g, 'script')) ,
 
-  /* we don't need this yet, disabling
   'events': {
-    'click i.rotate-left i.rotate-right': 'rotate_page',
+   // 'click i.rotate-left i.rotate-right': 'rotate_page',
   },
-  */
 
   initialize: function(stuff){
     this.pdf_view = stuff.pdf_view;
@@ -708,7 +741,8 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
   pdf_view: null, // defined on initialize
   initialize: function(stuff){
     this.pdf_view = stuff.pdf_view;
-    _.bindAll(this, 'addSelectionThumbnail', 'removeSelectionThumbnail', 'changeSelectionThumbnail', 'removeThumbnail');
+    _.bindAll(this, 'addSelectionThumbnail', 'removeSelectionThumbnail', 'changeSelectionThumbnail',
+                    'removeThumbnail', 'render');
 
     this.listenTo(this.collection, 'remove', this.removeThumbnail);
 
@@ -731,6 +765,14 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
     var thumbnail_view = this.thumbnail_views[pageModel.get('number')];
     thumbnail_view.$el.fadeOut(200, function(){ thumbnail_view.remove(); });
   },
+
+  render: function(){
+    _(this.thumbnail_views).each(_.bind(function(thumbnail_view, index){
+      if(Tabula.LazyLoad && Math.abs(Tabula.pdf_view.lazyLoadCursor - index) < Tabula.LazyLoad ) 
+      this.$el.append(thumbnail_view.render().el);
+    }, this));
+    return this;
+  }
 });
 
 Tabula.ThumbnailView = Backbone.View.extend({ // one per page
@@ -740,12 +782,10 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     'click i.delete-page': 'deletePage',
   },
   tagName: 'li',
-  className: "page-thumbnail pdf-page page", //TODO: get rid of either pdf-page or page class (it's just duplicative)
+  className: "page-thumbnail page",
   id: function(){
     return 'thumb-page-' + this.model.get('number');
   },
-
-  // TODO: add 'active' class if page is active
 
   // initialize: function(){
   // },
@@ -816,12 +856,11 @@ Tabula.PDFView = Backbone.View.extend({
     el : '#tabula-app',
 
     events : {
-      'click a.tooltip-modal': 'tooltip',
-      'click a#help-start': function(){ Tabula.tour.ended ? Tabula.tour.restart(true) : Tabula.tour.start(true); },
     },
     colors: ['#f00', '#0f0', '#00f', '#ffff00', '#FF00FF'],
     lastQuery: [{}],
     pageCount: undefined,
+    lazyLoadCursor: 0,
     components: {},
 
     hasAutodetectedTables: false,
@@ -829,7 +868,7 @@ Tabula.PDFView = Backbone.View.extend({
 
     initialize: function(){
       _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections',
-        'createDataView', 'checkForAutodetectedTables');
+        'createDataView', 'checkForAutodetectedTables', 'getData');
 
       this.pdf_document = new Tabula.Document({
         pdf_id: PDF_ID,
@@ -838,8 +877,9 @@ Tabula.PDFView = Backbone.View.extend({
       this.options = new Tabula.Options();
       this.listenTo(this.options, 'change', this.options.write);
 
+      // we'll never be ~adding~ individual pages, I don't think (hence no 'add' event)
       this.listenTo(this.pdf_document.page_collection, 'all', this.render);
-      this.listenTo(this.pdf_document.page_collection, 'add', this.addOne);
+      this.listenTo(this.pdf_document.page_collection, 'sync', this.addAll);
       this.listenTo(this.pdf_document.page_collection, 'reset', this.addAll);
       this.listenTo(this.pdf_document.page_collection, 'remove', this.removePage);
 
@@ -847,15 +887,22 @@ Tabula.PDFView = Backbone.View.extend({
       this.components['control_panel'] = new Tabula.ControlPanelView({pdf_view: this});
       this.components['sidebar_view'] = new Tabula.SidebarView({pdf_view: this, collection: this.pdf_document.page_collection});
 
-      this.pdf_document.page_collection.fetch({
-        success: _.bind(function(){
-          this.checkForAutodetectedTables();
-        }, this),
-        error: _.bind(function(){
-          console.log('404'); //TODO: make this a real 404, with the right error code, etc.
-          $('#tabula').html("<h1>Error: We couldn't find your document.</h1><h2>Double-check the URL and try again?</h2><p>And if it doesn't work, <a href='https://github.com/tabulapdf/tabula/issues/new'> report a bug</a> and explain <em>exactly</em> what steps you took that caused this problem");
-        }),
-      });
+      $(document).on('scroll', _.throttle(_.bind(function(e){
+        // check which page_view is "active" (i.e. topmost that's partially in the window)
+        var pdf_pages = $('.pdf-page');
+        for (i=0; i<pdf_pages.length; i++){
+          var el = pdf_pages[i];
+          if(isElementPartiallyInContainer(el, this.components['document_view'].el)){
+            $('.page-thumbnail.active').removeClass('active');
+            this.components['sidebar_view'].thumbnail_views[i+1].$el.addClass('active');
+            Tabula.pdf_view.lazyLoadCursor = parseInt($(el).find('img').data('page'));
+            console.log("cursor", Tabula.pdf_view.lazyLoadCursor)
+            this.components['document_view'].render();
+            // this.components['sidebar_view'].render();
+            break;
+          }
+        }
+      }, this), 100, {leading: false}));
 
       $('body').
         on("click", ".repeat-lassos", function(e){
@@ -865,8 +912,19 @@ Tabula.PDFView = Backbone.View.extend({
         });
     },
 
+    getData: function(){
+      this.pdf_document.page_collection.fetch({
+        success: _.bind(function(){
+          this.checkForAutodetectedTables();
+        }, this),
+        error: _.bind(function(){
+          console.log('404'); //TODO: make this a real 404, with the right error code, etc.
+          $('#tabula').html("<h1>Error: We couldn't find your document.</h1><h2>Double-check the URL and try again?</h2><p>And if it doesn't work, <a href='https://github.com/tabulapdf/tabula/issues/new'> report a bug</a> and explain <em>exactly</em> what steps you took that caused this problem");
+        }),
+      });
+    },
+
     checkForAutodetectedTables: function(){
-      console.log('check')
       this.pdf_document.selections.fetch({
         success: _.bind(function(){
           this.hasAutodetectedTables = true;
@@ -904,15 +962,23 @@ Tabula.PDFView = Backbone.View.extend({
       }
       var page_view = new Tabula.PageView({model: page, collection: this.pdf_document.page_collection});
       var thumbnail_view = new Tabula.ThumbnailView({model: page, collection: this.pdf_document.page_collection});
-      // TODO: (2015): if this is the active page, give this thumbnail_view class="active"
+
+
       this.components['document_view'].page_views[ page.get('number') ] =  page_view;
       this.components['sidebar_view'].thumbnail_views[ page.get('number') ] = thumbnail_view;
-      this.components['document_view'].$el.append(page_view.render().el);
-      this.components['sidebar_view'].$el.append(thumbnail_view.render().el);
+
+      // now handled by documentview and sidebarview's render method
+      // this.components['document_view'].$el.append(page_view.render().el);
+      // this.components['sidebar_view'].$el.append(thumbnail_view.render().el);
     },
 
     addAll: function() {
-      this.pdf_document.page_collection.each(this.addOne, this);
+      // a failed attempt at lazy load. kept in case I change my mind.
+      // if(Tabula.LazyLoad){
+      //   _(this.pdf_document.page_collection.slice(0, Tabula.LazyLoad)).each(this.addOne, this);
+      // }else{
+        this.pdf_document.page_collection.each(this.addOne, this);
+      // }
     },
 
     totalSelections: function() {
@@ -1076,19 +1142,59 @@ Tabula.PDFView = Backbone.View.extend({
     },
 });
 
+function isElementPartiallyInViewport (el) {
+  if (el instanceof jQuery) {
+      el = el[0];
+  }
+  var rect = el.getBoundingClientRect();
+  return (
+      ( (rect.top > 0 && rect.top < (window.innerHeight || document.documentElement.clientHeight) ) || 
+      (rect.bottom < (window.innerHeight || document.documentElement.clientHeight) && rect.bottom > 0) ) /*or $(window).height() */
+      && 
+      ( (rect.left > 0 && rect.left < (window.innerWidth || document.documentElement.clientWidth) ) || 
+      (rect.right < (window.innerWidth || document.documentElement.clientWidth) && rect.right > 0) ) /*or $(window).height() */
+  );
+}
+
+
+// checks if el is overlaps the overlaps the visible portion of the container
+function isElementPartiallyInContainer (el, container) {
+  if (el instanceof jQuery) {
+      el = el[0];
+  }
+  if (container instanceof jQuery) {
+      container = container[0];
+  }
+  var rect = el.getBoundingClientRect();
+  var container_rect = container.getBoundingClientRect();
+  var bounding_rect = {} // the intersection of the viewport and the container
+  bounding_rect.top = Math.max(container_rect.top, 0)
+  bounding_rect.left = Math.max(container_rect.left, 0)
+  bounding_rect.bottom = Math.min(container_rect.bottom, (window.innerHeight || document.documentElement.clientHeight))
+  bounding_rect.right = Math.min(container_rect.right, (window.innerWidth || document.documentElement.clientWidth))
+
+  return (
+      ( (rect.top >= bounding_rect.top && rect.top <= (bounding_rect.bottom) ) || 
+      (rect.bottom <= (bounding_rect.bottom) && rect.bottom >= bounding_rect.top) ) 
+      && 
+      ( (rect.left >= bounding_rect.left && rect.left <= (bounding_rect.right) ) || 
+      (rect.right <= (bounding_rect.right) && rect.right >= bounding_rect.left) ) 
+  );
+}
+
+
+
 function isElementInViewport (el) {
+  if (el instanceof jQuery) {
+      el = el[0];
+  }
 
-    //special bonus for those using jQuery
-    if (el instanceof jQuery) {
-        el = el[0];
-    }
+  var rect = el.getBoundingClientRect();
 
-    var rect = el.getBoundingClientRect();
-
-    return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
-        rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
-    );
+  return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+  );
 }
