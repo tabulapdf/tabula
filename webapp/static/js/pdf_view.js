@@ -496,38 +496,51 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
         if(!already_on_page) this.$el.append(page_view.render().el);
       }, this));
     }else{
+      //useful for debugging: $('.pdf-page:visible').map(function(i, el){ return $(el).find('img').data('page') }).get();
       for (number=Tabula.pdf_view.lazyLoadCursor-1;number>0;number--){
         var page_view = this.page_views[number];
-        var already_on_page = $('#page-' + number).length;
-        if(already_on_page){
+        var page_el = $('#page-' + number);
+        var visible_on_page = page_el.filter(':visible').length;
+        if(visible_on_page){
           if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
-            $('#page-' + number).remove();
-            console.log('remove', number)
+            $('#page-' + number).hide();
+            console.log('hide', number)
           }
         }else{
           if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
+            if(page_el.length){
+              page_view.$el.show();
+              console.log('show ' + number);
+            }else{
               this.$el.prepend(page_view.render().el);
-              console.log('prepend ' + number);
+              console.log('append ' + number);
+            }
           }
         }
       }
       for (number=Tabula.pdf_view.lazyLoadCursor+1;number<_(this.page_views).keys().length;number++){
         var page_view = this.page_views[number];
-        var already_on_page = $('#page-' + number).length
-        if(already_on_page){
+        var page_el = $('#page-' + number);
+        var visible_on_page = page_el.filter(':visible').length;
+        if(visible_on_page){
           if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
-            $('#page-' + number).remove();
-            console.log('remove', number)
+            $('#page-' + number).hide();
+            console.log('hide', number)
           }
         }else{
           if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
+            if(page_el.length){
+              page_view.$el.show();
+              console.log('show ' + number);
+            }else{
               this.$el.append(page_view.render().el);
               console.log('append ' + number);
+            }
           }
         }
-      }
-      return this;
+      } 
     }
+    return this;
   }
 });
 
@@ -767,10 +780,15 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
   },
 
   render: function(){
-    _(this.thumbnail_views).each(_.bind(function(thumbnail_view, index){
-      if(Tabula.LazyLoad && Math.abs(Tabula.pdf_view.lazyLoadCursor - index) < Tabula.LazyLoad ) 
-      this.$el.append(thumbnail_view.render().el);
-    }, this));
+    if(!Tabula.LazyLoad){ // ordinary behavior
+      _(this.thumbnail_views).each(_.bind(function(thumbnail_view, index){
+        var already_on_page = $('#page-' + parseInt(index)+1).length
+        if(!already_on_page) this.$el.append(thumbnail_view.render().el);
+      }, this));
+    }else{
+      this.$el.text('unimplemented w/ lazyload')
+    }
+
     return this;
   }
 });
