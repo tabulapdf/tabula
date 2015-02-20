@@ -3,7 +3,7 @@ Tabula = Tabula || {};
 var clip = null;
 
 PDF_ID = window.location.pathname.split('/')[2];
-Tabula.LazyLoad = 5; // max number of pages around the cursor to show (2x Tabula.LazyLoad pages are shown)
+Tabula.LazyLoad = 0; /* off for now */ 5; // max number of pages around the cursor to show (2x Tabula.LazyLoad pages are shown)
 
 ZeroClipboard.config( { swfPath: "/swf/ZeroClipboard.swf" } );
 
@@ -319,6 +319,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     this.undelegateEvents();
     this.pdf_view.render();
     this.pdf_view.$el.show();
+    $('.selection-box').css('display', 'block');
   },
 
   setFormAction: function(e){
@@ -335,6 +336,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     $('body').addClass('page-export');
 
     this.pdf_view.$el.hide();
+    $('.selection-box').css('display', 'none');
 
     this.$el.html(this.template({
       pdf_id: PDF_ID,
@@ -496,7 +498,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
         if(!already_on_page) this.$el.append(page_view.render().el);
       }, this));
     }else{
-      //useful for debugging: $('.pdf-page:visible').map(function(i, el){ return $(el).find('img').data('page') }).get();
+      //useful in the console for debugging: $('.pdf-page:visible').map(function(i, el){ return $(el).find('img').data('page') }).get();
       for (number=Tabula.pdf_view.lazyLoadCursor-1;number>0;number--){
         var page_view = this.page_views[number];
         var page_el = $('#page-' + number);
@@ -635,9 +637,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       selection.$el.append(button);
     }
 
-    if(!Tabula.pdf_view.options.get('multiselect_mode')){
-        selection.queryForData();
-    }
     Tabula.pdf_view.components['control_panel'].render(); // deals with buttons that need blurred out if there's zero selections, etc.
   },
 
@@ -669,7 +668,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
 Tabula.ControlPanelView = Backbone.View.extend({ // only one
   events: {
-    'click #should-preview-data-checkbox' : 'updateShouldPreviewDataAutomaticallyButton',
     'click #clear-all-selections': 'clearAllSelections',
     'click #restore-detected-tables': 'restoreDetectedTables',
     'click #all-data': 'queryAllData',
@@ -677,13 +675,6 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   template: _.template($('#templates #select-control-panel-template').html().replace(/nestedscript/g, 'script')),
-
-  shouldPreviewDataAutomatically: !$('#should-preview-data-checkbox').is(':checked'),
-
-  updateShouldPreviewDataAutomaticallyButton: function(){
-    this.pdf_view.options.set('multiselect_mode', !$('#should-preview-data-checkbox').is(':checked'));
-    this.render();
-  },
 
   /* in case there's a PDF with a complex format that's repeated on multiple pages */
   repeatFirstPageLassos: function(){
@@ -708,7 +699,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 
   initialize: function(stuff){
     this.pdf_view = stuff.pdf_view;
-    _.bindAll(this, 'updateShouldPreviewDataAutomaticallyButton', 'queryAllData', 'render');
+    _.bindAll(this, 'queryAllData', 'render');
   },
 
   queryAllData : function(){
@@ -734,7 +725,6 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   render: function(){
     var numOfSelectionsOnPage = this.pdf_view.totalSelections();
     this.$el.html(this.template({
-                  'if_multiselect_checked': this.pdf_view.options.get('multiselect_mode') ? '' : 'checked="checked"',
                   'disable_clear_all_selections': numOfSelectionsOnPage <= 0 ? 'disabled="disabled"' : '' ,
                   'disable_download_all': numOfSelectionsOnPage <= 0 ? 'disabled="disabled"' : '',
 
@@ -786,6 +776,51 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
         if(!already_on_page) this.$el.append(thumbnail_view.render().el);
       }, this));
     }else{
+        // for (number=Tabula.pdf_view.lazyLoadCursor-1;number>0;number--){
+        //   var page_view = this.page_views[number];
+        //   var page_el = $('#page-' + number);
+        //   var visible_on_page = page_el.filter(':visible').length;
+        //   if(visible_on_page){
+        //     if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
+        //       $('#page-' + number).hide();
+        //       console.log('hide', number)
+        //     }
+        //   }else{
+        //     if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
+        //       if(page_el.length){
+        //         page_view.$el.show();
+        //         console.log('show ' + number);
+        //       }else{
+        //         this.$el.prepend(page_view.render().el);
+        //         console.log('append ' + number);
+        //       }
+        //     }
+        //   }
+        // }
+        // for (number=Tabula.pdf_view.lazyLoadCursor+1;number<_(this.page_views).keys().length;number++){
+        //   var page_view = this.page_views[number];
+        //   var page_el = $('#page-' + number);
+        //   var visible_on_page = page_el.filter(':visible').length;
+        //   if(visible_on_page){
+        //     if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
+        //       $('#page-' + number).hide();
+        //       console.log('hide', number)
+        //     }
+        //   }else{
+        //     if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
+        //       if(page_el.length){
+        //         page_view.$el.show();
+        //         console.log('show ' + number);
+        //       }else{
+        //         this.$el.append(page_view.render().el);
+        //         console.log('append ' + number);
+        //       }
+        //     }
+        //   }
+        // } 
+
+
+
       this.$el.text('unimplemented w/ lazyload')
     }
 
@@ -854,7 +889,9 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
 
   changeSelectionThumbnail: function(selection){
     var $sshow = this.$el.find('#selection-show-' + selection.cid);
-    var thumbScale = this.$img.width() / selection.get('imageWidth');
+
+    // don't break everything if the sidebar happens to be broken.
+    var thumbScale = this.$img ? this.$img.width() / selection.get('imageWidth') : 0;
 
     var s = selection.attributes.getDims().relativePos;
 
