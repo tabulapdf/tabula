@@ -749,7 +749,7 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
 
     this.listenTo(this.collection, 'remove', this.removeThumbnail);
 
-    this.listenTo(this.pdf_view.pdf_document.selections, 'all', this.render);
+    this.listenTo(this.pdf_view.pdf_document.selections, 'sync', this.render);
     this.listenTo(this.pdf_view.pdf_document.selections, 'add', this.addSelectionThumbnail); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'change', this.changeSelectionThumbnail); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'remove', this.removeSelectionThumbnail); // remove a thumbnail selection
