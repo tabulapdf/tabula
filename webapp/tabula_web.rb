@@ -166,6 +166,15 @@ Cuba.define do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
     end
 
+    on 'pdf/:file_id/metadata.json' do |file_id|
+      workspace_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
+      raise if !File.exists?(workspace_file)
+
+      workspace = File.open(workspace_file) { |f| JSON.load(f) }
+      f = workspace.find { |g| g['id'] == file_id }
+      res['Content-Type'] = 'application/json'
+      res.write f.to_json
+    end
 
     [root, "about", "pdf/:file_id", "help"].each do |paths_to_single_page_app|
       on paths_to_single_page_app do
