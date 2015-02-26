@@ -81,6 +81,7 @@
             <input type='hidden' class='data-query' name='pdf-name' value='<%=list_of_coords%>' >
             <input type='hidden' class='data-query' name='coords' value='<%=list_of_coords%>' >
           </div>
+          <input class="filename" name="new_filename" value="<%= original_filename %>"></input>
           <label for="format">Export Format:</label>
           <select name="format" class="form-control">
             <option value="csv">CSV</option>
@@ -102,6 +103,8 @@
       </script>
 
       <script type="text/template" id="select-control-panel-template" >
+        <span class="filename"><%= original_filename %></span>
+
         <a href="#"><button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disable_detected_tables %>><i class="glyphicon glyphicon-flash"></i><i class="glyphicon glyphicon-refresh"></i> Autodetect Tables</button></a>
         <a href="#"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><i class="glyphicon glyphicon-remove-circle"></i> Clear All Selections</button></a>
         <a href="#"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><i class="glyphicon glyphicon-eye-open"></i> Preview & Export Extracted Data</button></a>

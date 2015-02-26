@@ -248,10 +248,17 @@ Cuba.define do
       end
       tables = tables.flatten(1)
 
+      filename =  if coord_set['new_filename'] && coord_set['new_filename'].strip.size
+                    basename = File.basename(coord_set['new_filename'], File.extname(coord_set['new_filename']))
+                    basename + "-tabula.csv"
+                  else
+                    "tabula-#{file_id}.csv"
+                  end
+
       case req.params['format']
       when 'csv'
         res['Content-Type'] = 'text/csv'
-        res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.csv\""
+        res['Content-Disposition'] = "attachment; filename=\"#{filename}\""
         tables.each do |table|
           res.write table.to_csv
         end
@@ -265,10 +272,17 @@ Cuba.define do
         # Write shell script of tabula-extractor commands.  $1 takes
         # the name of a file from the command line and passes it
         # to tabula-extractor so the script can be reused on similar pdfs.
+        extraction_method_switch = if coord_set['extraction_method'] == "original"
+                                      "--no-spreadsheet"
+                                   elsif coord_set['extraction_method'] == "spreadsheet"
+                                      "--spreadsheet"
+                                   else
+                                      ""
+                                   end
         res['Content-Type'] = 'application/x-sh'
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.sh\""
         coords.each do |c|
-          res.write "tabula -a #{c['y1'].round(3)},#{c['x1'].round(3)},#{c['y2'].round(3)},#{c['x2'].round(3)} -p #{c['page']} \"$1\" \n"
+          res.write "tabula #{extraction_method_switch} -a #{c['y1'].round(3)},#{c['x1'].round(3)},#{c['y2'].round(3)},#{c['x2'].round(3)} -p #{c['page']} \"$1\" \n"
         end
       when 'bbox'
         # Write json representation of bounding boxes and pages for
