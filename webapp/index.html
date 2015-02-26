@@ -267,11 +267,11 @@
       </script>
 
       <script type="text/template" id="uploaded-file-template">
-        <td><a href='/pdf/<%= id %>'><%= file %></a></td>
+        <td><a href='/pdf/<%= id %>'><%= original_filename %></a></td>
         <td><%= size ? Math.floor(size / 1024) : '??' %> kB</td>
         <td><%= page_count || '??' %></td>
         <td><%= new Date(parseInt(time) * 1000).toUTCString().slice(5, -7) %></td>
-        <td><a href="javascript:"><i data-filename=<%= file %> data-pdfid=<%= id %> class="glyphicon glyphicon-remove delete-pdf"></i></a></td>
+        <td><a href="javascript:"><i data-filename=<%= original_filename %> data-pdfid=<%= id %> class="glyphicon glyphicon-remove delete-pdf"></i></a></td>
         <td><a href="/pdf/<%= id %>"><button type="button" class="btn btn-sm btn-success">Extract Data</button></a></td>
       </script>
 
