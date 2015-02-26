@@ -5,13 +5,13 @@ require_relative '../executor.rb'
 class DetectTablesJob < Tabula::Background::Job
   include Observable
   def perform
-    file = options[:filename]
+    filepath = options[:filepath]
     output_dir = options[:output_dir]
 
 
     page_areas_by_page = []
 
-    extractor = Tabula::Extraction::ObjectExtractor.new(file, :all)
+    extractor = Tabula::Extraction::ObjectExtractor.new(filepath, :all)
     page_count = extractor.page_count
     extractor.extract.each do |page|
       page_index = page.number(:zero_indexed)

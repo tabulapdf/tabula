@@ -3,7 +3,8 @@ Tabula = Tabula || {};
 var clip = null;
 
 PDF_ID = window.location.pathname.split('/')[2];
-Tabula.LazyLoad = 0; /* off for now */ 5; // max number of pages around the cursor to show (2x Tabula.LazyLoad pages are shown)
+Tabula.LazyLoad = 5; // max number of pages around the cursor to show (2x Tabula.LazyLoad pages are shown)
+Tabula.HideOnLazyLoad = false; // ideally, set to true, but this requires differently positioned selections, see https://github.com/tabulapdf/tabula/issues/245#issuecomment-75182061
 
 ZeroClipboard.config( { swfPath: "/swf/ZeroClipboard.swf" } );
 
@@ -505,11 +506,12 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
       }, this));
     }else{
       //useful in the console for debugging: $('.pdf-page:visible').map(function(i, el){ return $(el).find('img').data('page') }).get();
+      
       for (number=Tabula.pdf_view.lazyLoadCursor-1;number>0;number--){
         var page_view = this.page_views[number];
         var page_el = $('#page-' + number);
         var visible_on_page = page_el.filter(':visible').length;
-        if(visible_on_page){
+        if(visible_on_page && Tabula.HideOnLazyLoad){
           if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
             $('#page-' + number).hide();
             console.log('hide', number)
@@ -530,7 +532,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
         var page_view = this.page_views[number];
         var page_el = $('#page-' + number);
         var visible_on_page = page_el.filter(':visible').length;
-        if(visible_on_page){
+        if(visible_on_page && Tabula.HideOnLazyLoad){
           if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
             $('#page-' + number).hide();
             console.log('hide', number)

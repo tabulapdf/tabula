@@ -81,25 +81,24 @@ def upload(req)
     FileUtils.cp_r(req.params['file'][:tempfile].path,
                    File.join(file_path, 'document.pdf'))
     FileUtils.rm_rf(req.params['file'][:tempfile].path)
-
   end
 
-  file = File.join(file_path, 'document.pdf')
+  filepath = File.join(file_path, 'document.pdf')
 
   job_batch = SecureRandom.uuid
 
-  GenerateDocumentDataJob.create(:filename => file,
+  GenerateDocumentDataJob.create(:filepath => filepath,
                                  :original_filename => original_filename,
                                  :id => file_id,
                                  :output_dir => file_path,
                                  :batch => job_batch)
 
-  DetectTablesJob.create(:filename => file,
+  DetectTablesJob.create(:filepath => filepath,
                          :output_dir => file_path,
                          :batch => job_batch)
 
   GenerateThumbnailJob.create(:file_id => file_id,
-                              :file => file,
+                              :filepath => filepath,
                               :output_dir => file_path,
                               :thumbnail_sizes => [800],
                               :batch => job_batch)
@@ -248,9 +247,9 @@ Cuba.define do
       end
       tables = tables.flatten(1)
 
-      filename =  if coord_set['new_filename'] && coord_set['new_filename'].strip.size
-                    basename = File.basename(coord_set['new_filename'], File.extname(coord_set['new_filename']))
-                    basename + "-tabula.csv"
+      filename =  if req.params['new_filename'] && req.params['new_filename'].strip.size
+                    basename = File.basename(req.params['new_filename'], File.extname(req.params['new_filename']))
+                    "tabula-#{basename}.csv"
                   else
                     "tabula-#{file_id}.csv"
                   end

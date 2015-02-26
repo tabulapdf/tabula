@@ -10,7 +10,7 @@ class GenerateDocumentDataJob < Tabula::Background::Job
   # args: (:filename, :id)
   def perform
 
-    file = options[:filename]
+    filepath = options[:filepath]
     original_filename = options[:original_filename]
     id = options[:id]
     output_dir = options[:output_dir]
@@ -31,12 +31,12 @@ class GenerateDocumentDataJob < Tabula::Background::Job
                           'id' => id, 
                           'time' => Time.now.to_i,
                           'page_count' => '?',
-                          'size' => File.size(file)
+                          'size' => File.size(filepath)
                         })
 
     at(5, 100, "analyzing PDF text...")
 
-    extractor = Tabula::Extraction::PagesInfoExtractor.new(file)
+    extractor = Tabula::Extraction::PagesInfoExtractor.new(filepath)
     File.open(output_dir + "/pages.json", 'w') do |f|
       page_data = extractor.pages.to_a
       workspace[0]['page_count'] = page_data.size
