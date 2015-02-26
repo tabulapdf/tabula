@@ -3,7 +3,7 @@ Tabula = Tabula || {};
 var clip = null;
 
 PDF_ID = window.location.pathname.split('/')[2];
-Tabula.LazyLoad = 5; // max number of pages around the cursor to show (2x Tabula.LazyLoad pages are shown)
+Tabula.LazyLoad = 10; // max number of pages around the cursor to show (2x Tabula.LazyLoad pages are shown)
 Tabula.HideOnLazyLoad = false; // ideally, set to true, but this requires differently positioned selections, see https://github.com/tabulapdf/tabula/issues/245#issuecomment-75182061
 
 ZeroClipboard.config( { swfPath: "/swf/ZeroClipboard.swf" } );
