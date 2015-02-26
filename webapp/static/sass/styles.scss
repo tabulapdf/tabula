@@ -254,6 +254,16 @@ form {
 	button {
 		margin-right: 1.25em;
 	}
+
+	.filename {
+		display: inline;
+	}
+	span.filename {
+		padding-right: 20px;
+	}
+	input.filename {
+		margin-right: 20px;
+	}
 }
 
 

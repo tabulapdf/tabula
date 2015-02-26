@@ -33,10 +33,15 @@ Tabula.Document = Backbone.Model.extend({
   page_collection: null, //set on initialize
   selections: null, //set on initialize
   pdf_id: PDF_ID, //set on initialize
+  url: null, //set on initialize
+
   initialize: function(options){
     this.page_collection = new Tabula.Pages([], {pdf_document: this});
     this.selections = new Tabula.Selections([], {pdf_document: this});
-  }
+    this.url = '/pdf/' + this.pdf_id + '/metadata.json';
+
+    this.set('original_filename', '');
+  },
 });
 
 Tabula.Selection = Backbone.Model.extend({
@@ -220,6 +225,7 @@ Tabula.Query = Backbone.Model.extend({
       'coords': JSON.stringify(this.get('list_of_coords')),
       // ignored by backend 'extraction_method': Tabula.pdf_view.options.get('extraction_method')
       // because each element of list_of_coords has its own extraction_method key/value
+      'new_filename': null,
     };
 
     // print selection coordinates to the console
@@ -345,11 +351,11 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     }));
     this.$el.find('#control-panel').html(
       _.template($('#templates #export-control-panel-template').html().replace(/nestedscript/g, 'script'))(
-        {
+        _(this.pdf_view.pdf_document.attributes).extend({
           pdf_id: PDF_ID,
           list_of_coords: JSON.stringify(this.model.get('list_of_coords')),
           copyDisabled: Tabula.pdf_view.flash_borked ? 'disabled="disabled" data-toggle="tooltip" title="'+Tabula.pdf_view.flash_borken_message+'"' : ''
-        }
+        })
     ));
     this.$el.find('#sidebar').html(
       _.template($('#templates #export-page-sidebar-template').html().replace(/nestedscript/g, 'script')) (
@@ -700,6 +706,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   initialize: function(stuff){
     this.pdf_view = stuff.pdf_view;
     _.bindAll(this, 'queryAllData', 'render');
+    this.listenTo(this.pdf_view.pdf_document, 'sync', this.render )
   },
 
   queryAllData : function(){
@@ -724,14 +731,15 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 
   render: function(){
     var numOfSelectionsOnPage = this.pdf_view.totalSelections();
-    this.$el.html(this.template({
+    this.$el.html(this.template(
+              _(this.pdf_view.pdf_document.attributes).extend({
                   'disable_clear_all_selections': numOfSelectionsOnPage <= 0 ? 'disabled="disabled"' : '' ,
                   'disable_download_all': numOfSelectionsOnPage <= 0 ? 'disabled="disabled"' : '',
 
                   // three states: autodetection still incomplete, autodetection done but no tables found, autodetection done and tables found
                   'restore_detected_tables': this.pdf_view.hasAutodetectedTables ? "autodetect-finished" : "autodetect-in-progress",
                   'disable_detected_tables': numOfSelectionsOnPage <= 0 ? 'disabled="disabled"' : ''
-                  }));
+                  })));
 
     return this;
   },
@@ -928,6 +936,8 @@ Tabula.PDFView = Backbone.View.extend({
       this.pdf_document = new Tabula.Document({
         pdf_id: PDF_ID,
       });
+
+      this.pdf_document.fetch();
 
       this.options = new Tabula.Options();
       this.listenTo(this.options, 'change', this.options.write);

@@ -370,8 +370,8 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?1424104289);
-  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?&1424104289#iefix) format("embedded-opentype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff2) format("woff2"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff?1424104289) format("woff"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.ttf?1424104289) format("truetype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.svg?1424104289#glyphicons_halflingsregular) format("svg");
+  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?1424917265);
+  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?&1424917265#iefix) format("embedded-opentype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff2) format("woff2"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff?1424917265) format("woff"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.ttf?1424917265) format("truetype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.svg?1424917265#glyphicons_halflingsregular) format("svg");
 }
 /* line 22, ../../../../../.rbenv/versions/jruby-1.7.15/lib/ruby/gems/shared/gems/bootstrap-sass-3.3.3/assets/stylesheets/bootstrap/_glyphicons.scss */
 .glyphicon {
@@ -9504,8 +9504,20 @@ form {
 #control-panel button {
   margin-right: 1.25em;
 }
-
+/* line 258, ../sass/styles.scss */
+#control-panel .filename {
+  display: inline;
+}
 /* line 261, ../sass/styles.scss */
+#control-panel span.filename {
+  padding-right: 20px;
+}
+/* line 264, ../sass/styles.scss */
+#control-panel input.filename {
+  margin-right: 20px;
+}
+
+/* line 271, ../sass/styles.scss */
 #main-pane {
   background: #777777;
   padding: 4.25em 2em 2em 2em;
@@ -9514,7 +9526,7 @@ form {
   width: calc(100% - 200px);
   z-index: 1;
 }
-/* line 268, ../sass/styles.scss */
+/* line 278, ../sass/styles.scss */
 #main-pane .page {
   width: 100%;
   max-width: 800px;
@@ -9524,7 +9536,7 @@ form {
   position: relative;
   margin: 0 auto;
 }
-/* line 275, ../sass/styles.scss */
+/* line 285, ../sass/styles.scss */
 #main-pane .page img {
   margin: 2em 0;
   display: block;
@@ -9532,16 +9544,16 @@ form {
   max-width: 800px;
   min-width: 560px;
 }
-/* line 281, ../sass/styles.scss */
+/* line 291, ../sass/styles.scss */
 #main-pane .page img:hover {
   cursor: crosshair;
 }
-/* line 286, ../sass/styles.scss */
+/* line 296, ../sass/styles.scss */
 #main-pane .selection-box, #main-pane .table-region {
   border: 6px dashed rgba(224, 1, 1, 0.8);
   background: rgba(224, 1, 1, 0.2);
 }
-/* line 289, ../sass/styles.scss */
+/* line 299, ../sass/styles.scss */
 #main-pane .selection-box .selection-panel, #main-pane .table-region .selection-panel {
   display: none;
   position: absolute;
@@ -9549,40 +9561,40 @@ form {
   left: 0;
   min-width: 320px;
 }
-/* line 295, ../sass/styles.scss */
+/* line 305, ../sass/styles.scss */
 #main-pane .selection-box .selection-panel button:hover, #main-pane .table-region .selection-panel button:hover {
   cursor: pointer;
 }
-/* line 299, ../sass/styles.scss */
+/* line 309, ../sass/styles.scss */
 #main-pane .selection-box:hover, #main-pane .table-region:hover {
   cursor: move;
 }
-/* line 301, ../sass/styles.scss */
+/* line 311, ../sass/styles.scss */
 #main-pane .selection-box:hover .selection-panel, #main-pane .table-region:hover .selection-panel {
   display: block;
 }
 
-/* line 309, ../sass/styles.scss */
+/* line 319, ../sass/styles.scss */
 body.page-selections {
   padding-top: 50px;
   background: #777777;
 }
-/* line 312, ../sass/styles.scss */
+/* line 322, ../sass/styles.scss */
 body.page-selections #main-pane {
   background: #777777;
 }
 
-/* line 317, ../sass/styles.scss */
+/* line 327, ../sass/styles.scss */
 body.page-export {
   padding-top: 50px;
   background: white;
 }
-/* line 320, ../sass/styles.scss */
+/* line 330, ../sass/styles.scss */
 body.page-export #sidebar {
   text-align: left;
   padding: .5em;
 }
-/* line 323, ../sass/styles.scss */
+/* line 333, ../sass/styles.scss */
 body.page-export #sidebar span.lattice.glyphicon {
   color: #ededed;
   background: #666;
@@ -9590,48 +9602,48 @@ body.page-export #sidebar span.lattice.glyphicon {
   border: solid #666;
   border-width: 0 0 1px 1px;
 }
-/* line 331, ../sass/styles.scss */
+/* line 341, ../sass/styles.scss */
 body.page-export #main-pane {
   background: white;
   padding-top: 5.5em;
 }
-/* line 335, ../sass/styles.scss */
+/* line 345, ../sass/styles.scss */
 body.page-export #main-pane #control-panel form {
   display: inline-block;
   margin-bottom: 0;
 }
-/* line 338, ../sass/styles.scss */
+/* line 348, ../sass/styles.scss */
 body.page-export #main-pane #control-panel form .form-control {
   width: 100px;
   margin-right: 1em;
   display: inline-block;
 }
-/* line 345, ../sass/styles.scss */
+/* line 355, ../sass/styles.scss */
 body.page-export #main-pane table {
   margin-top: 2em;
 }
 
-/* line 351, ../sass/styles.scss */
+/* line 361, ../sass/styles.scss */
 .jumbotron.about p {
   font-size: 1.1em;
 }
 
-/* line 355, ../sass/styles.scss */
+/* line 365, ../sass/styles.scss */
 div.spinner {
   top: 10px !important;
 }
 
-/* line 359, ../sass/styles.scss */
+/* line 369, ../sass/styles.scss */
 #progress-container h4 {
   display: inline-block;
 }
 
-/* line 362, ../sass/styles.scss */
+/* line 372, ../sass/styles.scss */
 #progress-container #message {
   color: #aaa;
 }
 
-/* line 366, ../sass/styles.scss */
+/* line 376, ../sass/styles.scss */
 .autodetect-in-progress i.glyphicon-refresh {
   -webkit-transition: -webkit-transform 600s;
   transition: transform 600s;
@@ -9640,22 +9652,22 @@ div.spinner {
   display: inline;
 }
 
-/* line 373, ../sass/styles.scss */
+/* line 383, ../sass/styles.scss */
 .autodetect-in-progress i.glyphicon-flash {
   display: none;
 }
 
-/* line 376, ../sass/styles.scss */
+/* line 386, ../sass/styles.scss */
 .autodetect-finished i.glyphicon-flash {
   display: inline;
 }
 
-/* line 379, ../sass/styles.scss */
+/* line 389, ../sass/styles.scss */
 .autodetect-finished i.glyphicon-refresh {
   display: none;
 }
 
-/* line 383, ../sass/styles.scss */
+/* line 393, ../sass/styles.scss */
 .flash {
   -moz-animation: flash 2s ease-out;
   -moz-animation-iteration-count: 1;
