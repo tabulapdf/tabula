@@ -786,52 +786,50 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
         if(!already_on_page) this.$el.append(thumbnail_view.render().el);
       }, this));
     }else{
-        // for (number=Tabula.pdf_view.lazyLoadCursor-1;number>0;number--){
-        //   var page_view = this.page_views[number];
-        //   var page_el = $('#page-' + number);
-        //   var visible_on_page = page_el.filter(':visible').length;
-        //   if(visible_on_page){
-        //     if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
-        //       $('#page-' + number).hide();
-        //       console.log('hide', number)
-        //     }
-        //   }else{
-        //     if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
-        //       if(page_el.length){
-        //         page_view.$el.show();
-        //         console.log('show ' + number);
-        //       }else{
-        //         this.$el.prepend(page_view.render().el);
-        //         console.log('append ' + number);
-        //       }
-        //     }
-        //   }
-        // }
-        // for (number=Tabula.pdf_view.lazyLoadCursor+1;number<_(this.page_views).keys().length;number++){
-        //   var page_view = this.page_views[number];
-        //   var page_el = $('#page-' + number);
-        //   var visible_on_page = page_el.filter(':visible').length;
-        //   if(visible_on_page){
-        //     if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
-        //       $('#page-' + number).hide();
-        //       console.log('hide', number)
-        //     }
-        //   }else{
-        //     if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
-        //       if(page_el.length){
-        //         page_view.$el.show();
-        //         console.log('show ' + number);
-        //       }else{
-        //         this.$el.append(page_view.render().el);
-        //         console.log('append ' + number);
-        //       }
-        //     }
-        //   }
-        // } 
 
+      for (number=Tabula.pdf_view.lazyLoadCursor-1;number>0;number--){
+        var thumbnail_view = this.thumbnail_views[number];
+        var thumb_el = $('#thumb-page-' + number);
+        var visible_on_page = thumb_el.filter(':visible').length;
+        if(visible_on_page && Tabula.HideOnLazyLoad){
+          if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
+            $('#thumb-page-' + number).hide();
+            console.log('hide', number)
+          }
+        }else{
+          if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
+            if(thumb_el.length){
+              thumbnail_view.$el.show();
+              console.log('show ' + number);
+            }else{
+              this.$el.prepend(thumbnail_view.render().el);
+              console.log('append ' + number);
+            }
+          }
+        }
+      }
+      for (number=Tabula.pdf_view.lazyLoadCursor+1;number<_(this.thumbnail_views).keys().length;number++){
+        var thumbnail_view = this.thumbnail_views[number];
+        var thumb_el = $('#thumb-page-' + number);
+        var visible_on_page = thumb_el.filter(':visible').length;
+        if(visible_on_page && Tabula.HideOnLazyLoad){
+          if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
+            $('#thumb-page-' + number).hide();
+            console.log('hide', number)
+          }
+        }else{
+          if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
+            if(thumb_el.length){
+              thumbnail_view.$el.show();
+              console.log('show ' + number);
+            }else{
+              this.$el.append(thumbnail_view.render().el);
+              console.log('append ' + number);
+            }
+          }
+        }
+      } 
 
-
-      this.$el.text('unimplemented w/ lazyload')
     }
 
     return this;
@@ -872,6 +870,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     // stash some selectors (which don't exist at init)
     this.$img = this.$el.find('img');
     this.img = this.$img[0];
+    this.$img.attr('data-page', this.model.get('number'))
 
     // if user loads a PDF processed in Tabula <= 0.9.7, thumbnails were baked out at
     // a lower resolution, so we'll use those and upscale.
@@ -933,7 +932,7 @@ Tabula.PDFView = Backbone.View.extend({
 
     initialize: function(){
       _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections',
-        'createDataView', 'checkForAutodetectedTables', 'getData');
+        'createDataView', 'checkForAutodetectedTables', 'getData', 'handleScroll');
 
       this.pdf_document = new Tabula.Document({
         pdf_id: PDF_ID,
@@ -954,22 +953,9 @@ Tabula.PDFView = Backbone.View.extend({
       this.components['control_panel'] = new Tabula.ControlPanelView({pdf_view: this});
       this.components['sidebar_view'] = new Tabula.SidebarView({pdf_view: this, collection: this.pdf_document.page_collection});
 
-      $(document).on('scroll', _.throttle(_.bind(function(e){
-        // check which page_view is "active" (i.e. topmost that's partially in the window)
-        var pdf_pages = $('.pdf-page');
-        for (i=0; i<pdf_pages.length; i++){
-          var el = pdf_pages[i];
-          if(isElementPartiallyInContainer(el, this.components['document_view'].el)){
-            $('.page-thumbnail.active').removeClass('active');
-            this.components['sidebar_view'].thumbnail_views[i+1].$el.addClass('active');
-            Tabula.pdf_view.lazyLoadCursor = parseInt($(el).find('img').data('page'));
-            console.log("cursor", Tabula.pdf_view.lazyLoadCursor)
-            this.components['document_view'].render();
-            // this.components['sidebar_view'].render();
-            break;
-          }
-        }
-      }, this), 100, {leading: false}));
+      $(document).on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
+      $('#sidebar').on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
+
 
       $('body').
         on("click", ".repeat-lassos", function(e){
@@ -977,6 +963,33 @@ Tabula.PDFView = Backbone.View.extend({
           var selection = Tabula.pdf_view.pdf_document.selections.get(selectionId);
           selection.repeatLassos();
         });
+    },
+
+    handleScroll: function(e){
+      // check which page_view is "active" (i.e. topmost that's partially in the window)
+      var pdf_pages = $('.pdf-page');
+      var new_cursor = 0;
+      for (i=0; i<pdf_pages.length; i++){
+        var el = pdf_pages[i];
+        if(isElementPartiallyInContainer(el, this.components['document_view'].el)){
+          $('.page-thumbnail.active').removeClass('active');
+          this.components['sidebar_view'].thumbnail_views[i+1].$el.addClass('active');
+          new_cursor = Math.max(new_cursor, parseInt($(el).find('img').data('page')));
+          break;
+        }
+      }
+      var thumbs = $('.page-thumbnail');
+      for (i=0; i<thumbs.length; i++){
+        var el = thumbs[i];
+        if(isElementPartiallyInContainer(el, this.components['sidebar_view'].el)){
+          new_cursor = Math.max(new_cursor, parseInt($(el).find('img').data('page')));
+          break;
+        }
+      }
+      Tabula.pdf_view.lazyLoadCursor = new_cursor;
+      this.components['document_view'].render();
+      this.components['sidebar_view'].render();
+      console.log("cursor", Tabula.pdf_view.lazyLoadCursor)
     },
 
     getData: function(){
