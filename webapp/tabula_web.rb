@@ -271,16 +271,16 @@ Cuba.define do
         # Write shell script of tabula-extractor commands.  $1 takes
         # the name of a file from the command line and passes it
         # to tabula-extractor so the script can be reused on similar pdfs.
-        extraction_method_switch = if coord_set['extraction_method'] == "original"
-                                      "--no-spreadsheet"
-                                   elsif coord_set['extraction_method'] == "spreadsheet"
-                                      "--spreadsheet"
-                                   else
-                                      ""
-                                   end
         res['Content-Type'] = 'application/x-sh'
         res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.sh\""
         coords.each do |c|
+          extraction_method_switch = if c['extraction_method'] == "original"
+                                        "--no-spreadsheet"
+                                     elsif c['extraction_method'] == "spreadsheet"
+                                        "--spreadsheet"
+                                     else
+                                        ""
+                                     end
           res.write "tabula #{extraction_method_switch} -a #{c['y1'].round(3)},#{c['x1'].round(3)},#{c['y2'].round(3)},#{c['x2'].round(3)} -p #{c['page']} \"$1\" \n"
         end
       when 'bbox'
