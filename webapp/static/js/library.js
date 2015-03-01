@@ -13,7 +13,15 @@ Tabula.UploadedFile = Backbone.Model.extend({
 Tabula.FilesCollection = Backbone.Collection.extend({
     model: Tabula.UploadedFile,
     url: '/pdfs/workspace.json',
-    comparator: function(i){ return -i.get('time')}
+    comparator: function(i){ return -i.get('time')},
+    parse: function(items){
+      _(items).each(function(i){
+        if(!i.original_filename){
+          i.original_filename = i.file;
+        }
+      });
+      return items;
+    }
 });
 
 Tabula.File = Backbone.View.extend({
@@ -89,6 +97,7 @@ Tabula.Library = Backbone.View.extend({
       $('#uploaded-files-container').empty();
       if(this.files_collection.length > 0){
         this.files_collection.each(function(uploaded_file){
+          console.log(uploaded_file)
           var file_element = new Tabula.File({model: uploaded_file}).render().el;
           if(added_model == uploaded_file){
             $(file_element).addClass('flash');
