@@ -507,8 +507,12 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     }else{
       //useful in the console for debugging: $('.pdf-page:visible').map(function(i, el){ return $(el).find('img').data('page') }).get();
       
-      for (number=Tabula.pdf_view.lazyLoadCursor-1;number>0;number--){
+
+      // just so pages end up in the right order, we have to loop AWAY FROM the cursor in both directions
+      // so if the cursor is at 1.
+      for (number=Tabula.pdf_view.lazyLoadCursor;number>0;number--){
         var page_view = this.page_views[number];
+        if(!page_view) continue; // this is the first render, and there are no pages (probably!)
         var page_el = $('#page-' + number);
         var visible_on_page = page_el.filter(':visible').length;
         if(visible_on_page && Tabula.HideOnLazyLoad){
@@ -528,8 +532,9 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
           }
         }
       }
-      for (number=Tabula.pdf_view.lazyLoadCursor+1;number<_(this.page_views).keys().length;number++){
+      for (number=Tabula.pdf_view.lazyLoadCursor+1;number<=_(this.page_views).keys().length;number++){
         var page_view = this.page_views[number];
+        if(!page_view) continue; // this is the first render, and there are no pages (probably!)
         var page_el = $('#page-' + number);
         var visible_on_page = page_el.filter(':visible').length;
         if(visible_on_page && Tabula.HideOnLazyLoad){
@@ -787,8 +792,9 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
       }, this));
     }else{
 
-      for (number=Tabula.pdf_view.lazyLoadCursor-1;number>0;number--){
+      for (number=Tabula.pdf_view.lazyLoadCursor;number>0;number--){
         var thumbnail_view = this.thumbnail_views[number];
+        if(!thumbnail_view) continue; // this is the first render, and there are no pages (or there's a problem!)
         var thumb_el = $('#thumb-page-' + number);
         var visible_on_page = thumb_el.filter(':visible').length;
         if(visible_on_page && Tabula.HideOnLazyLoad){
@@ -808,8 +814,9 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
           }
         }
       }
-      for (number=Tabula.pdf_view.lazyLoadCursor+1;number<_(this.thumbnail_views).keys().length;number++){
+      for (number=Tabula.pdf_view.lazyLoadCursor+1;number<=_(this.thumbnail_views).keys().length;number++){
         var thumbnail_view = this.thumbnail_views[number];
+        if(!thumbnail_view) continue; // this is the first render, and there are no pages (probably!)
         var thumb_el = $('#thumb-page-' + number);
         var visible_on_page = thumb_el.filter(':visible').length;
         if(visible_on_page && Tabula.HideOnLazyLoad){
@@ -924,7 +931,7 @@ Tabula.PDFView = Backbone.View.extend({
     colors: ['#f00', '#0f0', '#00f', '#ffff00', '#FF00FF'],
     lastQuery: [{}],
     pageCount: undefined,
-    lazyLoadCursor: 0,
+    lazyLoadCursor: 1, // 0 is invalid, because pages are one-indexed
     components: {},
 
     hasAutodetectedTables: false,
