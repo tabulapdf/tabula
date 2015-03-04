@@ -72,13 +72,14 @@ Tabula.Selection = Backbone.Model.extend({
     var pdf_rotation = page.get('rotation');
 
     var scale = (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width) / imageWidth;
-
-    var rp = this.attributes.getDims().relativePos;
+    var rp = this.attributes.getDims().relativePos; //TODO: this is the problem, when the selection pane is hidden, this is nonsense.
     var selection_coords = {
       x1: rp.left * scale,
       x2: (rp.left + rp.width) * scale,
       y1: rp.top * scale,
       y2: (rp.top + rp.height) * scale,
+      width: rp.width, // not used by Tabula right now, but used in the UI elsewhere
+      height: rp.height, // not used by Tabula right now, but used in the UI elsewhere
       page: this.get('page_number'),
       extraction_method: this.get('extractionMethod') || 'guess',
       selection_id: this.id
@@ -140,7 +141,7 @@ Tabula.Options = Backbone.Model.extend({
 */
 
 Tabula.Selections = Backbone.Collection.extend({
-  model: Tabula.Selection,
+  // model: Tabula.Selection,
   updateOrCreateByVendorSelectorId: function(vendorSelection, pageNumber, imageWidth){
     var selection = this.get(vendorSelection.id);
 
@@ -150,7 +151,7 @@ Tabula.Selections = Backbone.Collection.extend({
     else {
       new_selection_args = _.extend({'page_number': pageNumber,
                                     'imageWidth': imageWidth,
-                                    'extractionMethod': Tabula.pdf_view.options.extraction_method,
+                                    'extraction_method': Tabula.pdf_view.options.extraction_method,
                                     'pdf_document': this.pdf_document},
                                     vendorSelection);
       selection = new Tabula.Selection(new_selection_args);
@@ -169,64 +170,27 @@ Tabula.AutodetectedSelections = Tabula.Selections.extend({
     _.bindAll(this, 'updateOrCreateByVendorSelectorId');
   },
 
-
   // TODO: refactor, so that this is only "parsing" logic
   // the rest (rendering selections) should occur only on Tabula.Selections' reset' event in document_view
   parse: function(response){
     // a JSON list of pages, which are each just a list of coords
     var tables = [];
-    console.log('got raw tables', response);
     selections = _(response).map(_.bind(function(page_tables, listIndex){
       var pageIndex = listIndex + 1;
-      var pageView = Tabula.pdf_view.components['document_view'].page_views[pageIndex];
-      var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: pageIndex});
 
-      var original_pdf_width = page.get('width');
-      var original_pdf_height = page.get('height');
-      var pdf_rotation = page.get('rotation');
-
-      // TODO: create selection models for pages that aren't lazyloaded, but obviously don't display them.
-      if(Tabula.LazyLoad && !pageView){
-        return []
-      }
-      var $img = pageView.$el.find('img');
-
-      var image_width = $img.width();
-      var scale = image_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
-      selections = _(page_tables).map(_.bind(function(tableCoords){
-        // var my_x2 = tableCoords[0] + tableCoords[2];
-        // var my_y2 = tableCoords[1] + tableCoords[3];
-
-        var offset = $img.offset();
-        var absolutePos = _.extend(offset, 
-                                  {
-                                    'top':  offset.top + (tableCoords[1] * scale),
-                                    'left': offset.left + (tableCoords[0] * scale),
-                                    'width': (tableCoords[2] * scale),
-                                    'height': (tableCoords[3] * scale)
-                                  });
-
-        // TODO: refactor to only have this ResizableSelection logic in one place.
-        var vendorSelection = new ResizableSelection({
-          position: absolutePos,
-          target: pageView.$el,
-          areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
-        });
-        vendorSelection.on({
-          resize: _.debounce(pageView._onSelectChange, 100),
-          remove: pageView._onSelectCancel
-        });
-        pageView.$el.append(vendorSelection.el);
-        pageView._onSelectEnd(vendorSelection);
-
-        // put the selection into the selections collection
-        selection = this.updateOrCreateByVendorSelectorId(vendorSelection, page.get('number'), image_width);
-        return selection;
+      return _(page_tables).map(_.bind(function(tableCoords){
+        return {
+          x1: tableCoords[0],
+          y1: tableCoords[1],
+          x2: tableCoords[0] + tableCoords[2],
+          y2: tableCoords[1] + tableCoords[3],
+          width: tableCoords[2],
+          height: tableCoords[3],
+          page: pageIndex,
+          extraction_method: 'spreadsheet',
+          selection_id: null
+        }
       }, this));
-      var selections = _(selections).select(function(s){ return !!s; });
-
-      console.log('created_selections', selections);
-      return selections;
     }, this));
     return _.flatten(selections);
   }
@@ -249,8 +213,6 @@ Tabula.Query = Backbone.Model.extend({
   doQuery: function(options) {
     this.query_data = {
       'coords': JSON.stringify(this.get('list_of_coords')),
-      // ignored by backend 'extraction_method': Tabula.pdf_view.options.get('extraction_method')
-      // because each element of list_of_coords has its own extraction_method key/value
       'new_filename': null,
     };
 
@@ -351,7 +313,11 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     this.undelegateEvents();
     this.pdf_view.render();
     this.pdf_view.$el.show();
-    $('.selection-box').css('display', 'block');
+
+    var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
+      return Tabula.pdf_view.renderSelection(sel.toCoords());
+    });
+    this.pdf_view.pdf_document.selections.reset(oldSelections);
   },
 
   setFormAction: function(e){
@@ -362,13 +328,15 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   render: function(){
     document.title="Export Data | Tabula";
     var uniq_extraction_methods = _.uniq(_(this.model.get('list_of_coords')).pluck('extraction_method'));
-    
+
     //TODO: move flash_borked to this object (dataview) away from pdf_view
     $('body').removeClass('page-selections');
     $('body').addClass('page-export');
+    this.delegateEvents();
 
     this.pdf_view.$el.hide();
-    $('.selection-box').css('display', 'none');
+    $('.selection-box').remove();
+    $('.table-region').remove();
 
     this.$el.html(this.template({
       pdf_id: PDF_ID,
@@ -731,8 +699,10 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   restoreDetectedTables: function(){
-    console.log('asdfasfd');
-    this.pdf_view.pdf_document.selections.reset(this.pdf_view.pdf_document.autodetected_selections.models);
+    var autodetected_selections = this.pdf_view.pdf_document.autodetected_selections.models.map(function(sel){
+      return Tabula.pdf_view.renderSelection(sel.attributes);
+    });
+    this.pdf_view.pdf_document.selections.reset(autodetected_selections);
   },
 
   initialize: function(stuff){
@@ -770,9 +740,8 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 
                   // three states: autodetection still incomplete, autodetection done but no tables found, autodetection done and tables found
                   'restore_detected_tables': this.pdf_view.hasAutodetectedTables ? "autodetect-finished" : "autodetect-in-progress",
-                  'disable_detected_tables': numOfSelectionsOnPage <= 0 ? 'disabled="disabled"' : ''
+                  'disable_detected_tables': numOfSelectionsOnPage > 0 || this.pdf_view.pdf_document.autodetected_selections.size() == 0 ? 'disabled="disabled"' : ''
                   })));
-
     return this;
   },
 });
@@ -950,7 +919,8 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
   }
 });
 
-Tabula.PDFView = Backbone.View.extend({
+Tabula.PDFView = Backbone.View.extend(
+  _.extend({
     el : '#tabula-app',
 
     events : {
@@ -965,7 +935,7 @@ Tabula.PDFView = Backbone.View.extend({
     global_options: null,
 
     initialize: function(){
-      _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections',
+      _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections', 'renderSelection',
         'createDataView', 'checkForAutodetectedTables', 'getData', 'handleScroll');
 
       this.pdf_document = new Tabula.Document({
@@ -1052,6 +1022,68 @@ Tabula.PDFView = Backbone.View.extend({
       });
     },
 
+    renderSelection: function(sel){
+      // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
+      // cause it to be rendered onto the page, and as a thumbnail
+      // and causes it to get an 'id' attr.
+
+      // on return to selection from extraction page, run something like
+      // selections.filter(function(sel){ return !sel.id; }).map(function(sel){ return Tabula.pdf_view.renderSelection(sel.toCoords()))
+
+      //
+      // {
+      //     x1: tableCoords[0],
+      //     y1: tableCoords[1],
+      //     x2: tableCoords[0] + tableCoords[2],
+      //     y2: tableCoords[1] + tableCoords[3],
+      //     width: , 
+      //     height:
+      //     page: pageIndex,
+      //     extraction_method: 'spreadsheet',
+      //     selection_id: nil
+      //   }
+      var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page];
+      var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page});
+      var original_pdf_width = page.get('width');
+      var original_pdf_height = page.get('height');
+      var pdf_rotation = page.get('rotation');
+
+      // TODO: create selection models for pages that aren't lazyloaded, but obviously don't display them.
+      if(Tabula.LazyLoad && !pageView){
+        return []
+      }
+
+      // mimics drawing the selection onto the page
+      var $img = pageView.$el.find('img');
+      var image_width = $img.width();
+      var scale = image_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
+      var offset = $img.offset();
+      var absolutePos = _.extend({}, offset, 
+                                {
+                                  'top':  offset.top + (sel.y1 * scale),
+                                  'left': offset.left + (sel.x1 * scale),
+                                  'width': (sel.width * scale),
+                                  'height': (sel.height * scale)
+                                });
+      // TODO: refactor to only have this ResizableSelection logic in one place.
+      var vendorSelection = new ResizableSelection({
+        position: absolutePos,
+        target: pageView.$el,
+        areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
+      });
+      vendorSelection.on({
+        resize: _.debounce(pageView._onSelectChange, 100),
+        remove: pageView._onSelectCancel
+      });
+      pageView.$el.append(vendorSelection.el);
+      pageView._onSelectEnd(vendorSelection);
+
+      // put the selection into the selections collection
+      selection = this.pdf_document.selections.updateOrCreateByVendorSelectorId(vendorSelection, sel.page, image_width);
+      return selection;
+
+    },
+
     removePage: function(removedPageModel){
       $.post('/pdf/' + PDF_ID + '/page/' + removedPageModel.get('number'),
            { _method: 'delete' },
@@ -1119,142 +1151,7 @@ Tabula.PDFView = Backbone.View.extend({
 
       return this;
     },
-
-    debugRulings: function(image, render, clean, show_intersections) {
-        image = $(image);
-        var imagePos = image.offset();
-        var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
-            .attr('width', image.width())
-            .attr('height', image.height())
-            .css('top', imagePos.top + 'px')
-            .css('left', imagePos.left + 'px');
-        $('body').append(newCanvas);
-
-        var pdf_rotation = parseInt($(image).data('rotation'));
-        var original_pdf_width = parseInt($(image).data('original-width'));
-        var original_pdf_height = parseInt($(image).data('original-height'));
-        var thumb_width = $(image).width();
-
-        var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
-
-        var lq = $.extend(this.lastQuery,
-                          {
-                              pdf_page_width: original_pdf_width,
-                              render_page: render === true,
-                              clean_rulings: clean === true,
-                              show_intersections: show_intersections === true
-                          });
-
-        $.get('/debug/' + PDF_ID + '/rulings',
-              lq,
-              _.bind(function(data) {
-                  $.each(data.rulings, _.bind(function(i, ruling) {
-                      $("canvas").drawLine({
-                          strokeStyle: this.colors[i % this.colors.length],
-                          strokeWidth: 1,
-                          x1: ruling[0] * scale, y1: ruling[1] * scale,
-                          x2: ruling[2] * scale, y2: ruling[3] * scale
-                      });
-                  }, this));
-
-                  $.each(data.intersections, _.bind(function(i, intersection) {
-                      $("canvas").drawEllipse({
-                          fillStyle: this.colors[i % this.colors.length],
-                          width: 5, height: 5,
-                          x: intersection[0] * scale,
-                          y: intersection[1] * scale
-                      });
-                  }, this));
-              }, this));
-    },
-
-    _debugRectangularShapes: function(image, url) {
-      image = $(image);
-      var imagePos = image.offset();
-      var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
-          .attr('width', image.width())
-          .attr('height', image.height())
-          .css('top', imagePos.top + 'px')
-          .css('left', imagePos.left + 'px');
-      $('body').append(newCanvas);
-
-      var thumb_width = $(image).width();
-      var thumb_height = $(image).height();
-      var original_pdf_width = parseInt($(image).data('original-width'));
-      var original_pdf_height = parseInt($(image).data('original-height'));
-      var pdf_rotation = parseInt($(image).data('rotation'));
-
-      var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
-
-      $.get(url,
-            this.lastQuery,
-            _.bind(function(data) {
-                $.each(data, _.bind(function(i, row) {
-                    $("canvas").drawRect({
-                        strokeStyle: this.colors[i % this.colors.length],
-                        strokeWidth: 1,
-                        x: row.left * scale, y: row.top * scale,
-                        width: row.width * scale,
-                        height: row.height * scale,
-                        fromCenter: false
-                    });
-                }, this));
-            }, this));
-
-    },
-
-    debugCharacters: function(image) {
-      return this._debugRectangularShapes(image, '/debug/' + PDF_ID + '/characters');
-    },
-
-    debugClippingPaths: function(image) {
-      return this._debugRectangularShapes(image, '/debug/' + PDF_ID + '/clipping_paths');
-    },
-
-    debugColumns: function(image) {
-      image = $(image);
-      var imagePos = image.offset();
-      var newCanvas =  $('<canvas/>',{'class':'debug-canvas'})
-          .attr('width', image.width())
-          .attr('height', image.height())
-          .css('top', imagePos.top + 'px')
-          .css('left', imagePos.left + 'px');
-      $('body').append(newCanvas);
-
-      var thumb_width = $(image).width();
-      var thumb_height = $(image).height();
-      var original_pdf_width = parseInt($(image).data('original-width'));
-      var original_pdf_height = parseInt($(image).data('original-height'));
-      var pdf_rotation = parseInt($(image).data('rotation'));
-
-      var scale = thumb_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
-
-      var list_of_coords = JSON.parse(this.lastQuery.coords);
-
-      Tabula.pdf_view.query.doQuery({
-        success: _.bind(function(data) {
-                   var colors = this.colors;
-                   $.each(data[0].vertical_separators, function(i, vert) {
-                     newCanvas.drawLine({
-                       strokeStyle: colors[i % colors.length],
-                       strokeWidth: 1,
-                       x1: vert * scale, y1: list_of_coords[0].y1 * scale,
-                       x2: vert * scale, y2: list_of_coords[0].y2 * scale
-                     });
-                   });
-                 }, this)});
-
-    },
-
-    debugCoordsToTabula: function() {
-        var coords = eval(this.lastQuery.coords)[0];
-        return [coords.y1, coords.x1, coords.y2, coords.x2].join(',');
-    },
-
-    debugTextChunks: function(image) {
-      return this._debugRectangularShapes(image, '/debug/' + PDF_ID + '/text_chunks');
-    },
-});
+  }, Tabula.DebugPDFView));
 
 function isElementPartiallyInViewport (el) {
   if (el instanceof jQuery) {
