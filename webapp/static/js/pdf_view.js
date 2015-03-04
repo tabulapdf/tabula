@@ -39,6 +39,7 @@ Tabula.Document = Backbone.Model.extend({
   initialize: function(options){
     this.page_collection = new Tabula.Pages([], {pdf_document: this});
     this.selections = new Tabula.Selections([], {pdf_document: this});
+    this.autodetected_selections = new Tabula.AutodetectedSelections([], {pdf_document: this});
     this.url = '/pdf/' + this.pdf_id + '/metadata.json';
 
     this.set('original_filename', '');
@@ -140,54 +141,6 @@ Tabula.Options = Backbone.Model.extend({
 
 Tabula.Selections = Backbone.Collection.extend({
   model: Tabula.Selection,
-  url: null, //set on init
-  initialize: function(){
-    this.url = '/pdfs/' + PDF_ID + '/tables.json?_=' + Math.round(+new Date()).toString();
-    _.bindAll(this, 'updateOrCreateByVendorSelectorId');
-  },
-
-  parse: function(response){
-    // a JSON list of pages, which are each just a list of coords
-    var tables = [];
-    selections = _(response).map(_.bind(function(page_tables, listIndex){
-      var pageIndex = listIndex + 1;
-      var pageView = Tabula.pdf_view.components['document_view'].page_views[pageIndex];
-      var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: pageIndex});
-
-      var original_pdf_width = page.get('width');
-      var original_pdf_height = page.get('height');
-      var pdf_rotation = page.get('rotation');
-
-      // TODO: create selection models for pages that aren't lazyloaded, but obviously don't display them.
-      if(Tabula.LazyLoad && !pageView){
-        return []
-      }
-
-      pageView.createTables = _.bind(function(){
-        var image_width = pageView.$el.find('img').width();
-        var thumb_height = pageView.$el.find('img').height();
-        var scale = (original_pdf_width / image_width);
-        selections = _(page_tables).map(_.bind(function(tableCoords){
-          var my_x2 = tableCoords[0] + tableCoords[2];
-          var my_y2 = tableCoords[1] + tableCoords[3];
-
-          // put the selection into the selections collection
-          selection = this.updateOrCreateByVendorSelectorId(vendorSelection, page.get('number'), image_width);
-          return selection;
-        }, this));
-        return _(selections).select(function(s){ return !!s; });
-      }, this);
-
-      if (pageView.iasAlreadyInited){
-        selections = pageView.createTables();
-      }else{
-        selections = [];
-      }
-      return selections;
-    }, this));
-    return _.flatten(selections);
-  },
-
   updateOrCreateByVendorSelectorId: function(vendorSelection, pageNumber, imageWidth){
     var selection = this.get(vendorSelection.id);
 
@@ -204,6 +157,78 @@ Tabula.Selections = Backbone.Collection.extend({
       this.add(selection);
     }
     return selection;
+  }
+
+});
+
+
+Tabula.AutodetectedSelections = Tabula.Selections.extend({
+  url: null, //set on init
+  initialize: function(){
+    this.url = '/pdfs/' + PDF_ID + '/tables.json?_=' + Math.round(+new Date()).toString();
+    _.bindAll(this, 'updateOrCreateByVendorSelectorId');
+  },
+
+
+  // TODO: refactor, so that this is only "parsing" logic
+  // the rest (rendering selections) should occur only on Tabula.Selections' reset' event in document_view
+  parse: function(response){
+    // a JSON list of pages, which are each just a list of coords
+    var tables = [];
+    console.log('got raw tables', response);
+    selections = _(response).map(_.bind(function(page_tables, listIndex){
+      var pageIndex = listIndex + 1;
+      var pageView = Tabula.pdf_view.components['document_view'].page_views[pageIndex];
+      var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: pageIndex});
+
+      var original_pdf_width = page.get('width');
+      var original_pdf_height = page.get('height');
+      var pdf_rotation = page.get('rotation');
+
+      // TODO: create selection models for pages that aren't lazyloaded, but obviously don't display them.
+      if(Tabula.LazyLoad && !pageView){
+        return []
+      }
+      var $img = pageView.$el.find('img');
+
+      var image_width = $img.width();
+      var scale = image_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
+      selections = _(page_tables).map(_.bind(function(tableCoords){
+        // var my_x2 = tableCoords[0] + tableCoords[2];
+        // var my_y2 = tableCoords[1] + tableCoords[3];
+
+        var offset = $img.offset();
+        var absolutePos = _.extend(offset, 
+                                  {
+                                    'top':  offset.top + (tableCoords[1] * scale),
+                                    'left': offset.left + (tableCoords[0] * scale),
+                                    'width': (tableCoords[2] * scale),
+                                    'height': (tableCoords[3] * scale)
+                                  });
+
+        // TODO: refactor to only have this ResizableSelection logic in one place.
+        var vendorSelection = new ResizableSelection({
+          position: absolutePos,
+          target: pageView.$el,
+          areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
+        });
+        vendorSelection.on({
+          resize: _.debounce(pageView._onSelectChange, 100),
+          remove: pageView._onSelectCancel
+        });
+        pageView.$el.append(vendorSelection.el);
+        pageView._onSelectEnd(vendorSelection);
+
+        // put the selection into the selections collection
+        selection = this.updateOrCreateByVendorSelectorId(vendorSelection, page.get('number'), image_width);
+        return selection;
+      }, this));
+      var selections = _(selections).select(function(s){ return !!s; });
+
+      console.log('created_selections', selections);
+      return selections;
+    }, this));
+    return _.flatten(selections);
   }
 
 });
@@ -518,16 +543,16 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
         if(visible_on_page && Tabula.HideOnLazyLoad){
           if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
             $('#page-' + number).hide();
-            console.log('hide', number)
+            // console.log('hide', number)
           }
         }else{
           if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
             if(page_el.length){
               page_view.$el.show();
-              console.log('show ' + number);
+              // console.log('show ' + number);
             }else{
               this.$el.prepend(page_view.render().el);
-              console.log('append ' + number);
+              // console.log('append ' + number);
             }
           }
         }
@@ -540,16 +565,16 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
         if(visible_on_page && Tabula.HideOnLazyLoad){
           if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
             $('#page-' + number).hide();
-            console.log('hide', number)
+            // console.log('hide', number)
           }
         }else{
           if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
             if(page_el.length){
               page_view.$el.show();
-              console.log('show ' + number);
+              // console.log('show ' + number);
             }else{
               this.$el.append(page_view.render().el);
-              console.log('append ' + number);
+              // console.log('append ' + number);
             }
           }
         }
@@ -706,8 +731,8 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   restoreDetectedTables: function(){
-    this.pdf_view.pdf_document.selections.reset([]);
-    this.pdf_view.pdf_document.selections.fetch();
+    console.log('asdfasfd');
+    this.pdf_view.pdf_document.selections.reset(this.pdf_view.pdf_document.autodetected_selections.models);
   },
 
   initialize: function(stuff){
@@ -800,16 +825,16 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
         if(visible_on_page && Tabula.HideOnLazyLoad){
           if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
             $('#thumb-page-' + number).hide();
-            console.log('hide', number)
+            // console.log('hide', number)
           }
         }else{
           if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
             if(thumb_el.length){
               thumbnail_view.$el.show();
-              console.log('show ' + number);
+              // console.log('show ' + number);
             }else{
               this.$el.prepend(thumbnail_view.render().el);
-              console.log('append ' + number);
+              // console.log('append ' + number);
             }
           }
         }
@@ -822,16 +847,16 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
         if(visible_on_page && Tabula.HideOnLazyLoad){
           if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
             $('#thumb-page-' + number).hide();
-            console.log('hide', number)
+            // console.log('hide', number)
           }
         }else{
           if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
             if(thumb_el.length){
               thumbnail_view.$el.show();
-              console.log('show ' + number);
+              // console.log('show ' + number);
             }else{
               this.$el.append(thumbnail_view.render().el);
-              console.log('append ' + number);
+              // console.log('append ' + number);
             }
           }
         }
@@ -908,13 +933,15 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
 
     // don't break everything if the sidebar happens to be broken.
     var thumbScale = this.$img ? this.$img.width() / selection.get('imageWidth') : 0;
+    var left = parseFloat(this.$el.css('padding-left'));
+    var top = parseFloat(this.$el.css('padding-top'));
 
     var s = selection.attributes.getDims().relativePos;
 
-    $sshow.css('top', s.top * thumbScale + 'px')
-      .css('left', s.left * thumbScale + 'px')
-      .css('width', s.width * thumbScale + 'px')
-      .css('height', s.height * thumbScale + 'px');
+    $sshow.css('top', (top + (s.top * thumbScale)) + 'px')
+      .css('left', (left + (s.left * thumbScale)) + 'px')
+      .css('width', (s.width * thumbScale) + 'px')
+      .css('height', (s.height * thumbScale) + 'px');
   },
 
   removeSelectionThumbnail: function(selection){
@@ -1012,7 +1039,7 @@ Tabula.PDFView = Backbone.View.extend({
     },
 
     checkForAutodetectedTables: function(){
-      this.pdf_document.selections.fetch({
+      this.pdf_document.autodetected_selections.fetch({
         success: _.bind(function(){
           this.hasAutodetectedTables = true;
           window.clearTimeout(this.autodetect_timer);
