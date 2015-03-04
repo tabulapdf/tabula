@@ -3,7 +3,7 @@ require_relative '../lib/tabula_job_executor/executor.rb'
 # if this is true, then the progress bar will complete (and give the user their PDF to interact with) before
 # the autodetect tables job is done. the JS UI will handle checking periodiclaly if the autodetect tables job 
 # is done yet; when it is, it'll be enabled.
-FINISH_BEFORE_AUTODETECT_IS_DONE = false
+FINISH_BEFORE_AUTODETECT_IS_DONE = true
 
 class TabulaJobProgress < Cuba
   define do

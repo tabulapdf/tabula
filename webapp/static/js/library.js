@@ -97,7 +97,6 @@ Tabula.Library = Backbone.View.extend({
       $('#uploaded-files-container').empty();
       if(this.files_collection.length > 0){
         this.files_collection.each(function(uploaded_file){
-          console.log(uploaded_file)
           var file_element = new Tabula.File({model: uploaded_file}).render().el;
           if(added_model == uploaded_file){
             $(file_element).addClass('flash');
