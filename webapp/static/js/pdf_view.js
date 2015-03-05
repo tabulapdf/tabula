@@ -93,6 +93,7 @@ Tabula.Selection = Backbone.Model.extend({
     //                           });
 
     var scale = (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width) / imageWidth;
+    console.log(scale);
     var rp = this.attributes.getDims().relativePos; //TODO: this is the problem, when the selection pane is hidden, this is nonsense.
     var selection_coords = {
       x1: rp.left * scale,
