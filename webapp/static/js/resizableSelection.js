@@ -61,9 +61,13 @@
 
 
     getDims: function() {
+      if(!$(this.pageView).is(':visible') || !this.$el.is(':visible')){
+        return this.cachedDims;
+      }
       var o = { top: parseFloat(this.$el.css('top')),
                 left: parseFloat(this.$el.css('left')) };
       var targetPos = $(this.pageView).offset();
+      // console.log($(this.pageView).is(':visible'), this.$el.is(':visible'));
       this.cachedDims = {
         id: this.id,
         "$el": this.$el,
@@ -80,6 +84,7 @@
           height: this.$el.height()
         }
       };
+      // console.log(this.cachedDims.relativePos.left);
       return this.cachedDims;
     },
 

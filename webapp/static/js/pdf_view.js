@@ -71,6 +71,27 @@ Tabula.Selection = Backbone.Model.extend({
     var original_pdf_height = page.get('height');
     var pdf_rotation = page.get('rotation');
 
+    // from renderSelection -- we want to reverse this
+    // var $img = pageView.$el.find('img');
+    // var image_width = $img.width();
+    // var scale = image_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
+    // var offset = $img.offset();
+    // var absolutePos = _.extend({}, offset, 
+    //                           {
+    //                             'top':  offset.top + (sel.y1 * scale),
+    //                             'left': offset.left + (sel.x1 * scale),
+    //                             'width': (sel.width * scale),
+    //                             'height': (sel.height * scale)
+    //                           });
+
+    // implicitly, relativePos is 
+    //                           {
+    //                             'top':  (sel.y1 * scale),
+    //                             'left':  (sel.x1 * scale),
+    //                             'width': (sel.width * scale),
+    //                             'height': (sel.height * scale)
+    //                           });
+
     var scale = (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width) / imageWidth;
     var rp = this.attributes.getDims().relativePos; //TODO: this is the problem, when the selection pane is hidden, this is nonsense.
     var selection_coords = {
@@ -78,8 +99,8 @@ Tabula.Selection = Backbone.Model.extend({
       x2: (rp.left + rp.width) * scale,
       y1: rp.top * scale,
       y2: (rp.top + rp.height) * scale,
-      width: rp.width, // not used by Tabula right now, but used in the UI elsewhere
-      height: rp.height, // not used by Tabula right now, but used in the UI elsewhere
+      width: rp.width * scale, // not used by Tabula right now, but used in the UI elsewhere
+      height: rp.height * scale, // not used by Tabula right now, but used in the UI elsewhere
       page: this.get('page_number'),
       extraction_method: this.get('extractionMethod') || 'guess',
       selection_id: this.id
@@ -469,7 +490,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     var pv = this.page_views[page_number];
     var rs = new ResizableSelection({
       position: d.absolutePos,
-      target: $(d.pageView),
+      target: $(d.pageView).find('img'),
       areas: this._selectionsGetter
     });
     rs.on({
@@ -1056,9 +1077,10 @@ Tabula.PDFView = Backbone.View.extend(
       // mimics drawing the selection onto the page
       var $img = pageView.$el.find('img');
       var image_width = $img.width();
+
       var scale = image_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
       var offset = $img.offset();
-      var absolutePos = _.extend({}, offset, 
+      var absolutePos = _.extend({}, offset,
                                 {
                                   'top':  offset.top + (sel.y1 * scale),
                                   'left': offset.left + (sel.x1 * scale),
@@ -1068,7 +1090,7 @@ Tabula.PDFView = Backbone.View.extend(
       // TODO: refactor to only have this ResizableSelection logic in one place.
       var vendorSelection = new ResizableSelection({
         position: absolutePos,
-        target: pageView.$el,
+        target: pageView.$el.find('img'),
         areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
       });
       vendorSelection.on({
