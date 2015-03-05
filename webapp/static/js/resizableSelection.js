@@ -74,16 +74,17 @@
         absolutePos: {
           top: o.top,
           left: o.left,
-          width: this.$el.width(),
-          height: this.$el.height()
+          width: this.$el.css('box-sizing') == "border-box" ? this.$el.outerWidth() : this.$el.width(),
+          height: this.$el.css('box-sizing') == "border-box" ? this.$el.outerHeight(): this.$el.height()
         },
         relativePos: {
           top: o.top - targetPos.top,
           left: o.left - targetPos.left,
-          width: this.$el.width(),
-          height: this.$el.height()
+          width: this.$el.css('box-sizing') == "border-box" ? this.$el.outerWidth() : this.$el.width(),
+          height: this.$el.css('box-sizing') == "border-box" ? this.$el.outerHeight() : this.$el.height()
         }
       };
+      console.log('relativePos', this.cachedDims.relativePos.height)
       // console.log(this.cachedDims.relativePos.left);
       return this.cachedDims;
     },
