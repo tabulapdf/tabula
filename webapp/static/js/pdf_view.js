@@ -71,29 +71,7 @@ Tabula.Selection = Backbone.Model.extend({
     var original_pdf_height = page.get('height');
     var pdf_rotation = page.get('rotation');
 
-    // from renderSelection -- we want to reverse this
-    // var $img = pageView.$el.find('img');
-    // var image_width = $img.width();
-    // var scale = image_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
-    // var offset = $img.offset();
-    // var absolutePos = _.extend({}, offset, 
-    //                           {
-    //                             'top':  offset.top + (sel.y1 * scale),
-    //                             'left': offset.left + (sel.x1 * scale),
-    //                             'width': (sel.width * scale),
-    //                             'height': (sel.height * scale)
-    //                           });
-
-    // implicitly, relativePos is 
-    //                           {
-    //                             'top':  (sel.y1 * scale),
-    //                             'left':  (sel.x1 * scale),
-    //                             'width': (sel.width * scale),
-    //                             'height': (sel.height * scale)
-    //                           });
-
     var scale = (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width) / imageWidth;
-    console.log(scale);
     var rp = this.attributes.getDims().relativePos; //TODO: this is the problem, when the selection pane is hidden, this is nonsense.
     var selection_coords = {
       x1: rp.left * scale,
@@ -489,9 +467,10 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   _onRectangularSelectorEnd: function(d) {
     var page_number = $(d.pageView).data('page');
     var pv = this.page_views[page_number];
+    console.log()
     var rs = new ResizableSelection({
       position: d.absolutePos,
-      target: $(d.pageView).find('img'),
+      target: pv.$el.find('img'),
       areas: this._selectionsGetter
     });
     rs.on({
@@ -781,6 +760,7 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
     this.listenTo(this.collection, 'remove', this.removeThumbnail);
 
     this.listenTo(this.pdf_view.pdf_document.selections, 'sync', this.render);
+    this.listenTo(this.pdf_view.pdf_document.selections, 'reset', _.bind(function(){ console.log("TODO: remove all selection thumbs")}, this)); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'add', this.addSelectionThumbnail); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'change', this.changeSelectionThumbnail); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'remove', this.removeSelectionThumbnail); // remove a thumbnail selection
@@ -927,6 +907,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     var left = parseFloat(this.$el.css('padding-left'));
     var top = parseFloat(this.$el.css('padding-top'));
 
+    console.log(selection);
     var s = selection.attributes.getDims().relativePos;
 
     $sshow.css('top', (top + (s.top * thumbScale)) + 'px')
@@ -1080,6 +1061,7 @@ Tabula.PDFView = Backbone.View.extend(
       var image_width = $img.width();
 
       var scale = image_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
+      console.log('scale', scale);
       var offset = $img.offset();
       var absolutePos = _.extend({}, offset,
                                 {
