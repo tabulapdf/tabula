@@ -61,7 +61,7 @@
 
 
     getDims: function() {
-      if(!$(this.pageView).is(':visible') || !this.$el.is(':visible')){
+      if((!$(this.pageView).is(':visible') || !this.$el.is(':visible')) && this.cachedDims){
         return this.cachedDims;
       }
       var o = { top: parseFloat(this.$el.css('top')),
@@ -84,8 +84,6 @@
           height: this.$el.css('box-sizing') == "border-box" ? this.$el.outerHeight() : this.$el.height()
         }
       };
-      console.log('relativePos', this.cachedDims.relativePos.height)
-      // console.log(this.cachedDims.relativePos.left);
       return this.cachedDims;
     },
 
