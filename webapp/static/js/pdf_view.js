@@ -179,6 +179,9 @@ Tabula.AutodetectedSelections = Tabula.Selections.extend({
       var pageIndex = listIndex + 1;
 
       return _(page_tables).map(_.bind(function(tableCoords){
+        if(tableCoords[2] * tableCoords[3] < 400){ //exclude tiny autodetected selections
+          return null;
+        }
         return {
           x1: tableCoords[0],
           y1: tableCoords[1],
@@ -192,7 +195,7 @@ Tabula.AutodetectedSelections = Tabula.Selections.extend({
         }
       }, this));
     }, this));
-    return _.flatten(selections);
+    return _.select(_.flatten(selections), function(i){ return i});
   }
 
 });
@@ -1031,22 +1034,6 @@ Tabula.PDFView = Backbone.View.extend(
       // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
       // cause it to be rendered onto the page, and as a thumbnail
       // and causes it to get an 'id' attr.
-
-      // on return to selection from extraction page, run something like
-      // selections.filter(function(sel){ return !sel.id; }).map(function(sel){ return Tabula.pdf_view.renderSelection(sel.toCoords()))
-
-      //
-      // {
-      //     x1: tableCoords[0],
-      //     y1: tableCoords[1],
-      //     x2: tableCoords[0] + tableCoords[2],
-      //     y2: tableCoords[1] + tableCoords[3],
-      //     width: , 
-      //     height:
-      //     page: pageIndex,
-      //     extraction_method: 'spreadsheet',
-      //     selection_id: nil
-      //   }
       var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page];
       var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page});
       var original_pdf_width = page.get('width');
@@ -1082,7 +1069,7 @@ Tabula.PDFView = Backbone.View.extend(
         remove: pageView._onSelectCancel
       });
       pageView.$el.append(vendorSelection.el);
-      pageView._onSelectEnd(vendorSelection);
+      pageView._onSelectEnd(vendorSelection); // draws the thumbnail
 
       // put the selection into the selections collection
       selection = this.pdf_document.selections.updateOrCreateByVendorSelectorId(vendorSelection, sel.page, image_width);
