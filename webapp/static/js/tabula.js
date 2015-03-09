@@ -8,6 +8,7 @@ var TabulaRouter = Backbone.Router.extend({
     "":                            "upload",
     "/":                           "upload",
     "pdf/:file_id":                "view",
+    "pdf/:file_id/extract":        "view", // you have to make selections first, so going directly to /extract doesn't work.
     "queue/:file_id":              'status',
     "error":                       'uploadError',
     "help":                        'help',
@@ -72,6 +73,6 @@ if(TABULA_VERSION.slice(0,3) == "rev"){
 
 
 $(function(){
-  new TabulaRouter();
+  window.tabula_router = new TabulaRouter();
   Backbone.history.start({pushState: true});
 });
