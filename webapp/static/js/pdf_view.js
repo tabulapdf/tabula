@@ -340,6 +340,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     this.pdf_view.$el.hide();
     $('.selection-box').css('visibility', 'hidden');
     $('.table-region').remove();
+    $('.selection-show').remove(); // nuke thumbs, we'll put 'em back in a second
 
     this.$el.html(this.template({
       pdf_id: PDF_ID,
