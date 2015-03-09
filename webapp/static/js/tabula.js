@@ -47,6 +47,7 @@ var TabulaRouter = Backbone.Router.extend({
   },
 
   view: function(file_id) {
+    console.log('view')
     $('nav li a').removeClass('active');
     $('body').prepend( _.template( $('#navbar-template').html().replace(/nestedscript/g, 'script') )({}) ); // navbar.
     $('body').addClass('page-selections')
