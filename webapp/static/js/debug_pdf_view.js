@@ -1,4 +1,5 @@
 Tabula.DebugPDFView = {
+    colors: ['#f00', '#0f0', '#00f', '#ffff00', '#FF00FF'],
     debugRulings: function(image, render, clean, show_intersections) {
         image = $(image);
         var imagePos = image.offset();

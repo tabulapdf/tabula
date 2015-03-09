@@ -763,10 +763,10 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
     this.listenTo(this.collection, 'remove', this.removeThumbnail);
 
     this.listenTo(this.pdf_view.pdf_document.selections, 'sync', this.render);
-    this.listenTo(this.pdf_view.pdf_document.selections, 'reset', _.bind(function(e){
-      console.log(e)
-     Tabula.pdf_view.pdf_document.selections.map(this.removeSelectionThumbnail) ;
-     }, this)); // render a thumbnail selection
+    // this.listenTo(this.pdf_view.pdf_document.selections, 'reset', _.bind(function(e){
+    //  // Tabula.pdf_view.pdf_document.selections.map(this.removeSelectionThumbnail) ;
+    //  // Tabula.pdf_view.pdf_document.selections.map(this.addSelectionThumbnail) ;
+    //  }, this)); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'add', this.addSelectionThumbnail); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'change', this.changeSelectionThumbnail); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'remove', this.removeSelectionThumbnail); // remove a thumbnail selection
@@ -933,7 +933,6 @@ Tabula.PDFView = Backbone.View.extend(
 
     events : {
     },
-    colors: ['#f00', '#0f0', '#00f', '#ffff00', '#FF00FF'],
     lastQuery: [{}],
     pageCount: undefined,
     lazyLoadCursor: 1, // 0 is invalid, because pages are one-indexed
