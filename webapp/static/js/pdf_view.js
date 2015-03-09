@@ -50,17 +50,7 @@ Tabula.Selection = Backbone.Model.extend({
   pdf_id: PDF_ID,
 
   initialize: function(){
-    _.bindAll(this, 'queryForData', 'repeatLassos', 'toCoords');
-  },
-
-
-  // XXX TODO I don't like that a model (selection) takes care of
-  // controlling a view (Manuel)
-  queryForData: function(){
-    var selection_coords = this.toCoords();
-    Tabula.pdf_view.query = new Tabula.Query({list_of_coords: [selection_coords], extraction_method: this.get('extractionMethod')});
-    // Tabula.pdf_view.createDataView();
-    // Tabula.pdf_view.query.doQuery();
+    _.bindAll(this, 'repeatLassos', 'toCoords');
   },
 
   toCoords: function(){
@@ -257,7 +247,7 @@ Tabula.Query = Backbone.Model.extend({
           }, this),
         error: _.bind(function(xhr, status, error) {
           //TODO: write this.
-          console.log("error!");
+          console.log("error!", xhr, status);
           var error_text = xhr.responseText;
           window.raw_xhr_responseText = xhr.responseText; // for consoles, etc.
           if(error_text.indexOf("DOCTYPE") != -1){ // we're in Jar/Jetty/whatever land, not rackup land
@@ -301,6 +291,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   events: {
     'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod',
     'click #download-data': 'setFormAction',
+    'click #download-data': 'disableDownloadButton',
     //N.B.: Download button (and format-specific download buttons) are an HTML form, so not handled here.
     //TODO: handle flash clipboard thingy here.
     // 'click #copy-csv-to-clipboard': 
@@ -316,7 +307,14 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     this.listenTo(this.model, 'tabula:query-success', this.render);
     // TODO: just destroy the current PDFView (or just hide?) and put this in its place.
   },
-
+  disableDownloadButton: function(){
+    $('#download-data').addClass('download-in-progress');
+    $('#download-data').prop('disabled', 'disabled');
+    window.setTimeout( function(){
+      $('#download-data').removeClass('download-in-progress');
+      $('#download-data').removeProp('disabled');
+    }, 2000);
+  },
   closeAndRenderSelectionView: function(){
     window.tabula_router.navigate('pdf/' + PDF_ID)
     this.$el.empty();
