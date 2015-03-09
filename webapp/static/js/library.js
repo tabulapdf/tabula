@@ -68,17 +68,18 @@ Tabula.Library = Backbone.View.extend({
     uploadPDF: function(e){
       $(e.currentTarget).find('button').attr('disabled', 'disabled');
 
+      this.checker = new Tabula.UploadStatusChecker({
+          el: this.$el.find('#progress-container')
+      });
+
       var formdata = new FormData($('form#upload')[0]);
       $.ajax({
           url: $('form#upload').attr('action'),
           type: 'POST',
           success: _.bind(function (res) {
               var data = JSON.parse(res);
-              this.checker = new Tabula.UploadStatusChecker({
-                  el: this.$el.find('#progress-container'),
-                  file_id: data.file_id,
-                  upload_id: data.upload_id,
-              });
+              this.checker.file_id = data.file_id;
+              this.checker.upload_id = data.upload_id;
               this.checker.checkStatus();
               this.checker.render();
           }, this),
@@ -139,6 +140,9 @@ Tabula.UploadStatusChecker = Backbone.View.extend({
     },
 
     checkStatus: function() {
+      if(!this.file_id || !this.upload_id){
+        this.pct_complete = 5;
+      }else{
         $.ajax({
             dataType: 'json',
             url: '/queue/'+this.upload_id+'/json?file_id=' + this.file_id,
@@ -163,6 +167,7 @@ Tabula.UploadStatusChecker = Backbone.View.extend({
                 console.log(err);
             }
         });
+      }
     },
     render: function(){
         if(this.pct_complete <= 0){
