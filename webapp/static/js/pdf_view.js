@@ -335,7 +335,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     this.delegateEvents();
 
     this.pdf_view.$el.hide();
-    $('.selection-box').remove();
+    $('.selection-box').css('visibility', 'hidden');
     $('.table-region').remove();
 
     this.$el.html(this.template({
@@ -694,7 +694,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     _.each(this.pdf_view.components.document_view.page_views,
            function(pv,i,l) {
              _.each(pv.selections, function(s, j, sels) {
-               s.remove();
+              s.remove();
              });
            });
   },
@@ -760,7 +760,10 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
     this.listenTo(this.collection, 'remove', this.removeThumbnail);
 
     this.listenTo(this.pdf_view.pdf_document.selections, 'sync', this.render);
-    this.listenTo(this.pdf_view.pdf_document.selections, 'reset', _.bind(function(){ console.log("TODO: remove all selection thumbs")}, this)); // render a thumbnail selection
+    this.listenTo(this.pdf_view.pdf_document.selections, 'reset', _.bind(function(e){
+      console.log(e)
+     Tabula.pdf_view.pdf_document.selections.map(this.removeSelectionThumbnail) ;
+     }, this)); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'add', this.addSelectionThumbnail); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'change', this.changeSelectionThumbnail); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'remove', this.removeSelectionThumbnail); // remove a thumbnail selection
@@ -907,7 +910,6 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     var left = parseFloat(this.$el.css('padding-left'));
     var top = parseFloat(this.$el.css('padding-top'));
 
-    console.log(selection);
     var s = selection.attributes.getDims().relativePos;
 
     $sshow.css('top', (top + (s.top * thumbScale)) + 'px')
@@ -996,7 +998,7 @@ Tabula.PDFView = Backbone.View.extend(
       Tabula.pdf_view.lazyLoadCursor = new_cursor;
       this.components['document_view'].render();
       this.components['sidebar_view'].render();
-      console.log("cursor", Tabula.pdf_view.lazyLoadCursor)
+      // console.log("cursor", Tabula.pdf_view.lazyLoadCursor)
     },
 
     getData: function(){
@@ -1061,7 +1063,6 @@ Tabula.PDFView = Backbone.View.extend(
       var image_width = $img.width();
 
       var scale = image_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
-      console.log('scale', scale);
       var offset = $img.offset();
       var absolutePos = _.extend({}, offset,
                                 {

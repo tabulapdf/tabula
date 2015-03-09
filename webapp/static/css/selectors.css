@@ -158,8 +158,9 @@ div.table-region button[name=close] {
   padding: 0;
   font-size: 20px;
   position: relative;
-  top: -20px;
+  top: -25px;
   left: 100%;
+  padding-left: 5px; /* padding only because left is already taken and calc() is scary   */
 }
 
 /* line 136, ../sass/selectors.scss */
