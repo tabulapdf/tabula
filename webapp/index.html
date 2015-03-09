@@ -91,10 +91,11 @@
             <option value="xml">XML</option>
             <option value="script">Script</option>
           </select>
-          <a href="javascript:void(0)"><button type="submit" id="download-data" class="btn btn-default" data-action='/pdf/<%=pdf_id%>/data?format=csv'>
+          <button type="submit" id="download-data" class="btn btn-default" data-action='/pdf/<%=pdf_id%>/data?format=csv'>
+            <i class="glyphicon glyphicon-refresh"></i>
             <i class="glyphicon glyphicon-download"></i>
             Export
-          </button></a>
+          </button>
           <a href="javascript:void(0)"><button type="button" id="copy-csv-to-clipboard" class="btn btn-default" <%=copyDisabled%> >
             <i class="glyphicon glyphicon-paperclip"></i>
              Copy to Clipboard

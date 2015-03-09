@@ -9059,10 +9059,11 @@ button.close {
   position: absolute;
   border: 1px dashed red;
   display: none;
+  pointer-events: none;
 }
 
 /* selections */
-/* line 8, ../sass/selectors.scss */
+/* line 9, ../sass/selectors.scss */
 .repeat-lassos.btn {
   position: absolute;
   right: -165px;
@@ -9070,19 +9071,19 @@ button.close {
 }
 
 /* rectangularSelector.js classes */
-/* line 15, ../sass/selectors.scss */
+/* line 16, ../sass/selectors.scss */
 .selection-box, .table-region {
   position: absolute;
   border: 1px dashed rgba(255, 87, 0, 0.8);
   background: rgba(255, 87, 0, 0.2);
   box-sizing: border-box;
 }
-/* line 23, ../sass/selectors.scss */
+/* line 24, ../sass/selectors.scss */
 .selection-box:hover, .table-region:hover {
   cursor: pointer;
 }
 
-/* line 28, ../sass/selectors.scss */
+/* line 29, ../sass/selectors.scss */
 .selection-box {
   z-index: 42;
   width: 0;
@@ -9090,19 +9091,19 @@ button.close {
   visibility: hidden;
 }
 
-/* line 35, ../sass/selectors.scss */
+/* line 36, ../sass/selectors.scss */
 .table-region {
   top: 0;
   left: 0;
   z-index: 21;
 }
 
-/* line 42, ../sass/selectors.scss */
+/* line 43, ../sass/selectors.scss */
 div.table-region .resize-handle {
   position: absolute;
 }
 
-/* line 50, ../sass/selectors.scss */
+/* line 51, ../sass/selectors.scss */
 div.table-region .n-border {
   width: calc(100% - 10px);
   top: -5px;
@@ -9110,7 +9111,7 @@ div.table-region .n-border {
   height: 10px;
 }
 
-/* line 57, ../sass/selectors.scss */
+/* line 58, ../sass/selectors.scss */
 div.table-region .s-border {
   width: calc(100% - 10px);
   bottom: -5px;
@@ -9118,7 +9119,7 @@ div.table-region .s-border {
   height: 10px;
 }
 
-/* line 64, ../sass/selectors.scss */
+/* line 65, ../sass/selectors.scss */
 div.table-region .w-border {
   height: calc(100% - 10px);
   left: -5px;
@@ -9126,7 +9127,7 @@ div.table-region .w-border {
   width: 10px;
 }
 
-/* line 71, ../sass/selectors.scss */
+/* line 72, ../sass/selectors.scss */
 div.table-region .e-border {
   height: calc(100% - 10px);
   top: 5px;
@@ -9134,7 +9135,7 @@ div.table-region .e-border {
   width: 10px;
 }
 
-/* line 78, ../sass/selectors.scss */
+/* line 79, ../sass/selectors.scss */
 div.table-region .nw-border {
   width: 10px;
   height: 10px;
@@ -9142,7 +9143,7 @@ div.table-region .nw-border {
   left: -5px;
 }
 
-/* line 83, ../sass/selectors.scss */
+/* line 84, ../sass/selectors.scss */
 div.table-region .ne-border {
   width: 10px;
   height: 10px;
@@ -9150,7 +9151,7 @@ div.table-region .ne-border {
   right: -5px;
 }
 
-/* line 88, ../sass/selectors.scss */
+/* line 89, ../sass/selectors.scss */
 div.table-region .sw-border {
   width: 10px;
   height: 10px;
@@ -9158,7 +9159,7 @@ div.table-region .sw-border {
   left: -5px;
 }
 
-/* line 93, ../sass/selectors.scss */
+/* line 94, ../sass/selectors.scss */
 div.table-region .se-border {
   width: 10px;
   height: 10px;
@@ -9166,47 +9167,47 @@ div.table-region .se-border {
   right: -5px;
 }
 
-/* line 98, ../sass/selectors.scss */
+/* line 99, ../sass/selectors.scss */
 div.table-region .n-border:hover {
   cursor: n-resize;
 }
 
-/* line 101, ../sass/selectors.scss */
+/* line 102, ../sass/selectors.scss */
 div.table-region .nw-border:hover {
   cursor: nw-resize;
 }
 
-/* line 104, ../sass/selectors.scss */
+/* line 105, ../sass/selectors.scss */
 div.table-region .ne-border:hover {
   cursor: ne-resize;
 }
 
-/* line 107, ../sass/selectors.scss */
+/* line 108, ../sass/selectors.scss */
 div.table-region .s-border:hover {
   cursor: s-resize;
 }
 
-/* line 110, ../sass/selectors.scss */
+/* line 111, ../sass/selectors.scss */
 div.table-region .sw-border:hover {
   cursor: sw-resize;
 }
 
-/* line 113, ../sass/selectors.scss */
+/* line 114, ../sass/selectors.scss */
 div.table-region .se-border:hover {
   cursor: se-resize;
 }
 
-/* line 116, ../sass/selectors.scss */
+/* line 117, ../sass/selectors.scss */
 div.table-region .w-border:hover {
   cursor: w-resize;
 }
 
-/* line 119, ../sass/selectors.scss */
+/* line 120, ../sass/selectors.scss */
 div.table-region .e-border:hover {
   cursor: e-resize;
 }
 
-/* line 125, ../sass/selectors.scss */
+/* line 126, ../sass/selectors.scss */
 div.table-region button[name=close] {
   font-weight: bold;
   border: 0;
@@ -9218,7 +9219,7 @@ div.table-region button[name=close] {
   left: 100%;
 }
 
-/* line 136, ../sass/selectors.scss */
+/* line 137, ../sass/selectors.scss */
 div.table-region button[name=close]:hover {
   color: red;
 }
@@ -9644,7 +9645,8 @@ div.spinner {
 }
 
 /* line 376, ../sass/styles.scss */
-.autodetect-in-progress i.glyphicon-refresh {
+.autodetect-in-progress i.glyphicon-refresh,
+#download-data.download-in-progress i.glyphicon-refresh {
   -webkit-transition: -webkit-transform 600s;
   transition: transform 600s;
   -webkit-transform: rotate(3600deg);
@@ -9652,22 +9654,35 @@ div.spinner {
   display: inline;
 }
 
-/* line 383, ../sass/styles.scss */
+/* line 384, ../sass/styles.scss */
 .autodetect-in-progress i.glyphicon-flash {
   display: none;
 }
 
-/* line 386, ../sass/styles.scss */
+/* line 387, ../sass/styles.scss */
 .autodetect-finished i.glyphicon-flash {
   display: inline;
 }
 
-/* line 389, ../sass/styles.scss */
+/* line 390, ../sass/styles.scss */
 .autodetect-finished i.glyphicon-refresh {
   display: none;
 }
 
-/* line 393, ../sass/styles.scss */
+/* line 394, ../sass/styles.scss */
+#download-data.download-in-progress i.glyphicon-download {
+  display: none;
+}
+/* line 397, ../sass/styles.scss */
+#download-data i.glyphicon-download {
+  display: inline;
+}
+/* line 400, ../sass/styles.scss */
+#download-data i.glyphicon-refresh {
+  display: none;
+}
+
+/* line 405, ../sass/styles.scss */
 .flash {
   -moz-animation: flash 2s ease-out;
   -moz-animation-iteration-count: 1;

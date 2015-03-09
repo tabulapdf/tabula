@@ -373,7 +373,8 @@ div.spinner {
 	color: #aaa;
 }
 
-.autodetect-in-progress i.glyphicon-refresh {
+.autodetect-in-progress i.glyphicon-refresh,
+#download-data.download-in-progress i.glyphicon-refresh {
 	-webkit-transition: -webkit-transform 600s;
   transition:  transform 600s;
   -webkit-transform: rotate(3600deg);
@@ -388,6 +389,17 @@ div.spinner {
 }
 .autodetect-finished i.glyphicon-refresh {
 	display: none;
+}
+#download-data {
+	&.download-in-progress i.glyphicon-download {
+		display: none;
+	}
+	i.glyphicon-download {
+		display: inline;
+	}
+	i.glyphicon-refresh {
+		display: none;
+	}
 }
 
 .flash{
