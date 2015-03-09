@@ -91,11 +91,11 @@
             <option value="xml">XML</option>
             <option value="script">Script</option>
           </select>
-          <a href="#"><button type="submit" id="download-data" class="btn btn-default" data-action='/pdf/<%=pdf_id%>/data?format=csv'>
+          <a href="javascript:void(0)"><button type="submit" id="download-data" class="btn btn-default" data-action='/pdf/<%=pdf_id%>/data?format=csv'>
             <i class="glyphicon glyphicon-download"></i>
             Export
           </button></a>
-          <a href="#"><button type="button" id="copy-csv-to-clipboard" class="btn btn-default" <%=copyDisabled%> >
+          <a href="javascript:void(0)"><button type="button" id="copy-csv-to-clipboard" class="btn btn-default" <%=copyDisabled%> >
             <i class="glyphicon glyphicon-paperclip"></i>
              Copy to Clipboard
           </button></a>
@@ -105,9 +105,9 @@
       <script type="text/template" id="select-control-panel-template" >
         <span class="filename"><%= original_filename %></span>
 
-        <a href="#"><button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disable_detected_tables %>><i class="glyphicon glyphicon-flash"></i><i class="glyphicon glyphicon-refresh"></i> Autodetect Tables</button></a>
-        <a href="#"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><i class="glyphicon glyphicon-remove-circle"></i> Clear All Selections</button></a>
-        <a href="#"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><i class="glyphicon glyphicon-eye-open"></i> Preview & Export Extracted Data</button></a>
+        <a href="javascript:void(0)"><button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disable_detected_tables %>><i class="glyphicon glyphicon-flash"></i><i class="glyphicon glyphicon-refresh"></i> Autodetect Tables</button></a>
+        <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><i class="glyphicon glyphicon-remove-circle"></i> Clear All Selections</button></a>
+        <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><i class="glyphicon glyphicon-eye-open"></i> Preview & Export Extracted Data</button></a>
       </script>
 
       <script type="text/template" id="export-page-sidebar-template">

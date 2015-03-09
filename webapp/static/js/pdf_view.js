@@ -229,7 +229,7 @@ Tabula.Query = Backbone.Model.extend({
     var stashed_selections = new Tabula.Selections(Tabula.pdf_view.pdf_document.selections.models.slice());
 
     this.trigger("tabula:query-start");
-    window.tabula_router.navigate('pdf/' + PDF_ID + '/extract', {trigger: true}); // TODO: this should probably go in a view!! -JBM
+    window.tabula_router.navigate('pdf/' + PDF_ID + '/extract'); // TODO: this should probably go in a view!! -JBM
     $.ajax({
         type: 'POST',
         url: '/pdf/' + PDF_ID + '/data',
@@ -318,11 +318,11 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   },
 
   closeAndRenderSelectionView: function(){
+    window.tabula_router.navigate('pdf/' + PDF_ID)
     this.$el.empty();
     this.undelegateEvents();
     this.pdf_view.render();
     this.pdf_view.$el.show();
-    window.tabula_router.navigate('pdf/' + PDF_ID)
 
     var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
       return Tabula.pdf_view.renderSelection(sel.toCoords());
@@ -983,13 +983,13 @@ Tabula.PDFView = Backbone.View.extend(
           selection.repeatLassos();
         });
 
-      window.tabula_router.route('/pdf/' + PDF_ID + "/extract", function(){
+      window.tabula_router.route("pdf/:file_id/extract", function(){
         Tabula.pdf_view.createDataView();
         Tabula.pdf_view.query.doQuery();
       } )
 
       _(['', '/', '/select']).each(function(path_suffix){
-        window.tabula_router.route('/pdf/' + PDF_ID + path_suffix, function(){ 
+        window.tabula_router.route("pdf/:file_id" + path_suffix, function(){ 
           console.log('asfdasfads');
           Tabula.pdf_view.components['data_view'].closeAndRenderSelectionView() 
         })
