@@ -59,8 +59,8 @@ Tabula.Selection = Backbone.Model.extend({
   queryForData: function(){
     var selection_coords = this.toCoords();
     Tabula.pdf_view.query = new Tabula.Query({list_of_coords: [selection_coords], extraction_method: this.get('extractionMethod')});
-    Tabula.pdf_view.createDataView();
-    Tabula.pdf_view.query.doQuery();
+    // Tabula.pdf_view.createDataView();
+    // Tabula.pdf_view.query.doQuery();
   },
 
   toCoords: function(){
@@ -223,7 +223,13 @@ Tabula.Query = Backbone.Model.extend({
     // way easier FOR NOW than downloading the script/JSON
     console.log(_.map(this.get('list_of_coords'), function(l){ return [l.y1, l.x1, l.y2, l.x2].join(', ') }).join("\n") );
 
+    // shallow copy the selections collection
+    // so if hte user somehow changes the selections between starting the query and it finishing, 
+    // there isn't an error
+    var stashed_selections = new Tabula.Selections(Tabula.pdf_view.pdf_document.selections.models.slice());
+
     this.trigger("tabula:query-start");
+    window.tabula_router.navigate('pdf/' + PDF_ID + '/extract', {trigger: true}); // TODO: this should probably go in a view!! -JBM
     $.ajax({
         type: 'POST',
         url: '/pdf/' + PDF_ID + '/data',
@@ -237,7 +243,7 @@ Tabula.Query = Backbone.Model.extend({
           _(_.zip(this.get('list_of_coords'), resp)).each(function(stuff, i){
             var coord_set = stuff[0];
             var resp_item = stuff[1];
-            Tabula.pdf_view.pdf_document.selections.get(coord_set.selection_id).
+            stashed_selections.get(coord_set.selection_id).
                 set('extraction_method', resp_item["extraction_method"]);
             coord_set["extraction_method"] = resp_item["extraction_method"];
           });
@@ -316,6 +322,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     this.undelegateEvents();
     this.pdf_view.render();
     this.pdf_view.$el.show();
+    window.tabula_router.navigate('pdf/' + PDF_ID)
 
     var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
       return Tabula.pdf_view.renderSelection(sel.toCoords());
@@ -975,6 +982,18 @@ Tabula.PDFView = Backbone.View.extend(
           var selection = Tabula.pdf_view.pdf_document.selections.get(selectionId);
           selection.repeatLassos();
         });
+
+      window.tabula_router.route('/pdf/' + PDF_ID + "/extract", function(){
+        Tabula.pdf_view.createDataView();
+        Tabula.pdf_view.query.doQuery();
+      } )
+
+      _(['', '/', '/select']).each(function(path_suffix){
+        window.tabula_router.route('/pdf/' + PDF_ID + path_suffix, function(){ 
+          console.log('asfdasfads');
+          Tabula.pdf_view.components['data_view'].closeAndRenderSelectionView() 
+        })
+      })
     },
 
     handleScroll: function(e){
