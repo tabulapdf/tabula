@@ -43,6 +43,7 @@ Tabula.Document = Backbone.Model.extend({
     this.url = '/pdf/' + this.pdf_id + '/metadata.json';
 
     this.set('original_filename', '');
+    this.set('new_filename', false);
   },
 });
 
@@ -186,7 +187,60 @@ Tabula.Query = Backbone.Model.extend({
 
   initialize: function(){
     // should be inited with list_of_coords
-    _.bindAll(this, 'doQuery', 'setExtractionMethod');
+    _.bindAll(this, 'doQuery', 'setExtractionMethod', 'convertTo', 'convertToCSV', 
+                    'convertToTabulaExtractorScript', 'convertToBoundingBoxJSON');
+  },
+
+  convertTo: function(format){
+    if(!this.get('data')){
+      throw Error("You need to query for data before converting it locally.");
+    }else{
+      switch(format.toLowerCase()){
+        // case "XML":
+        //   return this.convertToXML();
+        // break;
+        case "bbox":
+          return this.convertToBoundingBoxJSON();
+        break;
+        case "tsv":
+          return this.convertToCSV("\t");
+        break;
+        case "csv":
+          return this.convertToCSV();
+        break;
+        case "💩sv":
+          return this.convertToCSV("💩");
+        break;
+        case "script":
+          return this.convertToTabulaExtractorScript();
+        break;
+        default:
+          throw Error("Unknown format: " + format);
+      }
+    }
+  },
+  convertToCSV: function(delimiter){
+    var csv = _(this.get('data')).chain().pluck('data').map(function(table){
+      return _(table).chain().map(function(row){
+        return _.pluck(row, 'text').join(typeof delimiter == "undefined" ? ',' : delimiter);
+      }).value();
+    }).flatten(true).value().join("\n");
+    return csv;
+  },
+  convertToBoundingBoxJSON: function(){
+    return JSON.stringify(this.get('list_of_coords'), null, 4);
+  },
+  convertToTabulaExtractorScript: function(){
+    return _(this.get('list_of_coords')).map(function(c){
+        if(c['extraction_method'] == "original"){
+            var extraction_method_switch = "--no-spreadsheet"
+         }else if(c['extraction_method'] == "spreadsheet"){
+            var extraction_method_switch = "--spreadsheet"
+         }else{
+            var extraction_method_switch = ""
+         }
+      return "tabula "+extraction_method_switch+" -a "+roundTo(c['y1'], 3)+","+roundTo(c['x1'], 3)+","+roundTo(c['y2'], 3)+","+roundTo(c['x2'], 3)+" -p "+c['page']+" \"$1\""
+    }).join("\n");
   },
 
   doQuery: function(options) {
@@ -278,6 +332,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod',
     'click #download-data': 'setFormAction',
     'click #download-data': 'disableDownloadButton',
+    'keyup .filename': 'updateFilename',
     //N.B.: Download button (and format-specific download buttons) are an HTML form, so not handled here.
     //TODO: handle flash clipboard thingy here.
     // 'click #copy-csv-to-clipboard': 
@@ -286,8 +341,10 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   pdf_view: null, //added on create
   extractionMethod: "guess",
 
+
+
   initialize: function(stuff){
-    _.bindAll(this, 'render', 'renderFlashClipboardNonsense', 'queryWithToggledExtractionMethod', 'closeAndRenderSelectionView', 'setFormAction');
+    _.bindAll(this, 'render', 'renderFlashClipboardNonsense', 'updateFilename', 'queryWithToggledExtractionMethod', 'closeAndRenderSelectionView', 'setFormAction');
     this.pdf_view = stuff.pdf_view;
     this.listenTo(this.model, 'tabula:query-start', this.render);
     this.listenTo(this.model, 'tabula:query-success', this.render);
@@ -300,6 +357,12 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
       $('#download-data').removeClass('download-in-progress');
       $('#download-data').removeProp('disabled');
     }, 2000);
+  },
+  updateFilename: function(){
+    var new_filename = this.$el.find('#control-panel input.filename').val();
+    if(new_filename.length){
+      this.pdf_view.pdf_document.set('new_filename', new_filename)
+    }
   },
   closeAndRenderSelectionView: function(){
     window.tabula_router.navigate('pdf/' + PDF_ID)
@@ -349,7 +412,8 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
         _(this.pdf_view.pdf_document.attributes).extend({
           pdf_id: PDF_ID,
           list_of_coords: JSON.stringify(this.model.get('list_of_coords')),
-          copyDisabled: Tabula.pdf_view.flash_borked ? 'disabled="disabled" data-toggle="tooltip" title="'+Tabula.pdf_view.flash_borken_message+'"' : ''
+          copyDisabled: Tabula.pdf_view.flash_borked ? 'disabled="disabled" data-toggle="tooltip" title="'+Tabula.pdf_view.flash_borken_message+'"' : '',
+          disableIfNoData: (_.isNull(this.model.get('data')) || typeof(this.model.get('data')) === "undefined") ? 'disabled="disabled"' : ''
         })
     ));
     this.$el.find('#sidebar').html(
@@ -406,7 +470,8 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
           Tabula.pdf_view.client.clip( this.$el.find("#copy-csv-to-clipboard") );
           Tabula.pdf_view.client.on( 'copy', _.bind(function(event) {
             var clipboard = event.clipboardData;
-            var tableData = this.$el.find('.extracted-data').table2CSV({delivery: null});
+            console.log('clippy thingy clicked', $('#download-form select').val());
+            var tableData = Tabula.pdf_view.query.convertTo($('#download-form select').val());
             clipboard.setData( 'text/plain', tableData );
           }, this) );
 
@@ -1219,4 +1284,8 @@ function isElementInViewport (el) {
       rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
       rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
   );
+}
+
+function roundTo(num, fancymathwordforthenumberofdigitsafterthedecimal){
+  return Math.round(num * Math.pow(10, fancymathwordforthenumberofdigitsafterthedecimal)) / Math.pow(10, fancymathwordforthenumberofdigitsafterthedecimal)
 }

@@ -81,25 +81,25 @@
             <input type='hidden' class='data-query' name='pdf-name' value='<%=list_of_coords%>' >
             <input type='hidden' class='data-query' name='coords' value='<%=list_of_coords%>' >
           </div>
-          <input class="filename" name="new_filename" value="<%= original_filename %>"></input>
+          <input class="filename" name="new_filename" value="<%= new_filename || original_filename %>"></input>
           <label for="format">Export Format:</label>
-          <select name="format" class="form-control">
+          <select name="format" <%=disableIfNoData%> class="form-control">
             <option value="csv">CSV</option>
             <option value="tsv">TSV</option>
-            <option value="json">JSON</option>
-            <option value="json">💩SV</option>
-            <option value="xml">XML</option>
+            <option value="bbox">JSON</option>
+            <option value="💩SV">💩SV</option>
+            // <option value="xml">XML</option>
             <option value="script">Script</option>
           </select>
-          <button type="submit" id="download-data" class="btn btn-default" data-action='/pdf/<%=pdf_id%>/data?format=csv'>
+          <button type="submit" <%=disableIfNoData%> id="download-data" class="btn btn-default" data-action='/pdf/<%=pdf_id%>/data?format=csv'>
             <i class="glyphicon glyphicon-refresh"></i>
             <i class="glyphicon glyphicon-download"></i>
             Export
           </button>
-          <a href="javascript:void(0)"><button type="button" id="copy-csv-to-clipboard" class="btn btn-default" <%=copyDisabled%> >
+          <button type="button" id="copy-csv-to-clipboard" class="btn btn-default" <%=disableIfNoData%> <%=copyDisabled%> >
             <i class="glyphicon glyphicon-paperclip"></i>
              Copy to Clipboard
-          </button></a>
+          </button>
         </form>
       </script>
 
