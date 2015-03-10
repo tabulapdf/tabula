@@ -337,6 +337,12 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     document.title="Export Data | Tabula";
     var uniq_extraction_methods = _.uniq(_(this.model.get('list_of_coords')).pluck('extraction_method'));
 
+    // save the current scroll position (if unset), then scroll to the top
+    if(!Tabula.pdf_view.selectionScrollTop){
+      Tabula.pdf_view.selectionScrollTop = $(document).scrollTop();
+    }
+    $(document).scrollTop(0);
+
     //TODO: move flash_borked to this object (dataview) away from pdf_view
     $('body').removeClass('page-selections');
     $('body').addClass('page-export');
@@ -1152,12 +1158,21 @@ Tabula.PDFView = Backbone.View.extend(
     render : function(){
       document.title="Select Tables | Tabula";
       this.components['document_view'].render();
+
       $('#control-panel').append(this.components['control_panel'].render().el);
       $('#sidebar').append(this.components['sidebar_view'].render().el);
 
       $('.has-tooltip').tooltip();
 
       this.pageCount = this.pdf_document.page_collection.size();
+
+      // an attempt to restore the scroll position when you return to revise selections
+      // I'm not sure why it doesn't work -- maybe because the images haven't rendered yet?
+      // if(this.selectionScrollTop){
+      //   console.log('setting scrollTop', this.selectionScrollTop)
+      //   $('html').scrollTop(this.selectionScrollTop);
+      //   this.selectionScrollTop = 0;
+      // }
 
       return this;
     },
