@@ -81,11 +81,9 @@ Tabula.Selection = Backbone.Model.extend({
   repeatLassos: function() {
     Tabula.pdf_view.pdf_document.page_collection.each(_.bind(function(page){
       if(this.get('page_number') < page.get('number')){          // for each page after this one,
-        console.log(this, page.attributes)
-        new_selection = this.clone();                                // and create a new Selection.
+        new_selection = this.clone();                            // and create a new Selection.
         new_selection.set('page_number', page.get('number'));
         this.collection.add(Tabula.pdf_view.renderSelection(new_selection.toCoords()));
-
         /* which causes thumbnails to be created, Download All button to know about these selections. */
       }
     }, this));
