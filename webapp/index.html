@@ -151,9 +151,10 @@
            <h2>Preview of Extracted Tabular Data</h2>
             <div id="table-container">
             <% if(data.length){ %>
+              <% _(data).each(function(table){ %>
               <table class="table table-bordered extracted-data">
                 <tbody>
-                <% _(data).each(function(row){ %>
+                <% _(table).each(function(row){ %>
                   <tr>
                     <% _(row).each(function(cell){ %>
                       <td><%= cell %></td>
@@ -161,12 +162,13 @@
                   </tr>
                 <% }) %>
                 </tbody>
+              </table>
+              <% }) %>
             <% } else if (loading) { %>
              <div class="alert alert-success" id="loading"><span id="spinner"></span><span style="position: relative; left: 16px; font-size: 24px;">Loading...</span></div>
             <% } else { %>
               <span class="no-data">No data.</span>
             <% } %>
-            </table>
             </div>
         </div>
       </script>
