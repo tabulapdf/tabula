@@ -63,7 +63,7 @@ Tabula.Selection = Backbone.Model.extend({
     var pdf_rotation = page.get('rotation');
 
     var scale = (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width) / imageWidth;
-    var rp = this.attributes.getDims().relativePos; //TODO: this is the problem, when the selection pane is hidden, this is nonsense.
+    var rp = this.attributes.getDims().relativePos;
     var selection_coords = {
       x1: rp.left * scale,
       x2: (rp.left + rp.width) * scale,
@@ -297,8 +297,8 @@ Tabula.Query = Backbone.Model.extend({
             var info = error_html.find('#info').text().trim();
             error_text = [summary, meta, info].join("<br />");
           }
-          $('#modal-error textarea').html(xhr.responseText);
-          $('#modal-error').modal('show');
+          this.set('error_message', error_text);
+          this.trigger("tabula:query-error");
           if (options !== undefined && _.isFunction(options.error))
             options.error(resp);
         }, this),
@@ -348,6 +348,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     this.pdf_view = stuff.pdf_view;
     this.listenTo(this.model, 'tabula:query-start', this.render);
     this.listenTo(this.model, 'tabula:query-success', this.render);
+    this.listenTo(this.model, 'tabula:query-error', this.render);
     // TODO: just destroy the current PDFView (or just hide?) and put this in its place.
   },
   disableDownloadButton: function(){
@@ -382,7 +383,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     this.$el.find('#download-form').attr('action', formActionUrl);
   },
 
-  render: function(){
+  render: function(e){
     document.title="Export Data | Tabula";
     var uniq_extraction_methods = _.uniq(_(this.model.get('list_of_coords')).pluck('extraction_method'));
 
@@ -405,7 +406,8 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     this.$el.html(this.template({
       pdf_id: PDF_ID,
       data: this.model.getDataArray(),
-      loading: !this.model.get('data')
+      loading: !(this.model.get('data') || this.model.get('error_message')),
+      error_message: this.model.get('error_message')
     }));
     this.$el.find('#control-panel').html(
       _.template($('#templates #export-control-panel-template').html().replace(/nestedscript/g, 'script'))(

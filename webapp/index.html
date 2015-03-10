@@ -166,6 +166,9 @@
               <% }) %>
             <% } else if (loading) { %>
              <div class="alert alert-success" id="loading"><span id="spinner"></span><span style="position: relative; left: 16px; font-size: 24px;">Loading...</span></div>
+            <% } else if (error_message) { %>
+               <p><strong>Tabula</strong> couldn't finish processing your request. We'd appreciate if you could <a href="https://github.com/jazzido/tabula/issues/new">report this error in our issue tracker</a>. If possible, please include a link to the document that caused the error and the text below:</p>
+                 <pre class="error"><%= error_message %></pre>
             <% } else { %>
               <span class="no-data">No data.</span>
             <% } %>
