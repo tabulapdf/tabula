@@ -279,7 +279,7 @@ Tabula.Query = Backbone.Model.extend({
       return _(table).chain().map(function(row){
         return _.pluck(row, 'text');
       }).value();
-    }).flatten(true).value();
+    })/*.flatten(true)*/.value();
     return data.length == 1 && data[0].length == 0 ? [] : data; // checking whether there's no data, i.e. data == [[]]
   }
 });
