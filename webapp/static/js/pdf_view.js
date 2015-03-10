@@ -79,25 +79,13 @@ Tabula.Selection = Backbone.Model.extend({
 
   // TODO: Refactor for ResizableSelection
   repeatLassos: function() {
-    alert("functionality temporarily disabled"); return;
     Tabula.pdf_view.pdf_document.page_collection.each(_.bind(function(page){
       if(this.get('page_number') < page.get('number')){          // for each page after this one,
-        // imgAreaSelectAPIObj = Tabula.pdf_view.imgAreaSelects[page.get('number')];
-        // if (imgAreaSelectAPIObj === false) return;
-
-        // imgAreaSelectAPIObj.cancelSelections();                      // notify the imgAreaSelect of the new selection
-        // vendorSelection = imgAreaSelectAPIObj.createNewSelection(this.get('x1'),
-        //                                                       this.get('y1'),
-        //                                                       this.get('x2'),
-        //                                                       this.get('y2'));
-        // imgAreaSelectAPIObj.setOptions({show: true});
-        // imgAreaSelectAPIObj.update();
-
+        console.log(this, page.attributes)
         new_selection = this.clone();                                // and create a new Selection.
         new_selection.set('page_number', page.get('number'));
-        new_selection.set('id', page.get('number') * 100000 + vendorSelection.id);
-        new_selection.id = page.get('number') * 100000 + vendorSelection.id;
-        this.collection.add(new_selection);
+        this.collection.add(Tabula.pdf_view.renderSelection(new_selection.toCoords()));
+
         /* which causes thumbnails to be created, Download All button to know about these selections. */
       }
     }, this));
