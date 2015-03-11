@@ -369,11 +369,13 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     window.tabula_router.navigate('pdf/' + PDF_ID)
     this.$el.empty();
     this.undelegateEvents();
-    this.pdf_view.render();
     this.pdf_view.$el.show();
+    this.pdf_view.render();
 
     var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
-      return Tabula.pdf_view.renderSelection(sel.toCoords());
+      var selection = Tabula.pdf_view.renderSelection(sel.toCoords());
+      // selection.attributes.rebind(); // o. m. g.
+      return selection;
     });
     this.pdf_view.pdf_document.selections.reset(oldSelections);
   },
@@ -512,6 +514,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   rectangular_selector: null,
 
   _selectionsGetter: function(target) {
+    // this never worked, remove it, 3/10/2015: return this.pdf_view.pdf_document.selections.findWhere({page_number: $(target).data('page')});
     return this.page_views[$(target).data('page')].selections;
   },
 
@@ -828,10 +831,9 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
     this.listenTo(this.collection, 'remove', this.removeThumbnail);
 
     this.listenTo(this.pdf_view.pdf_document.selections, 'sync', this.render);
-    // this.listenTo(this.pdf_view.pdf_document.selections, 'reset', _.bind(function(e){
-    //  // Tabula.pdf_view.pdf_document.selections.map(this.removeSelectionThumbnail) ;
-    //  // Tabula.pdf_view.pdf_document.selections.map(this.addSelectionThumbnail) ;
-    //  }, this)); // render a thumbnail selection
+    this.listenTo(this.pdf_view.pdf_document.selections, 'reset', _.bind(function(e){
+     _(Tabula.pdf_view.components['document_view'].page_views).each(function(pv){ pv.selections = []; })
+     }, this));
     this.listenTo(this.pdf_view.pdf_document.selections, 'add', this.addSelectionThumbnail); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'change', this.changeSelectionThumbnail); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'remove', this.removeSelectionThumbnail); // remove a thumbnail selection
@@ -1220,12 +1222,11 @@ Tabula.PDFView = Backbone.View.extend(
       this.pageCount = this.pdf_document.page_collection.size();
 
       // an attempt to restore the scroll position when you return to revise selections
-      // I'm not sure why it doesn't work -- maybe because the images haven't rendered yet?
-      // if(this.selectionScrollTop){
-      //   console.log('setting scrollTop', this.selectionScrollTop)
-      //   $('html').scrollTop(this.selectionScrollTop);
-      //   this.selectionScrollTop = 0;
-      // }
+      // I'm not sure why it doesn't work without a timeout -- maybe because the images haven't rendered yet?
+      if(this.selectionScrollTop){
+        $('html').scrollTop(this.selectionScrollTop);
+        this.selectionScrollTop = 0;
+      }
 
       return this;
     },
