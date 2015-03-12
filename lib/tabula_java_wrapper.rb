@@ -66,8 +66,8 @@ module Tabula
 
     def Extraction.openPDF(pdf_filename, password='')
       raise Errno::ENOENT unless File.exists?(pdf_filename)
-      #document = PDDocument.load(pdf_filename)
-      document = PDDocument.loadNonSeq(java.io.File.new(pdf_filename), nil, password)
+      document = PDDocument.load(pdf_filename)
+      #document = PDDocument.loadNonSeq(java.io.File.new(pdf_filename), nil, password)
       document
     end
 
