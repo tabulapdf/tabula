@@ -130,8 +130,9 @@ div.table-region button[name=close] {
   padding: 0;
   font-size: 20px;
   position: relative;
-  top: -20px;
+  top: -25px;
   left: 100%;
+  margin-left: 5px;
 }
 
 div.table-region button[name=close]:hover {

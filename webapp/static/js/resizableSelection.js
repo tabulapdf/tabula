@@ -47,6 +47,12 @@
         mousemove: _.bind(this.mouseMoveResize, this),
         mouseup: _.bind(this.mouseUpResize, this)
       });
+
+      /* like rectangularSelector, we need to bind a global event
+       * to watch if the user mouses-up outside the target element. */
+       $(document).on({
+         mouseup: _.bind(this.mouseUpResize, this)
+       });
     },
 
     render: function() {

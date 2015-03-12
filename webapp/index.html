@@ -62,7 +62,7 @@
     <div id="templates">
       <script type="text/template" id="page-template" >
         <div class="page" id="page-div-<%= number %>">
-          <img src="<%= image_url %>" draggable="false">
+          <img src="<%= image_url %>" draggable="false" unselectable="on" <!-- IE/Opera --> >
         </div>
       </script>
       <script type="text/template" id="thumbnail-template" >
