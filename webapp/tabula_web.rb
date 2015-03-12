@@ -10,7 +10,9 @@ require 'tempfile'
 require 'fileutils'
 require 'securerandom'
 
-require 'tabula' # tabula-extractor gem
+require_relative '../lib/jars/tabula-extractor-0.7.4-SNAPSHOT-jar-with-dependencies.jar'
+
+require_relative '../lib/tabula_java_wrapper.rb'
 
 require_relative './tabula_settings.rb'
 
@@ -41,8 +43,6 @@ STATIC_ROOT = if defined?($servlet_context)
                 File.join(File.dirname(__FILE__), 'static')
               end
 
-MAX_CACHE_ENTRIES = 10
-
 Cuba.plugin Cuba::Render
 Cuba.settings[:render].store(:views, File.expand_path("views", File.dirname(__FILE__)))
 Cuba.use Rack::MethodOverride
@@ -50,24 +50,6 @@ Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/swf", "
 Cuba.use Rack::ContentLength
 Cuba.use Rack::Reloader
 
-if TabulaSettings::EXTRACTION_CACHE
-  CACHE = Rufus::Lru::SynchronizedHash.new(MAX_CACHE_ENTRIES)
-else
-  # horrid, wrong, disrespectful
-  # sort of a pass-through
-  class NoCache < Hash
-    def [](k)
-      return @k
-    end
-    def []=(k, v)
-      @k = v
-    end
-    def has_key?(k)
-      false
-    end
-  end
-  CACHE = NoCache.new
-end
 
 def upload(req)
   original_filename = req.params['file'][:filename]
@@ -230,22 +212,7 @@ Cuba.define do
         ]
       end
 
-      tables = coords.map do |coord_set|
-        extraction_method_requested = ["guess", "spreadsheet", "original"].include?(coord_set['extraction_method']) ? coord_set['extraction_method'] : "guess"
-        coords_method_key = extraction_method_requested + coord_set.to_s
-        unless CACHE.has_key?(coords_method_key)
-          CACHE[coords_method_key] = Tabula.extract_table(pdf_path,
-                                                         coord_set['page'].to_i,
-                                                         [coord_set['y1'].to_f,
-                                                          coord_set['x1'].to_f,
-                                                          coord_set['y2'].to_f,
-                                                          coord_set['x2'].to_f],
-                                                          {:extraction_method => extraction_method_requested}
-                                                          )
-        end
-        CACHE[coords_method_key]
-      end
-      tables = tables.flatten(1)
+      tables = Tabula.extract_tables(pdf_path, coords).to_a.flatten(1)
 
       filename =  if req.params['new_filename'] && req.params['new_filename'].strip.size
                     basename = File.basename(req.params['new_filename'], File.extname(req.params['new_filename']))
