@@ -13,6 +13,7 @@
     return _.every(
       otherRects,
       function(or) {
+        if(!or) return false;
         or = or.getDims().absolutePos;
         return rect.left + rect.width < or.left ||
           or.left + or.width < rect.left ||

@@ -514,8 +514,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   rectangular_selector: null,
 
   _selectionsGetter: function(target) {
-    // this never worked, remove it, 3/10/2015: return this.pdf_view.pdf_document.selections.findWhere({page_number: $(target).data('page')});
-    return this.page_views[$(target).data('page')].selections;
+    return _(Tabula.pdf_view.pdf_document.selections.where({page_number: $(target).data('page')})).map(function(i){ return i.attributes });
   },
 
   initialize: function(stuff){
@@ -538,7 +537,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   _onRectangularSelectorEnd: function(d) {
     var page_number = $(d.pageView).data('page');
     var pv = this.page_views[page_number];
-    console.log()
     var rs = new ResizableSelection({
       position: d.absolutePos,
       target: pv.$el.find('img'),
@@ -642,7 +640,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
   initialize: function(stuff){
     this.pdf_view = stuff.pdf_view;
-    this.selections = [];
     _.bindAll(this, 'rotate_page', 'createTables',
       '_onSelectStart', '_onSelectChange', '_onSelectEnd', '_onSelectCancel', 'render');
   },
@@ -699,7 +696,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     var sel = Tabula.pdf_view.pdf_document.selections.updateOrCreateByVendorSelectorId(selection,
                                                                             this.model.get('number'),
                                                                             this.$image.width());
-    this.selections.push(selection);
 
     // deal with invalid/too-small selections somehow (including thumbnails)
     if (selection.width === 0 && selection.height === 0) {
@@ -723,9 +719,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     // remove repeat lassos button
     var but_id = this.$image.attr('id') + '-' + selection.id;
     $('button#' + but_id).remove();
-
-    this.selections = _.without(this.selections,
-                                _.findWhere(this.selections, { id: selection.id}));
 
     // find and remove the canceled selection from the collection of selections. (triggering remove events).
     var sel = Tabula.pdf_view.pdf_document.selections.get(selection.id);
@@ -762,12 +755,11 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   clearAllSelections: function(){
-    _.each(this.pdf_view.components.document_view.page_views,
-           function(pv,i,l) {
-             _.each(pv.selections, function(s, j, sels) {
-              s.remove();
-             });
-           });
+    _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ i.attributes.remove() });
+    Tabula.pdf_view.pdf_document.selections.reset([]);
+    // reset doesn't trigger the right events because we have to remove from the collection and from the page (with selection.remove())
+    // we can't use _.each because we're mutating the collection that we're iterating over
+    // ugh
   },
 
   restoreDetectedTables: function(){
@@ -831,9 +823,6 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
     this.listenTo(this.collection, 'remove', this.removeThumbnail);
 
     this.listenTo(this.pdf_view.pdf_document.selections, 'sync', this.render);
-    this.listenTo(this.pdf_view.pdf_document.selections, 'reset', _.bind(function(e){
-     _(Tabula.pdf_view.components['document_view'].page_views).each(function(pv){ pv.selections = []; })
-     }, this));
     this.listenTo(this.pdf_view.pdf_document.selections, 'add', this.addSelectionThumbnail); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'change', this.changeSelectionThumbnail); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'remove', this.removeSelectionThumbnail); // remove a thumbnail selection
@@ -979,6 +968,9 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     var thumbScale = this.$img ? this.$img.width() / selection.get('imageWidth') : 0;
     var left = parseFloat(this.$el.css('padding-left'));
     var top = parseFloat(this.$el.css('padding-top'));
+
+    // if data has gotten messed up somewhere
+    if(!selection.attributes) return;
 
     var s = selection.attributes.getDims().relativePos;
 
@@ -1199,15 +1191,7 @@ Tabula.PDFView = Backbone.View.extend(
     },
 
     totalSelections: function() {
-      var rv = _.reduce(
-        _.map(
-          _.values(this.components.document_view.page_views),
-          function(pv) { return pv.selections.length; }
-        ),
-        function(m, l) {
-          return m + l;
-        }, 0);
-      return rv;
+      return this.pdf_document.selections.size();
     },
 
     render : function(){
