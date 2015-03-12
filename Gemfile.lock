@@ -34,10 +34,7 @@ GEM
     rubyzip (1.1.6)
     rufus-lru (1.0.5)
     sass (3.4.10)
-    tabula-extractor (0.7.6-java)
-      trollop (~> 2.0)
     tilt (2.0.1)
-    trollop (2.1.1)
     warbler (1.4.4)
       jruby-jars (>= 1.5.6, < 2.0)
       jruby-rack (>= 1.0.0)
@@ -55,6 +52,5 @@ DEPENDENCIES
   rack
   rake
   rufus-lru
-  tabula-extractor (~> 0.7.6)
   tilt
   warbler

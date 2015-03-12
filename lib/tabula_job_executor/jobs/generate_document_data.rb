@@ -1,7 +1,6 @@
 require 'json'
 require 'jruby/synchronized'
 
-require 'tabula'
 require_relative '../executor.rb'
 
 class GenerateDocumentDataJob < Tabula::Background::Job
@@ -27,8 +26,8 @@ class GenerateDocumentDataJob < Tabula::Background::Job
                   []
                 end
 
-    workspace.insert(0, { 'original_filename' => original_filename, 
-                          'id' => id, 
+    workspace.insert(0, { 'original_filename' => original_filename,
+                          'id' => id,
                           'time' => Time.now.to_i,
                           'page_count' => '?',
                           'size' => File.size(filepath)
@@ -40,13 +39,12 @@ class GenerateDocumentDataJob < Tabula::Background::Job
     File.open(output_dir + "/pages.json", 'w') do |f|
       page_data = extractor.pages.to_a
       workspace[0]['page_count'] = page_data.size
-      unless page_data.any?(&:has_text?)
-        at(0, 100, "No text data found") 
+      unless page_data.any? { |pd| pd[:hasText] }
+        at(0, 100, "No text data found")
         raise Tabula::NoTextDataException, "no text data found"
       end
       f.puts page_data.to_json
     end
-
 
     # safely update
     begin
