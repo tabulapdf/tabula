@@ -256,13 +256,15 @@ form {
 	}
 
 	.filename {
-		display: inline;
+		display: inline-block;
+		margin-right: 20px;
+		max-width: 270px;
+	  white-space: nowrap;
+	  overflow: hidden;
+	  text-overflow: ellipsis;
 	}
 	span.filename {
-		padding-right: 20px;
-	}
-	input.filename {
-		margin-right: 20px;
+		vertical-align: middle;
 	}
 }
 
