@@ -44,20 +44,16 @@ module Tabula
     Enumerator.new do |y|
       extractor.extract(pages.map { |p| p.to_java(:int) }).each do |page|
         specs[page.getPageNumber].each do |spec|
-
-          if ["spreadsheet", "original"].include?(spec[:extraction_method])
-            use_spreadsheet_extraction_method = spec[:extraction_method] == "spreadsheet"
+          if ["spreadsheet", "original"].include?(spec['extraction_method'])
+            use_spreadsheet_extraction_method = spec['extraction_method'] == "spreadsheet"
           else
             use_spreadsheet_extraction_method = sea.isTabular(page)
           end
 
           area = page.getArea(spec['y1'], spec['x1'], spec['y2'], spec['x2'])
 
-          if use_spreadsheet_extraction_method
-            sea.extract(area).each { |table| puts table.inspect; y.yield table }
-          else
-            bea.extract(area).each { |table| puts table.inspect; y.yield table }
-          end
+          table_extractor = use_spreadsheet_extraction_method ? sea : bea
+          table_extractor.extract(area).each { |table| y.yield table }
         end
       end
       extractor.close!
