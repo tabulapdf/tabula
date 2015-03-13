@@ -81,7 +81,8 @@
             <input type='hidden' class='data-query' name='pdf-name' value='<%=list_of_coords%>' >
             <input type='hidden' class='data-query' name='coords' value='<%=list_of_coords%>' >
           </div>
-          <input class="filename" name="new_filename" value="<%= new_filename || original_filename %>"></input>
+          <!-- <input class="filename" name="new_filename" value="<%= new_filename || original_filename %>"></input> -->
+          <span class="filename"><%= original_filename %></span>
           <label for="format">Export Format:</label>
           <select name="format" <%=disableIfNoData%> class="form-control">
             <option value="csv">CSV</option>
