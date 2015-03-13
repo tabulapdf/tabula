@@ -217,6 +217,17 @@
         </div>
       </script>
 
+
+      <script type="text/template" id="failed-uploads-template">
+        <h4>Failed Uploads</h4>
+        <ol id="failed-uploads">
+
+        </ol>        
+      </script>
+      <script type="text/template" id="failed-uploaded-file-template">
+        <a href='/pdf/<%= id %>'><%= original_filename %></a>: <%= failure_message %>
+      </script>
+
       <script type="text/template" id="upload-template">
         <div class="container">
           <div class="jumbotron">

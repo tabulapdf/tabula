@@ -184,42 +184,70 @@ Cuba.define do
   end # /get
 
   on post do
-    on 'upload' do
-      # Make sure this is a PDF, before doing anything
-      unless is_valid_pdf?(req.params['file'][:tempfile].path)
-        res.status = 400
-        res.write view("upload_error.html",
-                       :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
-        next # halt this handler
-      end
+    # on 'upload' do
+    #   # Make sure this is a PDF, before doing anything
+    #   unless is_valid_pdf?(req.params['file'][:tempfile].path)
+    #     res.status = 400
+    #     res.write view("upload_error.html",
+    #                    :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
+    #     next # halt this handler
+    #   end
 
-      job_batch, file_id = *upload(req)
-      res.redirect "/queue/#{job_batch}?file_id=#{file_id}"
-    end
+    #   job_batch, file_id = *upload(req)
+    #   res.redirect "/queue/#{job_batch}?file_id=#{file_id}"
+    # end
 
     on 'upload.json' do
       # Make sure this is a PDF, before doing anything
-      unless is_valid_pdf?(req.params['file'][:tempfile].path)
-        res.status = 400
-        res.write(JSON.dump({
-          :success => false,
-          :file_id => file_id,
-          :upload_id => job_batch,
-          :error => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. Please try again."
-          }))
-        next # halt this handler
-      end
 
-      job_batch, file_id = *upload(req)
-      res.write(JSON.dump({
-          :success => true,
-          :file_id => file_id,
-          :upload_id => job_batch
-        }))
+      if req.params['file'] # single upload mode. this should be deleting once if decide to enable multiple upload for realzies
+        unless is_valid_pdf?(req.params['file'][:tempfile].path)
+          res.status = 400
+          res.write(JSON.dump({
+            :success => false,
+            :file_id => file_id,
+            :upload_id => job_batch,
+            :error => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. Please try again."
+            }))
+          next # halt this handler
+        end
+
+        job_batch, file_id = *upload(req)
+        res.write(JSON.dump([{
+            :success => true,
+            :file_id => file_id,
+            :upload_id => job_batch
+        }]))
+      elsif req.params['files']
+        statuses = req.params['files'].map do |file|
+          if is_valid_pdf?(req.params['file'][:tempfile].path)
+            job_batch, file_id = *upload(req)
+            {
+              :success => true,
+              :file_id => file_id,
+              :upload_id => job_batch
+            }
+          else
+            {
+              :success => false,
+              :file_id => file_id,
+              :upload_id => job_batch,
+              :error => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. Please try again."
+            }
+            # next # halt this handler
+          end
+        end
+        # if they all fail, return 400...
+        res.status = 400 if(statuses.find{|a| a.success }.empty? )
+        res.write(JSON.dump(statuses))
+      else 
+        STDOUT.puts req.params.keys.inspect
+      end
     end
 
     on "pdf/:file_id/data" do |file_id|
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+        raise IOError
 
       coords = JSON.load(req.params['coords'])
       coords.sort_by! do |coord_set|
