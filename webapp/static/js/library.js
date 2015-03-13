@@ -77,11 +77,17 @@ Tabula.Library = Backbone.View.extend({
           url: $('form#upload').attr('action'),
           type: 'POST',
           success: _.bind(function (res) {
-              var data = JSON.parse(res);
-              this.checker.file_id = data.file_id;
-              this.checker.upload_id = data.upload_id;
-              this.checker.checkStatus();
-              this.checker.render();
+              var statuses = JSON.parse(res);
+              _(statuses).each(function(status){
+                if(status.success){
+                  this.checker.file_id = status.file_id;
+                  this.checker.upload_id = status.upload_id;
+                  this.checker.checkStatus();
+                  this.checker.render();
+                }else{
+                  console.log('TODO: failure')
+                }
+              })
           }, this),
           error: function(a,b,c){ console.log('error', a,b,c)},
           data: formdata,
