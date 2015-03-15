@@ -379,32 +379,64 @@ div.spinner {
 	color: #aaa;
 }
 
-.autodetect-in-progress i.glyphicon-refresh,
-#download-data.download-in-progress i.glyphicon-refresh {
-	-webkit-transition: -webkit-transform 600s;
-  transition:  transform 600s;
-  -webkit-transform: rotate(3600deg);
-  transform: rotate(3600deg);
-	display: inline;
+.autodetect-in-progress .glyphicon-refresh,
+#download-data.download-in-progress .glyphicon-refresh {
+  animation:  4s linear 0s normal none infinite running spin;
+  display: inline-block;
 }
-.autodetect-in-progress i.glyphicon-flash {
+
+@-moz-keyframes spin {
+  0% {
+    -moz-transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(359deg);
+  }
+}
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+  }
+}
+@-o-keyframes spin {
+  0% {
+    -o-transform: rotate(0deg);
+  }
+  100% {
+    -o-transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+.autodetect-in-progress .glyphicon-flash {
 	display: none;
 }
-.autodetect-finished i.glyphicon-flash {
+.autodetect-finished .glyphicon-flash {
 	display: inline;
 }
-.autodetect-finished i.glyphicon-refresh {
+.autodetect-finished .glyphicon-refresh {
 	display: none;
 }
 #download-data {
-	&.download-in-progress i.glyphicon-download {
+	&.download-in-progress .glyphicon-download {
 		display: none;
 	}
-	i.glyphicon-download {
+	.glyphicon-download {
 		display: inline;
 	}
-	i.glyphicon-refresh {
-		display: none;
+	.glyphicon-refresh {
 	}
 }
 
