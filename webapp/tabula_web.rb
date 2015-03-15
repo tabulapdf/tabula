@@ -69,18 +69,18 @@ else
   CACHE = NoCache.new
 end
 
-def upload(req)
-  original_filename = req.params['file'][:filename]
+def upload(file)
+  original_filename = file[:filename]
   file_id = Digest::SHA1.hexdigest(Time.now.to_s)
   file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
   FileUtils.mkdir(file_path)
   begin
-    FileUtils.mv(req.params['file'][:tempfile].path,
+    FileUtils.mv(file[:tempfile].path,
                  File.join(file_path, 'document.pdf'))
   rescue Errno::EACCES # move fails on windows sometimes
-    FileUtils.cp_r(req.params['file'][:tempfile].path,
+    FileUtils.cp_r(file[:tempfile].path,
                    File.join(file_path, 'document.pdf'))
-    FileUtils.rm_rf(req.params['file'][:tempfile].path)
+    FileUtils.rm_rf(file[:tempfile].path)
   end
 
   filepath = File.join(file_path, 'document.pdf')
@@ -201,6 +201,7 @@ Cuba.define do
       # Make sure this is a PDF, before doing anything
 
       if req.params['file'] # single upload mode. this should be deleting once if decide to enable multiple upload for realzies
+        job_batch, file_id = *upload(req.params['file'])
         unless is_valid_pdf?(req.params['file'][:tempfile].path)
           res.status = 400
           res.write(JSON.dump({
@@ -212,16 +213,16 @@ Cuba.define do
           next # halt this handler
         end
 
-        job_batch, file_id = *upload(req)
         res.write(JSON.dump([{
             :success => true,
             :file_id => file_id,
             :upload_id => job_batch
         }]))
       elsif req.params['files']
+        puts req.params['files'].inspect
         statuses = req.params['files'].map do |file|
-          if is_valid_pdf?(req.params['file'][:tempfile].path)
-            job_batch, file_id = *upload(req)
+          if is_valid_pdf?(file[:tempfile].path)
+            job_batch, file_id = *upload(file)
             {
               :success => true,
               :file_id => file_id,
@@ -238,7 +239,7 @@ Cuba.define do
           end
         end
         # if they all fail, return 400...
-        res.status = 400 if(statuses.find{|a| a.success }.empty? )
+        res.status = 400 if(statuses.find{|a| a[:success] }.empty? )
         res.write(JSON.dump(statuses))
       else 
         STDOUT.puts req.params.keys.inspect

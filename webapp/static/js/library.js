@@ -78,7 +78,7 @@ Tabula.Library = Backbone.View.extend({
           type: 'POST',
           success: _.bind(function (res) {
               var statuses = JSON.parse(res);
-              _(statuses).each(function(status){
+              _(statuses).each(_.bind(function(status){
                 if(status.success){
                   this.checker.file_id = status.file_id;
                   this.checker.upload_id = status.upload_id;
@@ -87,7 +87,7 @@ Tabula.Library = Backbone.View.extend({
                 }else{
                   console.log('TODO: failure')
                 }
-              })
+              }, this))
           }, this),
           error: function(a,b,c){ console.log('error', a,b,c)},
           data: formdata,
