@@ -9651,44 +9651,71 @@ div.spinner {
 }
 
 /* line 382, ../sass/styles.scss */
-.autodetect-in-progress i.glyphicon-refresh,
-#download-data.download-in-progress i.glyphicon-refresh {
-  -webkit-transition: -webkit-transform 600s;
-  transition: transform 600s;
-  -webkit-transform: rotate(3600deg);
-  transform: rotate(3600deg);
+.autodetect-in-progress .glyphicon-refresh,
+#download-data.download-in-progress .glyphicon-refresh {
+  animation: 4s linear 0s normal none infinite running spin;
+  display: inline-block;
+}
+
+@-moz-keyframes spin {
+  0% {
+    -moz-transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(359deg);
+  }
+}
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+  }
+}
+@-o-keyframes spin {
+  0% {
+    -o-transform: rotate(0deg);
+  }
+  100% {
+    -o-transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+/* line 423, ../sass/styles.scss */
+.autodetect-in-progress .glyphicon-flash {
+  display: none;
+}
+
+/* line 426, ../sass/styles.scss */
+.autodetect-finished .glyphicon-flash {
   display: inline;
 }
 
-/* line 390, ../sass/styles.scss */
-.autodetect-in-progress i.glyphicon-flash {
+/* line 429, ../sass/styles.scss */
+.autodetect-finished .glyphicon-refresh {
   display: none;
 }
 
-/* line 393, ../sass/styles.scss */
-.autodetect-finished i.glyphicon-flash {
+/* line 433, ../sass/styles.scss */
+#download-data.download-in-progress .glyphicon-download {
+  display: none;
+}
+/* line 436, ../sass/styles.scss */
+#download-data .glyphicon-download {
   display: inline;
 }
 
-/* line 396, ../sass/styles.scss */
-.autodetect-finished i.glyphicon-refresh {
-  display: none;
-}
-
-/* line 400, ../sass/styles.scss */
-#download-data.download-in-progress i.glyphicon-download {
-  display: none;
-}
-/* line 403, ../sass/styles.scss */
-#download-data i.glyphicon-download {
-  display: inline;
-}
-/* line 406, ../sass/styles.scss */
-#download-data i.glyphicon-refresh {
-  display: none;
-}
-
-/* line 411, ../sass/styles.scss */
+/* line 443, ../sass/styles.scss */
 .flash {
   -moz-animation: flash 2s ease-out;
   -moz-animation-iteration-count: 1;

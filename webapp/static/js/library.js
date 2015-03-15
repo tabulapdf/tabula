@@ -1,5 +1,16 @@
 Tabula = window.Tabula || {};
 
+Tabula.FileUpload = Backbone.Model.extend({
+  isOneOfMultiple: true, // unless false
+  //uploadTime
+  //uploadOrder
+});
+
+Tabula.FileUploadsCollection = Backbone.Collection.extend({
+  model: Tabula.FileUpload,
+  comparator: function(i){ return -i.get('uploadTime') - i.get('uploadOrder')},
+})
+
 Tabula.UploadedFile = Backbone.Model.extend({
   size: null,
   page_count: null,
@@ -7,10 +18,9 @@ Tabula.UploadedFile = Backbone.Model.extend({
     this.set('size', this.get('size') || null);
     this.set('page_count', this.get('page_count') || null)
   }
-
 });
 
-Tabula.FilesCollection = Backbone.Collection.extend({
+Tabula.UploadedFilesCollection = Backbone.Collection.extend({
     model: Tabula.UploadedFile,
     url: '/pdfs/workspace.json',
     comparator: function(i){ return -i.get('time')},
@@ -24,7 +34,7 @@ Tabula.FilesCollection = Backbone.Collection.extend({
     }
 });
 
-Tabula.File = Backbone.View.extend({
+Tabula.UploadedFileView = Backbone.View.extend({
   tagName: 'tr',
   className: 'uploaded-file',
   events: {
@@ -58,20 +68,24 @@ Tabula.Library = Backbone.View.extend({
     events: {
         "submit form#upload": 'uploadPDF',
     },
-    template: _.template( $('#upload-template').html().replace(/nestedscript/g, 'script')),
+    template: _.template( $('#uploader-template').html().replace(/nestedscript/g, 'script')),
     initialize: function(){
       _.bindAll(this, 'uploadPDF', 'render', 'renderFileLibrary');
-      this.files_collection = new Tabula.FilesCollection([]);
+      this.files_collection = new Tabula.UploadedFilesCollection([]);
       this.files_collection.fetch({silent: true, success: _.bind(function(){ this.render(); this.renderFileLibrary(); }, this) });
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
     },
     uploadPDF: function(e){
       $(e.currentTarget).find('button').attr('disabled', 'disabled');
 
-      this.checker = new Tabula.UploadStatusChecker({
-          el: this.$el.find('#progress-container')
-      });
-
+      files_list = $(e.currentTarget).find('#file')[0].files
+      _(files_list).each(function(file, index){
+        var file_upload = Tabula.FileUpload({name: file.name, uploadTime: new Time(), uploadOrder: index});
+        var checker = new Tabula.FileUploadView({model: file_upload });
+        checker.checkStatus();
+        this.$el.find('#progress-bars-container').append(this.checker.render().el)
+      })
+      
       var formdata = new FormData($('form#upload')[0]);
       $.ajax({
           url: $('form#upload').attr('action'),
@@ -82,6 +96,7 @@ Tabula.Library = Backbone.View.extend({
                 if(status.success){
                   this.checker.file_id = status.file_id;
                   this.checker.upload_id = status.upload_id;
+                  this.checker.error = false;
                   this.checker.checkStatus();
                   this.checker.render();
                 }else{
@@ -89,7 +104,13 @@ Tabula.Library = Backbone.View.extend({
                 }
               }, this))
           }, this),
-          error: function(a,b,c){ console.log('error', a,b,c)},
+          error: _.bind(function(a,b,c){ 
+            this.checker.message = "Sorry, your file upload could not be processed. Please double-check that the file you uploaded is a valid PDF file and try again.";
+            this.checker.pct_complete = 100;
+            this.checker.error = true;
+            this.checker.render();
+            $(e.currentTarget).find('button').removeAttr('disabled');
+          },this),
           data: formdata,
 
           cache: false,
@@ -104,7 +125,7 @@ Tabula.Library = Backbone.View.extend({
       $('#uploaded-files-container').empty();
       if(this.files_collection.length > 0){
         this.files_collection.each(function(uploaded_file){
-          var file_element = new Tabula.File({model: uploaded_file}).render().el;
+          var file_element = new Tabula.UploadedFileView({model: uploaded_file}).render().el;
           if(added_model == uploaded_file){
             $(file_element).addClass('flash');
           }
@@ -124,13 +145,14 @@ Tabula.Library = Backbone.View.extend({
       }) );
       return this;
     }
-})
+});
 
-Tabula.UploadStatusChecker = Backbone.View.extend({
+Tabula.FileUploadView = Backbone.View.extend({
     file_id: null,
     upload_id: null,
     pct_complete: 0,
     message: null,
+    template: _.template( $('#file-upload-template').html().replace(/nestedscript/g, 'script')),
     initialize: function(stuff){
         _.bindAll(this, 'statusComplete', 'checkStatus', 'render');
         this.file_id = stuff.file_id;
@@ -142,12 +164,17 @@ Tabula.UploadStatusChecker = Backbone.View.extend({
         };
         Tabula.library.files_collection.fetch();
         $('form#upload').find('button').removeAttr('disabled');
-        window.location = '/pdf/' + file_id;
+        if(this.model.get('isOneOfMultiple')){
+          this.remove();
+        }else{
+          window.location = '/pdf/' + file_id;
+        }
     },
 
     checkStatus: function() {
       if(!this.file_id || !this.upload_id){
-        this.pct_complete = 5;
+        this.pct_complete = 1;
+        this.message = "uploading"
       }else{
         $.ajax({
             dataType: 'json',
@@ -176,33 +203,36 @@ Tabula.UploadStatusChecker = Backbone.View.extend({
       }
     },
     render: function(){
-        if(this.pct_complete <= 0){
-            this.$el.find('h4').text("Upload Progress");
-        }else if(this.pct_complete >= 100){
-            this.$el.find('h4').text("Upload Finished.");
-            this.$el.find('#message').text('');
-        }else{
-          this.$el.find('h4').text("Importing…");
-          var spinpots = {
-              lines: 11,
-              length: 5,
-              width: 2,
-              radius: 4,
-              hwaccel: true,
-              top: '0',
-              left: 0
-          };
-          this.spinobj = new Spinner(spinpots).spin(this.$el.find('#spinner')[0]);
-        }
-        var msg;
-        if (this.message) {
-            msg = this.message;
-        } else if (this.pct_complete === 0) {
-            msg = "waiting to be processed..."
-        }
-        this.$el.find("#message").text(msg);
-        this.$el.find(".progress-bar").css("width", this.pct_complete + "%").attr('aria-valuenow', this.pct_complete);
-        this.$el.find("#percent").html(this.pct_complete + "%");
-        return this;
+      this.$el.parents('#progress-container').show(); //starts off hidden
+      if(this.pct_complete <= 0){
+          this.$el.find('h4').text("Upload Progress");
+      }else if(this.pct_complete >= 100 && !this.error){
+          this.$el.find('h4').text("Upload Finished.");
+          this.$el.find('#message').text('');
+      }else if(this.pct_complete >= 100 && this.error){
+        this.$el.find('h4').text("Upload Failed.");
+      }else{
+        this.$el.find('h4').text("Importing…");
+        var spinpots = {
+            lines: 11,
+            length: 5,
+            width: 2,
+            radius: 4,
+            hwaccel: true,
+            top: '0',
+            left: 0
+        };
+        this.spinobj = new Spinner(spinpots).spin(this.$el.find('#spinner')[0]);
+      }
+      var msg;
+      if (this.message) {
+          msg = this.message;
+      } else if (this.pct_complete === 0) {
+          msg = "waiting to be processed..."
+      }
+      this.$el.find("#message").text(msg);
+      this.$el.find(".progress-bar").css("width", this.pct_complete + "%").attr('aria-valuenow', this.pct_complete);
+      this.$el.find("#percent").html(this.pct_complete + "%");
+      return this;
     }
 });
