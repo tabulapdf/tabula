@@ -203,8 +203,8 @@ Cuba.define do
         res.status = 400
         res.write(JSON.dump({
           :success => false,
-          :file_id => file_id,
-          :upload_id => job_batch,
+          # :file_id => file_id,
+          # :upload_id => job_batch,
           :error => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. Please try again."
           }))
         next # halt this handler
