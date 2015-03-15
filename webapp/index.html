@@ -68,9 +68,9 @@
       <script type="text/template" id="thumbnail-template" >
         <a href="#page-<%= number %>"><img src="<%= image_url %>"></a>
         <div class="remove">
-          <i class="glyphicon glyphicon-remove delete-page"></i>
-          <!-- i title="rotate this page right" class="icon-repeat rotate-left"></i>
-          <i title="rotate this page left" class="icon-repeat flip rotate-right"></i -->
+          <span class="glyphicon glyphicon-remove delete-page"></span>
+          <!-- <span title="rotate this page right" class="icon-repeat rotate-left"></span>
+          <span title="rotate this page left" class="icon-repeat flip rotate-right"></span> -->
         </div>
         <p><%= number %></p>
       </script>
@@ -93,12 +93,12 @@
             <option value="script">Script</option>
           </select>
           <button type="submit" <%=disableIfNoData%> id="download-data" class="btn btn-default" data-action='/pdf/<%=pdf_id%>/data?format=csv'>
-            <i class="glyphicon glyphicon-refresh"></i>
-            <i class="glyphicon glyphicon-download"></i>
+            <span class="glyphicon glyphicon-refresh"></span>
+            <span class="glyphicon glyphicon-download"></span>
             Export
           </button>
           <button type="button" id="copy-csv-to-clipboard" class="btn btn-default" <%=disableIfNoData%> <%=copyDisabled%> >
-            <i class="glyphicon glyphicon-paperclip"></i>
+            <span class="glyphicon glyphicon-paperclip"></span>
              Copy to Clipboard
           </button>
         </form>
@@ -107,9 +107,9 @@
       <script type="text/template" id="select-control-panel-template" >
         <span class="filename"><%= original_filename %></span>
 
-        <a href="javascript:void(0)"><button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disable_detected_tables %>><i class="glyphicon glyphicon-flash"></i><i class="glyphicon glyphicon-refresh"></i> Autodetect Tables</button></a>
-        <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><i class="glyphicon glyphicon-remove-circle"></i> Clear All Selections</button></a>
-        <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><i class="glyphicon glyphicon-eye-open"></i> Preview & Export Extracted Data</button></a>
+        <a href="javascript:void(0)"><button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disable_detected_tables %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button></a>
+        <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
+        <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><span class="glyphicon glyphicon-eye-open"></span> Preview & Export Extracted Data</button></a>
       </script>
 
       <script type="text/template" id="export-page-sidebar-template">
@@ -120,7 +120,7 @@
           <h5>Revise Selected Cells</h5>
           <p>Data has been extracted from the cells you selected in the previous step. You can revise your selection(s) to add or remove cells.</p>
           <p>
-            <button type="button" class="btn btn-default" id="revise-selections"><i class="glyphicon glyphicon-arrow-left"></i> Revise selection(s)</button>
+            <button type="button" class="btn btn-default" id="revise-selections"><span class="glyphicon glyphicon-arrow-left"></span> Revise selection(s)</button>
           </p>
 
           <h5>Choose Alternate Extraction Method</h5>
@@ -128,8 +128,8 @@
           <p>The current preview uses the <strong>Stream</strong> extraction method. If the data is not mapped to the correct cells, try the <strong>Lattice</strong> method instead.</p>
 
           <div class="btn-group" data-toggle="buttons-radio" id="extraction-method-btns" <%=disableExtractionMethodButtons%> >
-            <button type="button" id="original-method-btn" class="btn btn-default extraction-method-btn" data-method="original" ><i class="glyphicon glyphicon-th stream"></i> Stream</button>
-            <button type="button" id="spreadsheet-method-btn" class="btn btn-default extraction-method-btn" data-method="spreadsheet"><i class="glyphicon glyphicon-th lattice"></i> Lattice</button>
+            <button type="button" id="original-method-btn" class="btn btn-default extraction-method-btn" data-method="original" ><span class="glyphicon glyphicon-th stream"></span> Stream</button>
+            <button type="button" id="spreadsheet-method-btn" class="btn btn-default extraction-method-btn" data-method="spreadsheet"><span class="glyphicon glyphicon-th lattice"></span> Lattice</button>
           </div>
 
           <p>
@@ -279,7 +279,7 @@
         <td><%= size ? Math.floor(size / 1024) : '??' %> kB</td>
         <td><%= page_count || '??' %></td>
         <td><%= new Date(parseInt(time) * 1000).toUTCString().slice(5, -7) %></td>
-        <td><a href="javascript:"><i data-filename=<%= original_filename %> data-pdfid=<%= id %> class="glyphicon glyphicon-remove delete-pdf"></i></a></td>
+        <td><a href="javascript:"><span data-filename=<%= original_filename %> data-pdfid=<%= id %> class="glyphicon glyphicon-remove delete-pdf"></span></a></td>
         <td><a href="/pdf/<%= id %>"><button type="button" class="btn btn-sm btn-success">Extract Data</button></a></td>
       </script>
 

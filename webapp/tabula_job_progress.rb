@@ -32,7 +32,8 @@ class TabulaJobProgress < Cuba
         message[:pct_complete] = 99
         res.write message.to_json
       else
-        s = batch.find { |uuid, job| job.working? && (!FINISH_BEFORE_AUTODETECT_IS_DONE || !job.kind_of?(DetectTablesJob) ) }
+        batch.reject!{|uuid, job| FINISH_BEFORE_AUTODETECT_IS_DONE && job.kind_of?(DetectTablesJob ) }
+        s = batch.find { |uuid, job| job.working? }
         message[:status] = !s.nil? ? s.last.status['status'] : 'completed'
         message[:message] = !s.nil? && !s.last.message.nil? ? s.last.message.first : ''
         message[:pct_complete] = (batch.inject(0.0) { |sum, (uuid, job)| sum + job.pct_complete } / batch.size).to_i
