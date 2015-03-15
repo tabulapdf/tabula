@@ -33,9 +33,11 @@ class TabulaJobProgress < Cuba
         res.write message.to_json
       else
         batch.reject!{|uuid, job| FINISH_BEFORE_AUTODETECT_IS_DONE && job.kind_of?(DetectTablesJob ) }
-        s = batch.find { |uuid, job| job.working? }
-        message[:status] = !s.nil? ? s.last.status['status'] : 'completed'
-        message[:message] = !s.nil? && !s.last.message.nil? ? s.last.message.first : ''
+        first_working_job = batch.sort_by{|uuid, job| job.pct_complete}.find { |uuid, job| job.working? }
+
+        message[:message] = !first_working_job.nil? && !first_working_job.last.message.nil? ? first_working_job.last.message.first : ''
+
+        message[:status] = !first_working_job.nil? ? first_working_job.last.status['status'] : 'completed'
         message[:pct_complete] = (batch.inject(0.0) { |sum, (uuid, job)| sum + job.pct_complete } / batch.size).to_i
         message[:file_id] = req.params['file_id']
         message[:upload_id] = batch_id
