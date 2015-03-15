@@ -9641,16 +9641,18 @@ div.spinner {
 }
 
 /* line 375, ../sass/styles.scss */
-#progress-container h4 {
+#progress-container h5 {
   display: inline-block;
+  font-size: 1.1em;
+  font-weight: bold;
 }
 
-/* line 378, ../sass/styles.scss */
+/* line 380, ../sass/styles.scss */
 #progress-container #message {
   color: #aaa;
 }
 
-/* line 382, ../sass/styles.scss */
+/* line 384, ../sass/styles.scss */
 .autodetect-in-progress .glyphicon-refresh,
 #download-data.download-in-progress .glyphicon-refresh {
   animation: 4s linear 0s normal none infinite running spin;
@@ -9691,31 +9693,31 @@ div.spinner {
     transform: rotate(359deg);
   }
 }
-/* line 423, ../sass/styles.scss */
+/* line 425, ../sass/styles.scss */
 .autodetect-in-progress .glyphicon-flash {
   display: none;
 }
 
-/* line 426, ../sass/styles.scss */
+/* line 428, ../sass/styles.scss */
 .autodetect-finished .glyphicon-flash {
   display: inline;
 }
 
-/* line 429, ../sass/styles.scss */
+/* line 431, ../sass/styles.scss */
 .autodetect-finished .glyphicon-refresh {
   display: none;
 }
 
-/* line 433, ../sass/styles.scss */
+/* line 435, ../sass/styles.scss */
 #download-data.download-in-progress .glyphicon-download {
   display: none;
 }
-/* line 436, ../sass/styles.scss */
+/* line 438, ../sass/styles.scss */
 #download-data .glyphicon-download {
   display: inline;
 }
 
-/* line 443, ../sass/styles.scss */
+/* line 445, ../sass/styles.scss */
 .flash {
   -moz-animation: flash 2s ease-out;
   -moz-animation-iteration-count: 1;

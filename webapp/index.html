@@ -228,13 +228,22 @@
         <a href='/pdf/<%= id %>'><%= original_filename %></a>: <%= failure_message %>
       </script>
 
+
       <script type='text/template' id='file-upload-template'>
-        <h4><%= filename %>
-        <span id="message"></span>
+        <h5><%= filename %></h5>
+        <span id="message"><%= message %></span>
         <div class="progress">
           <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= pct_complete %>%;"><span class="sr-only"> <%= pct_complete %>% Complete </span></div>
         </div>
       </script>
+
+      <script type="text/template" id="progress-bars-template">
+        <h4>Upload Progress</h4>
+        <div id="progress-bars-container">
+
+        </div>
+      </script>
+
       <script type="text/template" id="uploader-template">
         <div class="container">
           <div class="jumbotron">
@@ -253,12 +262,7 @@
                  <button type="submit" class="btn btn-default">Import</button>
               </form>
 
-              <div id="progress-container" style="display: none;">
-                <h4>Upload Progress</h4>
-                <div id="progress-bars-container">
-
-                </div>
-
+              <div id="progress-container">
               </div>
 
               <hr>

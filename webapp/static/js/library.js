@@ -1,9 +1,47 @@
-Tabula = window.Tabula || {};
+bTabula = window.Tabula || {};
 
 Tabula.FileUpload = Backbone.Model.extend({
-  isOneOfMultiple: true, // unless false
-  //uploadTime
-  //uploadOrder
+  // isOneOfMultiple:
+  // uploadTime
+  // uploadOrder
+  initialize: function(){
+    this.set({
+      message: 'waiting to be processed...',
+      pct_complete: 0,
+    });
+  },
+
+  checkStatus: function() {
+    if(typeof this.get('file_id') == 'undefined' && typeof !this.get('upload_id') == 'undefined'){
+      this.pct_complete = 1;
+      this.message = "waiting to be processed..."
+    }else{
+      $.ajax({
+          dataType: 'json',
+          url: '/queue/'+this.get('upload_id')+'/json?file_id=' + this.get('file_id'),
+          success: _.bind(function(data, status, xhr) {
+            if(data.message.length || data.pct_complete == 100 ) this.set('message',  data.message);
+            this.set('pct_complete', data.pct_complete);
+
+            if (data.status == "error" && data.error_type == "unknown") {
+                // window.location.reload(true);
+            } else if (data.status == "error" && data.error_type == "no-text") {
+                console.log('no text');
+                window.clearTimeout(this.timer);
+                alert("Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned... Tabula can't be able to extract any data from image-based PDFs. (Though you can try OCRing the PDF with a tool like Tesseract and then trying Tabula again.)") //TODO: something prettier.
+            } else if(data.pct_complete < 100) {
+                this.timer = setTimeout(_.bind(this.checkStatus, this), 1000);
+            } else {
+              this.destroy();
+            }
+          }, this),
+          error: function(xhr, status, err) {
+              console.log('err', err);
+          }
+      });
+    }
+  },
+
 });
 
 Tabula.FileUploadsCollection = Backbone.Collection.extend({
@@ -63,6 +101,21 @@ Tabula.UploadedFileView = Backbone.View.extend({
     },
 })
 
+Tabula.ProgressBars = Backbone.View.extend({
+  template: _.template( $('#progress-bars-template').html().replace(/nestedscript/g, 'script')),
+  initialize: function(){
+    this.uploads_collection = new Tabula.FileUploadsCollection([]);
+    this.listenTo(this.uploads_collection, 'remove', this.render);
+  },
+  render: function(){
+    if(this.uploads_collection.size() > 0){
+      if(!$.trim(this.$el.html())) this.$el.html(this.template({}))
+    }else{
+      this.$el.empty();
+    }
+    return this;
+  }
+});
 
 Tabula.Library = Backbone.View.extend({
     events: {
@@ -77,14 +130,22 @@ Tabula.Library = Backbone.View.extend({
     },
     uploadPDF: function(e){
       $(e.currentTarget).find('button').attr('disabled', 'disabled');
+      this.progress_bars = new Tabula.ProgressBars({el: '#progress-container' });
+      this.progress_bars.render();
 
-      files_list = $(e.currentTarget).find('#file')[0].files
-      _(files_list).each(function(file, index){
-        var file_upload = Tabula.FileUpload({name: file.name, uploadTime: new Time(), uploadOrder: index});
+      var files_list = $(e.currentTarget).find('#file')[0].files
+      _(files_list).each(_.bind(function(file, index){
+        //TODO: the model should get the data, then fire an event that the view listens for, to rerender
+        var file_upload = new Tabula.FileUpload({
+          filename: file.name, 
+          uploadTime: new Date(), 
+          uploadOrder: index,
+          isOneOfMultiple: files_list.length != 1
+        });
+        this.progress_bars.uploads_collection.add(file_upload);
         var checker = new Tabula.FileUploadView({model: file_upload });
-        checker.checkStatus();
-        this.$el.find('#progress-bars-container').append(this.checker.render().el)
-      })
+        this.progress_bars.render().$el.find('#progress-bars-container').append(checker.render().el)
+      },this));
       
       var formdata = new FormData($('form#upload')[0]);
       $.ajax({
@@ -93,18 +154,27 @@ Tabula.Library = Backbone.View.extend({
           success: _.bind(function (res) {
               var statuses = JSON.parse(res);
               _(statuses).each(_.bind(function(status){
+                var file_upload = this.progress_bars.uploads_collection.findWhere({filename: status.filename });
+                if(!file_upload){
+                  console.log("couldn't find upload objcect for " + status.filename );
+                  return
+                }
                 if(status.success){
-                  this.checker.file_id = status.file_id;
-                  this.checker.upload_id = status.upload_id;
-                  this.checker.error = false;
-                  this.checker.checkStatus();
-                  this.checker.render();
+                  file_upload.set('file_id', status.file_id);
+                  file_upload.set('upload_id', status.upload_id);
+                  file_upload.set('error', !status.success);
+                  file_upload.checkStatus(); // 
                 }else{
                   console.log('TODO: failure')
+                  file_upload.set('file_id', status.file_id);
+                  file_upload.set('upload_id', status.upload_id);
+                  file_upload.set('error', !status.success);
                 }
               }, this))
           }, this),
           error: _.bind(function(a,b,c){ 
+
+            //TODO: cope with multiple
             this.checker.message = "Sorry, your file upload could not be processed. Please double-check that the file you uploaded is a valid PDF file and try again.";
             this.checker.pct_complete = 100;
             this.checker.error = true;
@@ -152,64 +222,30 @@ Tabula.FileUploadView = Backbone.View.extend({
     upload_id: null,
     pct_complete: 0,
     message: null,
+    tagName: 'div',
     template: _.template( $('#file-upload-template').html().replace(/nestedscript/g, 'script')),
-    initialize: function(stuff){
-        _.bindAll(this, 'statusComplete', 'checkStatus', 'render');
-        this.file_id = stuff.file_id;
-        this.upload_id = stuff.upload_id;
+    initialize: function(){
+      _.bindAll(this, 'render');
+      this.listenTo(this.model, 'change:pct_complete', this.render);
     },
-    statusComplete: function(file_id) {
+
+    render: function(){
+      if(this.model.get('pct_complete') <= 0){
+        this.$el.find('h4').text("Upload Progress");
+      }else if(this.model.get('pct_complete') >= 100 && !this.model.get('error')){
+        this.$el.find('h4').text("Upload Finished.");
+        this.$el.find('#message').text('');
         if (!!this.spinobj) {
             this.spinobj.stop()
         };
-        Tabula.library.files_collection.fetch();
         $('form#upload').find('button').removeAttr('disabled');
         if(this.model.get('isOneOfMultiple')){
           this.remove();
+          Tabula.library.files_collection.fetch();
         }else{
-          window.location = '/pdf/' + file_id;
-        }
-    },
-
-    checkStatus: function() {
-      if(!this.file_id || !this.upload_id){
-        this.pct_complete = 1;
-        this.message = "uploading"
-      }else{
-        $.ajax({
-            dataType: 'json',
-            url: '/queue/'+this.upload_id+'/json?file_id=' + this.file_id,
-            success: _.bind(function(data, status, xhr) {
-                console.log(data);
-                this.message = data.message;
-                this.pct_complete = data.pct_complete;
-                this.render();
-                if (data.status == "error" && data.error_type == "unknown") {
-                    // window.location.reload(true);
-                } else if (data.status == "error" && data.error_type == "no-text") {
-                    console.log('no text');
-                    window.clearTimeout(this.timer);
-                    alert("Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned... Tabula can't be able to extract any data from image-based PDFs. (Though you can try OCRing the PDF with a tool like Tesseract and then trying Tabula again.)") //TODO: something prettier.
-                } else if (data.pct_complete >= 100) {
-                    this.statusComplete(data.file_id);
-                } else {
-                    this.timer = setTimeout(this.checkStatus, 1000);
-                }
-            }, this),
-            error: function(xhr, status, err) {
-                console.log(err);
-            }
-        });
-      }
-    },
-    render: function(){
-      this.$el.parents('#progress-container').show(); //starts off hidden
-      if(this.pct_complete <= 0){
-          this.$el.find('h4').text("Upload Progress");
-      }else if(this.pct_complete >= 100 && !this.error){
-          this.$el.find('h4').text("Upload Finished.");
-          this.$el.find('#message').text('');
-      }else if(this.pct_complete >= 100 && this.error){
+          window.location = '/pdf/' + this.model.get('file_id');
+        };
+      }else if(this.model.get('pct_complete') >= 100 && this.model.get('error')){
         this.$el.find('h4').text("Upload Failed.");
       }else{
         this.$el.find('h4').text("Importing…");
@@ -224,15 +260,7 @@ Tabula.FileUploadView = Backbone.View.extend({
         };
         this.spinobj = new Spinner(spinpots).spin(this.$el.find('#spinner')[0]);
       }
-      var msg;
-      if (this.message) {
-          msg = this.message;
-      } else if (this.pct_complete === 0) {
-          msg = "waiting to be processed..."
-      }
-      this.$el.find("#message").text(msg);
-      this.$el.find(".progress-bar").css("width", this.pct_complete + "%").attr('aria-valuenow', this.pct_complete);
-      this.$el.find("#percent").html(this.pct_complete + "%");
+      this.$el.html(this.template(this.model.attributes));
       return this;
     }
 });
