@@ -71,7 +71,7 @@ end
 
 def upload(file)
   original_filename = file[:filename]
-  file_id = Digest::SHA1.hexdigest(Time.now.to_s)
+  file_id = Digest::SHA1.hexdigest(Time.now.to_s + original_filename) # just SHA1 of time isn't unique with multiple uploads
   file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
   FileUtils.mkdir(file_path)
   begin
@@ -206,6 +206,7 @@ Cuba.define do
           res.status = 400
           res.write(JSON.dump({
             :success => false,
+            :filename => req.params['file'][:filename],
             # :file_id => file_id,
             # :upload_id => job_batch,
             :error => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. Please try again."
@@ -224,12 +225,14 @@ Cuba.define do
           if is_valid_pdf?(file[:tempfile].path)
             job_batch, file_id = *upload(file)
             {
+              :filename => file[:filename],
               :success => true,
               :file_id => file_id,
               :upload_id => job_batch
             }
           else
             {
+              :filename => file[:filename],
               :success => false,
               :file_id => file_id,
               :upload_id => job_batch,
