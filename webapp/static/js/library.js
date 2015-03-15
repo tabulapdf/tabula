@@ -71,6 +71,7 @@ Tabula.Library = Backbone.View.extend({
       this.checker = new Tabula.UploadStatusChecker({
           el: this.$el.find('#progress-container')
       });
+      this.checker.checkStatus(); // start us off with 5%.
 
       var formdata = new FormData($('form#upload')[0]);
       $.ajax({
@@ -141,7 +142,8 @@ Tabula.UploadStatusChecker = Backbone.View.extend({
 
     checkStatus: function() {
       if(!this.file_id || !this.upload_id){
-        this.pct_complete = 5;
+        this.pct_complete = 1;
+        this.message = "uploading"
       }else{
         $.ajax({
             dataType: 'json',
