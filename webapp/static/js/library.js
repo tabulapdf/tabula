@@ -1,4 +1,4 @@
-bTabula = window.Tabula || {};
+Tabula = window.Tabula || {};
 
 Tabula.FileUpload = Backbone.Model.extend({
   // isOneOfMultiple:
@@ -20,7 +20,12 @@ Tabula.FileUpload = Backbone.Model.extend({
           dataType: 'json',
           url: '/queue/'+this.get('upload_id')+'/json?file_id=' + this.get('file_id'),
           success: _.bind(function(data, status, xhr) {
-            if(data.message.length || data.pct_complete == 100 ) this.set('message',  data.message);
+            if(data.message.length || data.pct_complete == 100 ){
+              this.set('message',  data.message);
+            } else if(data.pct_complete > 1) {
+              this.set('message', 'processing');
+            }
+
             this.set('pct_complete', data.pct_complete);
 
             if (data.status == "error" && data.error_type == "unknown") {
@@ -32,7 +37,8 @@ Tabula.FileUpload = Backbone.Model.extend({
             } else if(data.pct_complete < 100) {
                 this.timer = setTimeout(_.bind(this.checkStatus, this), 1000);
             } else {
-              this.destroy();
+              this.collection.remove(this);
+              Tabula.library.files_collection.fetch();
             }
           }, this),
           error: function(xhr, status, err) {
@@ -43,6 +49,9 @@ Tabula.FileUpload = Backbone.Model.extend({
   },
 
 });
+
+// does flash work?
+// clear the input
 
 Tabula.FileUploadsCollection = Backbone.Collection.extend({
   model: Tabula.FileUpload,
@@ -68,6 +77,12 @@ Tabula.UploadedFilesCollection = Backbone.Collection.extend({
           i.original_filename = i.file;
         }
       });
+      // if it's still being processed, don't enter it into the library.
+      items = _(items).reject(_.bind(function(uploaded_file){
+        var in_progress = Tabula.library && Tabula.library.uploads_collection.findWhere({file_id: uploaded_file.id});
+        if(in_progress) console.log('skipping', uploaded_file)
+        return in_progress
+      }, this));
       return items;
     }
 });
@@ -103,19 +118,30 @@ Tabula.UploadedFileView = Backbone.View.extend({
 
 Tabula.ProgressBars = Backbone.View.extend({
   template: _.template( $('#progress-bars-template').html().replace(/nestedscript/g, 'script')),
-  initialize: function(){
-    this.uploads_collection = new Tabula.FileUploadsCollection([]);
+  initialize: function(stuff){
+    _.extend(this, stuff); //  in-place.
     this.listenTo(this.uploads_collection, 'remove', this.render);
   },
   render: function(){
     if(this.uploads_collection.size() > 0){
+      this.in_progress = false;
       if(!$.trim(this.$el.html())) this.$el.html(this.template({}))
-    }else{
-      this.$el.empty();
+    }else if(!this.in_progress){
+      console.log('render', 'not in progress')
+      //TODO: this belongs in Library, technically, but we don't go around rerendering that, so here it is for now.
+      $('form#upload').find('button').removeAttr('disabled');
+      // Tabula.library.upload_form.render(); // TODO: this should go somewhere else.
     }
     return this;
   }
 });
+
+Tabula.UploadForm = Backbone.View.extend({
+  template: _.template( $('#upload-form-template').html().replace(/nestedscript/g, 'script')),
+  render: function(){
+    this.$el.html(this.template({}))
+  }
+})
 
 Tabula.Library = Backbone.View.extend({
     events: {
@@ -127,23 +153,27 @@ Tabula.Library = Backbone.View.extend({
       this.files_collection = new Tabula.UploadedFilesCollection([]);
       this.files_collection.fetch({silent: true, success: _.bind(function(){ this.render(); this.renderFileLibrary(); }, this) });
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
+      this.uploads_collection = new Tabula.FileUploadsCollection([]);
+      // this.upload_form = new Tabula.UploadForm();
     },
     uploadPDF: function(e){
       $(e.currentTarget).find('button').attr('disabled', 'disabled');
-      this.progress_bars = new Tabula.ProgressBars({el: '#progress-container' });
+      this.progress_bars = new Tabula.ProgressBars({el: '#progress-container', uploads_collection: this.uploads_collection });
+      this.progress_bars.in_progress = true;
       this.progress_bars.render();
 
       var files_list = $(e.currentTarget).find('#file')[0].files
       _(files_list).each(_.bind(function(file, index){
         //TODO: the model should get the data, then fire an event that the view listens for, to rerender
         var file_upload = new Tabula.FileUpload({
+          collection: this.uploads_collection,
           filename: file.name, 
           uploadTime: new Date(), 
           uploadOrder: index,
           isOneOfMultiple: files_list.length != 1
         });
-        this.progress_bars.uploads_collection.add(file_upload);
-        var checker = new Tabula.FileUploadView({model: file_upload });
+        this.uploads_collection.add(file_upload);
+        var checker = new Tabula.ProgressBar({model: file_upload });
         this.progress_bars.render().$el.find('#progress-bars-container').append(checker.render().el)
       },this));
       
@@ -154,19 +184,21 @@ Tabula.Library = Backbone.View.extend({
           success: _.bind(function (res) {
               var statuses = JSON.parse(res);
               _(statuses).each(_.bind(function(status){
-                var file_upload = this.progress_bars.uploads_collection.findWhere({filename: status.filename });
+                var file_upload = this.uploads_collection.findWhere({filename: status.filename });
                 if(!file_upload){
                   console.log("couldn't find upload objcect for " + status.filename );
                   return
                 }
                 if(status.success){
                   file_upload.set('file_id', status.file_id);
+                  file_upload.set('id', status.file_id);
                   file_upload.set('upload_id', status.upload_id);
                   file_upload.set('error', !status.success);
                   file_upload.checkStatus(); // 
                 }else{
                   console.log('TODO: failure')
                   file_upload.set('file_id', status.file_id);
+                  file_upload.set('id', status.file_id);
                   file_upload.set('upload_id', status.upload_id);
                   file_upload.set('error', !status.success);
                 }
@@ -192,15 +224,16 @@ Tabula.Library = Backbone.View.extend({
     },
 
     renderFileLibrary: function(added_model){
+      if(added_model) console.log(added_model);
       $('#uploaded-files-container').empty();
       if(this.files_collection.length > 0){
-        this.files_collection.each(function(uploaded_file){
+        this.files_collection.each(_.bind(function(uploaded_file){
           var file_element = new Tabula.UploadedFileView({model: uploaded_file}).render().el;
-          if(added_model == uploaded_file){
+          if(added_model && added_model.get('id') == uploaded_file.get('id')){
             $(file_element).addClass('flash');
           }
           $('#uploaded-files-container').append(file_element);
-        })
+        }, this));
         $("#fileTable").tablesorter( { headers: { 3: { sorter: "usLongDate" },  4: { sorter: false}, 5: {sorter: false} } } ); 
       }else{
         $('#uploaded-files-container').html( $('<p>No uploaded files yet.</p>') );
@@ -213,11 +246,13 @@ Tabula.Library = Backbone.View.extend({
         pct_complete: 0,
         importing: false
       }) );
+      // this.upload_form.$el = $('#upload-form-container');
+      // this.upload_form.render();
       return this;
     }
 });
 
-Tabula.FileUploadView = Backbone.View.extend({
+Tabula.ProgressBar = Backbone.View.extend({
     file_id: null,
     upload_id: null,
     pct_complete: 0,
@@ -238,10 +273,8 @@ Tabula.FileUploadView = Backbone.View.extend({
         if (!!this.spinobj) {
             this.spinobj.stop()
         };
-        $('form#upload').find('button').removeAttr('disabled');
         if(this.model.get('isOneOfMultiple')){
           this.remove();
-          Tabula.library.files_collection.fetch();
         }else{
           window.location = '/pdf/' + this.model.get('file_id');
         };
