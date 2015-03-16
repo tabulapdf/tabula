@@ -71,7 +71,9 @@ Tabula.Library = Backbone.View.extend({
       this.checker = new Tabula.UploadStatusChecker({
           el: this.$el.find('#progress-container')
       });
-
+      this.checker.checkStatus(); // start us off with 5%.
+      this.checker.render();
+      
       var formdata = new FormData($('form#upload')[0]);
       $.ajax({
           url: $('form#upload').attr('action'),
@@ -80,10 +82,17 @@ Tabula.Library = Backbone.View.extend({
               var data = JSON.parse(res);
               this.checker.file_id = data.file_id;
               this.checker.upload_id = data.upload_id;
+              this.checker.error = false;
               this.checker.checkStatus();
               this.checker.render();
           }, this),
-          error: function(a,b,c){ console.log('error', a,b,c)},
+          error: _.bind(function(a,b,c){ 
+            this.checker.message = "Sorry, your file upload could not be processed. Please double-check that the file you uploaded is a valid PDF file and try again.";
+            this.checker.pct_complete = 100;
+            this.checker.error = true;
+            this.checker.render();
+            $(e.currentTarget).find('button').removeAttr('disabled');
+          },this),
           data: formdata,
 
           cache: false,
@@ -141,7 +150,8 @@ Tabula.UploadStatusChecker = Backbone.View.extend({
 
     checkStatus: function() {
       if(!this.file_id || !this.upload_id){
-        this.pct_complete = 5;
+        this.pct_complete = 1;
+        this.message = "uploading"
       }else{
         $.ajax({
             dataType: 'json',
@@ -170,33 +180,36 @@ Tabula.UploadStatusChecker = Backbone.View.extend({
       }
     },
     render: function(){
-        if(this.pct_complete <= 0){
-            this.$el.find('h4').text("Upload Progress");
-        }else if(this.pct_complete >= 100){
-            this.$el.find('h4').text("Upload Finished.");
-            this.$el.find('#message').text('');
-        }else{
-          this.$el.find('h4').text("Importing…");
-          var spinpots = {
-              lines: 11,
-              length: 5,
-              width: 2,
-              radius: 4,
-              hwaccel: true,
-              top: '0',
-              left: 0
-          };
-          this.spinobj = new Spinner(spinpots).spin(this.$el.find('#spinner')[0]);
-        }
-        var msg;
-        if (this.message) {
-            msg = this.message;
-        } else if (this.pct_complete === 0) {
-            msg = "waiting to be processed..."
-        }
-        this.$el.find("#message").text(msg);
-        this.$el.find(".progress-bar").css("width", this.pct_complete + "%").attr('aria-valuenow', this.pct_complete);
-        this.$el.find("#percent").html(this.pct_complete + "%");
-        return this;
+      this.$el.show();
+      if(this.pct_complete <= 0){
+          this.$el.find('h4').text("Upload Progress");
+      }else if(this.pct_complete >= 100 && !this.error){
+          this.$el.find('h4').text("Upload Finished.");
+          this.$el.find('#message').text('');
+      }else if(this.pct_complete >= 100 && this.error){
+        this.$el.find('h4').text("Upload Failed.");
+      }else{
+        this.$el.find('h4').text("Importing…");
+        var spinpots = {
+            lines: 11,
+            length: 5,
+            width: 2,
+            radius: 4,
+            hwaccel: true,
+            top: '0',
+            left: 0
+        };
+        this.spinobj = new Spinner(spinpots).spin(this.$el.find('#spinner')[0]);
+      }
+      var msg;
+      if (this.message) {
+          msg = this.message;
+      } else if (this.pct_complete === 0) {
+          msg = "waiting to be processed..."
+      }
+      this.$el.find("#message").text(msg);
+      this.$el.find(".progress-bar").css("width", this.pct_complete + "%").attr('aria-valuenow', this.pct_complete);
+      this.$el.find("#percent").html(this.pct_complete + "%");
+      return this;
     }
 });
