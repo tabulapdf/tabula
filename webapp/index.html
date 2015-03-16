@@ -244,9 +244,18 @@
         </div>
       </script>
 
+      <script type='text/template' id="upload-form-template">
+
+      </script>
+
+
       <script type="text/template" id="uploader-template">
         <div class="container">
           <div class="jumbotron">
+
+            <div id="upload-form-container">
+
+            
               <h4>Import a PDF</h4> <!-- TODO: enable multiple, change this to 'Import one or more PDFs' -->
               <form id="upload" action="/upload.json" method="post" enctype="multipart/form-data" class="form-inline">
 
@@ -262,9 +271,9 @@
                  <button type="submit" class="btn btn-default">Import</button>
               </form>
 
-              <div id="progress-container">
-              </div>
-
+            </div>
+            <div id="progress-container">
+            </div>
               <hr>
 
               <h4>Imported PDFs</h4>
