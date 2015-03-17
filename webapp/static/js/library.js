@@ -80,7 +80,6 @@ Tabula.UploadedFilesCollection = Backbone.Collection.extend({
       // if it's still being processed, don't enter it into the library.
       items = _(items).reject(_.bind(function(uploaded_file){
         var in_progress = Tabula.library && Tabula.library.uploads_collection.findWhere({file_id: uploaded_file.id});
-        if(in_progress) console.log('skipping', uploaded_file)
         return in_progress
       }, this));
       return items;
@@ -99,6 +98,8 @@ Tabula.UploadedFileView = Backbone.View.extend({
   },
   render: function(){
     this.$el.append(this.template(this.model.attributes));
+    this.$el.addClass('file-id-' + this.model.get('id')); // more efficient lookups than data-attr
+    this.$el.data('id', this.model.get('id')); //more cleanly accesse than a class
     return this;
   },
   deletePDF: function(e) {
@@ -225,16 +226,28 @@ Tabula.Library = Backbone.View.extend({
 
     renderFileLibrary: function(added_model){
       if(added_model) console.log(added_model);
-      $('#uploaded-files-container').empty();
       if(this.files_collection.length > 0){
-        this.files_collection.each(_.bind(function(uploaded_file){
-          var file_element = new Tabula.UploadedFileView({model: uploaded_file}).render().el;
-          if(added_model && added_model.get('id') == uploaded_file.get('id')){
-            $(file_element).addClass('flash');
+        ($('#uploaded-files-container').is(':empty') ? this.files_collection.reverse() : this.files_collection).
+        each(_.bind(function(uploaded_file){
+          if(this.$el.find('.file-id-' + uploaded_file.get('id') ).length){
+            return;
           }
-          $('#uploaded-files-container').append(file_element);
+          var file_element = new Tabula.UploadedFileView({model: uploaded_file}).render().el;
+          if(added_model && added_model.get('id') == uploaded_file.get('id')) $(file_element).addClass('flash');
+          $('#uploaded-files-container').prepend(file_element);
         }, this));
-        $("#fileTable").tablesorter( { headers: { 3: { sorter: "usLongDate" },  4: { sorter: false}, 5: {sorter: false} } } ); 
+
+        //remove anything that was deleted
+        this.$el.find('.uploaded-file').each(_.bind(function(i, el){
+          if(typeof this.files_collection.findWhere({id: $(el).data('id')}) === "undefined"){
+            $(el).remove();
+          }
+        }, this));
+
+        $("#fileTable").tablesorter( { 
+          headers: { 3: { sorter: "usLongDate" },  4: { sorter: false}, 5: {sorter: false} },
+          sortList: [[3,1]]  // initial sort
+          } ); 
       }else{
         $('#uploaded-files-container').html( $('<p>No uploaded files yet.</p>') );
       }

@@ -29,7 +29,7 @@ class GenerateDocumentDataJob < Tabula::Background::Job
 
     workspace.insert(0, { 'original_filename' => original_filename, 
                           'id' => id, 
-                          'time' => Time.now.to_i,
+                          'time' => Time.now.to_f,
                           'page_count' => '?',
                           'size' => File.size(filepath)
                         })
