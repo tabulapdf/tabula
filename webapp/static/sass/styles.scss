@@ -372,8 +372,10 @@ div.spinner {
 	top: 10px !important;
 }
 
-#progress-container h4 {
+#progress-container h5 {
 	display: inline-block;
+	font-size: 1.1em;
+	font-weight: bold;
 }
 #progress-container #message {
 	color: #aaa;
