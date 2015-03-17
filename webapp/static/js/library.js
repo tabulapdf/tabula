@@ -20,7 +20,7 @@ Tabula.FileUpload = Backbone.Model.extend({
           dataType: 'json',
           url: '/queue/'+this.get('upload_id')+'/json?file_id=' + this.get('file_id'),
           success: _.bind(function(data, status, xhr) {
-            if(data.message.length || data.pct_complete == 100 ){
+            if( (data.message.length && data.message != "complete") || data.pct_complete == 100 ){
               this.set('message',  data.message);
             } else if(data.pct_complete > 1) {
               this.set('message', 'processing');
@@ -128,21 +128,13 @@ Tabula.ProgressBars = Backbone.View.extend({
       this.in_progress = false;
       if(!$.trim(this.$el.html())) this.$el.html(this.template({}))
     }else if(!this.in_progress){
-      console.log('render', 'not in progress')
       //TODO: this belongs in Library, technically, but we don't go around rerendering that, so here it is for now.
       $('form#upload').find('button').removeAttr('disabled');
-      // Tabula.library.upload_form.render(); // TODO: this should go somewhere else.
+      $('form#upload')[0].reset();
     }
     return this;
   }
 });
-
-Tabula.UploadForm = Backbone.View.extend({
-  template: _.template( $('#upload-form-template').html().replace(/nestedscript/g, 'script')),
-  render: function(){
-    this.$el.html(this.template({}))
-  }
-})
 
 Tabula.Library = Backbone.View.extend({
     events: {
@@ -155,7 +147,6 @@ Tabula.Library = Backbone.View.extend({
       this.files_collection.fetch({silent: true, success: _.bind(function(){ this.render(); this.renderFileLibrary(); }, this) });
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
       this.uploads_collection = new Tabula.FileUploadsCollection([]);
-      // this.upload_form = new Tabula.UploadForm();
     },
     uploadPDF: function(e){
       $(e.currentTarget).find('button').attr('disabled', 'disabled');
@@ -225,15 +216,16 @@ Tabula.Library = Backbone.View.extend({
     },
 
     renderFileLibrary: function(added_model){
-      if(added_model) console.log(added_model);
       if(this.files_collection.length > 0){
         ($('#uploaded-files-container').is(':empty') ? this.files_collection.reverse() : this.files_collection).
         each(_.bind(function(uploaded_file){
           if(this.$el.find('.file-id-' + uploaded_file.get('id') ).length){
             return;
           }
-          var file_element = new Tabula.UploadedFileView({model: uploaded_file}).render().el;
-          if(added_model && added_model.get('id') == uploaded_file.get('id')) $(file_element).addClass('flash');
+          var file_element = new Tabula.UploadedFileView({model: uploaded_file}).render().$el;
+          if(added_model && added_model.get('id') == uploaded_file.get('id')){
+            file_element.addClass('flash');
+          } 
           $('#uploaded-files-container').prepend(file_element);
         }, this));
 
@@ -259,8 +251,6 @@ Tabula.Library = Backbone.View.extend({
         pct_complete: 0,
         importing: false
       }) );
-      // this.upload_form.$el = $('#upload-form-container');
-      // this.upload_form.render();
       return this;
     }
 });
