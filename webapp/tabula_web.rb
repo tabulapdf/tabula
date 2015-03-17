@@ -226,14 +226,13 @@ Cuba.define do
         # if they all fail, return 400...
         res.status = 400 if(statuses.find{|a| a[:success] }.empty? )
         res.write(JSON.dump(statuses))
-      else 
+      else
         STDOUT.puts req.params.keys.inspect
       end
     end
 
     on "pdf/:file_id/data" do |file_id|
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
-        raise IOError
 
       coords = JSON.load(req.params['coords'])
       coords.sort_by! do |coord_set|
