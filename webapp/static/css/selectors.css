@@ -159,11 +159,12 @@ div.table-region button[name=close] {
   padding: 0;
   font-size: 20px;
   position: relative;
-  top: -20px;
+  top: -25px;
   left: 100%;
+  margin-left: 5px;
 }
 
-/* line 137, ../sass/selectors.scss */
+/* line 138, ../sass/selectors.scss */
 div.table-region button[name=close]:hover {
   color: red;
 }

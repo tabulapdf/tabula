@@ -62,15 +62,15 @@
     <div id="templates">
       <script type="text/template" id="page-template" >
         <div class="page" id="page-div-<%= number %>">
-          <img src="<%= image_url %>" draggable="false">
+          <img src="<%= image_url %>" draggable="false" unselectable="on" > <!-- unselectable is for IE/Opera --> 
         </div>
       </script>
       <script type="text/template" id="thumbnail-template" >
         <a href="#page-<%= number %>"><img src="<%= image_url %>"></a>
         <div class="remove">
-          <i class="glyphicon glyphicon-remove delete-page"></i>
-          <!-- i title="rotate this page right" class="icon-repeat rotate-left"></i>
-          <i title="rotate this page left" class="icon-repeat flip rotate-right"></i -->
+          <span class="glyphicon glyphicon-remove delete-page"></span>
+          <!-- <span title="rotate this page right" class="icon-repeat rotate-left"></span>
+          <span title="rotate this page left" class="icon-repeat flip rotate-right"></span> -->
         </div>
         <p><%= number %></p>
       </script>
@@ -81,7 +81,8 @@
             <input type='hidden' class='data-query' name='pdf-name' value='<%=list_of_coords%>' >
             <input type='hidden' class='data-query' name='coords' value='<%=list_of_coords%>' >
           </div>
-          <input class="filename" name="new_filename" value="<%= new_filename || original_filename %>"></input>
+          <!-- <input class="filename" name="new_filename" value="<%= new_filename || original_filename %>"></input> -->
+          <span class="filename"><%= original_filename %></span>
           <label for="format">Export Format:</label>
           <select name="format" <%=disableIfNoData%> class="form-control">
             <option value="csv">CSV</option>
@@ -92,12 +93,12 @@
             <option value="script">Script</option>
           </select>
           <button type="submit" <%=disableIfNoData%> id="download-data" class="btn btn-default" data-action='/pdf/<%=pdf_id%>/data?format=csv'>
-            <i class="glyphicon glyphicon-refresh"></i>
-            <i class="glyphicon glyphicon-download"></i>
+            <span class="glyphicon glyphicon-refresh"></span>
+            <span class="glyphicon glyphicon-download"></span>
             Export
           </button>
           <button type="button" id="copy-csv-to-clipboard" class="btn btn-default" <%=disableIfNoData%> <%=copyDisabled%> >
-            <i class="glyphicon glyphicon-paperclip"></i>
+            <span class="glyphicon glyphicon-paperclip"></span>
              Copy to Clipboard
           </button>
         </form>
@@ -106,9 +107,9 @@
       <script type="text/template" id="select-control-panel-template" >
         <span class="filename"><%= original_filename %></span>
 
-        <a href="javascript:void(0)"><button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disable_detected_tables %>><i class="glyphicon glyphicon-flash"></i><i class="glyphicon glyphicon-refresh"></i> Autodetect Tables</button></a>
-        <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><i class="glyphicon glyphicon-remove-circle"></i> Clear All Selections</button></a>
-        <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><i class="glyphicon glyphicon-eye-open"></i> Preview & Export Extracted Data</button></a>
+        <a href="javascript:void(0)"><button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disable_detected_tables %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button></a>
+        <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
+        <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><span class="glyphicon glyphicon-eye-open"></span> Preview & Export Extracted Data</button></a>
       </script>
 
       <script type="text/template" id="export-page-sidebar-template">
@@ -119,7 +120,7 @@
           <h5>Revise Selected Cells</h5>
           <p>Data has been extracted from the cells you selected in the previous step. You can revise your selection(s) to add or remove cells.</p>
           <p>
-            <button type="button" class="btn btn-default" id="revise-selections"><i class="glyphicon glyphicon-arrow-left"></i> Revise selection(s)</button>
+            <button type="button" class="btn btn-default" id="revise-selections"><span class="glyphicon glyphicon-arrow-left"></span> Revise selection(s)</button>
           </p>
 
           <h5>Choose Alternate Extraction Method</h5>
@@ -127,8 +128,8 @@
           <p>The current preview uses the <strong>Stream</strong> extraction method. If the data is not mapped to the correct cells, try the <strong>Lattice</strong> method instead.</p>
 
           <div class="btn-group" data-toggle="buttons-radio" id="extraction-method-btns" <%=disableExtractionMethodButtons%> >
-            <button type="button" id="original-method-btn" class="btn btn-default extraction-method-btn" data-method="original" ><i class="glyphicon glyphicon-th stream"></i> Stream</button>
-            <button type="button" id="spreadsheet-method-btn" class="btn btn-default extraction-method-btn" data-method="spreadsheet"><i class="glyphicon glyphicon-th lattice"></i> Lattice</button>
+            <button type="button" id="original-method-btn" class="btn btn-default extraction-method-btn" data-method="original" ><span class="glyphicon glyphicon-th stream"></span> Stream</button>
+            <button type="button" id="spreadsheet-method-btn" class="btn btn-default extraction-method-btn" data-method="spreadsheet"><span class="glyphicon glyphicon-th lattice"></span> Lattice</button>
           </div>
 
           <p>
@@ -216,17 +217,46 @@
         </div>
       </script>
 
-      <script type="text/template" id="upload-template">
+
+      <script type="text/template" id="failed-uploads-template">
+        <h4>Failed Uploads</h4>
+        <ol id="failed-uploads">
+
+        </ol>        
+      </script>
+      <script type="text/template" id="failed-uploaded-file-template">
+        <a href='/pdf/<%= id %>'><%= original_filename %></a>: <%= failure_message %>
+      </script>
+
+
+      <script type='text/template' id='file-upload-template'>
+        <h5><%= filename %></h5>
+        <span id="message"><%= message %></span>
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= pct_complete %>%;"><span class="sr-only"> <%= pct_complete %>% Complete </span></div>
+        </div>
+      </script>
+
+      <script type="text/template" id="progress-bars-template">
+        <h4>Upload Progress</h4>
+        <div id="progress-bars-container">
+
+        </div>
+      </script>
+
+      <script type="text/template" id="uploader-template">
         <div class="container">
           <div class="jumbotron">
-              <h4>Import a PDF</h4> <!-- TODO: enable multiple, change this to 'Import one or more PDFs' -->
+
+            <div id="upload-form-container">
+              <h4>Import one or more PDFs</h4>
               <form id="upload" action="/upload.json" method="post" enctype="multipart/form-data" class="form-inline">
 
               <div class="input-group">
               <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
                   <span class="input-group-btn">
                       <span class="btn btn-primary btn-file">
-                          Browse&hellip; <input type="file" id="file" name="file" /* multiple */ accept="application/pdf">
+                          Browse&hellip; <input type="file" id="file" name="files[]" multiple accept="application/pdf">
                       </span>
                   </span>
                   <input type="text" class="form-control" readonly>
@@ -234,15 +264,9 @@
                  <button type="submit" class="btn btn-default">Import</button>
               </form>
 
-              <div id="progress-container">
-                <h4>Upload Progress</h4>
-                <span id="message"></span>
-                <div class="progress">
-                  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= pct_complete %>%;"><span class="sr-only"> <%= pct_complete %>% Complete </span></div>
-                </div>
-
-              </div>
-
+            </div>
+            <div id="progress-container">
+            </div>
               <hr>
 
               <h4>Imported PDFs</h4>
@@ -278,7 +302,7 @@
         <td><%= size ? Math.floor(size / 1024) : '??' %> kB</td>
         <td><%= page_count || '??' %></td>
         <td><%= new Date(parseInt(time) * 1000).toUTCString().slice(5, -7) %></td>
-        <td><a href="javascript:"><i data-filename=<%= original_filename %> data-pdfid=<%= id %> class="glyphicon glyphicon-remove delete-pdf"></i></a></td>
+        <td><a href="javascript:"><span data-filename=<%= original_filename %> data-pdfid=<%= id %> class="glyphicon glyphicon-remove delete-pdf"></span></a></td>
         <td><a href="/pdf/<%= id %>"><button type="button" class="btn btn-sm btn-success">Extract Data</button></a></td>
       </script>
 
@@ -298,7 +322,7 @@
 
       <script type="text/template" id="about-template">
         <div class="container">
-           <a href="https://github.com/tabulapdf/tabula"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+           <a href="https://github.com/tabulapdf/tabula"><img style="z-index: 10000; position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
 
           <div class="jumbotron about">
 
@@ -324,9 +348,25 @@
       <script type="text/template" id="help-template">
         <div class="container">
           <div class="jumbotron help">
-          <h1>Having trouble with Tabula</h1>
+          <h3 name="howto">How to Use Tabula</h3>
+          <ol>
+            <li>Upload a PDF file containing a data table.</li>
+            <li>Select the table by clicking the top left corner of a table and dragging the mouse to the bottom right corner, until all of the data is included in the shaded selection area.</li>
+            <li>A window will then appear containing your data. Inspect the data to make sure it looks correct. If data is missing, you may have to slightly expand your selection.</li>
+            <li>Click the Download button.</li>
+            <li>Now you can work with your data as text file or a spreadsheet rather than a PDF! <br>
+            (You can open the downloaded file in Microsoft Excel or the free <a href="http://www.libreoffice.org/discover/calc/">LibreOffice Calc</a>)<p></p></li>
+          </ol>
+          <p>Note: Tabula only works on text-based PDFs, not scanned documents.</p>
+          <h3 name="trouble">Having trouble with Tabula?</h3>
+          <ol>
+          <li><strong>Tabula said "Sorry, your PDF file is image-based" -- what does that mean?</strong> Your PDF does not have any embedded text. It might have been scanned. Tabula is not able to extract any data from image-based PDFs. You can try OCRing the PDF with a tool like Tesseract and then trying Tabula again.</li>
+          <li><strong>Some columns of my table are combined. What can I do?</strong> Tabula sometimes uses "streams" of whitespace to recreate your table's structure. If headers span multiple columns, they're probably causing a problem. Try excluding them from your selection (or selecting them separately). </li>
+          <li><strong>Some columns of my table are combined. And the headers aren't the problem! What <em>else</em> can I do?</strong> Tabula has two extraction methods. It tries to guess which one is right for document, but it's wrong sometimes. Try selecting the other (of "stream" and "lattice"), on the left in extraction mode, to see if that fixes the problem.</li>
+          <li><strong>Tabula's taking too long!</strong> Sorry! Tabula has to do a lot of weird math to reconstruct your table. Tabula's command-line counterpart, <a href="https://www.github.com/tabulapdf/tabula-extractor">tabula-extractor</a> is faster, but a little harder to use. You might give it a try.</li>
+          <li><strong>I had some other problem!</strong> Sorry! You can <a href="https://www.github.com/tabulapdf/tabula/issues/new">report it to us here</a>. Be sure to send us a <strong>link</strong> to the problematic PDF -- Github doesn't support PDF attachments -- or email it to <a href="/about">one of the Tabula creators.</a> </li>
+          </ol>
 
-          <p> Help text TK </p>
           </div> <!-- /jumbotron -->
         </div> <!-- /container -->
        </script>
