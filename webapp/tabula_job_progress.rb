@@ -36,6 +36,7 @@ class TabulaJobProgress < Cuba
         first_working_job = batch.sort_by{|uuid, job| job.pct_complete}.find { |uuid, job| job.working? }
         first_working_job_with_message = batch.sort_by{|uuid, job| job.pct_complete}.find { |uuid, job| job.working? && !job.message.nil? && !job.message.empty? }
 
+        progress[:messages] = batch.map{|job| (msg = job.last.message).nil? ? nil : msg.first }.compact
         progress[:message] = !first_working_job_with_message.nil? ? first_working_job_with_message.last.message.first : ''
         progress[:status] = !first_working_job.nil? ? first_working_job.last.status['status'] : 'completed'
         progress[:pct_complete] = (batch.inject(0.0) { |sum, (uuid, job)| sum + job.pct_complete } / batch.size).to_i
