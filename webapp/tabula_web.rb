@@ -251,7 +251,6 @@ Cuba.define do
 
     on "pdf/:file_id/data" do |file_id|
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
-        raise IOError
 
       coords = JSON.load(req.params['coords'])
       coords.sort_by! do |coord_set|
