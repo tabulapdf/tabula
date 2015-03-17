@@ -144,7 +144,7 @@ Tabula.Library = Backbone.View.extend({
     initialize: function(){
       _.bindAll(this, 'uploadPDF', 'render', 'renderFileLibrary');
       this.files_collection = new Tabula.UploadedFilesCollection([]);
-      this.files_collection.fetch({silent: true, success: _.bind(function(){ this.render(); this.renderFileLibrary(); }, this) });
+      this.files_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); this.renderFileLibrary(); }, this) });
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
       this.uploads_collection = new Tabula.FileUploadsCollection([]);
     },
