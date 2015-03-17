@@ -152,7 +152,7 @@ Tabula.AutodetectedSelections = Tabula.Selections.extend({
   parse: function(response){
     // a JSON list of pages, which are each just a list of coords
     var tables = [];
-    selections = _(response).map(_.bind(function(page_tables, listIndex){
+    var selections = _(response).map(_.bind(function(page_tables, listIndex){
       var pageIndex = listIndex + 1;
 
       return _(page_tables).map(_.bind(function(tableCoords){
@@ -169,10 +169,10 @@ Tabula.AutodetectedSelections = Tabula.Selections.extend({
           page: pageIndex,
           extraction_method: 'spreadsheet',
           selection_id: null
-        }
+        };
       }, this));
     }, this));
-    return _.select(_.flatten(selections), function(i){ return i});
+    return _.select(_.flatten(selections), function(i){ return i; });
   }
 
 });
@@ -187,7 +187,7 @@ Tabula.Query = Backbone.Model.extend({
 
   initialize: function(){
     // should be inited with list_of_coords
-    _.bindAll(this, 'doQuery', 'setExtractionMethod', 'convertTo', 'convertToCSV', 
+    _.bindAll(this, 'doQuery', 'setExtractionMethod', 'convertTo', 'convertToCSV',
                     'convertToTabulaExtractorScript', 'convertToBoundingBoxJSON');
   },
 
@@ -201,19 +201,14 @@ Tabula.Query = Backbone.Model.extend({
         // break;
         case "bbox":
           return this.convertToBoundingBoxJSON();
-        break;
         case "tsv":
           return this.convertToCSV("\t");
-        break;
         case "csv":
           return this.convertToCSV();
-        break;
         case "💩sv":
           return this.convertToCSV("💩");
-        break;
         case "script":
           return this.convertToTabulaExtractorScript();
-        break;
         default:
           throw Error("Unknown format: " + format);
       }
@@ -232,14 +227,13 @@ Tabula.Query = Backbone.Model.extend({
   },
   convertToTabulaExtractorScript: function(){
     return _(this.get('list_of_coords')).map(function(c){
-        if(c['extraction_method'] == "original"){
-            var extraction_method_switch = "--no-spreadsheet"
-         }else if(c['extraction_method'] == "spreadsheet"){
-            var extraction_method_switch = "--spreadsheet"
-         }else{
-            var extraction_method_switch = ""
+      var extraction_method_switch = "";
+      if(c.extraction_method == "original"){
+          var extraction_method_switch = "--no-spreadsheet";
+      }else if(c.extraction_method == "spreadsheet"){
+           var extraction_method_switch = "--spreadsheet";
          }
-      return "tabula "+extraction_method_switch+" -a "+roundTo(c['y1'], 3)+","+roundTo(c['x1'], 3)+","+roundTo(c['y2'], 3)+","+roundTo(c['x2'], 3)+" -p "+c['page']+" \"$1\""
+      return "tabula "+extraction_method_switch+" -a "+roundTo(c.y1, 3)+","+roundTo(c.x1, 3)+","+roundTo(c.y2, 3)+","+roundTo(c.x2, 3)+" -p "+c.page+" \"$1\"";
     }).join("\n");
   },
 
@@ -251,10 +245,10 @@ Tabula.Query = Backbone.Model.extend({
 
     // print selection coordinates to the console
     // way easier FOR NOW than downloading the script/JSON
-    console.log(_.map(this.get('list_of_coords'), function(l){ return [l.y1, l.x1, l.y2, l.x2].join(', ') }).join("\n") );
+    console.log(_.map(this.get('list_of_coords'), function(l){ return [l.y1, l.x1, l.y2, l.x2].join(', '); }).join("\n") );
 
     // shallow copy the selections collection
-    // so if hte user somehow changes the selections between starting the query and it finishing, 
+    // so if hte user somehow changes the selections between starting the query and it finishing,
     // there isn't an error
     var stashed_selections = new Tabula.Selections(Tabula.pdf_view.pdf_document.selections.models.slice());
 
@@ -320,7 +314,7 @@ Tabula.Query = Backbone.Model.extend({
         return _.pluck(row, 'text');
       }).value();
     })/*.flatten(true)*/.value();
-    return data.length == 1 && data[0].length == 0 ? [] : data; // checking whether there's no data, i.e. data == [[]]
+    return data.length == 1 && data[0].length === 0 ? [] : data; // checking whether there's no data, i.e. data == [[]]
   }
 });
 
@@ -335,7 +329,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     'keyup .filename': 'updateFilename',
     //N.B.: Download button (and format-specific download buttons) are an HTML form, so not handled here.
     //TODO: handle flash clipboard thingy here.
-    // 'click #copy-csv-to-clipboard': 
+    // 'click #copy-csv-to-clipboard':
     'click #revise-selections': 'closeAndRenderSelectionView'
   },
   pdf_view: null, //added on create
@@ -362,11 +356,11 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   updateFilename: function(){
     var new_filename = this.$el.find('#control-panel input.filename').val();
     if(new_filename.length){
-      this.pdf_view.pdf_document.set('new_filename', new_filename)
+      this.pdf_view.pdf_document.set('new_filename', new_filename);
     }
   },
   closeAndRenderSelectionView: function(){
-    window.tabula_router.navigate('pdf/' + PDF_ID)
+    window.tabula_router.navigate('pdf/' + PDF_ID);
     this.$el.empty();
     this.undelegateEvents();
     this.pdf_view.$el.show();
@@ -439,7 +433,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     return this;
   },
 
-  startSpinner: function(){ 
+  startSpinner: function(){
     var SPINNER_OPTS = {
       lines: 10, // The number of lines to draw
       length: 5, // The length of each line
@@ -458,7 +452,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
       top: 'auto', // Top position relative to parent in px
       left: 'auto' // Left position relative to parent in px
     };
-    new Spinner(SPINNER_OPTS).spin($('#spinner').get(0));  
+    new Spinner(SPINNER_OPTS).spin($('#spinner').get(0));
   },
 
   renderFlashClipboardNonsense: function(){
@@ -514,8 +508,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   rectangular_selector: null,
 
   _selectionsGetter: function(target) {
-    // this never worked, remove it, 3/10/2015: return this.pdf_view.pdf_document.selections.findWhere({page_number: $(target).data('page')});
-    return this.page_views[$(target).data('page')].selections;
+    return _(Tabula.pdf_view.pdf_document.selections.where({page_number: $(target).data('page')})).map(function(i){ return i.attributes; });
   },
 
   initialize: function(stuff){
@@ -538,7 +531,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   _onRectangularSelectorEnd: function(d) {
     var page_number = $(d.pageView).data('page');
     var pv = this.page_views[page_number];
-    console.log()
     var rs = new ResizableSelection({
       position: d.absolutePos,
       target: pv.$el.find('img'),
@@ -566,22 +558,22 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   render: function(){
     if(!Tabula.LazyLoad){ // ordinary behavior
       _(this.page_views).each(_.bind(function(page_view, index){
-        var already_on_page = $('#page-' + parseInt(index)+1).length
+        var already_on_page = $('#page-' + parseInt(index)+1).length;
         if(!already_on_page) this.$el.append(page_view.render().el);
       }, this));
     }else{
       //useful in the console for debugging: $('.pdf-page:visible').map(function(i, el){ return $(el).find('img').data('page') }).get();
-      
+
 
       // just so pages end up in the right order, we have to loop AWAY FROM the cursor in both directions
       // so if the cursor is at 1.
-      for (number=Tabula.pdf_view.lazyLoadCursor;number>0;number--){
+      for (var number=Tabula.pdf_view.lazyLoadCursor;number>0;number--){
         var page_view = this.page_views[number];
         if(!page_view) continue; // this is the first render, and there are no pages (probably!)
         var page_el = $('#page-' + number);
         var visible_on_page = page_el.filter(':visible').length;
         if(visible_on_page && Tabula.HideOnLazyLoad){
-          if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
+          if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) >= Tabula.LazyLoad ) {
             $('#page-' + number).hide();
             // console.log('hide', number)
           }
@@ -597,13 +589,13 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
           }
         }
       }
-      for (number=Tabula.pdf_view.lazyLoadCursor+1;number<=_(this.page_views).keys().length;number++){
+      for (var number=Tabula.pdf_view.lazyLoadCursor+1;number<=_(this.page_views).keys().length;number++){
         var page_view = this.page_views[number];
         if(!page_view) continue; // this is the first render, and there are no pages (probably!)
         var page_el = $('#page-' + number);
         var visible_on_page = page_el.filter(':visible').length;
         if(visible_on_page && Tabula.HideOnLazyLoad){
-          if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
+          if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) >= Tabula.LazyLoad ) {
             $('#page-' + number).hide();
             // console.log('hide', number)
           }
@@ -618,7 +610,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
             }
           }
         }
-      } 
+      }
     }
     return this;
   }
@@ -642,7 +634,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
   initialize: function(stuff){
     this.pdf_view = stuff.pdf_view;
-    this.selections = [];
     _.bindAll(this, 'rotate_page', 'createTables',
       '_onSelectStart', '_onSelectChange', '_onSelectEnd', '_onSelectCancel', 'render');
   },
@@ -674,7 +665,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
                             .attr('data-rotation', this.model.get('rotation'));
         this.$image = this.$el.find('img');
       }
-    },this), 1000)
+    },this), 1000);
 
     return this;
   },
@@ -699,7 +690,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     var sel = Tabula.pdf_view.pdf_document.selections.updateOrCreateByVendorSelectorId(selection,
                                                                             this.model.get('number'),
                                                                             this.$image.width());
-    this.selections.push(selection);
 
     // deal with invalid/too-small selections somehow (including thumbnails)
     if (selection.width === 0 && selection.height === 0) {
@@ -723,9 +713,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     // remove repeat lassos button
     var but_id = this.$image.attr('id') + '-' + selection.id;
     $('button#' + but_id).remove();
-
-    this.selections = _.without(this.selections,
-                                _.findWhere(this.selections, { id: selection.id}));
 
     // find and remove the canceled selection from the collection of selections. (triggering remove events).
     var sel = Tabula.pdf_view.pdf_document.selections.get(selection.id);
@@ -762,12 +749,11 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   clearAllSelections: function(){
-    _.each(this.pdf_view.components.document_view.page_views,
-           function(pv,i,l) {
-             _.each(pv.selections, function(s, j, sels) {
-              s.remove();
-             });
-           });
+    _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ i.attributes.remove(); });
+    Tabula.pdf_view.pdf_document.selections.reset([]);
+    // reset doesn't trigger the right events because we have to remove from the collection and from the page (with selection.remove())
+    // we can't use _.each because we're mutating the collection that we're iterating over
+    // ugh
   },
 
   restoreDetectedTables: function(){
@@ -780,7 +766,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   initialize: function(stuff){
     this.pdf_view = stuff.pdf_view;
     _.bindAll(this, 'queryAllData', 'render');
-    this.listenTo(this.pdf_view.pdf_document, 'sync', this.render )
+    this.listenTo(this.pdf_view.pdf_document, 'sync', this.render );
   },
 
   queryAllData : function(){
@@ -812,7 +798,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 
                   // three states: autodetection still incomplete, autodetection done but no tables found, autodetection done and tables found
                   'restore_detected_tables': this.pdf_view.hasAutodetectedTables ? "autodetect-finished" : "autodetect-in-progress",
-                  'disable_detected_tables': numOfSelectionsOnPage > 0 || this.pdf_view.pdf_document.autodetected_selections.size() == 0 ? 'disabled="disabled"' : ''
+                  'disable_detected_tables': numOfSelectionsOnPage > 0 || this.pdf_view.pdf_document.autodetected_selections.size() === 0 ? 'disabled="disabled"' : ''
                   })));
     return this;
   },
@@ -831,9 +817,6 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
     this.listenTo(this.collection, 'remove', this.removeThumbnail);
 
     this.listenTo(this.pdf_view.pdf_document.selections, 'sync', this.render);
-    this.listenTo(this.pdf_view.pdf_document.selections, 'reset', _.bind(function(e){
-     _(Tabula.pdf_view.components['document_view'].page_views).each(function(pv){ pv.selections = []; })
-     }, this));
     this.listenTo(this.pdf_view.pdf_document.selections, 'add', this.addSelectionThumbnail); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'change', this.changeSelectionThumbnail); // render a thumbnail selection
     this.listenTo(this.pdf_view.pdf_document.selections, 'remove', this.removeSelectionThumbnail); // remove a thumbnail selection
@@ -856,18 +839,18 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
   render: function(){
     if(!Tabula.LazyLoad){ // ordinary behavior
       _(this.thumbnail_views).each(_.bind(function(thumbnail_view, index){
-        var already_on_page = $('#page-' + parseInt(index)+1).length
+        var already_on_page = $('#page-' + parseInt(index)+1).length;
         if(!already_on_page) this.$el.append(thumbnail_view.render().el);
       }, this));
     }else{
 
-      for (number=Tabula.pdf_view.lazyLoadCursor;number>0;number--){
+      for (var number=Tabula.pdf_view.lazyLoadCursor;number>0;number--){
         var thumbnail_view = this.thumbnail_views[number];
         if(!thumbnail_view) continue; // this is the first render, and there are no pages (or there's a problem!)
         var thumb_el = $('#thumb-page-' + number);
         var visible_on_page = thumb_el.filter(':visible').length;
         if(visible_on_page && Tabula.HideOnLazyLoad){
-          if(! (Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad )) {
+          if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) >= Tabula.LazyLoad ) {
             $('#thumb-page-' + number).hide();
             // console.log('hide', number)
           }
@@ -883,7 +866,7 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
           }
         }
       }
-      for (number=Tabula.pdf_view.lazyLoadCursor+1;number<=_(this.thumbnail_views).keys().length;number++){
+      for (var number=Tabula.pdf_view.lazyLoadCursor+1;number<=_(this.thumbnail_views).keys().length;number++){
         var thumbnail_view = this.thumbnail_views[number];
         if(!thumbnail_view) continue; // this is the first render, and there are no pages (probably!)
         var thumb_el = $('#thumb-page-' + number);
@@ -904,7 +887,7 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
             }
           }
         }
-      } 
+      }
 
     }
 
@@ -946,7 +929,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     // stash some selectors (which don't exist at init)
     this.$img = this.$el.find('img');
     this.img = this.$img[0];
-    this.$img.attr('data-page', this.model.get('number'))
+    this.$img.attr('data-page', this.model.get('number'));
 
     // if user loads a PDF processed in Tabula <= 0.9.7, thumbnails were baked out at
     // a lower resolution, so we'll use those and upscale.
@@ -961,7 +944,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
       this.$img = this.$el.find('img');
       this.img = this.$img[0];
       }
-    },this), 1000)
+    },this), 1000);
 
     return this;
   },
@@ -979,6 +962,9 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     var thumbScale = this.$img ? this.$img.width() / selection.get('imageWidth') : 0;
     var left = parseFloat(this.$el.css('padding-left'));
     var top = parseFloat(this.$el.css('padding-top'));
+
+    // if data has gotten messed up somewhere
+    if(!selection.attributes) return;
 
     var s = selection.attributes.getDims().relativePos;
 
@@ -1033,6 +1019,7 @@ Tabula.PDFView = Backbone.View.extend(
 
       $(document).on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
       $('#sidebar').on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
+      $(window).on('resize', _.throttle(_.bind(this.updateActiveSelections, this), 100, {leading: false}));
 
 
       $('body').
@@ -1045,14 +1032,14 @@ Tabula.PDFView = Backbone.View.extend(
       window.tabula_router.route("pdf/:file_id/extract", function(){
         Tabula.pdf_view.createDataView();
         Tabula.pdf_view.query.doQuery();
-      } )
+      } );
 
       _(['', '/', '/select']).each(function(path_suffix){
-        window.tabula_router.route("pdf/:file_id" + path_suffix, function(){ 
+        window.tabula_router.route("pdf/:file_id" + path_suffix, function(){
           console.log('asfdasfads');
-          Tabula.pdf_view.components['data_view'].closeAndRenderSelectionView() 
-        })
-      })
+          Tabula.pdf_view.components['data_view'].closeAndRenderSelectionView();
+        });
+      });
     },
 
     handleScroll: function(e){
@@ -1101,8 +1088,8 @@ Tabula.PDFView = Backbone.View.extend(
           window.clearTimeout(this.autodetect_timer);
           this.render();
         }, this),
-        error: _.bind(function(){ 
-          console.log("no predetected tables (404 on tables.json)")
+        error: _.bind(function(){
+          console.log("no predetected tables (404 on tables.json)");
           this.autodetect_timer = window.setTimeout(this.checkForAutodetectedTables, 2000);
         }, this)
       });
@@ -1120,7 +1107,7 @@ Tabula.PDFView = Backbone.View.extend(
 
       // TODO: create selection models for pages that aren't lazyloaded, but obviously don't display them.
       if(Tabula.LazyLoad && !pageView){
-        return []
+        return [];
       }
 
       // mimics drawing the selection onto the page
@@ -1199,15 +1186,11 @@ Tabula.PDFView = Backbone.View.extend(
     },
 
     totalSelections: function() {
-      var rv = _.reduce(
-        _.map(
-          _.values(this.components.document_view.page_views),
-          function(pv) { return pv.selections.length; }
-        ),
-        function(m, l) {
-          return m + l;
-        }, 0);
-      return rv;
+      return this.pdf_document.selections.size();
+    },
+
+    updateActiveSelections: function() {
+      console.log(this.pdf_document.selections);
     },
 
     render : function(){
@@ -1238,10 +1221,9 @@ function isElementPartiallyInViewport (el) {
   }
   var rect = el.getBoundingClientRect();
   return (
-      ( (rect.top > 0 && rect.top < (window.innerHeight || document.documentElement.clientHeight) ) || 
-      (rect.bottom < (window.innerHeight || document.documentElement.clientHeight) && rect.bottom > 0) ) /*or $(window).height() */
-      && 
-      ( (rect.left > 0 && rect.left < (window.innerWidth || document.documentElement.clientWidth) ) || 
+      ( (rect.top > 0 && rect.top < (window.innerHeight || document.documentElement.clientHeight) ) ||
+      (rect.bottom < (window.innerHeight || document.documentElement.clientHeight) && rect.bottom > 0) ) && /*or $(window).height() */
+      ( (rect.left > 0 && rect.left < (window.innerWidth || document.documentElement.clientWidth) ) ||
       (rect.right < (window.innerWidth || document.documentElement.clientWidth) && rect.right > 0) ) /*or $(window).height() */
   );
 }
@@ -1257,18 +1239,17 @@ function isElementPartiallyInContainer (el, container) {
   }
   var rect = el.getBoundingClientRect();
   var container_rect = container.getBoundingClientRect();
-  var bounding_rect = {} // the intersection of the viewport and the container
-  bounding_rect.top = Math.max(container_rect.top, 0)
-  bounding_rect.left = Math.max(container_rect.left, 0)
-  bounding_rect.bottom = Math.min(container_rect.bottom, (window.innerHeight || document.documentElement.clientHeight))
-  bounding_rect.right = Math.min(container_rect.right, (window.innerWidth || document.documentElement.clientWidth))
+  var bounding_rect = {}; // the intersection of the viewport and the container
+  bounding_rect.top = Math.max(container_rect.top, 0);
+  bounding_rect.left = Math.max(container_rect.left, 0);
+  bounding_rect.bottom = Math.min(container_rect.bottom, (window.innerHeight || document.documentElement.clientHeight));
+  bounding_rect.right = Math.min(container_rect.right, (window.innerWidth || document.documentElement.clientWidth));
 
   return (
-      ( (rect.top >= bounding_rect.top && rect.top <= (bounding_rect.bottom) ) || 
-      (rect.bottom <= (bounding_rect.bottom) && rect.bottom >= bounding_rect.top) ) 
-      && 
-      ( (rect.left >= bounding_rect.left && rect.left <= (bounding_rect.right) ) || 
-      (rect.right <= (bounding_rect.right) && rect.right >= bounding_rect.left) ) 
+      ( (rect.top >= bounding_rect.top && rect.top <= (bounding_rect.bottom) ) ||
+      (rect.bottom <= (bounding_rect.bottom) && rect.bottom >= bounding_rect.top) ) &&
+      ( (rect.left >= bounding_rect.left && rect.left <= (bounding_rect.right) ) ||
+      (rect.right <= (bounding_rect.right) && rect.right >= bounding_rect.left) )
   );
 }
 
@@ -1290,5 +1271,5 @@ function isElementInViewport (el) {
 }
 
 function roundTo(num, fancymathwordforthenumberofdigitsafterthedecimal){
-  return Math.round(num * Math.pow(10, fancymathwordforthenumberofdigitsafterthedecimal)) / Math.pow(10, fancymathwordforthenumberofdigitsafterthedecimal)
+  return Math.round(num * Math.pow(10, fancymathwordforthenumberofdigitsafterthedecimal)) / Math.pow(10, fancymathwordforthenumberofdigitsafterthedecimal);
 }
