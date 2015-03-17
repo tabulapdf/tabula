@@ -42,7 +42,7 @@ Tabula.FileUpload = Backbone.Model.extend({
             }
           }, this),
           error: function(xhr, status, err) {
-              console.log('err', err);
+              console.log('err', err); //TODO:
           }
       });
     }
@@ -197,12 +197,12 @@ Tabula.Library = Backbone.View.extend({
               }, this))
           }, this),
           error: _.bind(function(a,b,c){ 
-
+            this.uploads_collection.each(function(file_upload){
+              file_upload.message = "Sorry, your file upload could not be processed. ("+a.statusText+")";
+              file_upload.pct_complete = 100;
+              file_upload.error = true;
+            })
             //TODO: cope with multiple
-            this.checker.message = "Sorry, your file upload could not be processed. Please double-check that the file you uploaded is a valid PDF file and try again.";
-            this.checker.pct_complete = 100;
-            this.checker.error = true;
-            this.checker.render();
             $(e.currentTarget).find('button').removeAttr('disabled');
           },this),
           data: formdata,
