@@ -223,7 +223,6 @@ Cuba.define do
             :upload_id => job_batch
         }]))
       elsif req.params['files']
-        puts req.params['files'].inspect
         statuses = req.params['files'].map do |file|
           if is_valid_pdf?(file[:tempfile].path)
             job_batch, file_id = *upload(file)
