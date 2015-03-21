@@ -33,7 +33,8 @@ Tabula.FileUpload = Backbone.Model.extend({
             } else if (data.status == "error" && data.error_type == "no-text") {
                 console.log('no text');
                 window.clearTimeout(this.timer);
-                alert("Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned... Tabula isn't able to extract any data from image-based PDFs. (Though you can try OCRing the PDF with a tool like Tesseract and then trying Tabula again.)") //TODO: something prettier.
+                //TODO: something prettier.
+                alert("Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned... Tabula isn't able to extract any data from image-based PDFs. (Though you can try OCRing the PDF with a tool like Tesseract and then trying Tabula again.)") 
             } else if(data.pct_complete < 100) {
                 this.timer = setTimeout(_.bind(this.checkStatus, this), 1000);
             } else {
@@ -202,7 +203,6 @@ Tabula.Library = Backbone.View.extend({
               file_upload.pct_complete = 100;
               file_upload.error = true;
             })
-            //TODO: cope with multiple
             $(e.currentTarget).find('button').removeAttr('disabled');
           },this),
           data: formdata,
