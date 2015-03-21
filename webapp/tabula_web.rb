@@ -87,10 +87,13 @@ def upload(file)
 
   job_batch = SecureRandom.uuid
 
+  thumbnail_sizes =  [800]
+
   GenerateDocumentDataJob.create(:filepath => filepath,
                                  :original_filename => original_filename,
                                  :id => file_id,
                                  :output_dir => file_path,
+                                 :thumbnail_sizes => thumbnail_sizes,
                                  :batch => job_batch)
 
   DetectTablesJob.create(:filepath => filepath,
@@ -100,7 +103,7 @@ def upload(file)
   GenerateThumbnailJob.create(:file_id => file_id,
                               :filepath => filepath,
                               :output_dir => file_path,
-                              :thumbnail_sizes => [800],
+                              :thumbnail_sizes => thumbnail_sizes,
                               :batch => job_batch)
   return [job_batch, file_id]
 end
