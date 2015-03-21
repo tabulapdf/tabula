@@ -355,6 +355,9 @@ body.page-export {
 					width: 100px;
 					margin-right: 1em;
 					display: inline-block;
+					&.format {
+						width: 130px;
+					}
 				}
 			}
 		}
@@ -439,6 +442,7 @@ div.spinner {
 		display: inline;
 	}
 	.glyphicon-refresh {
+		display: none;
 	}
 }
 
