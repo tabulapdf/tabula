@@ -13,6 +13,9 @@ require 'securerandom'
 require_relative '../lib/jars/tabula-extractor-0.7.4-SNAPSHOT-jar-with-dependencies.jar'
 
 require_relative '../lib/tabula_java_wrapper.rb'
+java_import 'java.io.ByteArrayOutputStream'
+java_import 'java.util.zip.ZipEntry'
+java_import 'java.util.zip.ZipOutputStream'
 
 require_relative './tabula_settings.rb'
 
@@ -69,10 +72,13 @@ def upload(file)
 
   job_batch = SecureRandom.uuid
 
+  thumbnail_sizes =  [800]
+
   GenerateDocumentDataJob.create(:filepath => filepath,
                                  :original_filename => original_filename,
                                  :id => file_id,
                                  :output_dir => file_path,
+                                 :thumbnail_sizes => thumbnail_sizes,
                                  :batch => job_batch)
 
   DetectTablesJob.create(:filepath => filepath,
@@ -82,7 +88,7 @@ def upload(file)
   GenerateThumbnailJob.create(:file_id => file_id,
                               :filepath => filepath,
                               :output_dir => file_path,
-                              :thumbnail_sizes => [800],
+                              :thumbnail_sizes => thumbnail_sizes,
                               :batch => job_batch)
   return [job_batch, file_id]
 end
@@ -202,7 +208,6 @@ Cuba.define do
             :upload_id => job_batch
         }]))
       elsif req.params['files']
-        puts req.params['files'].inspect
         statuses = req.params['files'].map do |file|
           if is_valid_pdf?(file[:tempfile].path)
             job_batch, file_id = *upload(file)
@@ -247,30 +252,57 @@ Cuba.define do
 
       filename =  if req.params['new_filename'] && req.params['new_filename'].strip.size
                     basename = File.basename(req.params['new_filename'], File.extname(req.params['new_filename']))
-                    "tabula-#{basename}.csv"
+                    "tabula-#{basename}"
                   else
-                    "tabula-#{file_id}.csv"
+                    "tabula-#{file_id}"
                   end
 
       case req.params['format']
       when 'csv'
         res['Content-Type'] = 'text/csv'
-        res['Content-Disposition'] = "attachment; filename=\"#{filename}\""
+        res['Content-Disposition'] = "attachment; filename=\"#{filename}.csv\""
         tables.each do |table|
           res.write table.to_csv
         end
       when 'tsv'
         res['Content-Type'] = 'text/tab-separated-values'
-        res['Content-Disposition'] = "attachment; filename=\"#{filename}\""
+        res['Content-Disposition'] = "attachment; filename=\"#{filename}.tsv\""
         tables.each do |table|
           res.write table.to_tsv
         end
+      when 'zip'
+        res['Content-Disposition'] = "attachment; filename=\"#{filename}.zip\""
+
+        # I hate Java, Ruby, JRuby, Zip files, C, umm, computers, Linux, GNU,
+        # parrots-as-gifts, improper climate-control settings, tar, gunzip,
+        # streams, computers, did I say that already? ugh.
+        baos = ByteArrayOutputStream.new;
+        zos = ZipOutputStream.new baos
+
+        tables.each_with_index do |table, index|
+          # via https://stackoverflow.com/questions/23612864/create-a-zip-file-in-memory
+          # /* File is not on the disk, test.txt indicates
+          #    only the file name to be put into the zip */
+          entry = ZipEntry.new("#{filename}-#{index}.csv")
+
+          # /* use more Entries to add more files
+          #    and use closeEntry() to close each file entry */
+          zos.putNextEntry(entry)
+          zos.write(table.to_csv.to_java_bytes) # lol java BITES... 
+          zos.closeEntry()
+        end
+        zos.finish
+        # you know what, I changed my mind about JRuby.
+        # this is actually way easier than it would be in MRE/CRuby.
+        # ahahaha. I get the last laugh now.
+
+        res.write String.from_java_bytes(baos.to_byte_array)
       when 'script'
         # Write shell script of tabula-extractor commands.  $1 takes
         # the name of a file from the command line and passes it
         # to tabula-extractor so the script can be reused on similar pdfs.
         res['Content-Type'] = 'application/x-sh'
-        res['Content-Disposition'] = "attachment; filename=\"#{filename}\""
+        res['Content-Disposition'] = "attachment; filename=\"#{filename}.sh\""
         coords.each do |c|
           extraction_method_switch = if c['extraction_method'] == "original"
                                         "--no-spreadsheet"
@@ -285,7 +317,7 @@ Cuba.define do
         # Write json representation of bounding boxes and pages for
         # use in OCR and other back ends.
         res['Content-Type'] = 'application/json'
-        res['Content-Disposition'] = "attachment; filename=\"#{filename}\""
+        res['Content-Disposition'] = "attachment; filename=\"#{filename}.json\""
         res.write coords.to_json
      else
         res['Content-Type'] = 'application/json'

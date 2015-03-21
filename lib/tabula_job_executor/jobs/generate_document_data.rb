@@ -30,7 +30,8 @@ class GenerateDocumentDataJob < Tabula::Background::Job
                           'id' => id,
                           'time' => Time.now.to_i,
                           'page_count' => '?',
-                          'size' => File.size(filepath)
+                          'size' => File.size(filepath),
+                          'thumbnail_sizes' => options[:thumbnail_sizes]
                         })
 
     at(5, 100, "analyzing PDF text...")

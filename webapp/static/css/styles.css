@@ -370,8 +370,8 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?1425756719);
-  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?&1425756719#iefix) format("embedded-opentype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff2) format("woff2"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff?1425756719) format("woff"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.ttf?1425756719) format("truetype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.svg?1425756719#glyphicons_halflingsregular) format("svg");
+  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?1426901556);
+  src: url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.eot?&1426901556#iefix) format("embedded-opentype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff2) format("woff2"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.woff?1426901556) format("woff"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.ttf?1426901556) format("truetype"), url(webapp/webapp/static/fonts/bootstrap/glyphicons-halflings-regular.svg?1426901556#glyphicons_halflingsregular) format("svg");
 }
 /* line 22, ../../../../../.rbenv/versions/jruby-1.7.15/lib/ruby/gems/shared/gems/bootstrap-sass-3.3.3/assets/stylesheets/bootstrap/_glyphicons.scss */
 .glyphicon {
@@ -9625,34 +9625,38 @@ body.page-export #main-pane #control-panel form .form-control {
   margin-right: 1em;
   display: inline-block;
 }
-/* line 361, ../sass/styles.scss */
+/* line 358, ../sass/styles.scss */
+body.page-export #main-pane #control-panel form .form-control.format {
+  width: 130px;
+}
+/* line 364, ../sass/styles.scss */
 body.page-export #main-pane table {
   margin-top: 2em;
 }
 
-/* line 367, ../sass/styles.scss */
+/* line 370, ../sass/styles.scss */
 .jumbotron.about p {
   font-size: 1.1em;
 }
 
-/* line 371, ../sass/styles.scss */
+/* line 374, ../sass/styles.scss */
 div.spinner {
   top: 10px !important;
 }
 
-/* line 375, ../sass/styles.scss */
+/* line 378, ../sass/styles.scss */
 #progress-container h5 {
   display: inline-block;
   font-size: 1.1em;
   font-weight: bold;
 }
 
-/* line 380, ../sass/styles.scss */
+/* line 383, ../sass/styles.scss */
 #progress-container #message {
   color: #aaa;
 }
 
-/* line 384, ../sass/styles.scss */
+/* line 387, ../sass/styles.scss */
 .autodetect-in-progress .glyphicon-refresh,
 #download-data.download-in-progress .glyphicon-refresh {
   animation: 4s linear 0s normal none infinite running spin;
@@ -9693,31 +9697,35 @@ div.spinner {
     transform: rotate(359deg);
   }
 }
-/* line 425, ../sass/styles.scss */
+/* line 428, ../sass/styles.scss */
 .autodetect-in-progress .glyphicon-flash {
   display: none;
 }
 
-/* line 428, ../sass/styles.scss */
+/* line 431, ../sass/styles.scss */
 .autodetect-finished .glyphicon-flash {
   display: inline;
 }
 
-/* line 431, ../sass/styles.scss */
+/* line 434, ../sass/styles.scss */
 .autodetect-finished .glyphicon-refresh {
   display: none;
 }
 
-/* line 435, ../sass/styles.scss */
+/* line 438, ../sass/styles.scss */
 #download-data.download-in-progress .glyphicon-download {
   display: none;
 }
-/* line 438, ../sass/styles.scss */
+/* line 441, ../sass/styles.scss */
 #download-data .glyphicon-download {
   display: inline;
 }
+/* line 444, ../sass/styles.scss */
+#download-data .glyphicon-refresh {
+  display: none;
+}
 
-/* line 445, ../sass/styles.scss */
+/* line 449, ../sass/styles.scss */
 .flash {
   -moz-animation: flash 2s ease-out;
   -moz-animation-iteration-count: 1;
