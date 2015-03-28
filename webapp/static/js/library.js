@@ -148,6 +148,24 @@ Tabula.Library = Backbone.View.extend({
       this.files_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); this.renderFileLibrary(); }, this) });
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
       this.uploads_collection = new Tabula.FileUploadsCollection([]);
+
+      this.listenTo(Tabula.notification, 'change', this.renderNotification);
+      this.listenTo(Tabula.new_version, 'change', this.renderVersion);
+    },
+    renderNotification: function(){
+      if(_.isEmpty(Tabula.notification.attributes)) return;
+      $('#notification-alert').html(_.template($('#notification-template').html().replace(/nestedscript/g, 'script'))({
+        notification: Tabula.notification.attributes,
+        api_version: Tabula.api_version
+      })).show();
+    },
+    renderVersion: function(){
+      if(_.isEmpty(Tabula.new_version.attributes)) return;
+      console.log('render new version');
+      $('#new-version-alert').html(_.template($('#new-version-template').html().replace(/nestedscript/g, 'script'))({
+        new_release: Tabula.new_version.attributes,
+        api_version: Tabula.api_version
+      })).show();
     },
     uploadPDF: function(e){
       $(e.currentTarget).find('button').attr('disabled', 'disabled');
@@ -251,6 +269,8 @@ Tabula.Library = Backbone.View.extend({
         pct_complete: 0,
         importing: false
       }) );
+      this.renderNotification();
+      this.renderVersion();
       return this;
     }
 });
@@ -300,3 +320,4 @@ Tabula.ProgressBar = Backbone.View.extend({
       return this;
     }
 });
+
