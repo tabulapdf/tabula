@@ -289,7 +289,8 @@ Tabula.Query = Backbone.Model.extend({
             var info = error_html.find('#info').text().trim();
             error_text = [summary, meta, info].join("<br />");
           }
-          this.set('error_message', error_text);
+          var debugging_text = "Tabula API version: " + Tabula.api_version + "\nFilename: " + Tabula.pdf_view.pdf_document.get('original_filename') + "\n" + error_text
+          this.set('error_message', debugging_text);
           this.trigger("tabula:query-error");
           if (options !== undefined && _.isFunction(options.error))
             options.error(resp);
@@ -633,8 +634,8 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     this.pdf_view = stuff.pdf_view;
     _.bindAll(this, 'rotate_page', 'createTables',
       '_onSelectStart', '_onSelectChange', '_onSelectEnd', '_onSelectCancel', 'render');
-    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ console.log('got thumbnail_sizes')});
-    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ console.log('got image_url')});
+    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ this.render(); });
+    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ this.render(); });
   },
 
   render: function(){
@@ -888,6 +889,8 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
 
   initialize: function(){
     _.bindAll(this, 'render', 'createSelectionThumbnail', 'changeSelectionThumbnail', 'removeSelectionThumbnail');
+    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ this.render(); });
+    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ this.render(); });
   },
 
   deletePage: function(){

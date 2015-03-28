@@ -1,7 +1,9 @@
 var Tabula;
 window.Tabula = Tabula || {};
 
-TABULA_VERSION = "TODO";
+Tabula.UI_VERSION = "0.9.9-2015-03-28" // when we make releases, we should remember to up this.
+// I've decided to decouple the UI version from the "API" version in preparation for actually
+// turning htem into different projects.
 
 var TabulaRouter = Backbone.Router.extend({
   routes: {
@@ -67,12 +69,20 @@ var TabulaRouter = Backbone.Router.extend({
   },
 });
 
-if(TABULA_VERSION.slice(0,3) == "rev"){
-  $('#dev-mode-ribbon').show();
+
+Tabula.getVersion = function(){
+  $.getJSON("/version", function(data){
+    Tabula.api_version = data["api"];
+
+    // if(Tabula.api_version.slice(0,3) == "rev"){
+    //   $('#dev-mode-ribbon').show();
+    // }
+
+  })
 }
 
-
 $(function(){
+  Tabula.getVersion();
   window.tabula_router = new TabulaRouter();
   Backbone.history.start({pushState: true});
 });

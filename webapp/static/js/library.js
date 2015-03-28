@@ -247,7 +247,7 @@ Tabula.Library = Backbone.View.extend({
 
     render: function(){
       $('#tabula-app').html( this.template({
-        TABULA_VERSION: TABULA_VERSION,
+        TABULA_VERSION: Tabula.version,
         pct_complete: 0,
         importing: false
       }) );
