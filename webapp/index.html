@@ -245,9 +245,27 @@
         </div>
       </script>
 
+      <script type="text/template" id="new-version-template">
+        <div class="alert alert-warning alert-dismissable" id="update-alert">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>New version!</strong> <a href="<%= new_release.html_url %>">Tabula <span id="new-version"><%= new_release.name %></span></a> is available (you have <span id="installed-version"><%= api_version %></span>)
+        </div>
+      </script>
+
+      <script type="text/template" id="notification-template">
+        <div class="alert alert-warning alert-dismissable" id="custom-alert">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong><%= notification.name %></strong> <span class="custom-alert-body"><%= notification.body %></span>
+        </div>
+      </script>
+
+
       <script type="text/template" id="uploader-template">
         <div class="container">
           <div class="jumbotron">
+
+            <div id="new-version-alert"></div>
+            <div id="notification-alert"></div>
 
             <div id="upload-form-container">
               <h4>Import one or more PDFs</h4>
