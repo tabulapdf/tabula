@@ -235,6 +235,7 @@ Tabula.Library = Backbone.View.extend({
 
     renderFileLibrary: function(added_model){
       if(this.files_collection.length > 0){
+        $('#library-container').show();
         ($('#uploaded-files-container').is(':empty') ? this.files_collection.reverse() : this.files_collection).
         each(_.bind(function(uploaded_file){
           if(this.$el.find('.file-id-' + uploaded_file.get('id') ).length){
@@ -259,7 +260,11 @@ Tabula.Library = Backbone.View.extend({
           sortList: [[3,1]]  // initial sort
           } ); 
       }else{
-        $('#uploaded-files-container').html( $('<p>No uploaded files yet.</p>') );
+        $('#library-container').hide();
+        $('#library-container').
+          after(_.template( $('#help-template').html().replace(/nestedscript/g, 'script') )({})).
+          after('<h1>First time using Tabula? Welcome!</h1>');
+        $('.jumbotron.help').css('padding-top', '10px');
       }
     },
 
