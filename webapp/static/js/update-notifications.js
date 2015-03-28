@@ -28,7 +28,7 @@ $(function() {
          function(data) {
            if (data.length < 1) return;
            // check if new version
-           var i = data.map(function(d) { return d.name; }).indexOf(TABULA_VERSION);
+           var i = data.map(function(d) { return d.name; }).indexOf(Tabula.api_version);
            // if index >= 1, current release is not the newest
            if (i == 0) return;
            var new_release = data[0];
@@ -55,7 +55,7 @@ $(function() {
             return false;
           }
           if( d.versions && d.versions.length > 0){
-            return (d.versions.indexOf(TABULA_VERSION) > -1);
+            return (d.versions.indexOf(Tabula.api_version) > -1);
           }else{
             return true;
           }
