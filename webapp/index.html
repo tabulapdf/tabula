@@ -78,7 +78,7 @@
       <script type="text/template" id="export-control-panel-template">
         <form id="download-form" action="/pdf/<%=pdf_id%>/data?format=csv" method="post">
           <div id="hidden-fields">
-            <input type='hidden' class='data-query' name='pdf-name' value='<%=list_of_coords%>' >
+            <input type='hidden' class='data-query' name='new_filename' value='<%=original_filename%>' >
             <input type='hidden' class='data-query' name='coords' value='<%=list_of_coords%>' >
           </div>
           <!-- <input class="filename" name="new_filename" value="<%= new_filename || original_filename %>"></input> -->
