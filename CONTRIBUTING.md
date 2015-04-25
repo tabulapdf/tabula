@@ -12,8 +12,8 @@ You can help by:
 - Contributing code via a Pull Request from ideas listed in the [Enhancements](https://github.com/tabulapdf/tabula/labels/enhancement) section of the issues.
 - Spreading the word about Tabula to people who might be able to benefit from using it.
 
-Guidelines for reporting a bug
-------------------------------
+Did you have a problem? Guidelines for reporting a bug
+------------------------------------------------------
 
 Did Tabula not work for you? We'd like to know about it. We'd also like to know if Tabula worked, but wasn't as easy or useful as it could be. Here's what you can tell us to so we can help you better.
 
