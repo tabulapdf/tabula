@@ -34,7 +34,7 @@ Tabula.FileUpload = Backbone.Model.extend({
                 console.log('no text');
                 window.clearTimeout(this.timer);
                 //TODO: something prettier.
-                alert("Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned... Tabula isn't able to extract any data from image-based PDFs. (Though you can try OCRing the PDF with a tool like Tesseract and then trying Tabula again.)") 
+                alert("Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned from paper... Tabula isn't able to extract any data from image-based PDFs. Cliick the Help button for more information.") 
             } else if(data.pct_complete < 100) {
                 this.timer = setTimeout(_.bind(this.checkStatus, this), 1000);
             } else {
