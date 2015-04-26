@@ -32,7 +32,7 @@
         icon="${build.dir}/icons/tabula.icns"
         workingdirectory="$APP_PACKAGE/Contents/Resources"
         jvmversion="1.6+"
-        bundleid="org.nerdpower.tabula.Tabula"
+        bundleid="technology.tabula.Tabula"
         vmoptions="-Xms256M -Xmx1024M -Dfile.encoding=utf-8"
         antialiasedgraphics="true"
         antialiasedtext="true"
