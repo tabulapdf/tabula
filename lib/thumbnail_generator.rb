@@ -19,13 +19,33 @@ class AbstractThumbnailGenerator
     raise ArgumentError if sizes.empty?
     @sizes = sizes.sort.reverse
     @output_directory = output_directory
-    @pages = []
+    @pages = pages
   end
 
   def generate_thumbnails!
     raise 'NotImplemented'
   end
+end
 
+##
+# use /usr/bin/mudraw for faster thumbnail generation
+# useful for hosted instances of Tabula
+class MUDrawThumbnailGenerator < AbstractThumbnailGenerator
+
+  def initialize(pdf_filename, output_directory, sizes=[2048, 560], pages=[], mudraw='/usr/local/bin/mudraw')
+    super(pdf_filename, output_directory, sizes, pages)
+    @pdf_filename = pdf_filename
+    @mudraw = mudraw
+  end
+
+  def generate_thumbnails!
+    @sizes.each_with_index do |size, i|
+      out = File.join(@output_directory, "document_#{size}_%d.png")
+
+      `#{@mudraw} -o "#{out}" -w #{size} "#{@pdf_filename}"`
+      notify_observers(i+1, @sizes.length, "generating page thumbnails...")
+    end
+  end
 end
 
 class JPedalThumbnailGenerator < AbstractThumbnailGenerator
@@ -74,7 +94,8 @@ if __FILE__ == $0
     end
   end
 
-  pdftg = JPedalThumbnailGenerator.new(ARGV[0], '/tmp', [560])
+  #pdftg = JPedalThumbnailGenerator.new(ARGV[0], '/tmp', [560])
+  pdftg = MUDrawThumbnailGenerator.new(ARGV[0], '/tmp', [560])
   pdftg.add_observer(STDERRProgressReporter.new)
   pdftg.generate_thumbnails!
 end
