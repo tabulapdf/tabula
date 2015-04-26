@@ -14,12 +14,12 @@ java_import org.jpedal.fonts.FontMappings
 class AbstractThumbnailGenerator
   include Observable
 
-  def initialize(pdf_filename, output_directory, sizes=[2048, 560], pages=[])
+  def initialize(pdf_filename, output_directory, sizes=[2048, 560])
     raise Errno::ENOENT unless File.directory?(output_directory)
     raise ArgumentError if sizes.empty?
     @sizes = sizes.sort.reverse
     @output_directory = output_directory
-    @pages = pages
+    @pdf_filename = pdf_filename
   end
 
   def generate_thumbnails!
@@ -32,9 +32,8 @@ end
 # useful for hosted instances of Tabula
 class MUDrawThumbnailGenerator < AbstractThumbnailGenerator
 
-  def initialize(pdf_filename, output_directory, sizes=[2048, 560], pages=[], mudraw='/usr/local/bin/mudraw')
+  def initialize(pdf_filename, output_directory, sizes=[2048, 560], mudraw='/usr/local/bin/mudraw')
     super(pdf_filename, output_directory, sizes, pages)
-    @pdf_filename = pdf_filename
     @mudraw = mudraw
   end
 
@@ -49,8 +48,8 @@ class MUDrawThumbnailGenerator < AbstractThumbnailGenerator
 end
 
 class JPedalThumbnailGenerator < AbstractThumbnailGenerator
-  def initialize(pdf_filename, output_directory, sizes=[2048, 560], pages=[])
-    super(pdf_filename, output_directory, sizes, pages)
+  def initialize(pdf_filename, output_directory, sizes=[2048, 560])
+    super(pdf_filename, output_directory, sizes)
     @decoder = PdfDecoder.new(true)
     FontMappings.setFontReplacements
     @decoder.openPdfFile(pdf_filename)
