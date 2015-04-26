@@ -33,7 +33,8 @@ Tabula.FileUpload = Backbone.Model.extend({
             } else if (data.status == "error" && data.error_type == "no-text") {
                 console.log('no text');
                 window.clearTimeout(this.timer);
-                alert("Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned... Tabula isn't able to extract any data from image-based PDFs. (Though you can try OCRing the PDF with a tool like Tesseract and then trying Tabula again.)") //TODO: something prettier.
+                //TODO: something prettier.
+                alert("Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned from paper... Tabula isn't able to extract any data from image-based PDFs. Cliick the Help button for more information.") 
             } else if(data.pct_complete < 100) {
                 this.timer = setTimeout(_.bind(this.checkStatus, this), 1000);
             } else {
@@ -147,6 +148,24 @@ Tabula.Library = Backbone.View.extend({
       this.files_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); this.renderFileLibrary(); }, this) });
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
       this.uploads_collection = new Tabula.FileUploadsCollection([]);
+
+      this.listenTo(Tabula.notification, 'change', this.renderNotification);
+      this.listenTo(Tabula.new_version, 'change', this.renderVersion);
+    },
+    renderNotification: function(){
+      if(_.isEmpty(Tabula.notification.attributes)) return;
+      $('#notification-alert').html(_.template($('#notification-template').html().replace(/nestedscript/g, 'script'))({
+        notification: Tabula.notification.attributes,
+        api_version: Tabula.api_version
+      })).show();
+    },
+    renderVersion: function(){
+      if(_.isEmpty(Tabula.new_version.attributes)) return;
+      console.log('render new version');
+      $('#new-version-alert').html(_.template($('#new-version-template').html().replace(/nestedscript/g, 'script'))({
+        new_release: Tabula.new_version.attributes,
+        api_version: Tabula.api_version
+      })).show();
     },
     uploadPDF: function(e){
       $(e.currentTarget).find('button').attr('disabled', 'disabled');
@@ -202,7 +221,6 @@ Tabula.Library = Backbone.View.extend({
               file_upload.pct_complete = 100;
               file_upload.error = true;
             })
-            //TODO: cope with multiple
             $(e.currentTarget).find('button').removeAttr('disabled');
           },this),
           data: formdata,
@@ -217,6 +235,7 @@ Tabula.Library = Backbone.View.extend({
 
     renderFileLibrary: function(added_model){
       if(this.files_collection.length > 0){
+        $('#library-container').show();
         ($('#uploaded-files-container').is(':empty') ? this.files_collection.reverse() : this.files_collection).
         each(_.bind(function(uploaded_file){
           if(this.$el.find('.file-id-' + uploaded_file.get('id') ).length){
@@ -241,16 +260,22 @@ Tabula.Library = Backbone.View.extend({
           sortList: [[3,1]]  // initial sort
           } ); 
       }else{
-        $('#uploaded-files-container').html( $('<p>No uploaded files yet.</p>') );
+        $('#library-container').hide();
+        $('#library-container').
+          after(_.template( $('#help-template').html().replace(/nestedscript/g, 'script') )({})).
+          after('<h1>First time using Tabula? Welcome!</h1>');
+        $('.jumbotron.help').css('padding-top', '10px');
       }
     },
 
     render: function(){
       $('#tabula-app').html( this.template({
-        TABULA_VERSION: TABULA_VERSION,
+        TABULA_VERSION: Tabula.version,
         pct_complete: 0,
         importing: false
       }) );
+      this.renderNotification();
+      this.renderVersion();
       return this;
     }
 });
@@ -300,3 +325,4 @@ Tabula.ProgressBar = Backbone.View.extend({
       return this;
     }
 });
+

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- TABULA VERSION: ask for it on the console. -->
+<!-- Tabula.api_version : ask for it on the console. -->
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -78,7 +78,7 @@
       <script type="text/template" id="export-control-panel-template">
         <form id="download-form" action="/pdf/<%=pdf_id%>/data?format=csv" method="post">
           <div id="hidden-fields">
-            <input type='hidden' class='data-query' name='pdf-name' value='<%=list_of_coords%>' >
+            <input type='hidden' class='data-query' name='new_filename' value='<%=original_filename%>' >
             <input type='hidden' class='data-query' name='coords' value='<%=list_of_coords%>' >
           </div>
           <!-- <input class="filename" name="new_filename" value="<%= new_filename || original_filename %>"></input> -->
@@ -245,9 +245,27 @@
         </div>
       </script>
 
+      <script type="text/template" id="new-version-template">
+        <div class="alert alert-warning alert-dismissable" id="update-alert">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>New version!</strong> <a href="<%= new_release.html_url %>">Tabula <span id="new-version"><%= new_release.name %></span></a> is available (you have <span id="installed-version"><%= api_version %></span>)
+        </div>
+      </script>
+
+      <script type="text/template" id="notification-template">
+        <div class="alert alert-warning alert-dismissable" id="custom-alert">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong><%= notification.name %></strong> <span class="custom-alert-body"><%= notification.body %></span>
+        </div>
+      </script>
+
+
       <script type="text/template" id="uploader-template">
         <div class="container">
           <div class="jumbotron">
+
+            <div id="new-version-alert"></div>
+            <div id="notification-alert"></div>
 
             <div id="upload-form-container">
               <h4>Import one or more PDFs</h4>
@@ -270,23 +288,25 @@
             </div>
               <hr>
 
-              <h4>Imported PDFs</h4>
+              <div id="library-container">
+                <h4>Imported PDFs</h4>
 
-              <div id="file-list-container">
-              <table class="table file-list tablesorter" id="fileTable">
-                <thead>
-                  <tr>
-                    <th>File Name</th>
-                    <th>Size</th>
-                    <th>Pages</th>
-                    <th>Date Added</th>
-                    <th>Remove</th>
-                    <th>Process</th>
-                  </tr>
-                </thead>
-                <tbody id="uploaded-files-container">
-                </tbody>
-              </table>
+                <div id="file-list-container">
+                <table class="table file-list tablesorter" id="fileTable">
+                  <thead>
+                    <tr>
+                      <th>File Name</th>
+                      <th>Size</th>
+                      <th>Pages</th>
+                      <th>Date Added</th>
+                      <th>Remove</th>
+                      <th>Process</th>
+                    </tr>
+                  </thead>
+                  <tbody id="uploaded-files-container">
+                  </tbody>
+                </table>
+                </div>
               </div>
 
           </div> <!-- /jumbotron -->
@@ -332,7 +352,7 @@
 
             <p>Tabula was created by journalists for journalists and anyone else working with data locked away in PDFs. Tabula will always be free and open source.</p>
             <p>If you’ve ever tried to do anything with data provided to you in PDFs, you know how painful it is — there's no easy way to copy-and-paste rows of data out of PDF files. Tabula allows you to extract that data into a CSV or Microsoft Excel spreadsheet using a simple, easy-to-use interface. Tabula works on Mac, Windows and Linux.</p>
-            <p>Caveat: Tabula only works on text-based PDFs, not scanned documents. If you can click-and-drag to select text in your table in a PDF viewer (even if the output is disorganized trash), then your PDF is text-based and Tabula should work.</p>
+            <p>Caveat: Tabula only works on text-based PDFs, not scanned documents. If you can click-and-drag to select text in your table in a PDF viewer (even if the output is unorganized trash), then your PDF is text-based and Tabula should work.</p>
             <p>Security Concerns? Tabula is designed with security in mind. Your PDF and the extracted data never touch the net -- when you use Tabula, as long as your browser's URL bar says "localhost" or "127.0.0.1", all processing takes place on your local machine. Tabula does download a list of Tabula versions from our server to alert you if Tabula has been updated (and we use hits to that list to count how often Tabula is being used); it also downloads a few badges and assets from the web.</p>
 
             <h2>Who Uses Tabula?</h2>
@@ -361,7 +381,7 @@
           <p>Note: Tabula only works on text-based PDFs, not scanned documents.</p>
           <h3 name="trouble">Having trouble with Tabula?</h3>
           <ol>
-          <li><strong>Tabula said "Sorry, your PDF file is image-based" -- what does that mean?</strong> Your PDF does not have any embedded text. It might have been scanned. Tabula is not able to extract any data from image-based PDFs. You can try OCRing the PDF with a tool like Tesseract and then trying Tabula again.</li>
+          <li><strong>Tabula said "Sorry, your PDF file is image-based" -- what does that mean?</strong> Your PDF does not have any embedded text. It might have been scanned from paper. Tabula is not able to extract any data from image-based PDFs. You can try OCRing the PDF with a tool like Adobe Acrobat Pro (paid), Tesseract, <a href="http://www.tobias-elze.de/pdfsandwich/">PDFSandwich</a> (Mac/Linux, free) or <a href="https://code.google.com/p/lime-ocr/">Lime OCR</a> (Windows, free) and then trying Tabula again.</li>
           <li><strong>Some columns of my table are combined. What can I do?</strong> Tabula sometimes uses "streams" of whitespace to recreate your table's structure. If headers span multiple columns, they're probably causing a problem. Try excluding them from your selection (or selecting them separately). </li>
           <li><strong>Some columns of my table are combined. And the headers aren't the problem! What <em>else</em> can I do?</strong> Tabula has two extraction methods. It tries to guess which one is right for document, but it's wrong sometimes. Try selecting the other (of "stream" and "lattice"), on the left in extraction mode, to see if that fixes the problem.</li>
           <li><strong>Tabula's taking too long!</strong> Sorry! Tabula has to do a lot of weird math to reconstruct your table. Tabula's command-line counterpart, <a href="https://www.github.com/tabulapdf/tabula-extractor">tabula-extractor</a> is faster, but a little harder to use. You might give it a try.</li>

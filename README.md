@@ -6,7 +6,7 @@ Tabula helps you liberate data tables trapped inside PDF files.
 * [Read more about Tabula on OpenNews Source](http://source.mozillaopennews.org/en-US/articles/introducing-tabula/)
 * See also: [tabula-extractor](https://github.com/jazzido/tabula-extractor), a command-line interface for Tabula. (Also, this is the extraction library that powers Tabula.)
 
-© 2012-2014 Manuel Aristarán. Available under MIT License. See
+© 2012-2015 Manuel Aristarán. Available under MIT License. See
 [`AUTHORS.md`](AUTHORS.md) and [`LICENSE.md`](LICENSE.md).
 
 ## Why Tabula?
@@ -60,7 +60,7 @@ If the program fails to run, double-check that you have [Java installed][jre_dow
 and then try again.
 
 [jre_download]: https://www.java.com/download/
-[tabula_dl]: http://jazzido.github.io/tabula/
+[tabula_dl]: http://tabula.technology
 
 Tabula binds to port 8080 by default. You can change it with the `jetty.port` property:
 
@@ -70,6 +70,10 @@ Tabula binds to port 8080 by default. You can change it with the `jetty.port` pr
 ## <a name="knownissues">Known issues</a>
 
 There are some bugs that we're aware of that we haven't managed to fix yet. If there's not a solution here or you need more help, please go ahead and [report an issue](http://www.github.com/jazzido/tabula/issues).
+
+
+* <a name='legacy'>**Legacy Java Environment (SE 6) Is Required:**</a> (Mac):
+  The Mac operating system recently changed how it packages the Java Runtime Environment. If you get this error, download Tabula's ["large experimental" package](https://github.com/tabulapdf/tabula/releases/download/v0.9.7/tabula-mac-0.9.7-large-experimental.zip). This package includes its own Java Runtime Environment and should work without this issue.
 
 * <a name='gatekeeper'>**"Tabula is damaged and can't be opened"** (Mac)</a>:
   If you’re running Mac OS X 10.8 or later, GateKeeper may prevent you from opening
@@ -81,9 +85,6 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
   (If you continue to have issues, double-check the [OS X GateKeeper documentation][gatekeeper] for more information.)
 
 [gatekeeper]: http://support.apple.com/kb/HT5290
-
-* <a name='lines'>**org.jruby.exceptions.RaiseException: (NoMethodError) undefined method `lines' for []:Array**</a> (All platforms): 
-  This error means that the area you selected didn't contain any text or a table that Tabula can understand. You probably have an image-based PDF (or a text-based PDF containing an image of a table). If you upgrade to the [latest version of Tabula](https://github.com/tabulapdf/tabula/releases), you'll get a friendlier error message, but please note that Tabula won't be able to extract any data from image-based PDFs at any point in the near future. (Though you can try OCRing the PDF and then trying Tabula again.)
 
 * <a name='encoding'>**org.jruby.exceptions.RaiseException: (Encoding::CompatibilityError) incompatible character encodings:**</a> (Windows):
   Your Windows computer expects a type of encoding other than Unicode or Windows's English encoding. You can fix this by entering a few simple commands in the Command Prompt. (The commands won't affect anything besides Tabula.)
@@ -215,5 +216,5 @@ You can help by:
 
 - [Reporting a bug](https://github.com/jazzido/tabula).
 - Adding or editing documentation.
-- Contributing code via a Pull Request from ideas or bugs listed in the [Issues](https://github.com/jazzido/tabula/issues) section.
+- Contributing code via a Pull Request from ideas or bugs listed in the [Enhancements](https://github.com/tabulapdf/tabula/labels/enhancement) section of the issues. [see CONTRIBUTING.md]
 - Spreading the word about Tabula to people who might be able to benefit from using it.

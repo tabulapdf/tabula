@@ -80,7 +80,6 @@ Tabula.Selection = Backbone.Model.extend({
     return selection_coords;
   },
 
-  // TODO: Refactor for ResizableSelection
   repeatLassos: function() {
     Tabula.pdf_view.pdf_document.page_collection.each(_.bind(function(page){
       if(this.get('page_number') < page.get('number')){          // for each page after this one,
@@ -149,8 +148,6 @@ Tabula.AutodetectedSelections = Tabula.Selections.extend({
     _.bindAll(this, 'updateOrCreateByVendorSelectorId');
   },
 
-  // TODO: refactor, so that this is only "parsing" logic
-  // the rest (rendering selections) should occur only on Tabula.Selections' reset' event in document_view
   parse: function(response){
     // a JSON list of pages, which are each just a list of coords
     var tables = [];
@@ -282,7 +279,6 @@ Tabula.Query = Backbone.Model.extend({
 
           }, this),
         error: _.bind(function(xhr, status, error) {
-          //TODO: write this.
           console.log("error!", xhr, status);
           var error_text = xhr.responseText;
           window.raw_xhr_responseText = xhr.responseText; // for consoles, etc.
@@ -293,7 +289,8 @@ Tabula.Query = Backbone.Model.extend({
             var info = error_html.find('#info').text().trim();
             error_text = [summary, meta, info].join("<br />");
           }
-          this.set('error_message', error_text);
+          var debugging_text = "Tabula API version: " + Tabula.api_version + "\nFilename: " + Tabula.pdf_view.pdf_document.get('original_filename') + "\n" + error_text
+          this.set('error_message', debugging_text);
           this.trigger("tabula:query-error");
           if (options !== undefined && _.isFunction(options.error))
             options.error(resp);
@@ -345,7 +342,6 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     this.listenTo(this.model, 'tabula:query-start', this.render);
     this.listenTo(this.model, 'tabula:query-success', this.render);
     this.listenTo(this.model, 'tabula:query-error', this.render);
-    // TODO: just destroy the current PDFView (or just hide?) and put this in its place.
   },
   disableDownloadButton: function(){
     $('#download-data').addClass('download-in-progress');
@@ -638,8 +634,8 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     this.pdf_view = stuff.pdf_view;
     _.bindAll(this, 'rotate_page', 'createTables',
       '_onSelectStart', '_onSelectChange', '_onSelectEnd', '_onSelectCancel', 'render');
-    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ console.log('got thumbnail_sizes')});
-    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ console.log('got image_url')});
+    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ this.render(); });
+    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ this.render(); });
   },
 
   render: function(){
@@ -710,11 +706,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       alert('not implemented');
   }
 });
-
-
-/* I'm not sure having a SelectionView makes sense. But,
- * TODO: something needs to manage the repeat lasso button other than the body element.
- */
 
 Tabula.ControlPanelView = Backbone.View.extend({ // only one
   events: {
@@ -898,6 +889,8 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
 
   initialize: function(){
     _.bindAll(this, 'render', 'createSelectionThumbnail', 'changeSelectionThumbnail', 'removeSelectionThumbnail');
+    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ this.render(); });
+    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ this.render(); });
   },
 
   deletePage: function(){
