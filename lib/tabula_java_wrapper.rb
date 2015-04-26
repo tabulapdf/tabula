@@ -1,22 +1,22 @@
 java_import org.apache.pdfbox.pdmodel.PDDocument
 java_import org.apache.pdfbox.pdmodel.encryption.StandardDecryptionMaterial
 
-class Java::OrgNerdpowerTabula::Table
+class Java::TechnologyTabula::Table
   def to_csv
     sb = java.lang.StringBuilder.new
-    org.nerdpower.tabula.writers.CSVWriter.new.write(sb, self)
+    Java::TechnologyTabulaWriters.CSVWriter.new.write(sb, self)
     sb.toString
   end
 
   def to_tsv
     sb = java.lang.StringBuilder.new
-    org.nerdpower.tabula.writers.TSVWriter.new.write(sb, self)
+    Java::TechnologyTabulaWriters.TSVWriter.new.write(sb, self)
     sb.toString
   end
 
   def to_json(*a)
     sb = java.lang.StringBuilder.new
-    org.nerdpower.tabula.writers.JSONWriter.new.write(sb, self)
+    Java::TechnologyTabulaWriters.JSONWriter.new.write(sb, self)
     sb.toString
   end
 end
@@ -38,8 +38,8 @@ module Tabula
     extractor = Extraction::ObjectExtractor.new(pdf_path,
                                                 options[:password])
 
-    sea = org.nerdpower.tabula.extractors.SpreadsheetExtractionAlgorithm.new
-    bea = org.nerdpower.tabula.extractors.BasicExtractionAlgorithm.new
+    sea = Java::TechnologyTabulaExtractors.SpreadsheetExtractionAlgorithm.new
+    bea = Java::TechnologyTabulaExtractors.BasicExtractionAlgorithm.new
 
     Enumerator.new do |y|
       extractor.extract(pages.map { |p| p.to_java(:int) }).each do |page|
@@ -71,7 +71,7 @@ module Tabula
       document
     end
 
-    class ObjectExtractor < org.nerdpower.tabula.ObjectExtractor
+    class ObjectExtractor < Java::TechnologyTabula.ObjectExtractor
 
       alias_method :close!, :close
 
