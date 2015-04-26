@@ -153,6 +153,10 @@ Cuba.define do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
     end
 
+    on 'version' do
+      res.write JSON.dump({api: $TABULA_VERSION})
+    end
+
     on 'pdf/:file_id/metadata.json' do |file_id|
       workspace_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
       raise if !File.exists?(workspace_file)

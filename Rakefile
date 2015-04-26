@@ -12,6 +12,7 @@ Warbler::Task.new("war",
     config.webxml.jruby.compat.version = "1.9"
     config.webxml.jruby.rack.logging = "stderr"
     config.dirs = ['lib', 'webapp']
+    config.override_gem_home = false
   }
 )
 
