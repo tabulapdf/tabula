@@ -213,10 +213,16 @@ Tabula.Query = Backbone.Model.extend({
       }
     }
   },
-  convertToCSV: function(delimiter){
+  convertToCSV: function(delimiter_maybe_undef){
+    var delimiter = typeof delimiter_maybe_undef == "undefined" ? ',' : delimiter_maybe_undef
     var csv = _(this.get('data')).chain().pluck('data').map(function(table){
       return _(table).chain().map(function(row){
-        return _.pluck(row, 'text').join(typeof delimiter == "undefined" ? ',' : delimiter);
+        return _.map(row, function(cell){ 
+          var text = cell.text;
+          text = text.replace("\"", "\\\""); //escape quotes
+          text = text.indexOf(delimiter) > -1 ? "\"" + text + "\"" : text; //enquote cells containing the delimiter.
+          return text;
+        }).join(delimiter);
       }).value();
     }).flatten(true).value().join("\n");
     return csv;
