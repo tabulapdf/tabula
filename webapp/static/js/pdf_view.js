@@ -473,6 +473,13 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
           Tabula.pdf_view.client.on( 'copy', _.bind(function(event) {
             var clipboard = event.clipboardData;
             console.log('clippy thingy clicked', $('#download-form select').val());
+
+            var button_text = this.$el.find("#copy-csv-to-clipboard .clipboard-text");
+            button_text.text("Copied!");
+            window.setTimeout(_.bind(function(){
+              button_text.text("Copy to Clipboard");
+            },this), 2000);
+
             var tableData = Tabula.pdf_view.query.convertTo($('#download-form select').val());
             clipboard.setData( 'text/plain', tableData );
           }, this) );
