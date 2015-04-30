@@ -22,13 +22,13 @@ a Java Runtime Environment compatible with Java 6 or Java 7.
 ### Windows (tabula-win.zip)
 
 Open tabula.exe and a browser should automatically open to
-http://127.0.0.1:8080/ . If not, open your web browser of choice and visit
+http://127.0.0.1:34555/ . If not, open your web browser of choice and visit
 that URL.
 
 ### Mac OS X (tabula-mac.zip)
 
 Open the Tabula app and a browser should automatically open to
-http://127.0.0.1:8080/ . If not, open your web browser of choice and visit
+http://127.0.0.1:34555/ . If not, open your web browser of choice and visit
 that URL.
 
 ### JAR file for Linux/Other (tabula-jar.zip)
