@@ -533,7 +533,11 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
       {
         selector: '#pages-container .pdf-page img',
         end: this._onRectangularSelectorEnd,
-        areas: this._selectionsGetter
+        areas: this._selectionsGetter,
+        validSelection: function(selection) {
+            return (selection.absolutePos.width > $(selection.pageView).width() * 0.01) &&
+                (selection.absolutePos.height > $(selection.pageView).height() * 0.01);
+        }
       }
     );
   },

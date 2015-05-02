@@ -29,6 +29,7 @@
     var start = null;
     var options = _.extend({
       selector: options.selector || 'div.page-view canvas',
+      validSelection: function(selection) { return true; },
       start: function() {},
       end: function() {},
       drag: function() {},
@@ -39,7 +40,7 @@
     this.box = $('<div></div>').addClass('selection-box').appendTo($('body'));
 
     var _mousedown = function(event) {
-      if (event.which !== 1) return;
+      if (event.which !== 1) return false;
       target = this;
       isDragging = true;
       start = { x: event.pageX, y: event.pageY };
@@ -87,25 +88,32 @@
           }
         }
 
-        var cOffset = $(target).offset();
+        var cOffset = $(target).offset(),
+            top = parseFloat(self.box.css('top')),
+            left = parseFloat(self.box.css('left')),
+            width = parseFloat(self.box.css('width')),
+            height = parseFloat(self.box.css('height'));
 
         var d = {
           'absolutePos': _.extend(cOffset,
                                   {
-                                    'top': parseFloat(self.box.css('top')),
-                                    'left': parseFloat(self.box.css('left')),
-                                    'width': parseFloat(self.box.css('width')),
-                                    'height': parseFloat(self.box.css('height'))
+                                    'top': top,
+                                    'left': left,
+                                    'width': width,
+                                    'height': height
                                   }),
           'relativePos': {
-            'width': parseFloat(self.box.css('width')),
-            'height': parseFloat(self.box.css('height')),
-            'top': parseFloat(self.box.css('top')) - cOffset.top,
-            'left': parseFloat(self.box.css('left')) - cOffset.left
+            'width': width,
+            'height': height,
+            'top': top - cOffset.top,
+            'left': left - cOffset.left
           },
           'pageView': targetPageView
         };
-        options.end(d);
+        if (options.validSelection(d)) {
+          options.end(d);
+        }
+
       }
       target = null;
       start = null;
