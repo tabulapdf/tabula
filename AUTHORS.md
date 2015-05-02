@@ -14,3 +14,4 @@ Special thanks to these organizations:
 * ProPublica <http://propublica.org>
 * La Nación <http://www.lanacion.com.ar>
 * The New York Times <http://www.nytimes.com>
+* Knight Lab at Northwestern University <http://knightlab.northwestern.edu/>
