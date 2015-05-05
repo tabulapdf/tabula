@@ -4,7 +4,7 @@
 
 source "https://rubygems.org"
 platform :jruby do
-  gem "cuba"
+  gem "roda"
   gem "rack"
   gem "tilt"
   gem "rufus-lru"

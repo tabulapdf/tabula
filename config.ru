@@ -4,7 +4,7 @@ require 'bundler'
 Bundler.require
 require_relative './webapp/tabula_settings.rb'
 require_relative './webapp/tabula_web.rb'
-run Cuba
+run Roda.app
 
 if "#{$PROGRAM_NAME}".include?("tabula.jar")
   # only do this if running as jar or app. (if "rackup", we don't
@@ -13,7 +13,7 @@ if "#{$PROGRAM_NAME}".include?("tabula.jar")
   require 'java'
 
   # don't do "java_import java.net.URI" -- it conflicts with Ruby URI and
-  # makes Cuba/Rack really really upset. just call "java.*" classes
+  # makes Roda/Rack really really upset. just call "java.*" classes
   # directly.
   port = java.lang.Integer.getInteger('jetty.port', 8080)
   url = "http://127.0.0.1:#{port}"

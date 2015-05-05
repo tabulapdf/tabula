@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-require 'cuba'
-require 'cuba/render'
+require 'roda'
+require 'tilt/erb'
 require 'rufus-lru'
 
 require 'digest/sha1'
@@ -44,12 +44,17 @@ STATIC_ROOT = if defined?($servlet_context)
 
 MAX_CACHE_ENTRIES = 10
 
-Cuba.plugin Cuba::Render
-Cuba.settings[:render].store(:views, File.expand_path("views", File.dirname(__FILE__)))
-Cuba.use Rack::MethodOverride
-Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/swf"]
-Cuba.use Rack::ContentLength
-Cuba.use Rack::Reloader
+Roda.plugin :render, :views=>File.expand_path("views", File.dirname(__FILE__)),
+  :template_opts=>{:default_encoding=>'UTF-8'}
+Roda.plugin :all_verbs
+Roda.plugin :json
+Roda.plugin :delegate
+Roda.request_delegate :on, :is, :delete, :get, :put, :post, :root, :run
+Roda.plugin :default_headers, 'Content-Type'=>"text/html; charset=utf-8"
+Roda.use Rack::MethodOverride
+Roda.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/swf"]
+Roda.use Rack::ContentLength
+Roda.use Rack::Reloader
 
 if TabulaSettings::EXTRACTION_CACHE
   CACHE = Rufus::Lru::SynchronizedHash.new(MAX_CACHE_ENTRIES)
@@ -70,24 +75,26 @@ else
   CACHE = NoCache.new
 end
 
-Cuba.define do
+if TabulaSettings::ENABLE_DEBUG_METHODS
+  require_relative './tabula_debug.rb'
+end
+require_relative './tabula_job_progress.rb'
+
+Roda.route do
 
   if TabulaSettings::ENABLE_DEBUG_METHODS
-    require_relative './tabula_debug.rb'
     on 'debug' do
       run TabulaDebug
     end
   end
 
-
   on 'queue' do
-    require_relative './tabula_job_progress.rb'
     run TabulaJobProgress
   end
 
-  on delete do
+  delete do
 
-    on 'pdf/:file_id/page/:page_number' do |file_id, page_number|
+    is 'pdf/:file_id/page/:page_number' do |file_id, page_number|
       index_fname = File.join(TabulaSettings::DOCUMENTS_BASEPATH,
                               file_id,
                               'pages.json')
@@ -97,7 +104,7 @@ Cuba.define do
     end
 
     # delete an uploaded file
-    on 'pdf/:file_id' do |file_id|
+    is 'pdf/:file_id' do |file_id|
       workspace_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
       raise if !File.exists?(workspace_file)
 
@@ -118,14 +125,14 @@ Cuba.define do
 
   end
 
-  on put do
-    on 'pdf/:file_id/page/:page_number' do |file_id, page_number|
+  put do
+    is 'pdf/:file_id/page/:page_number' do |file_id, page_number|
       # nothing yet
     end
   end
 
-  on get do
-    on root do
+  get do
+    root do
       workspace_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
       workspace = if File.exists?(workspace_file)
                     File.open(workspace_file) { |f| JSON.load(f) }
@@ -133,8 +140,7 @@ Cuba.define do
                     []
                   end
 
-      res.write view("index.html",
-                     workspace: workspace)
+      view("index.html", :locals=>{workspace: workspace})
     end
 
 
@@ -142,43 +148,42 @@ Cuba.define do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
     end
 
-    on "pdf/:file_id" do |file_id|
+    is "pdf/:file_id" do |file_id|
       document_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
-      unless File.directory?(document_dir)
-        res.status = 404
-      else
-        res.write view("pdf_view.html",
+      if File.directory?(document_dir)
+        view("pdf_view.html", :locals=>{
                        pages: File.open(File.join(document_dir, 'pages.json')) { |f|
                          JSON.parse(f.read)
                        },
-                       file_id: file_id)
+                       file_id: file_id})
       end
     end
 
   end # /get
 
-  on post do
-    on 'upload' do
+  post do
+    is 'upload' do
+
+      tempfile_path = request['file'][:tempfile].path
 
       # Make sure this is a PDF, before doing anything
-      unless is_valid_pdf?(req.params['file'][:tempfile].path)
-        res.status = 400
-        res.write view("upload_error.html",
-                       :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
-        next # halt this handler
+      unless is_valid_pdf?(tempfile_path)
+        response.status = 400
+        next view("upload_error.html", :locals=>{
+                       :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>."})
       end
 
-      original_filename = req.params['file'][:filename]
+      original_filename = request['file'][:filename]
       file_id = Digest::SHA1.hexdigest(Time.now.to_s)
       file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
       FileUtils.mkdir(file_path)
       begin
-        FileUtils.mv(req.params['file'][:tempfile].path,
+        FileUtils.mv(tempfile_path,
                      File.join(file_path, 'document.pdf'))
       rescue Errno::EACCES # move fails on windows sometimes
-        FileUtils.cp_r(req.params['file'][:tempfile].path,
+        FileUtils.cp_r(tempfile_path,
                        File.join(file_path, 'document.pdf'))
-        FileUtils.rm_rf(req.params['file'][:tempfile].path)
+        FileUtils.rm_rf(tempfile_path)
 
       end
 
@@ -192,7 +197,7 @@ Cuba.define do
                                          :id => file_id,
                                          :batch => job_batch)
 
-      if req.params['autodetect-tables']
+      if request['autodetect-tables']
         DetectTablesJob.create(:filename => file,
                                :output_dir => file_path,
                                :batch => job_batch)
@@ -208,21 +213,21 @@ Cuba.define do
                                   :thumbnail_sizes => [560],
                                   :batch => job_batch)
 
-      res.redirect "/queue/#{job_batch}?file_id=#{file_id}"
+      request.redirect "/queue/#{job_batch}?file_id=#{file_id}"
     end
 
-    on "pdf/:file_id/data" do |file_id|
+    is "pdf/:file_id/data" do |file_id|
       pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
 
-      coords = JSON.load(req.params['coords'])
+      coords = JSON.load(request['coords'])
       coords.sort_by! do |coord_set|
         [
          coord_set['page'],
          [coord_set['y1'], coord_set['y2']].min.to_i / 10,
          [coord_set['x1'], coord_set['x2']].min ]
       end
-      if ["guess", "spreadsheet", "original"].include?(req.params['extraction_method'])
-        extraction_method_requested = req.params['extraction_method']
+      if ["guess", "spreadsheet", "original"].include?(request['extraction_method'])
+        extraction_method_requested = request['extraction_method']
       else
         extraction_method_requested = "guess"
       end
@@ -242,39 +247,37 @@ Cuba.define do
         end
       end
 
-      case req.params['format']
+      case request['format']
       when 'csv'
-        res['Content-Type'] = 'text/csv'
-        res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.csv\""
+        response['Content-Type'] = 'text/csv'
+        response['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.csv\""
         tables = CACHE[coords_method_key].flatten(1)
         tables.each do |table|
-          res.write table.to_csv
+          response.write table.to_csv
         end
       when 'tsv'
-        res['Content-Type'] = 'text/tab-separated-values'
-        res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.tsv\""
+        response['Content-Type'] = 'text/tab-separated-values'
+        response['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.tsv\""
         tables = CACHE[coords_method_key].flatten(1)
         tables.each do |table|
-          res.write table.to_tsv
+          response.write table.to_tsv
         end
       when 'script'
         # Write shell script of tabula-extractor commands.  $1 takes 
         # the name of a file from the command line and passes it 
         # to tabula-extractor so the script can be reused on similar pdfs.
-        res['Content-Type'] = 'application/x-sh'
-        res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.sh\""
+        response['Content-Type'] = 'application/x-sh'
+        response['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.sh\""
         coords.each do |c|
-          res.write "tabula -a #{c['y1']},#{c['x1']},#{c['y2']},#{c['x2']} -p #{c['page']} \"$1\" \n"
+          response.write "tabula -a #{c['y1']},#{c['x1']},#{c['y2']},#{c['x2']} -p #{c['page']} \"$1\" \n"
         end
       when 'bbox'
         # Write json representation of bounding boxes and pages for 
         # use in OCR and other back ends.
-        res['Content-Type'] = 'application/json'
-        res['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.json\""
-        res.write coords.to_json
+        response['Content-Disposition'] = "attachment; filename=\"tabula-#{file_id}.json\""
+        coords
      else
-        res['Content-Type'] = 'application/json'
-        res.write CACHE[coords_method_key].flatten(1).to_json
+        CACHE[coords_method_key].flatten(1)
       end
     end
   end
