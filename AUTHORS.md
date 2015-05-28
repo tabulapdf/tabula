@@ -5,6 +5,7 @@ The PRIMARY AUTHORS are (and/or have been):
 * Manuel Aristarán - La Nación (Buenos Aires, Argentina), Knight-Mozilla OpenNews
 * Mike Tigas - ProPublica, Knight-Mozilla OpenNews
 * Jeremy B. Merrill - The New York Times (formerly ProPublica)
+* Jason Das, designer <https://jasondas.com>
 * David Frackman
 * Travis Swicegood - Texas Tribune
 
