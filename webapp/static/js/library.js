@@ -33,6 +33,11 @@ Tabula.FileUpload = Backbone.Model.extend({
             } else if (data.status == "error" && data.error_type == "no-text") {
                 console.log('no text');
                 window.clearTimeout(this.timer);
+
+                // resets upload/input form
+                $('form#upload').find('button').removeAttr('disabled');
+                $('form#upload')[0].reset();
+
                 //TODO: something prettier.
                 alert("Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned from paper... Tabula isn't able to extract any data from image-based PDFs. Cliick the Help button for more information.") 
             } else if(data.pct_complete < 100) {
