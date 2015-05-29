@@ -50,7 +50,7 @@ var TabulaRouter = Backbone.Router.extend({
 
   view: function(file_id) {
     $('nav li a').removeClass('active');
-    $('body').prepend( _.template( $('#navbar-template').html().replace(/nestedscript/g, 'script') )({}) ); // navbar.
+    // $('body').prepend( _.template( $('#navbar-template').html().replace(/nestedscript/g, 'script') )({}) ); // navbar.
     $('body').addClass('page-selections')
     $('#tabula-app').html( _.template( $('#pdf-view-template').html().replace(/nestedscript/g, 'script') )({}) );
 
