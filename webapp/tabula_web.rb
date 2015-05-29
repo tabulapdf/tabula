@@ -252,7 +252,7 @@ Cuba.define do
         ]
       end
 
-      tables = Tabula.extract_tables(pdf_path, coords).to_a.flatten(1)
+      tables = Tabula.extract_tables(pdf_path, coords)
 
       filename =  if req.params['new_filename'] && req.params['new_filename'].strip.size
                     basename = File.basename(req.params['new_filename'], File.extname(req.params['new_filename']))
@@ -325,7 +325,16 @@ Cuba.define do
         res.write coords.to_json
      else
         res['Content-Type'] = 'application/json'
-        res.write tables.to_json
+
+        # start JSON array
+        res.write  "["
+        tables.each_with_index do |table, index|
+          res.write ", " if index > 0
+          res.write table.to_json
+        end
+
+        # end JSON array
+        res.write "]"
       end
     end
   end
