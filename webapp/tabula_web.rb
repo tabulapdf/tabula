@@ -28,6 +28,9 @@ require_relative '../lib/tabula_job_executor/jobs/generate_document_data.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
 require_relative '../lib/tabula_job_executor/jobs/detect_tables.rb'
 
+java_import 'java.io.ByteArrayOutputStream'
+java_import 'java.util.zip.ZipEntry'
+java_import 'java.util.zip.ZipOutputStream'
 
 def is_valid_pdf?(path)
   File.open(path, 'r') { |f| f.read(4) } == '%PDF'
