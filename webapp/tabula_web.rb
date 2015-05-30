@@ -50,6 +50,67 @@ Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/swf", "
 Cuba.use Rack::ContentLength
 Cuba.use Rack::Reloader
 
+
+def extract_tables(pdf_path, specs, options={})
+  options = {
+    :password => '',
+    :detect_ruling_lines => true,
+    :extraction_method => "guess",
+    :vertical_rulings => [],
+  }.merge(options)
+
+
+  specs = specs.group_by { |s| s['page'] }
+  pages = specs.keys.sort
+
+  extractor = Tabula::Extraction::ObjectExtractor.new(pdf_path,
+                                                      options[:password])
+
+
+  Enumerator.new do |y|
+    extractor.extract(pages).each do |page|
+      specs[page.number].each do |spec|
+
+        if ["spreadsheet", "original"].include? spec[:extraction_method]
+          use_spreadsheet_extraction_method = spec[:extraction_method] == "spreadsheet"
+        else
+          use_spreadsheet_extraction_method = page.is_tabular?
+        end
+
+        area = page.get_area([spec['y1'], spec['x1'], spec['y2'], spec['x2']])
+
+        if use_spreadsheet_extraction_method
+          y.yield (spreadsheets = area.spreadsheets).empty? ? Spreadsheet.empty(area) : spreadsheets.inject(&:+)
+        else
+          use_detected_lines = false
+          if options[:detect_ruling_lines]
+            detected_vertical_rulings = Tabula::Ruling.crop_rulings_to_area(page.vertical_ruling_lines,
+                                                                            area)
+
+            # only use lines if at least 80% of them cover at least 90%
+            # of the height of area of interest
+
+            # TODO this heuristic SUCKS
+            # what if only a couple columns is delimited with vertical rulings?
+            # ie: https://www.dropbox.com/s/lpydler5c3pn408/S2MNCEbirdisland.pdf (see 7th column)
+            # idea: detect columns without considering rulings, detect vertical rulings
+            # calculate ratio and try to come up with a threshold
+            use_detected_lines = detected_vertical_rulings.size > 2 \
+                                 && (detected_vertical_rulings.count { |vl|
+                                       vl.height / area.height > 0.9
+                                     } / detected_vertical_rulings.size.to_f) >= 0.8
+
+          end
+          y.yield area
+                   .get_table(:vertical_rulings => use_detected_lines ? detected_vertical_rulings : options[:vertical_rulings])
+        end
+      end
+    end
+    extractor.close!
+  end
+end
+
+
 def upload(file)
   original_filename = file[:filename]
   file_id = Digest::SHA1.hexdigest(Time.now.to_s + original_filename) # just SHA1 of time isn't unique with multiple uploads
@@ -180,20 +241,20 @@ Cuba.define do
         unless is_valid_pdf?(req.params['file'][:tempfile].path)
           res.status = 400
           res.write(JSON.dump({
-            :success => false,
-            :filename => req.params['file'][:filename],
-            # :file_id => file_id,
-            # :upload_id => job_batch,
-            :error => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. Please try again."
-            }))
+                                :success => false,
+                                :filename => req.params['file'][:filename],
+                                # :file_id => file_id,
+                                # :upload_id => job_batch,
+                                :error => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. Please try again."
+                              }))
           next # halt this handler
         end
 
         res.write(JSON.dump([{
-            :success => true,
-            :file_id => file_id,
-            :upload_id => job_batch
-        }]))
+                               :success => true,
+                               :file_id => file_id,
+                               :upload_id => job_batch
+                             }]))
       elsif req.params['files']
         statuses = req.params['files'].map do |file|
           if is_valid_pdf?(file[:tempfile].path)
@@ -229,24 +290,13 @@ Cuba.define do
       coords = JSON.load(req.params['coords'])
       coords.sort_by! do |coord_set|
         [
-         coord_set['page'],
-         [coord_set['y1'], coord_set['y2']].min.to_i / 10,
-         [coord_set['x1'], coord_set['x2']].min
+          coord_set['page'],
+          [coord_set['y1'], coord_set['y2']].min.to_i / 10,
+          [coord_set['x1'], coord_set['x2']].min
         ]
       end
 
-      tables = Enumerator.new do |y|
-        coords.each do |coord_set|
-          extraction_method_requested = ["guess", "spreadsheet", "original"].include?(coord_set['extraction_method']) ? coord_set['extraction_method'] : "guess"
-          y.yield Tabula.extract_table(pdf_path,
-                                       coord_set['page'].to_i,
-                                       [coord_set['y1'].to_f,
-                                        coord_set['x1'].to_f,
-                                        coord_set['y2'].to_f,
-                                        coord_set['x2'].to_f],
-                                       {:extraction_method => extraction_method_requested})
-        end
-      end
+      tables = extract_tables(pdf_path, coords)
 
       filename =  if req.params['new_filename'] && req.params['new_filename'].strip.size
                     basename = File.basename(req.params['new_filename'], File.extname(req.params['new_filename']))
@@ -274,7 +324,7 @@ Cuba.define do
         # I hate Java, Ruby, JRuby, Zip files, C, umm, computers, Linux, GNU,
         # parrots-as-gifts, improper climate-control settings, tar, gunzip,
         # streams, computers, did I say that already? ugh.
-        baos = ByteArrayOutputStream.new;
+        baos = ByteArrayOutputStream.new
         zos = ZipOutputStream.new baos
 
         tables.each_with_index do |table, index|
@@ -286,7 +336,7 @@ Cuba.define do
           # /* use more Entries to add more files
           #    and use closeEntry() to close each file entry */
           zos.putNextEntry(entry)
-          zos.write(table.to_csv.to_java_bytes) # lol java BITES... 
+          zos.write(table.to_csv.to_java_bytes) # lol java BITES...
           zos.closeEntry()
         end
         zos.finish
@@ -303,11 +353,11 @@ Cuba.define do
         res['Content-Disposition'] = "attachment; filename=\"#{filename}.sh\""
         coords.each do |c|
           extraction_method_switch = if c['extraction_method'] == "original"
-                                        "--no-spreadsheet"
+                                       "--no-spreadsheet"
                                      elsif c['extraction_method'] == "spreadsheet"
-                                        "--spreadsheet"
+                                       "--spreadsheet"
                                      else
-                                        ""
+                                       ""
                                      end
           res.write "tabula #{extraction_method_switch} -a #{c['y1'].round(3)},#{c['x1'].round(3)},#{c['y2'].round(3)},#{c['x2'].round(3)} -p #{c['page']} \"$1\" \n"
         end
@@ -317,7 +367,7 @@ Cuba.define do
         res['Content-Type'] = 'application/json'
         res['Content-Disposition'] = "attachment; filename=\"#{filename}.json\""
         res.write coords.to_json
-     else
+      else
         res['Content-Type'] = 'application/json'
 
         # start JSON array
