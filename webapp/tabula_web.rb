@@ -71,8 +71,8 @@ def extract_tables(pdf_path, specs, options={})
     extractor.extract(pages).each do |page|
       specs[page.number].each do |spec|
 
-        if ["spreadsheet", "original"].include? spec[:extraction_method]
-          use_spreadsheet_extraction_method = spec[:extraction_method] == "spreadsheet"
+        if ["spreadsheet", "original"].include? spec['extraction_method']
+          use_spreadsheet_extraction_method = spec['extraction_method'] == "spreadsheet"
         else
           use_spreadsheet_extraction_method = page.is_tabular?
         end
