@@ -80,7 +80,7 @@ def extract_tables(pdf_path, specs, options={})
         area = page.get_area([spec['y1'], spec['x1'], spec['y2'], spec['x2']])
 
         if use_spreadsheet_extraction_method
-          y.yield (spreadsheets = area.spreadsheets).empty? ? Spreadsheet.empty(area) : spreadsheets.inject(&:+)
+          y.yield (spreadsheets = area.spreadsheets).empty? ? Tabula::Spreadsheet.empty(area) : spreadsheets.inject(&:+)
         else
           use_detected_lines = false
           if options[:detect_ruling_lines]
