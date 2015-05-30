@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'cuba'
 require 'cuba/render'
-require 'rufus-lru'
 
 require 'digest/sha1'
 require 'json'
@@ -41,33 +40,12 @@ STATIC_ROOT = if defined?($servlet_context)
                 File.join(File.dirname(__FILE__), 'static')
               end
 
-MAX_CACHE_ENTRIES = 10
-
 Cuba.plugin Cuba::Render
 Cuba.settings[:render].store(:views, File.expand_path("views", File.dirname(__FILE__)))
 Cuba.use Rack::MethodOverride
 Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/swf", "/fonts"]
 Cuba.use Rack::ContentLength
 Cuba.use Rack::Reloader
-
-if TabulaSettings::EXTRACTION_CACHE
-  CACHE = Rufus::Lru::SynchronizedHash.new(MAX_CACHE_ENTRIES)
-else
-  # horrid, wrong, disrespectful
-  # sort of a pass-through
-  class NoCache < Hash
-    def [](k)
-      return @k
-    end
-    def []=(k, v)
-      @k = v
-    end
-    def has_key?(k)
-      false
-    end
-  end
-  CACHE = NoCache.new
-end
 
 def upload(file)
   original_filename = file[:filename]
@@ -191,19 +169,6 @@ Cuba.define do
   end # /get
 
   on post do
-    # on 'upload' do
-    #   # Make sure this is a PDF, before doing anything
-    #   unless is_valid_pdf?(req.params['file'][:tempfile].path)
-    #     res.status = 400
-    #     res.write view("upload_error.html",
-    #                    :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
-    #     next # halt this handler
-    #   end
-
-    #   job_batch, file_id = *upload(req)
-    #   res.redirect "/queue/#{job_batch}?file_id=#{file_id}"
-    # end
-
     on 'upload.json' do
       # Make sure this is a PDF, before doing anything
 
@@ -267,22 +232,18 @@ Cuba.define do
         ]
       end
 
-      tables = coords.map do |coord_set|
-        extraction_method_requested = ["guess", "spreadsheet", "original"].include?(coord_set['extraction_method']) ? coord_set['extraction_method'] : "guess"
-        coords_method_key = extraction_method_requested + coord_set.to_s
-        unless CACHE.has_key?(coords_method_key)
-          CACHE[coords_method_key] = Tabula.extract_table(pdf_path,
-                                                         coord_set['page'].to_i,
-                                                         [coord_set['y1'].to_f,
-                                                          coord_set['x1'].to_f,
-                                                          coord_set['y2'].to_f,
-                                                          coord_set['x2'].to_f],
-                                                          {:extraction_method => extraction_method_requested}
-                                                          )
+      tables = Enumerator.new do |y|
+        coords.each do |coord_set|
+          extraction_method_requested = ["guess", "spreadsheet", "original"].include?(coord_set['extraction_method']) ? coord_set['extraction_method'] : "guess"
+          y.yield Tabula.extract_table(pdf_path,
+                                       coord_set['page'].to_i,
+                                       [coord_set['y1'].to_f,
+                                        coord_set['x1'].to_f,
+                                        coord_set['y2'].to_f,
+                                        coord_set['x2'].to_f],
+                                       {:extraction_method => extraction_method_requested})
         end
-        CACHE[coords_method_key]
       end
-      tables = tables.flatten(1)
 
       filename =  if req.params['new_filename'] && req.params['new_filename'].strip.size
                     basename = File.basename(req.params['new_filename'], File.extname(req.params['new_filename']))
@@ -355,7 +316,16 @@ Cuba.define do
         res.write coords.to_json
      else
         res['Content-Type'] = 'application/json'
-        res.write tables.to_json
+
+        # start JSON array
+        res.write  "["
+        tables.each_with_index do |table, index|
+          res.write ", " if index > 0
+          res.write table.to_json
+        end
+
+        # end JSON array
+        res.write "]"
       end
     end
   end
