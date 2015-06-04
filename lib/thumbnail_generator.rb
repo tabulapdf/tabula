@@ -42,6 +42,7 @@ class MUDrawThumbnailGenerator < AbstractThumbnailGenerator
       out = File.join(@output_directory, "document_#{size}_%d.png")
 
       `#{@mudraw} -o "#{out}" -w #{size} "#{@pdf_filename}"`
+      changed
       notify_observers(i+1, @sizes.length, "generating page thumbnails...")
     end
   end
