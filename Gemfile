@@ -7,7 +7,6 @@ platform :jruby do
   gem "cuba"
   gem "rack"
   gem "tilt"
-  gem "rufus-lru"
 
   group :development do
     gem "rake"
