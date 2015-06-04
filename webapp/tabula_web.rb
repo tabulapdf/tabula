@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'cuba'
 require 'cuba/render'
-require 'rufus-lru'
 
 require 'digest/sha1'
 require 'json'
