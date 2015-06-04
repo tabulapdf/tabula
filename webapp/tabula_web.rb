@@ -175,19 +175,6 @@ Cuba.define do
   end # /get
 
   on post do
-    # on 'upload' do
-    #   # Make sure this is a PDF, before doing anything
-    #   unless is_valid_pdf?(req.params['file'][:tempfile].path)
-    #     res.status = 400
-    #     res.write view("upload_error.html",
-    #                    :message => "Sorry, the file you uploaded was not detected as a PDF. You must upload a PDF file. <a href='/'>Please try again</a>.")
-    #     next # halt this handler
-    #   end
-
-    #   job_batch, file_id = *upload(req)
-    #   res.redirect "/queue/#{job_batch}?file_id=#{file_id}"
-    # end
-
     on 'upload.json' do
       # Make sure this is a PDF, before doing anything
 
