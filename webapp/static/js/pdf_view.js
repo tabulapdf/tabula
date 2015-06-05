@@ -571,7 +571,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   },
 
   render: function(){
-    if(!Tabula.LazyLoad){ // ordinary behavior
+    if(!Tabula.LazyLoad){ // old-style, non-lazyload behavior
       _(this.page_views).each(_.bind(function(page_view, index){
         var already_on_page = $('#page-' + parseInt(index)+1).length;
         if(!already_on_page) this.$el.append(page_view.render().el);
@@ -968,7 +968,7 @@ Tabula.PDFView = Backbone.View.extend(
     },
     lastQuery: [{}],
     pageCount: undefined,
-    lazyLoadCursor: 1, // 0 is invalid, because pages are one-indexed
+    lazyLoadCursor:  parseInt(window.location.hash.replace("#page-", '')) || 1, // 0 is invalid, because pages are one-indexed
     components: {},
 
     hasAutodetectedTables: false,
