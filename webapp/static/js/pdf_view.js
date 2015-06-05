@@ -698,7 +698,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     // if this is not the last page
     if(this.model != this.model.collection.last()) {
       var but_id = this.model.get('number') + '-' + selection.id;  //create a "Repeat this Selection" button
-      var button = $('<button class="btn repeat-lassos" id="'+but_id+'">Repeat this Selection</button>');
+      var button = $('<button class="btn btn-default repeat-lassos" id="'+but_id+'">Repeat this Selection</button>');
       button.data("selectionId", selection.id);
       selection.$el.append(button);
     }
