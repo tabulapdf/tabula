@@ -475,3 +475,13 @@ div.spinner {
     50% { background-color:#fbf8b2;}        
     100% {background-color:none;}
 }
+
+
+#loading {
+	padding-left: 30px;
+	#spinner {
+		position: relative;
+		top: 6px;
+		margin-right: 5px;
+	}
+}
