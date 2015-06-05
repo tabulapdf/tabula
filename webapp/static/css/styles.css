@@ -9558,6 +9558,14 @@ form {
   z-index: 1;
 }
 /* line 280, ../sass/styles.scss */
+#main-pane .pdf-page {
+  position: relative;
+}
+/* line 282, ../sass/styles.scss */
+#main-pane .pdf-page .page-number {
+  position: absolute;
+}
+/* line 286, ../sass/styles.scss */
 #main-pane .page {
   width: 100%;
   max-width: 800px;
@@ -9567,7 +9575,7 @@ form {
   position: relative;
   margin: 0 auto;
 }
-/* line 287, ../sass/styles.scss */
+/* line 293, ../sass/styles.scss */
 #main-pane .page img {
   margin: 2em 0;
   display: block;
@@ -9579,16 +9587,16 @@ form {
   -webkit-user-select: none;
   -ms-user-select: none;
 }
-/* line 293, ../sass/styles.scss */
+/* line 299, ../sass/styles.scss */
 #main-pane .page img:hover {
   cursor: crosshair;
 }
-/* line 302, ../sass/styles.scss */
+/* line 308, ../sass/styles.scss */
 #main-pane .selection-box, #main-pane .table-region {
   border: 3px dashed rgba(224, 1, 1, 0.6);
   background: rgba(224, 1, 1, 0.2);
 }
-/* line 305, ../sass/styles.scss */
+/* line 311, ../sass/styles.scss */
 #main-pane .selection-box .selection-panel, #main-pane .table-region .selection-panel {
   display: none;
   position: absolute;
@@ -9596,40 +9604,40 @@ form {
   left: 0;
   min-width: 320px;
 }
-/* line 311, ../sass/styles.scss */
+/* line 317, ../sass/styles.scss */
 #main-pane .selection-box .selection-panel button:hover, #main-pane .table-region .selection-panel button:hover {
   cursor: pointer;
 }
-/* line 315, ../sass/styles.scss */
+/* line 321, ../sass/styles.scss */
 #main-pane .selection-box:hover, #main-pane .table-region:hover {
   cursor: move;
 }
-/* line 317, ../sass/styles.scss */
+/* line 323, ../sass/styles.scss */
 #main-pane .selection-box:hover .selection-panel, #main-pane .table-region:hover .selection-panel {
   display: block;
 }
 
-/* line 325, ../sass/styles.scss */
+/* line 331, ../sass/styles.scss */
 body.page-selections {
   padding-top: 50px;
   background: #777777;
 }
-/* line 328, ../sass/styles.scss */
+/* line 334, ../sass/styles.scss */
 body.page-selections #main-pane {
   background: #777777;
 }
 
-/* line 333, ../sass/styles.scss */
+/* line 339, ../sass/styles.scss */
 body.page-export {
   padding-top: 50px;
   background: white;
 }
-/* line 336, ../sass/styles.scss */
+/* line 342, ../sass/styles.scss */
 body.page-export #sidebar {
   text-align: left;
   padding: .5em;
 }
-/* line 339, ../sass/styles.scss */
+/* line 345, ../sass/styles.scss */
 body.page-export #sidebar .lattice.glyphicon {
   color: #ededed;
   background: #666;
@@ -9637,58 +9645,58 @@ body.page-export #sidebar .lattice.glyphicon {
   border: solid #666;
   border-width: 0 0 1px 1px;
 }
-/* line 347, ../sass/styles.scss */
+/* line 353, ../sass/styles.scss */
 body.page-export #main-pane {
   background: white;
   padding-top: 5.5em;
 }
-/* line 351, ../sass/styles.scss */
+/* line 357, ../sass/styles.scss */
 body.page-export #main-pane #control-panel form {
   display: inline-block;
   margin-bottom: 0;
 }
-/* line 354, ../sass/styles.scss */
+/* line 360, ../sass/styles.scss */
 body.page-export #main-pane #control-panel form .form-control {
   width: 100px;
   margin-right: 1em;
   display: inline-block;
 }
-/* line 358, ../sass/styles.scss */
+/* line 364, ../sass/styles.scss */
 body.page-export #main-pane #control-panel form .form-control.format {
   width: 130px;
 }
-/* line 362, ../sass/styles.scss */
+/* line 368, ../sass/styles.scss */
 body.page-export #main-pane #control-panel form #copy-csv-to-clipboard {
   min-width: 140px;
 }
-/* line 367, ../sass/styles.scss */
+/* line 373, ../sass/styles.scss */
 body.page-export #main-pane table {
   margin-top: 2em;
 }
 
-/* line 373, ../sass/styles.scss */
+/* line 379, ../sass/styles.scss */
 .jumbotron.about p {
   font-size: 1.1em;
 }
 
-/* line 377, ../sass/styles.scss */
+/* line 383, ../sass/styles.scss */
 div.spinner {
   top: 10px !important;
 }
 
-/* line 381, ../sass/styles.scss */
+/* line 387, ../sass/styles.scss */
 #progress-container h5 {
   display: inline-block;
   font-size: 1.1em;
   font-weight: bold;
 }
 
-/* line 386, ../sass/styles.scss */
+/* line 392, ../sass/styles.scss */
 #progress-container #message {
   color: #aaa;
 }
 
-/* line 390, ../sass/styles.scss */
+/* line 396, ../sass/styles.scss */
 .autodetect-in-progress .glyphicon-refresh,
 #download-data.download-in-progress .glyphicon-refresh {
   animation: 4s linear 0s normal none infinite running spin;
@@ -9729,35 +9737,35 @@ div.spinner {
     transform: rotate(359deg);
   }
 }
-/* line 431, ../sass/styles.scss */
+/* line 437, ../sass/styles.scss */
 .autodetect-in-progress .glyphicon-flash {
   display: none;
 }
 
-/* line 434, ../sass/styles.scss */
+/* line 440, ../sass/styles.scss */
 .autodetect-finished .glyphicon-flash {
   display: inline;
 }
 
-/* line 437, ../sass/styles.scss */
+/* line 443, ../sass/styles.scss */
 .autodetect-finished .glyphicon-refresh {
   display: none;
 }
 
-/* line 441, ../sass/styles.scss */
+/* line 447, ../sass/styles.scss */
 #download-data.download-in-progress .glyphicon-download {
   display: none;
 }
-/* line 444, ../sass/styles.scss */
+/* line 450, ../sass/styles.scss */
 #download-data .glyphicon-download {
   display: inline;
 }
-/* line 447, ../sass/styles.scss */
+/* line 453, ../sass/styles.scss */
 #download-data .glyphicon-refresh {
   display: none;
 }
 
-/* line 452, ../sass/styles.scss */
+/* line 458, ../sass/styles.scss */
 .flash {
   -moz-animation: flash 2s ease-out;
   -moz-animation-iteration-count: 1;
@@ -9800,11 +9808,11 @@ div.spinner {
     background-color: none;
   }
 }
-/* line 480, ../sass/styles.scss */
+/* line 486, ../sass/styles.scss */
 #loading {
   padding-left: 30px;
 }
-/* line 482, ../sass/styles.scss */
+/* line 488, ../sass/styles.scss */
 #loading #spinner {
   position: relative;
   top: 6px;

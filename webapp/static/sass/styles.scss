@@ -277,6 +277,12 @@ form {
 	height: 100%;
 	width: calc(100% - 200px);
 	z-index: 1;
+	.pdf-page {
+		position: relative; // used for positioning page numbers
+		.page-number {
+			position: absolute;
+		}
+	}
 	.page {
 		width: 100%;
 		max-width: 800px;
