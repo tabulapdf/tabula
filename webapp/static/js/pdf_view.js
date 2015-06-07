@@ -577,7 +577,8 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
         if(!already_on_page) this.$el.append(page_view.render().el);
       }, this));
     }else{
-      //useful in the console for debugging: $('.pdf-page:visible').map(function(i, el){ return $(el).find('img').data('page') }).get();
+      //useful in the console for debugging: 
+      // $('.pdf-page:visible').map(function(i, el){ return $(el).find('img').data('page') }).get();
 
 
       // just so pages end up in the right order, we have to loop AWAY FROM the cursor in both directions
@@ -599,7 +600,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
               // console.log('show ' + number);
             }else{
               this.$el.prepend(page_view.render().el);
-              // console.log('append ' + number);
             }
           }
         }
@@ -612,7 +612,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
         if(visible_on_page && Tabula.HideOnLazyLoad){
           if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) >= Tabula.LazyLoad ) {
             $('#page-' + number).hide();
-            // console.log('hide', number)
           }
         }else{
           if(Math.abs(Tabula.pdf_view.lazyLoadCursor - number) < Tabula.LazyLoad ) {
@@ -621,7 +620,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
               // console.log('show ' + number);
             }else{
               this.$el.append(page_view.render().el);
-              // console.log('append ' + number);
             }
           }
         }
@@ -988,10 +986,12 @@ Tabula.PDFView = Backbone.View.extend(
       this.listenTo(this.options, 'change', this.options.write);
 
       // we'll never be ~adding~ individual pages, I don't think (hence no 'add' event)
-      this.listenTo(this.pdf_document.page_collection, 'all', this.render);
       this.listenTo(this.pdf_document.page_collection, 'sync', this.addAll);
       this.listenTo(this.pdf_document.page_collection, 'reset', this.addAll);
       this.listenTo(this.pdf_document.page_collection, 'remove', this.removePage);
+      // this caused page ordering issues. Makes me wonder if pdf_view rendering is not idempotent.
+      // anyways, I don't remember why I had this. probably you shouldn't reenable it.
+      // this.listenTo(this.pdf_document.page_collection, 'all', _.bind(function(){ console.log('pdfview render page all'); this.render()}, this));
 
       this.components['document_view'] = new Tabula.DocumentView({el: '#pages-container' , pdf_view: this, collection: this.pdf_document.page_collection}); //creates page_views
       this.components['control_panel'] = new Tabula.ControlPanelView({pdf_view: this});
