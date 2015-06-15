@@ -6,11 +6,9 @@
   <property name="mac.dir" value="${build.dir}/mac" />
   <property name="bigmac.dir" value="${build.dir}/bigmac" />
   <property name="windows.dir" value="${build.dir}/windows" />
-  <property name="full_version" value="0.9.7.0"/>
+  <property name="full_version" value="1.0.0.0"/>
   <property name="launch4j.dir" location="${build.dir}/../launch4j"  />
   <property name="launch4j.bindir" location="${build.dir}/../launch4j/bin" />
-  <!-- TODO: can we make java_home dynamic? -->
-  <property name="java_home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_31.jdk/Contents/Home"/>
 
   <target name="check-jar-exists">
     <available file="${build.dir}/tabula.jar" property="jar.exists"/>
@@ -65,6 +63,10 @@
 
   <target name="bigmacbundle" depends="check-jar-exists" if="jar.exists">
     <mkdir dir="${bigmac.dir}"/>
+
+    <!-- this must be a real JDK -->
+    <property name="java_home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home"/>
+
     <taskdef
         name="bundleapp"
         classname="com.oracle.appbundler.AppBundlerTask"
@@ -83,6 +85,7 @@
         <runtime dir="${java_home}" />
         <classpath file="${build.dir}/tabula.jar" />
         <option value="-Dapple.laf.useScreenMenuBar=true"/>
+        <option value="-Djetty.port=34555"/>
     </bundleapp>
     <exec executable="codesign" os="Mac OS X">
       <!--
@@ -121,7 +124,7 @@
         </classPath>
         <jre minVersion="1.6.0" jdkPreference="preferJre" initialHeapSize="256" maxHeapSize="1024">
           <opt>-Dfile.encoding=utf-8</opt>
-          <opt>-Djetty.port=%TABULA_PORT%</opt>
+          <opt>-Djetty.port=34555</opt>
         </jre>
         <versionInfo
             fileVersion="${full_version}"
