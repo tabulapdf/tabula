@@ -55,7 +55,7 @@
         for production builds, requires Mac Developer Account
         and cert from[1] but allows user to open app without warnings
         [1]: https://developer.apple.com/account/mac/certificate/certificateList.action
-      <arg line="--deep -f -s 'Developer ID Application: Mike Tigas (68QUP6KP2C)' ${build.dir}/mac/Tabula.app" />
+      <arg line="- -deep -f -s 'Developer ID Application: Mike Tigas (334LW6Y4GY)' ${build.dir}/mac/Tabula.app" />
       -->
     </exec>
   </target>
@@ -100,7 +100,7 @@
         for production builds, requires Mac Developer Account
         and cert from[1] but allows user to open app without warnings
         [1]: https://developer.apple.com/account/mac/certificate/certificateList.action
-      <arg line="--deep -f -s 'Developer ID Application: Mike Tigas (68QUP6KP2C)' ${build.dir}/mac/Tabula.app" />
+      <arg line="- -deep -f -s 'Mike Tigas (334LW6Y4GY)' ${build.dir}/bigmac/Tabula.app" />
       -->
     </exec>
   </target>
