@@ -151,6 +151,66 @@ task :macosx => [:create_version_file, :war] do |t|
 end
 
 
+
+task :bigmac => [:create_version_file, :war] do |t|
+  tabula_dir = File.expand_path(File.dirname(__FILE__))
+  build_dir = File.join(tabula_dir, "build")
+  dist_dir = File.join(build_dir, "bigmac", "tabula")
+
+  cd File.join(tabula_dir)
+
+  if File.exist?(File.join(build_dir, "bigmac"))
+    FileUtils.rm_rf(File.join(build_dir, "bigmac"))
+  end
+
+  puts "\n======================================================"
+  puts "Building Mac OS X app..."
+  puts "======================================================\n\n"
+
+  invoke_ant("-Dfull_version=#{build_version}", "-v", "bigmacbundle") { |f|
+    f.each { |line| puts line }
+  }
+
+
+  puts "\n======================================================"
+  puts "Creating zip file bundle..."
+  puts "======================================================\n\n"
+
+  Dir.mkdir(dist_dir)
+
+  app_src = File.join(build_dir, "bigmac", "Tabula.app")
+  app_dst = File.join(dist_dir, "Tabula.app")
+  FileUtils.mv(app_src, app_dst)
+
+  readme_src = File.join(build_dir, "dist-README.txt")
+  readme_dst = File.join(dist_dir, "README.txt")
+  FileUtils.cp(readme_src, readme_dst)
+
+  lic_src = File.join(build_dir, "dist-LICENSE.txt")
+  lic_dst = File.join(dist_dir, "LICENSE.txt")
+  FileUtils.cp(lic_src, lic_dst)
+
+  authors_src = File.join(tabula_dir, "AUTHORS.md")
+  authors_dst = File.join(dist_dir, "AUTHORS.txt")
+  FileUtils.cp(authors_src, authors_dst)
+
+  cd File.join(build_dir, "bigmac")
+  output = File.join(build_dir, "tabula-bigmac-#{build_version}.zip")
+  if File.exists?(output)
+    File.delete(output)
+  end
+
+  IO.popen("zip -r9 #{output} tabula") { |f|
+    f.each { |line| puts line }
+  }
+  FileUtils.rm_rf(dist_dir)
+  puts "\n======================================================"
+  puts "Zip file saved to #{output}"
+  puts "======================================================\n\n"
+end
+
+
+
 task :windows => [:create_version_file, :war] do |t|
   tabula_dir = File.expand_path(File.dirname(__FILE__))
   build_dir = File.join(tabula_dir, "build")
