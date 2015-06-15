@@ -34,7 +34,6 @@ GEM
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
     rubyzip (1.1.7)
-    rufus-lru (1.0.5)
     sass (3.4.13)
     tilt (2.0.1)
     warbler (1.4.7)
@@ -53,6 +52,5 @@ DEPENDENCIES
   jruby-jars (= 1.7.15)
   rack
   rake
-  rufus-lru
   tilt
   warbler
