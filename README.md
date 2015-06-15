@@ -36,8 +36,6 @@ If you have a problem, check [Known Issues](#knownissues) first, then [report an
   To close Tabula, just go back to the console window and press "Control-C"
   (as if to copy).
 
-  If you need Tabula to use a port other than 34555, set the `TABULA_PORT` environment variable.
-
 * ###Mac OS X
   Download `tabula-mac.zip` from [the download site][tabula_dl]. Unzip and open
   the Tabula app inside. A browser should automatically open
