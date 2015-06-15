@@ -8,14 +8,14 @@ run Cuba
 
 if "#{$PROGRAM_NAME}".include?("tabula.jar")
   # only do this if running as jar or app. (if "rackup", we don't
-  # actually use 8080 by default.)
+  # actually use 34555 by default.)
 
   require 'java'
 
   # don't do "java_import java.net.URI" -- it conflicts with Ruby URI and
   # makes Cuba/Rack really really upset. just call "java.*" classes
   # directly.
-  port = java.lang.Integer.getInteger('jetty.port', 8080)
+  port = java.lang.Integer.getInteger('jetty.port', 34555)
   url = "http://127.0.0.1:#{port}"
 
   # Open browser after slight delay. (The server may take a while to actually
