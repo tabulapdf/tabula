@@ -4,10 +4,13 @@
   <property file="build.properties"/>
   <property name="build.dir" value="build"/>
   <property name="mac.dir" value="${build.dir}/mac" />
+  <property name="bigmac.dir" value="${build.dir}/bigmac" />
   <property name="windows.dir" value="${build.dir}/windows" />
   <property name="full_version" value="0.9.7.0"/>
   <property name="launch4j.dir" location="${build.dir}/../launch4j"  />
   <property name="launch4j.bindir" location="${build.dir}/../launch4j/bin" />
+  <!-- TODO: can we make java_home dynamic? -->
+  <property name="java_home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_31.jdk/Contents/Home"/>
 
   <target name="check-jar-exists">
     <available file="${build.dir}/tabula.jar" property="jar.exists"/>
@@ -49,12 +52,52 @@
         [1]: http://support.apple.com/kb/PH7173
         [2]: http://support.apple.com/kb/HT5290
       -->
-      <arg line="-f -s 'Tabula' ${build.dir}/mac/Tabula.app" />
+      <arg line="--deep -f -s 'Tabula' ${build.dir}/mac/Tabula.app" />
       <!--
         for production builds, requires Mac Developer Account
         and cert from[1] but allows user to open app without warnings
         [1]: https://developer.apple.com/account/mac/certificate/certificateList.action
-      <arg line="-f -s 'Developer ID Application: Mike Tigas (68QUP6KP2C)' ${build.dir}/mac/Tabula.app" />
+      <arg line="--deep -f -s 'Developer ID Application: Mike Tigas (68QUP6KP2C)' ${build.dir}/mac/Tabula.app" />
+      -->
+    </exec>
+  </target>
+
+
+  <target name="bigmacbundle" depends="check-jar-exists" if="jar.exists">
+    <mkdir dir="${bigmac.dir}"/>
+    <taskdef
+        name="bundleapp"
+        classname="com.oracle.appbundler.AppBundlerTask"
+        classpath="${build.dir}/appbundler-1.0.jar"
+        />
+
+    <bundleapp
+        outputdirectory="${build.dir}/bigmac"
+        name="Tabula"
+        displayname="Tabula"
+        identifier="org.nerdpower.tabula.Tabula"
+        icon="${build.dir}/icons/tabula.icns"
+        shortversion="${full_version}"
+        mainclassname="WarMain"
+      >
+        <runtime dir="${java_home}" />
+        <classpath file="${build.dir}/tabula.jar" />
+        <option value="-Dapple.laf.useScreenMenuBar=true"/>
+    </bundleapp>
+    <exec executable="codesign" os="Mac OS X">
+      <!--
+        Generate a self-signed "Code Signing" certificate[1] and give it the
+        name "Tabula". User can then right-click or Control-click the app
+        and "Open" and then tell OS X to open anyway[2].
+        [1]: http://support.apple.com/kb/PH7173
+        [2]: http://support.apple.com/kb/HT5290
+      -->
+      <arg line="--deep -f -s 'Tabula' ${build.dir}/bigmac/Tabula.app" />
+      <!--
+        for production builds, requires Mac Developer Account
+        and cert from[1] but allows user to open app without warnings
+        [1]: https://developer.apple.com/account/mac/certificate/certificateList.action
+      <arg line="--deep -f -s 'Developer ID Application: Mike Tigas (68QUP6KP2C)' ${build.dir}/mac/Tabula.app" />
       -->
     </exec>
   </target>
