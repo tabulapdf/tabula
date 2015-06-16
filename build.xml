@@ -42,21 +42,26 @@
         screenmenu="true">
       <jarfilelist dir="${build.dir}" files="tabula.jar" />
     </jarbundler>
+    <!--
+    To allow OSX to use this, you'll need to code sign.
+    Generate a self-signed "Code Signing" certificate[1], then enter
+    it in the -s option here and edit below section. Users can then
+    right-click or Control-click the app and "Open" and then tell OS X to
+    open anyway[2].
+      [1]: http://support.apple.com/kb/PH7173
+      [2]: http://support.apple.com/kb/HT5290
+
+    For production builds, you can get rid of "Unidentified Developer"
+    warnings by having a Mac Developer Account and a cert from[3]. Then
+    change -s option to something like 'Developer ID Application: Mike Tigas (68QUP6KP2C)',
+    based on your Developer Account & cert.
+      [3]: https://developer.apple.com/account/mac/certificate/certificateList.action
+    -->
     <exec executable="codesign" os="Mac OS X">
-      <!--
-        Generate a self-signed "Code Signing" certificate[1] and give it the
-        name "Tabula". User can then right-click or Control-click the app
-        and "Open" and then tell OS X to open anyway[2].
-        [1]: http://support.apple.com/kb/PH7173
-        [2]: http://support.apple.com/kb/HT5290
-      -->
-      <arg line="--deep -f -s 'Tabula' ${build.dir}/mac/Tabula.app" />
-      <!--
-        for production builds, requires Mac Developer Account
-        and cert from[1] but allows user to open app without warnings
-        [1]: https://developer.apple.com/account/mac/certificate/certificateList.action
-      <arg line="- -deep -f -s 'Developer ID Application: Mike Tigas (334LW6Y4GY)' ${build.dir}/mac/Tabula.app" />
-      -->
+      <arg line="-f -s 'Tabula' ${build.dir}/bigmac/Tabula.app/Contents/PlugIns/jdk1.8.0_45.jdk" />
+    </exec>
+    <exec executable="codesign" os="Mac OS X">
+      <arg line="-f -s 'Tabula' ${build.dir}/bigmac/Tabula.app" />
     </exec>
   </target>
 
@@ -87,21 +92,26 @@
         <option value="-Dapple.laf.useScreenMenuBar=true"/>
         <option value="-Djetty.port=34555"/>
     </bundleapp>
+    <!--
+    To allow OSX to use this, you'll need to code sign.
+    Generate a self-signed "Code Signing" certificate[1], then enter
+    it in the -s option here and edit below section. Users can then
+    right-click or Control-click the app and "Open" and then tell OS X to
+    open anyway[2].
+      [1]: http://support.apple.com/kb/PH7173
+      [2]: http://support.apple.com/kb/HT5290
+
+    For production builds, you can get rid of "Unidentified Developer"
+    warnings by having a Mac Developer Account and a cert from[3]. Then
+    change -s option to something like 'Developer ID Application: Mike Tigas (68QUP6KP2C)',
+    based on your Developer Account & cert.
+      [3]: https://developer.apple.com/account/mac/certificate/certificateList.action
+    -->
     <exec executable="codesign" os="Mac OS X">
-      <!--
-        Generate a self-signed "Code Signing" certificate[1] and give it the
-        name "Tabula". User can then right-click or Control-click the app
-        and "Open" and then tell OS X to open anyway[2].
-        [1]: http://support.apple.com/kb/PH7173
-        [2]: http://support.apple.com/kb/HT5290
-      -->
-      <arg line="--deep -f -s 'Tabula' ${build.dir}/bigmac/Tabula.app" />
-      <!--
-        for production builds, requires Mac Developer Account
-        and cert from[1] but allows user to open app without warnings
-        [1]: https://developer.apple.com/account/mac/certificate/certificateList.action
-      <arg line="- -deep -f -s 'Mike Tigas (334LW6Y4GY)' ${build.dir}/bigmac/Tabula.app" />
-      -->
+      <arg line="-f -s 'Tabula' ${build.dir}/bigmac/Tabula.app/Contents/PlugIns/jdk1.8.0_45.jdk" />
+    </exec>
+    <exec executable="codesign" os="Mac OS X">
+      <arg line="-f -s 'Tabula' ${build.dir}/bigmac/Tabula.app" />
     </exec>
   </target>
 
