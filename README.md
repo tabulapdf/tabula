@@ -30,18 +30,16 @@ If you have a problem, check [Known Issues](#knownissues) first, then [report an
 * ### Windows
   Download `tabula-win.zip` from [the download site][tabula_dl]. Unzip the whole thing
   and open the `tabula.exe` file inside. A browser should automatically open
-  to http://127.0.0.1:8080/ . If not, open your web browser of choice and
+  to http://127.0.0.1:34555/ . If not, open your web browser of choice and
   visit that link.
 
   To close Tabula, just go back to the console window and press "Control-C"
   (as if to copy).
 
-  If you need Tabula to use a port other than 8080, set the `TABULA_PORT` environment variable.
-
 * ###Mac OS X
   Download `tabula-mac.zip` from [the download site][tabula_dl]. Unzip and open
   the Tabula app inside. A browser should automatically open
-  to http://127.0.0.1:8080/ . If not, open your web browser of choice and
+  to http://127.0.0.1:34555/ . If not, open your web browser of choice and
   visit that link.
 
   To close Tabula, find the Tabula icon in your dock, right-click (or
@@ -62,7 +60,7 @@ and then try again.
 [jre_download]: https://www.java.com/download/
 [tabula_dl]: http://tabula.technology
 
-Tabula binds to port 8080 by default. You can change it with the `jetty.port` property:
+Tabula binds to port 34555 by default. You can change it with the `jetty.port` property:
 
 `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Djetty.port=9999 -jar tabula.jar`
 
@@ -95,7 +93,7 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
   4. Run Tabula by typing `tabula.exe`
 
 * <a name='portproblems'>**A browser tab opens, but something other than Tabula loads there. Or Tabula doesn't start.**</a>
-  It's possible another program is using port 8080, whichh Tabula binds to by default. You can try closing the other program, or change the port Tabula uses by running Tabula from the terminal with the `jetty.port` property:
+  It's possible another program is using port 34555, whichh Tabula binds to by default. You can try closing the other program, or change the port Tabula uses by running Tabula from the terminal with the `jetty.port` property:
 
   `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Djetty.port=9999 -jar tabula.jar`
 
@@ -164,6 +162,15 @@ To compile the app:
 
 This will result in a portable "tabula_mac.zip" archive (inside the `build` directory)
 for Mac OS X users.
+
+A "large" version of Tabula, which includes Java (so that the user's Java version
+is irrelevant) can be built by doing:
+
+    rake bigmac
+
+This results in a 98MB zip file, versus the 30MB zip file for the normal build,
+but allows users to run Tabula without having to worry about occasional [Java
+incompatibilities](https://github.com/tabulapdf/tabula/issues/237).
 
 [buildxml_cert]: https://github.com/jazzido/tabula/blob/master/build.xml#L44-53
 

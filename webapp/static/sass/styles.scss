@@ -277,6 +277,12 @@ form {
 	height: 100%;
 	width: calc(100% - 200px);
 	z-index: 1;
+	.pdf-page {
+		position: relative; // used for positioning page numbers
+		.page-number {
+			position: absolute;
+		}
+	}
 	.page {
 		width: 100%;
 		max-width: 800px;
@@ -474,4 +480,14 @@ div.spinner {
     0% { background-color:none;}
     50% { background-color:#fbf8b2;}        
     100% {background-color:none;}
+}
+
+
+#loading {
+	padding-left: 30px;
+	#spinner {
+		position: relative;
+		top: 6px;
+		margin-right: 5px;
+	}
 }
