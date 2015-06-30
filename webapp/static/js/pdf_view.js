@@ -1113,7 +1113,9 @@ Tabula.PDFView = Backbone.View.extend(
         resize: _.debounce(pageView._onSelectChange, 100),
         remove: pageView._onSelectCancel
       });
-      pageView.$el.append(vendorSelection.el);
+
+      Tabula.pdf_view.components['document_view'].$el.append(vendorSelection.el);
+
       pageView._onSelectEnd(vendorSelection); // draws the thumbnail
 
       // put the selection into the selections collection
