@@ -10,11 +10,13 @@
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/favicon.ico" />
     <meta name="robots" content="index, follow" />
     <meta name="googlebot" content="index, follow" />
+    <meta property="article:published_time" content="2013-06-16T12:00:00-0500">
+    <meta property="article:modified_time" content="2015-08-06T14:30:00-0500">
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <link rel="canonical" href="http://tabula.nerdpower.org/" />
+    <link rel="canonical" href="http://tabula.technology/" />
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -29,18 +31,26 @@
         <p class="view"><a href="https://github.com/tabulapdf/tabula">View the Project on GitHub <small>tabulapdf/tabula</small></a></p>
 
         <ul>
-          <li><a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/tabulapdf/tabula/releases/download/v0.9.7/tabula-win-0.9.7.zip">Download for <strong>Windows</strong></a></li>
-          <li><a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/tabulapdf/tabula/releases/download/v0.9.7/tabula-mac-0.9.7.zip">Download for <strong>Mac</strong></a></li>
+          <li><a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/tabulapdf/tabula/releases/download/v1.0.0/tabula-win-1.0.0.zip">Download for <strong>Windows</strong></a></li>
+          <li><a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/tabulapdf/tabula/releases/download/v1.0.0/tabula-mac-1.0.0.zip">Download for <strong>Mac</strong></a></li>
           <li><a onclick="ga('send', 'event', 'link', 'download', 'source')" href="https://github.com/tabulapdf/tabula">View source on <strong>GitHub</strong></a></li>
         </ul>
-        <p style="margin-top:-1em"><b>Current Version:</b> <a href="https://github.com/tabulapdf/tabula/releases/v0.9.7">0.9.7</a><br>
-        <!--<p style="margin-top:-1em"><b>Note:</b> Tabula 0.9.7 for Windows was temporarily unavailable due to <a href="https://github.com/tabulapdf/tabula/issues/203">an issue</a>; Windows users can now download <a href="https://github.com/tabulapdf/tabula/releases/v0.9.7">0.9.7</a>.</p>-->
+        <p style="margin-top:-1em"><b>Current Version:</b> <a href="https://github.com/tabulapdf/tabula/releases/v1.0.0">1.0.0</a><br>
 
         <p style="margin-top:-1em"><b>Other Versions:</b> <a href="https://github.com/tabulapdf/tabula/releases">pre-releases &amp; archives</a></p>
 
         <p><strong>Need help?</strong> Open an <a href="https://github.com/tabulapdf/tabula/issues">issue on Github</a>.</p>
         <p>We'd love to hear from you! Say hi on Twitter at <a href="http://twitter.com/TabulaPDF">@TabulaPDF</a></p>
       </header>
+
+      <section aria-role="updates" style="border-bottom: 1px solid #999; margin-bottom: 1em; padding-bottom: 0">
+        <h3>
+          <a ><span class="octicon octicon-link"></span></a>August 6, 2015: Tabula 1.0 has been released!
+        </h3>
+        <p>We're proud to announce the release of Tabula 1.0! This release features an overhaul of the Tabula user interface, designed to make page selection and extraction simpler. Special thanks to the <a href="http://www.knightfoundation.org/">Knight Foundation</a> for supporting this work with their <a href="http://www.knightfoundation.org/funding-initiatives/knight-prototype-fund/">Prototype Fund</a>.</p>
+        <p>Download Tabula 1.0 below, or <a href="https://github.com/tabulapdf/tabula/releases/tag/v1.0.0">read the detailed release notes for this version</a>.</p>
+      </section>
+
       <section aria-role="main">
         <h3>
           <a name="why-tabula" class="anchor" href="#why-tabula"><span class="octicon octicon-link"></span></a>How Can Tabula Help Me?
@@ -57,20 +67,19 @@
       </section>
       <section aria-role="main">
         <h3>
-        <a name="download-install" class="anchor" href="#download-install"><span class="octicon octicon-link"></span></a>How to Install Tabula</h3>
+        <a name="download-install" class="anchor" href="#download-install"><span class="octicon octicon-link"></span></a>Download &amp; Install Tabula</h3>
 
-        <p>Note: You’ll need a copy of <a href="https://www.java.com/download/">Java</a> installed. You can <a href="https://www.java.com/download/">download Java here</a>.</p>
+        <p>Windows &amp; Linux users will need a copy of <a href="https://www.java.com/download/">Java</a> installed. You can <a href="https://www.java.com/download/">download Java here</a>. (Java is included in the Mac version.)</p>
         <ol>
           <li style="margin-bottom:0">Download the version of Tabula for your operating system:</li>
           <ul>
-            <li><b>Windows:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/tabulapdf/tabula/releases/download/v0.9.7/tabula-win-0.9.7.zip">tabula-win.zip</a></li>
-            <li><b>Mac OS X:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/tabulapdf/tabula/releases/download/v0.9.7/tabula-mac-0.9.7.zip">tabula-mac.zip</a>
-              <ul style="margin-bottom:0;padding-bottom:0"><li><i>OS X 10.8+ users</i>: if you have issues opening the app, <a href="https://github.com/tabulapdf/tabula/releases/tag/v0.9.7">see the two notes at bottom of this page</a></li></ul></li>
-            <li><b>Linux/Other:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/tabulapdf/tabula/releases/download/v0.9.7/tabula-jar-0.9.7.zip">tabula-jar.zip</a> (view README.txt inside for instructions)</li>
+            <li><b>Windows:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/tabulapdf/tabula/releases/download/v1.0.0/tabula-win-1.0.0.zip">tabula-win.zip</a> (<a href="https://github.com/tabulapdf/tabula/releases/download/v1.0.0/tabula-win-1.0.0.zip.asc">PGP sig</a>)</li>
+            <li><b>Mac OS X:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/tabulapdf/tabula/releases/download/v1.0.0/tabula-mac-1.0.0.zip">tabula-mac.zip</a> (<a href="https://github.com/tabulapdf/tabula/releases/download/v1.0.0/tabula-mac-1.0.0.zip.asc">PGP sig</a>)</li>
+            <li><b>Linux/Other:</b> <a onclick="var p = this.getAttribute('href').split('/'); ga('send', 'event', 'link', 'download', p[p.length - 1]);" href="https://github.com/tabulapdf/tabula/releases/download/v1.0.0/tabula-jar-1.0.0.zip">tabula-jar.zip</a>  (<a href="https://github.com/tabulapdf/tabula/releases/download/v1.0.0/tabula-jar-1.0.0.zip.asc">PGP sig</a>), view README.txt inside for instructions</li>
           </ul>
           <li>Extract the zip file. (Instructions: <a href="http://windows.microsoft.com/en-us/windows-8/zip-unzip-files">Windows</a>, <a href="http://support.apple.com/kb/PH10915">Mac</a>)</li>
           <li>Go into the folder you just extracted. Run the "Tabula" program inside.</li>
-          <li>A web browser will open. If it doesn't, open your web browser, and go to <a href="http://localhost:8080/">http://localhost:8080</a>. There's Tabula!</li>
+          <li>A web browser will open. If it doesn't, open your web browser, and go to <a href="http://localhost:34555/">http://localhost:34555</a>. There's Tabula!</li>
         </ol>
       </section>
       <section aria-role="main">
@@ -78,16 +87,17 @@
         <a name="using-tabula" class="anchor" href="#using-tabula"><span class="octicon octicon-link"></span></a>How to Use Tabula</h3>
         <ol>
           <li>Upload a PDF file containing a data table.</li>
-          <li>Select the table by clicking the top left corner of a table and dragging the mouse to the bottom right corner, until all of the data is included in the shaded selection area.</li>
-          <li>A window will then appear containing your data. Inspect the data to make sure it looks correct. If data is missing, you may have to slightly expand your selection.</li>
-          <li>Click the Download button.</li>
-          <li>Now you can work with your data as text file or a spreadsheet rather than a PDF! <br />
-          (You can open the downloaded file in Microsoft Excel or the free <a href="http://www.libreoffice.org/discover/calc/">LibreOffice Calc</a>)</p>
+          <li>Browse to the page you want, then select the table by clicking and dragging to draw a box around the table.</li>
+          <li>Click "Preview &amp; Export Extracted Data". Tabula will try to extract the data and display a preview. Inspect the data to make sure it looks correct. If data is missing, you can go back to adjust your selection.</li>
+          <li>Click the "Export" button.</li>
+          <li>Now you can work with your data as text file or a spreadsheet rather than a PDF! (You can open the downloaded file in Microsoft Excel or the free <a href="http://www.libreoffice.org/discover/calc/">LibreOffice Calc</a>)</p>
         </ol>
         <p>Note: Tabula only works on text-based PDFs, not scanned documents.</p>
+        <!--
         <p>
           <iframe src="https://erika.makes.org/popcorn/16ll_" width="512" height="322" frameborder="0" mozallowfullscreen webkitallowfullscreen allowfullscreen></iframe>
         </p>
+        -->
       </section>
 
 
@@ -108,7 +118,7 @@
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-      ga('create', 'UA-42330903-1', 'nerdpower.org');
+      ga('create', 'UA-42330903-1', 'auto');
       ga('send', 'pageview');
 
     </script>
