@@ -89,6 +89,7 @@ body {
           var y0 = 0;
           d.platforms = platformNames.map(function(name) {
               var t = d.assets.filter(function(a) {
+                  if (a.name.indexOf(".asc") !== -1) return false; // ignore gpg sigs
                   return a.name.indexOf(name) !== -1;
               });
               return { name: name,
