@@ -1,9 +1,13 @@
 var Tabula;
 window.Tabula = Tabula || {};
 
-Tabula.UI_VERSION = "0.9.9-2015-03-28" // when we make releases, we should remember to up this.
-// I've decided to decouple the UI version from the "API" version in preparation for actually
-// turning htem into different projects.
+Tabula.UI_VERSION = "1.0.0-2015-08-05" // when we make releases, we should remember to up this.
+// Add '-pre' to the end of this for a prerelease version; this will let
+// our "new version" check give you that channel.
+
+// Note that this is separate from the "API version" (internal app version)
+// which is what we check against GitHub. In the future, this will allow us
+// to modularize the UI from the backend some more.
 
 var TabulaRouter = Backbone.Router.extend({
   routes: {
@@ -86,18 +90,37 @@ Tabula.getVersion = function(){
 Tabula.getNotifications = function(){
   if(localStorage.getItem("tabula-notifications") === false) return;
   $.get('https://api.github.com/repos/tabulapdf/tabula/releases',
-       function(data) {
-         if (data.length < 1) return;
-         if (Tabula.api_version.indexOf('rev') == 0) return;
-         // check if new version
-         var i = data.map(function(d) { return d.name; }).indexOf(Tabula.api_version);
-         // if index >= 1, current release is not the newest
-         if (i == 0) return;
-         var new_release = data[0];
-         if(new_release){
-            Tabula.new_version.set(new_release);
-         }
-     });
+      function(data) {
+        if (data.length < 1) return;
+        if (Tabula.api_version.indexOf('rev') == 0) return;
+
+        var prerelease = (Tabula.UI_VERSION.indexOf("-pre") !== -1);
+        if (prerelease) {console.log("Is prerelease");}
+
+        // check if new version
+        var non_prerelease_i = 0;
+        for (var i=0; i<data.length; i++) {
+          var d = data[i];
+          if (!!d.draft) { continue; } // ignore drafts
+          if (!prerelease && !!d.prerelease) { continue; } // ignore prereleases unless we're on a prerelease
+          console.log("checking " + d.name + " vs " + Tabula.api_version);
+          if ((non_prerelease_i === 0) && (d.name == Tabula.api_version)){
+            // if index == 0, current release is the newest, so break out of this fn
+            console.log(" -> IS LATEST");
+            return;
+          } else {
+            // keep iterating, maybe we'll find this version later in list
+            non_prerelease_i += 1;
+          }
+        }
+
+        // We're not the latest release, grab data from GitHub & tell user
+        var new_release = data[0];
+        if(new_release){
+          Tabula.new_version.set(new_release);
+        }
+      }
+  );
   $.ajax({
     url: 'http://tabula.jeremybmerrill.com/tabula/notifications.jsonp', 
     dataType: "jsonp",
