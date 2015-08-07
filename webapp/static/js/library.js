@@ -39,7 +39,7 @@ Tabula.FileUpload = Backbone.Model.extend({
                 $('form#upload')[0].reset();
 
                 //TODO: something prettier.
-                alert("Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned from paper... Tabula isn't able to extract any data from image-based PDFs. Cliick the Help button for more information.") 
+                alert("Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned from paper... Tabula isn't able to extract any data from image-based PDFs. Click the Help button for more information.");
             } else if(data.pct_complete < 100) {
                 this.timer = setTimeout(_.bind(this.checkStatus, this), 1000);
             } else {
@@ -183,8 +183,8 @@ Tabula.Library = Backbone.View.extend({
         //TODO: the model should get the data, then fire an event that the view listens for, to rerender
         var file_upload = new Tabula.FileUpload({
           collection: this.uploads_collection,
-          filename: file.name, 
-          uploadTime: new Date(), 
+          filename: file.name,
+          uploadTime: new Date(),
           uploadOrder: index,
           isOneOfMultiple: files_list.length != 1
         });
@@ -192,7 +192,7 @@ Tabula.Library = Backbone.View.extend({
         var checker = new Tabula.ProgressBar({model: file_upload });
         this.progress_bars.render().$el.find('#progress-bars-container').append(checker.render().el)
       },this));
-      
+
       var formdata = new FormData($('form#upload')[0]);
       $.ajax({
           url: $('form#upload').attr('action'),
@@ -210,7 +210,7 @@ Tabula.Library = Backbone.View.extend({
                   file_upload.set('id', status.file_id);
                   file_upload.set('upload_id', status.upload_id);
                   file_upload.set('error', !status.success);
-                  file_upload.checkStatus(); // 
+                  file_upload.checkStatus(); //
                 }else{
                   console.log('TODO: failure')
                   file_upload.set('file_id', status.file_id);
@@ -220,7 +220,7 @@ Tabula.Library = Backbone.View.extend({
                 }
               }, this))
           }, this),
-          error: _.bind(function(a,b,c){ 
+          error: _.bind(function(a,b,c){
             this.uploads_collection.each(function(file_upload){
               file_upload.message = "Sorry, your file upload could not be processed. ("+a.statusText+")";
               file_upload.pct_complete = 100;
@@ -249,7 +249,7 @@ Tabula.Library = Backbone.View.extend({
           var file_element = new Tabula.UploadedFileView({model: uploaded_file}).render().$el;
           if(added_model && added_model.get('id') == uploaded_file.get('id')){
             file_element.addClass('flash');
-          } 
+          }
           $('#uploaded-files-container').prepend(file_element);
         }, this));
 
@@ -260,10 +260,10 @@ Tabula.Library = Backbone.View.extend({
           }
         }, this));
 
-        $("#fileTable").tablesorter( { 
+        $("#fileTable").tablesorter( {
           headers: { 3: { sorter: "usLongDate" },  4: { sorter: false}, 5: {sorter: false} },
           sortList: [[3,1]]  // initial sort
-          } ); 
+          } );
       }else{
         $('#library-container').hide();
         $('#library-container').
@@ -330,4 +330,3 @@ Tabula.ProgressBar = Backbone.View.extend({
       return this;
     }
 });
-
