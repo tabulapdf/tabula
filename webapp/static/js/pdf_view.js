@@ -330,7 +330,6 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   events: {
     'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod',
     'click #download-data': 'setFormAction',
-    'click #download-data': 'disableDownloadButton',
     'keyup .filename': 'updateFilename',
     //N.B.: Download button (and format-specific download buttons) are an HTML form, so not handled here.
     //TODO: handle flash clipboard thingy here.
@@ -381,6 +380,8 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   setFormAction: function(e){
     var formActionUrl = $(e.currentTarget).data('action');
     this.$el.find('#download-form').attr('action', formActionUrl);
+    this.$el.find('#download-form').submit();
+    this.disableDownloadButton();
   },
 
   render: function(e){
