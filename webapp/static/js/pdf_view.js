@@ -204,8 +204,8 @@ Tabula.Query = Backbone.Model.extend({
           return this.convertToCSV("\t");
         case "csv":
           return this.convertToCSV();
-        case "💩sv":
-          return this.convertToCSV("💩");
+        case "\uD83D\uDCA9SV":
+          return this.convertToCSV("\uD83D\uDCA9SV");
         case "script":
           return this.convertToTabulaExtractorScript();
         default:
