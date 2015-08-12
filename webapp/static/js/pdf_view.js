@@ -56,7 +56,7 @@ Tabula.Selection = Backbone.Model.extend({
     _.bindAll(this, 'repeatLassos', 'toCoords');
   },
 
-  toCoords: function(){
+  updateCoords: function(){
     var page = Tabula.pdf_view.pdf_document.page_collection.at(this.get('page_number') - 1);
     var imageWidth = this.get('imageWidth');
 
@@ -66,16 +66,30 @@ Tabula.Selection = Backbone.Model.extend({
 
     var scale = (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width) / imageWidth;
     var rp = this.attributes.getDims().relativePos;
-    var selection_coords = {
+    this.set({
       x1: rp.left * scale,
       x2: (rp.left + rp.width) * scale,
       y1: rp.top * scale,
       y2: (rp.top + rp.height) * scale,
       width: rp.width * scale, // not used by Tabula right now, but used in the UI elsewhere
       height: rp.height * scale, // not used by Tabula right now, but used in the UI elsewhere
+    });
+  },
+
+  toCoords: function(){
+    if (this.attributes.getDims){
+      this.updateCoords();
+    }
+    var selection_coords = {
       page: this.get('page_number'),
       extraction_method: this.get('extractionMethod') || 'guess',
-      selection_id: this.id
+      selection_id: this.id,
+      x1:  this.get('x1'),
+      x2: this.get('x2'),
+      y1: this.get('y1'),
+      y2: this.get('y2'),
+      width:  this.get('width'),
+      height:  this.get('height')
     };
     return selection_coords;
   },
@@ -120,6 +134,7 @@ Tabula.Options = Backbone.Model.extend({
 
 Tabula.Selections = Backbone.Collection.extend({
   // model: Tabula.Selection,
+  comparator: 'page_number',
   updateOrCreateByVendorSelectorId: function(vendorSelection, pageNumber, imageWidth){
     var selection = this.get(vendorSelection.id);
 
@@ -130,12 +145,24 @@ Tabula.Selections = Backbone.Collection.extend({
       new_selection_args = _.extend({'page_number': pageNumber,
                                     'imageWidth': imageWidth,
                                     'extraction_method': Tabula.pdf_view.options.extraction_method,
+                                    'hidden': false,
                                     'pdf_document': this.pdf_document},
                                     vendorSelection);
       selection = new Tabula.Selection(new_selection_args);
       this.add(selection);
     }
     return selection;
+  },
+  createHiddenSelection: function(sel){
+      new_selection_args = _.extend({'page_number': sel.page,
+                                    'extraction_method': 'spreadsheet',
+                                    'id': String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now(),
+                                    'hidden': true,
+                                    'pdf_document': this.pdf_document},
+                                    sel);
+      selection = new Tabula.Selection(new_selection_args);
+      this.add(selection);
+      return selection;
   }
 
 });
@@ -272,8 +299,10 @@ Tabula.Query = Backbone.Model.extend({
           _(_.zip(this.get('list_of_coords'), resp)).each(function(stuff, i){
             var coord_set = stuff[0];
             var resp_item = stuff[1];
-            stashed_selections.get(coord_set.selection_id).
+            if (stashed_selections.get(coord_set.selection_id)){
+              stashed_selections.get(coord_set.selection_id).
                 set('extraction_method', resp_item["extraction_method"]);
+            }
             coord_set["extraction_method"] = resp_item["extraction_method"];
           });
 
@@ -621,11 +650,19 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
               // console.log('show ' + number);
             }else{
               this.$el.append(page_view.render().el);
+
             }
           }
         }
       }
     }
+              // should remove the "hidden" selections
+              // then should render the selections for this page from autodetectedSelections the "normal" way.
+              Tabula.pdf_view.pdf_document.selections.filter(function(sel){ return sel.get('hidden') && sel.get('page') <= number}).map(function(hidden_selection){
+                Tabula.pdf_view.pdf_document.selections.remove(hidden_selection);
+                var new_selection = Tabula.pdf_view.renderSelection(hidden_selection.attributes); // adds it to Tabula.pdf_view.pdf_document.selections
+                return new_selection;
+              });
     return this;
   }
 });
@@ -741,8 +778,9 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   clearAllSelections: function(){
-    _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ i.attributes.remove(); });
+    _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
     Tabula.pdf_view.pdf_document.selections.reset([]);
+    Tabula.pdf_view.components['control_panel'].render(); // deal with buttons that need blurred out if there's zero selections, etc.
     // reset doesn't trigger the right events because we have to remove from the collection and from the page (with selection.remove())
     // we can't use _.each because we're mutating the collection that we're iterating over
     // ugh
@@ -814,7 +852,9 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
     this.listenTo(this.pdf_view.pdf_document.selections, 'remove', this.removeSelectionThumbnail); // remove a thumbnail selection
   },
   addSelectionThumbnail: function (new_selection){
-    this.thumbnail_views[new_selection.get('page_number')].createSelectionThumbnail(new_selection);
+    if(this.thumbnail_views[new_selection.get('page_number')].$el.find('img').length){
+      this.thumbnail_views[new_selection.get('page_number')].createSelectionThumbnail(new_selection);
+    }
   },
   changeSelectionThumbnail: function (selection){
     this.thumbnail_views[selection.get('page_number')].changeSelectionThumbnail(selection);
@@ -829,7 +869,7 @@ Tabula.SidebarView = Backbone.View.extend({ // only one
   },
 
   render: function(){
-    if(!Tabula.LazyLoad){ // ordinary behavior
+    if(!Tabula.LazyLoad){ // old-style, un-lazyload behavior where all pages are shown at once.
       _(this.thumbnail_views).each(_.bind(function(thumbnail_view, index){
         var already_on_page = $('#page-' + parseInt(index)+1).length;
         if(!already_on_page) this.$el.append(thumbnail_view.render().el);
@@ -945,6 +985,9 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     // if data has gotten messed up somewhere
     if(!selection.attributes) return;
 
+    // if thumbnail doesn't exist (probably because this selection is hidden in an unshown page)
+    if(!selection.attributes.getDims) return;
+
     var s = selection.attributes.getDims().relativePos;
 
     $sshow.css('top', (top + (s.top * thumbScale)) + 'px')
@@ -1045,7 +1088,8 @@ Tabula.PDFView = Backbone.View.extend(
         }
       }
       Tabula.pdf_view.lazyLoadCursor = new_cursor;
-      this.components['document_view'].render();
+
+      this.components['document_view'].render(); 
       this.components['sidebar_view'].render();
       // console.log("cursor", Tabula.pdf_view.lazyLoadCursor)
     },
@@ -1094,7 +1138,9 @@ Tabula.PDFView = Backbone.View.extend(
       // mimics drawing the selection onto the page
       var $img = pageView.$el.find('img');
       var image_width = $img.width();
-
+      if (!$img.length || $img.data('loaded') !== 'loaded' || !$img.height() ){ // if this page isn't shown currently or the image hasn't been rendered yet, then create a hidden selectionx
+        return this.pdf_document.selections.createHiddenSelection(sel);
+      }
       var scale = image_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
       var offset = $img.offset();
       var absolutePos = _.extend({}, offset,
