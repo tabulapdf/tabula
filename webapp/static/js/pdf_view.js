@@ -1116,6 +1116,7 @@ Tabula.PDFView = Backbone.View.extend(
         error: _.bind(function(){
           console.log("no predetected tables (404 on tables.json)");
           this.autodetect_timer = window.setTimeout(this.checkForAutodetectedTables, 2000);
+          this.render();
         }, this)
       });
     },
