@@ -5,7 +5,6 @@ module TabulaSettings
 
   ########## Defaults ##########
   DEFAULT_DEBUG = false
-  DEFAULT_EXTRACTION_CACHE = true
 
   ########## Helpers ##########
   def self.getDataDir
@@ -75,35 +74,14 @@ module TabulaSettings
     DEFAULT_DEBUG
   end
 
-  def self.useExtractionCache
-    # don't use cache if debugging
-    if self.enableDebug
-      return false
-    end
-
-    extraction_cache = java.lang.System.getProperty('tabula.extraction_cache')
-    unless extraction_cache.nil?
-      return (extraction_cache.to_i > 0)
-    end
-
-    # when invoking with env var
-    extraction_cache = ENV['TABULA_EXTRACTION_CACHE']
-    unless extraction_cache.nil?
-      return (extraction_cache.to_i > 0)
-    end
-
-    DEFAULT_EXTRACTION_CACHE
-  end
 
   ########## Constants that are used around the app, based on settings ##########
   DOCUMENTS_BASEPATH = File.join(self.getDataDir, 'pdfs')
   ENABLE_DEBUG_METHODS = self.enableDebug
-  EXTRACTION_CACHE = self.useExtractionCache
 
   puts "DATA_DIR = #{self.getDataDir}"
   puts "DOCUMENTS_BASEPATH = #{DOCUMENTS_BASEPATH}"
   puts "ENABLE_DEBUG_METHODS = #{ENABLE_DEBUG_METHODS}"
-  puts "EXTRACTION_CACHE = #{EXTRACTION_CACHE}"
 
   ########## Initialize environment, using helpers ##########
   FileUtils.mkdir_p(DOCUMENTS_BASEPATH)

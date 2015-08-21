@@ -18,6 +18,10 @@ if "#{$PROGRAM_NAME}".include?("tabula.jar")
   port = java.lang.Integer.getInteger('jetty.port', 8080)
   url = "http://127.0.0.1:#{port}"
 
+  puts "============================================================"
+  puts url
+  puts "============================================================"
+
   # Open browser after slight delay. (The server may take a while to actually
   # serve HTTP, so we are trying to avoid a "Could Not Connect To Server".)
   uri = java.net.URI.new(url)

@@ -14,23 +14,43 @@ java_import org.jpedal.fonts.FontMappings
 class AbstractThumbnailGenerator
   include Observable
 
-  def initialize(pdf_filename, output_directory, sizes=[2048, 560], pages=[])
+  def initialize(pdf_filename, output_directory, sizes=[2048, 560])
     raise Errno::ENOENT unless File.directory?(output_directory)
     raise ArgumentError if sizes.empty?
     @sizes = sizes.sort.reverse
     @output_directory = output_directory
-    @pages = []
+    @pdf_filename = pdf_filename
   end
 
   def generate_thumbnails!
     raise 'NotImplemented'
   end
+end
 
+##
+# use /usr/bin/mudraw for faster thumbnail generation
+# useful for hosted instances of Tabula
+class MUDrawThumbnailGenerator < AbstractThumbnailGenerator
+
+  def initialize(pdf_filename, output_directory, sizes=[2048, 560], mudraw='/usr/local/bin/mudraw')
+    super(pdf_filename, output_directory, sizes, pages)
+    @mudraw = mudraw
+  end
+
+  def generate_thumbnails!
+    @sizes.each_with_index do |size, i|
+      out = File.join(@output_directory, "document_#{size}_%d.png")
+
+      `#{@mudraw} -o "#{out}" -w #{size} "#{@pdf_filename}"`
+      changed
+      notify_observers(i+1, @sizes.length, "generating page thumbnails...")
+    end
+  end
 end
 
 class JPedalThumbnailGenerator < AbstractThumbnailGenerator
-  def initialize(pdf_filename, output_directory, sizes=[2048, 560], pages=[])
-    super(pdf_filename, output_directory, sizes, pages)
+  def initialize(pdf_filename, output_directory, sizes=[2048, 560])
+    super(pdf_filename, output_directory, sizes)
     @decoder = PdfDecoder.new(true)
     FontMappings.setFontReplacements
     @decoder.openPdfFile(pdf_filename)
@@ -74,7 +94,8 @@ if __FILE__ == $0
     end
   end
 
-  pdftg = JPedalThumbnailGenerator.new(ARGV[0], '/tmp', [560])
+  #pdftg = JPedalThumbnailGenerator.new(ARGV[0], '/tmp', [560])
+  pdftg = MUDrawThumbnailGenerator.new(ARGV[0], '/tmp', [560])
   pdftg.add_observer(STDERRProgressReporter.new)
   pdftg.generate_thumbnails!
 end
