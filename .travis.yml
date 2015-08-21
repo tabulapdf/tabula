@@ -10,3 +10,5 @@ jdk:
   - oraclejdk8
   - openjdk7
 script: bundle exec rake war && bundle exec rake jardist
+notifications:
+  email: false
