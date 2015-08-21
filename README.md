@@ -1,5 +1,8 @@
 # Tabula
 
+[tabula `stable/1.0.x`](https://github.com/tabulapdf/tabula/tree/stable/1.0.x) [![Build Status](https://travis-ci.org/tabulapdf/tabula.svg?branch=stable/1.0.x)](https://travis-ci.org/tabulapdf/tabula)  
+[tabula-extractor `master`](https://github.com/tabulapdf/tabula-extractor/tree/master) [![Build Status](https://travis-ci.org/tabulapdf/tabula-extractor.svg?branch=master)](https://travis-ci.org/tabulapdf/tabula-extractor)
+
 Tabula helps you liberate data tables trapped inside PDF files.
 
 * [Download from the official site](http://tabula.nerdpower.org/)
@@ -8,6 +11,8 @@ Tabula helps you liberate data tables trapped inside PDF files.
 
 © 2012-2015 Manuel Aristarán. Available under MIT License. See
 [`AUTHORS.md`](AUTHORS.md) and [`LICENSE.md`](LICENSE.md).
+
+
 
 ## Why Tabula?
 
