@@ -36,8 +36,6 @@ If you have a problem, check [Known Issues](#knownissues) first, then [report an
   To close Tabula, just go back to the console window and press "Control-C"
   (as if to copy).
 
-  If you need Tabula to use a port other than 8080, set the `TABULA_PORT` environment variable.
-
 * ###Mac OS X
   Download `tabula-mac.zip` from [the download site][tabula_dl]. Unzip and open
   the Tabula app inside. A browser should automatically open
@@ -165,6 +163,15 @@ To compile the app:
 This will result in a portable "tabula_mac.zip" archive (inside the `build` directory)
 for Mac OS X users.
 
+A "large" version of Tabula, which includes Java (so that the user's Java version
+is irrelevant) can be built by doing:
+
+    rake bigmac
+
+This results in a 98MB zip file, versus the 30MB zip file for the normal build,
+but allows users to run Tabula without having to worry about occasional [Java
+incompatibilities](https://github.com/tabulapdf/tabula/issues/237).
+
 [buildxml_cert]: https://github.com/jazzido/tabula/blob/master/build.xml#L44-53
 
 **Windows**
@@ -216,5 +223,5 @@ You can help by:
 
 - [Reporting a bug](https://github.com/jazzido/tabula).
 - Adding or editing documentation.
-- Contributing code via a Pull Request from ideas or bugs listed in the [Issues](https://github.com/jazzido/tabula/issues) section.
+- Contributing code via a Pull Request from ideas or bugs listed in the [Enhancements](https://github.com/tabulapdf/tabula/labels/enhancement) section of the issues. [see CONTRIBUTING.md]
 - Spreading the word about Tabula to people who might be able to benefit from using it.

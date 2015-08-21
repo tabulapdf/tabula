@@ -9,6 +9,8 @@ require 'securerandom'
 require 'singleton'
 
 module Tabula
+  class NoTextDataException < IOError; end
+
   module Background
 
     class JobExecutor < java.util.concurrent.ThreadPoolExecutor

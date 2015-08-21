@@ -1,0 +1,494 @@
+@import "compass";
+@import "bootstrap-compass";
+@import "bootstrap-variables";
+@import "bootstrap";
+@import "bootstrap/theme";
+@import "selectors";
+
+@font-face {  // this may not the most Bootstrappy way to do this? not sure why they aren't loading without this
+	font-family: 'Glyphicons Halflings';
+	src: url('glyphicons-halflings-regular.eot');
+	src: url('../fonts/bootstrap/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+	     url('../fonts/bootstrap/glyphicons-halflings-regular.woff') format('woff'),
+	     url('../fonts/bootstrap/glyphicons-halflings-regular.ttf') format('truetype'),
+	     url('../fonts/bootstrap/glyphicons-halflings-regular.svg#webfont') format('svg');
+}
+
+$sidebarWidth: 195px;
+
+body {
+	padding-top: 70px;
+}
+
+.jumbotron {
+	h1 {
+		font-size: 2em;
+	}
+	h2, h3, h4, h5, h6 {
+		font-size: 1.3em;
+	}
+	p {
+		font-size: 1.3em;
+	}
+}
+
+
+.navbar-fixed-top	.container {
+		margin: 0 1em;
+	}
+
+#navbar .active {
+	font-weight: 500;
+	color: $gray-dark;
+}
+
+.navbar-default a.navbar-brand {
+	padding-left: 30px;
+	position: relative;
+	font-weight: bold; 
+	color: black;
+	&::before {
+		position: absolute;
+		content: "";
+		display: block;
+		background-image: url("../img/logo.png");
+		background-repeat: no-repeat;
+		background-size: 25px 30px;
+		width: 25px;
+		height: 30px;
+		left: 0;
+		top: 10px;
+	}
+}	
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block; 
+}
+
+.form-inline .input-group > .form-control {
+	background: white;
+	width: 500px;
+}
+
+form {
+	margin-bottom: 3em;
+}
+
+#file-list-container {
+	max-height: 500px;
+	overflow-y: scroll;
+
+	.file-list {
+	thead tr th {
+		text-align: center;
+		cursor: pointer;
+		position: relative;
+		border-right: 1px solid $table-border-color; 
+		padding-right: 20px;
+		&::before, &::after {
+			text-align: right;
+			width: 11px;
+			color: $table-border-color; 
+		  position: absolute;
+		  display: block;
+		  font-family: 'Glyphicons Halflings';
+		  font-size: .8em;
+		  font-style: normal;
+		  font-weight: normal;
+		  line-height: 1;
+		  -webkit-font-smoothing: antialiased;
+		  -moz-osx-font-smoothing: grayscale;
+		}
+		&::before {
+		  content: "\e113";
+		  right: 3px;
+		  top: 6px;
+		}
+		&::after {
+		  content: "\e114";
+		  right: 4px;
+		  bottom: 6px;
+		}
+		&.headerSortUp::before {
+			color: $gray-light !important;
+		}
+		&.headerSortDown:after {
+			color: $gray-light !important;
+		}
+		&:first-of-type {
+			text-align: left;
+		}
+		&:nth-child(n+5) { // nonsortable columns
+			cursor: default;
+			padding-right: 8px; // bootstrap default
+			&::before, &::after {
+				content: "";
+				display: none;
+				position: relative;
+			}
+		}
+	}
+	tbody tr {
+		background: white;
+		&:hover {
+			background: #d9edf7;
+		}
+		td{
+			line-height: 2.25;
+			text-align: center;
+			&:first-of-type {
+				font-weight: bold;
+				text-align: left;
+			}
+			a {
+				color: #333; 
+			}
+		}
+	}
+}	
+
+}
+
+.glyphicon-remove {
+	color: $gray-light;
+	&:hover {
+		color: $brand-danger;
+	}
+}
+
+#sidebar {
+	background: $gray-lighter;
+	width: $sidebarWidth;
+	padding: 1em 0 0;
+	height: calc(100% - 51px);
+	text-align: center;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	position: fixed;  
+	left: 0;
+	top: 51px;
+	z-index: 2;
+	@include box-shadow ( inset -.25em 0 .5em -.25em rgba(0,0,0,0.1) );
+	h5 {
+		border-top: 1px solid $gray-light;
+		padding-top: 1em;
+		margin-top: 1em;
+	}
+	.btn-group button {
+		width: 83px;
+		margin-bottom: 10px;
+	}
+	p {
+		font-size: .9em;
+	}
+	.thumbnail-list {
+		padding-left: 0px;
+
+		.page  {
+			margin: 0 auto 1.25em;
+			display: block;
+			width: 90%;
+			padding: 1em .5em .5em 1em;
+			position: relative;
+			img {
+				display: block;
+				width: 100%;
+			}
+			p {
+				margin-top: .25em;
+				color: $gray;
+				line-height: 1;
+			}
+			&:hover {
+				img {
+					cursor: pointer;
+					@include box-shadow ( 0 0 0 .1em rgba(0,0,0,0.1) );
+				}
+			}	
+			&.active {
+				img {
+					@include box-shadow ( 0 0 0 .1em $brand-info );
+				}
+			}
+			.remove {
+				position: absolute;
+				left: -.25em; 
+				top: 1em;
+				height: 1em;
+				display: block;
+				line-height: 1;
+				font-size: 1em;
+				&:hover {
+					cursor: pointer;
+				}
+			}
+		}
+	}
+}
+
+
+#control-panel {
+	position: fixed;
+	top: 50px;
+	left: $sidebarWidth;
+	width: 100%;
+	z-index: 101; /* gotta be >100, which is the max z-index for selections */
+	background: #d9edf7;
+	padding: 1em;
+	@include box-shadow ( 0 1px 5px rgba(0, 0, 0, 0.075) );
+	button {
+		margin-right: 1.25em;
+	}
+
+	.filename {
+		display: inline-block;
+		margin-right: 20px;
+		max-width: 270px;
+	  white-space: nowrap;
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+	}
+	span.filename {
+		vertical-align: middle;
+	}
+}
+
+
+
+#main-pane {
+	background: $gray-light;
+	padding: 4.25em 2em 2em 2em;
+	margin-left: $sidebarWidth; 
+	height: 100%;
+	width: calc(100% - 200px);
+	z-index: 1;
+	.pdf-page {
+		position: relative; // used for positioning page numbers
+		.page-number {
+			position: absolute;
+		}
+	}
+	.page {
+		width: 100%;
+		max-width: 800px;
+		min-width: 560px;
+		@include box-shadow ( 0 0 2em rgba(0,0,0,0.4) );
+		position: relative;
+		margin: 0 auto;
+		img {
+			margin: 2em 0;
+			display: block;
+			width: 100%;
+			max-width: 800px;
+			min-width: 560px;
+			&:hover {
+				cursor: crosshair;
+			}
+			user-select: none;
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}		
+	}
+	.selection-box, .table-region {
+		border: 3px dashed rgba(224, 1, 1, 0.6);
+		background: rgba(224,1,1,0.2);
+		.selection-panel {
+			display: none;
+			position: absolute;
+			bottom: -2.8em;
+			left: 0;
+			min-width: 320px;
+			button:hover {
+					cursor: pointer;
+			}
+		}
+		&:hover {
+			cursor: move;
+			.selection-panel {
+				display: block;
+			}	
+		}
+	}
+}
+
+
+body.page-selections {
+	padding-top: 50px;
+	background: $gray-light;
+	#main-pane {
+		background: $gray-light;
+	}
+}
+
+body.page-export {
+	padding-top: 50px;
+	background: white;
+	#sidebar {
+		text-align: left;
+		padding: .5em;
+		.lattice.glyphicon {
+			color: #ededed;
+			background: #666;
+			text-shadow: none;
+			border: solid #666;
+			border-width: 0 0 1px 1px;
+		}
+	}
+	#main-pane {
+		background: white;
+		padding-top: 5.5em;
+		#control-panel {
+			form {
+				display: inline-block;
+				margin-bottom: 0;
+				.form-control {
+					width: 100px;
+					margin-right: 1em;
+					display: inline-block;
+					&.format {
+						width: 130px;
+					}
+				}
+				#copy-csv-to-clipboard {
+					min-width: 140px;
+				}
+			}
+		}
+		table {
+			margin-top: 2em;
+		}
+	}
+}
+
+.jumbotron.about p{
+	font-size:1.1em;
+}
+
+div.spinner {
+	top: 10px !important;
+}
+
+#progress-container h5 {
+	display: inline-block;
+	font-size: 1.1em;
+	font-weight: bold;
+}
+#progress-container #message {
+	color: #aaa;
+}
+
+.autodetect-in-progress .glyphicon-refresh,
+#download-data.download-in-progress .glyphicon-refresh {
+  animation:  4s linear 0s normal none infinite running spin;
+  display: inline-block;
+}
+
+@-moz-keyframes spin {
+  0% {
+    -moz-transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(359deg);
+  }
+}
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+  }
+}
+@-o-keyframes spin {
+  0% {
+    -o-transform: rotate(0deg);
+  }
+  100% {
+    -o-transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+.autodetect-in-progress .glyphicon-flash {
+	display: none;
+}
+.autodetect-finished .glyphicon-flash {
+	display: inline;
+}
+.autodetect-finished .glyphicon-refresh {
+	display: none;
+}
+#download-data {
+	&.download-in-progress .glyphicon-download {
+		display: none;
+	}
+	.glyphicon-download {
+		display: inline;
+	}
+	.glyphicon-refresh {
+		display: none;
+	}
+}
+
+.flash{
+  -moz-animation: flash 2s ease-out;
+  -moz-animation-iteration-count: 1;
+  -webkit-animation: flash 2s ease-out;
+  -webkit-animation-iteration-count: 1;
+  -ms-animation: flash 2s ease-out;
+  -ms-animation-iteration-count: 1;
+}
+
+@-webkit-keyframes flash {
+    0% { background-color:none;}
+    50% { background-color:#fbf8b2;}        
+    100% {background-color:none;}
+}
+
+@-moz-keyframes flash {
+    0% { background-color:none;}
+    50% { background-color:#fbf8b2;}        
+    100% {background-color:none;}
+}
+
+@-ms-keyframes flash {
+    0% { background-color:none;}
+    50% { background-color:#fbf8b2;}        
+    100% {background-color:none;}
+}
+
+
+#loading {
+	padding-left: 30px;
+	#spinner {
+		position: relative;
+		top: 6px;
+		margin-right: 5px;
+	}
+}
