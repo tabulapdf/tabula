@@ -1,3 +1,9 @@
+**Repo Note**: The `master` branch is an *in development* version of Tabula that may or may not work. For stable, working code, please see [releases](https://github.com/tabulapdf/tabula/releases) or [switch to a `stable/` branch](https://github.com/tabulapdf/tabula/branches).
+
+*As of August 2015, the master branch uses [tabula-java](https://github.com/tabulapdf/tabula-java) instead of [tabula-extractor](https://github.com/tabulapdf/tabula-extractor) under the hood.*
+
+---
+
 # Tabula
 
 Tabula helps you liberate data tables trapped inside PDF files.
