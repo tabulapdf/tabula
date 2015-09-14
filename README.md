@@ -35,7 +35,7 @@ If you have a problem, check [Known Issues](#knownissues) first, then [report an
 * ### Windows
   Download `tabula-win.zip` from [the download site][tabula_dl]. Unzip the whole thing
   and open the `tabula.exe` file inside. A browser should automatically open
-  to http://127.0.0.1:34555/ . If not, open your web browser of choice and
+  to http://127.0.0.1:8080/ . If not, open your web browser of choice and
   visit that link.
 
   To close Tabula, just go back to the console window and press "Control-C"
@@ -44,7 +44,7 @@ If you have a problem, check [Known Issues](#knownissues) first, then [report an
 * ###Mac OS X
   Download `tabula-mac.zip` from [the download site][tabula_dl]. Unzip and open
   the Tabula app inside. A browser should automatically open
-  to http://127.0.0.1:34555/ . If not, open your web browser of choice and
+  to http://127.0.0.1:8080/ . If not, open your web browser of choice and
   visit that link.
 
   To close Tabula, find the Tabula icon in your dock, right-click (or
@@ -65,7 +65,7 @@ and then try again.
 [jre_download]: https://www.java.com/download/
 [tabula_dl]: http://tabula.technology
 
-Tabula binds to port 34555 by default. You can change it with the `warbler.port` property:
+Tabula binds to port 8080 by default. You can change it with the `warbler.port` property:
 
 `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Dwarbler.port=9999 -jar tabula.jar`
 
@@ -98,7 +98,7 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
   4. Run Tabula by typing `tabula.exe`
 
 * <a name='portproblems'>**A browser tab opens, but something other than Tabula loads there. Or Tabula doesn't start.**</a>
-  It's possible another program is using port 34555, whichh Tabula binds to by default. You can try closing the other program, or change the port Tabula uses by running Tabula from the terminal with the `jetty.port` property:
+  It's possible another program is using port 8080, whichh Tabula binds to by default. You can try closing the other program, or change the port Tabula uses by running Tabula from the terminal with the `jetty.port` property:
 
   `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Djetty.port=9999 -jar tabula.jar`
 
