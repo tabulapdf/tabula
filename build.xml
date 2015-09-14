@@ -58,7 +58,7 @@
       [3]: https://developer.apple.com/account/mac/certificate/certificateList.action
     -->
     <exec executable="codesign" os="Mac OS X">
-      <arg line="-f -s 'Tabula' ${build.dir}/bigmac/Tabula.app/Contents/PlugIns/jdk1.8.0_45.jdk" />
+      <arg line="-f -s 'Tabula' ${build.dir}/bigmac/Tabula.app/Contents/PlugIns/jdk1.8.0_60.jdk" />
     </exec>
     <exec executable="codesign" os="Mac OS X">
       <arg line="-f -s 'Tabula' ${build.dir}/bigmac/Tabula.app" />
@@ -70,7 +70,7 @@
     <mkdir dir="${bigmac.dir}"/>
 
     <!-- this must be a real JDK -->
-    <property name="java_home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home"/>
+    <property name="java_home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home"/>
 
     <taskdef
         name="bundleapp"
@@ -108,7 +108,7 @@
       [3]: https://developer.apple.com/account/mac/certificate/certificateList.action
     -->
     <exec executable="codesign" os="Mac OS X">
-      <arg line="-f -s 'Tabula' ${build.dir}/bigmac/Tabula.app/Contents/PlugIns/jdk1.8.0_45.jdk" />
+      <arg line="-f -s 'Tabula' ${build.dir}/bigmac/Tabula.app/Contents/PlugIns/jdk1.8.0_60.jdk" />
     </exec>
     <exec executable="codesign" os="Mac OS X">
       <arg line="-f -s 'Tabula' ${build.dir}/bigmac/Tabula.app" />

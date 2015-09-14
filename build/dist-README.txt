@@ -37,3 +37,10 @@ Open a terminal window, and `cd` to inside this `tabula` directory,
 then run the following command
 
   java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -jar tabula.jar
+
+Tabula binds to port 34555 by default. You can change it with the
+`warbler.port` option:
+
+  java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Dwarbler.port=9999 -jar tabula.jar
+
+(Known bug: If using this flag, the browser may open to the wrong port number.)

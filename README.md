@@ -65,9 +65,9 @@ and then try again.
 [jre_download]: https://www.java.com/download/
 [tabula_dl]: http://tabula.technology
 
-Tabula binds to port 34555 by default. You can change it with the `jetty.port` property:
+Tabula binds to port 34555 by default. You can change it with the `warbler.port` property:
 
-`java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Djetty.port=9999 -jar tabula.jar`
+`java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Dwarbler.port=9999 -jar tabula.jar`
 
 
 ## <a name="knownissues">Known issues</a>
