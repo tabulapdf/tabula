@@ -1,7 +1,7 @@
 var Tabula;
 window.Tabula = Tabula || {};
 
-Tabula.UI_VERSION = "1.0.0-2015-08-05" // when we make releases, we should remember to up this.
+Tabula.UI_VERSION = "1.0.1-2015-09-14" // when we make releases, we should remember to up this.
 // Add '-pre' to the end of this for a prerelease version; this will let
 // our "new version" check give you that channel.
 
