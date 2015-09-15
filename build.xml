@@ -4,7 +4,6 @@
   <property file="build.properties"/>
   <property name="build.dir" value="build"/>
   <property name="mac.dir" value="${build.dir}/mac" />
-  <property name="bigmac.dir" value="${build.dir}/bigmac" />
   <property name="windows.dir" value="${build.dir}/windows" />
   <property name="full_version" value="1.0.0.0"/>
   <property name="launch4j.dir" location="${build.dir}/../launch4j"  />
@@ -16,59 +15,6 @@
 
   <target name="macbundle" depends="check-jar-exists" if="jar.exists">
     <mkdir dir="${mac.dir}"/>
-    <taskdef
-        name="jarbundler"
-        classname="net.sourceforge.jarbundler.JarBundler"
-        classpath="${build.dir}/jarbundler-2.2.0.jar"
-        />
-
-    <jarbundler
-        dir="${build.dir}/mac"
-        name="Tabula"
-        shortname="Tabula"
-        mainclass="WarMain"
-        version="${full_version}"
-        infostring="© 2012-2015 Manuel Aristarán"
-        aboutmenuname="Tabula"
-        icon="${build.dir}/icons/tabula.icns"
-        workingdirectory="$APP_PACKAGE/Contents/Resources"
-        jvmversion="1.6+"
-        bundleid="technology.tabula.Tabula"
-        vmoptions="-Xms256M -Xmx1024M -Dfile.encoding=utf-8"
-        antialiasedgraphics="true"
-        antialiasedtext="true"
-        liveresize="true"
-        growboxintrudes="true"
-        screenmenu="true">
-      <jarfilelist dir="${build.dir}" files="tabula.jar" />
-    </jarbundler>
-    <!--
-    To allow OSX to use this, you'll need to code sign.
-    Generate a self-signed "Code Signing" certificate[1], then enter
-    it in the -s option here and edit below section. Users can then
-    right-click or Control-click the app and "Open" and then tell OS X to
-    open anyway[2].
-      [1]: http://support.apple.com/kb/PH7173
-      [2]: http://support.apple.com/kb/HT5290
-
-    For production builds, you can get rid of "Unidentified Developer"
-    warnings by having a Mac Developer Account and a cert from[3]. Then
-    change -s option to something like 'Developer ID Application: Mike Tigas (68QUP6KP2C)',
-    based on your Developer Account & cert.
-      [3]: https://developer.apple.com/account/mac/certificate/certificateList.action
-    -->
-    <exec executable="codesign" os="Mac OS X">
-      <arg line="-f -s 'Tabula' ${build.dir}/bigmac/Tabula.app/Contents/PlugIns/jdk1.8.0_60.jdk" />
-    </exec>
-    <exec executable="codesign" os="Mac OS X">
-      <arg line="-f -s 'Tabula' ${build.dir}/bigmac/Tabula.app" />
-    </exec>
-  </target>
-
-
-  <target name="bigmacbundle" depends="check-jar-exists" if="jar.exists">
-    <mkdir dir="${bigmac.dir}"/>
-
     <!-- this must be a real JDK -->
     <property name="java_home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home"/>
 
@@ -79,7 +25,7 @@
         />
 
     <bundleapp
-        outputdirectory="${build.dir}/bigmac"
+        outputdirectory="${build.dir}/mac"
         name="Tabula"
         displayname="Tabula"
         identifier="org.nerdpower.tabula.Tabula"
@@ -108,10 +54,10 @@
       [3]: https://developer.apple.com/account/mac/certificate/certificateList.action
     -->
     <exec executable="codesign" os="Mac OS X">
-      <arg line="-f -s 'Tabula' ${build.dir}/bigmac/Tabula.app/Contents/PlugIns/jdk1.8.0_60.jdk" />
+      <arg line="-f -s 'Tabula' ${build.dir}/mac/Tabula.app/Contents/PlugIns/jdk1.8.0_60.jdk" />
     </exec>
     <exec executable="codesign" os="Mac OS X">
-      <arg line="-f -s 'Tabula' ${build.dir}/bigmac/Tabula.app" />
+      <arg line="-f -s 'Tabula' ${build.dir}/mac/Tabula.app" />
     </exec>
   </target>
 

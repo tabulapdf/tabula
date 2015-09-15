@@ -168,13 +168,9 @@ To compile the app:
 This will result in a portable "tabula_mac.zip" archive (inside the `build` directory)
 for Mac OS X users.
 
-A "large" version of Tabula, which includes Java (so that the user's Java version
-is irrelevant) can be built by doing:
-
-    rake bigmac
-
-This results in a 98MB zip file, versus the 30MB zip file for the normal build,
-but allows users to run Tabula without having to worry about occasional [Java
+Note that the Mac version bundles Java with the Tabula app.
+This results in a 98MB zip file, versus the 30MB zip file for other platforms,
+but allows users to run Tabula without having to worry about [Java version
 incompatibilities](https://github.com/tabulapdf/tabula/issues/237).
 
 [buildxml_cert]: https://github.com/jazzido/tabula/blob/master/build.xml#L44-53
