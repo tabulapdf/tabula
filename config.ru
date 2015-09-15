@@ -15,7 +15,7 @@ if "#{$PROGRAM_NAME}".include?("tabula.jar")
   # don't do "java_import java.net.URI" -- it conflicts with Ruby URI and
   # makes Cuba/Rack really really upset. just call "java.*" classes
   # directly.
-  port = java.lang.Integer.getInteger('jetty.port', 8080)
+  port = java.lang.Integer.getInteger('warbler.port', 8080)
   url = "http://127.0.0.1:#{port}"
 
   puts "============================================================"

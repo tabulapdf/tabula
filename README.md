@@ -66,9 +66,9 @@ and then try again.
 [jre_download]: https://www.java.com/download/
 [tabula_dl]: http://tabula.technology
 
-Tabula binds to port 8080 by default. You can change it with the `jetty.port` property:
+Tabula binds to port 8080 by default. You can change it with the `warbler.port` property:
 
-`java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Djetty.port=9999 -jar tabula.jar`
+`java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Dwarbler.port=9999 -jar tabula.jar`
 
 
 ## <a name="knownissues">Known issues</a>
@@ -99,9 +99,9 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
   4. Run Tabula by typing `tabula.exe`
 
 * <a name='portproblems'>**A browser tab opens, but something other than Tabula loads there. Or Tabula doesn't start.**</a>
-  It's possible another program is using port 8080, whichh Tabula binds to by default. You can try closing the other program, or change the port Tabula uses by running Tabula from the terminal with the `jetty.port` property:
+  It's possible another program is using port 8080, whichh Tabula binds to by default. You can try closing the other program, or change the port Tabula uses by running Tabula from the terminal with the `warbler.port` property:
 
-  `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Djetty.port=9999 -jar tabula.jar`
+  `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Dwarbler.port=9999 -jar tabula.jar`
 
 
 ## Running Tabula from source (for developers)
