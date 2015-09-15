@@ -37,7 +37,7 @@
         <runtime dir="${java_home}" />
         <classpath file="${build.dir}/tabula.jar" />
         <option value="-Dapple.laf.useScreenMenuBar=true"/>
-        <option value="-Djetty.port=8080"/>
+        <option value="-Dwarbler.port=8080"/>
     </bundleapp>
     <!--
     To allow OSX to use this, you'll need to code sign.
@@ -83,7 +83,7 @@
         </classPath>
         <jre minVersion="1.6.0" jdkPreference="preferJre" initialHeapSize="256" maxHeapSize="1024">
           <opt>-Dfile.encoding=utf-8</opt>
-          <opt>-Djetty.port=8080</opt>
+          <opt>-Dwarbler.port=8080</opt>
         </jre>
         <versionInfo
             fileVersion="${full_version}"

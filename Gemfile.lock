@@ -25,7 +25,7 @@ GEM
     execjs (2.5.2)
     ffi (1.9.8-java)
     jruby-jars (1.7.15)
-    jruby-rack (1.1.18)
+    jruby-rack (1.1.19)
     json (1.8.2-java)
     multi_json (1.11.0)
     rack (1.6.0)
@@ -36,7 +36,7 @@ GEM
     rubyzip (1.1.7)
     sass (3.4.13)
     tilt (2.0.1)
-    warbler (1.4.7)
+    warbler (1.4.9)
       jruby-jars (>= 1.5.6, < 2.0)
       jruby-rack (>= 1.1.1, < 1.3)
       rake (>= 0.9.6)
@@ -53,4 +53,7 @@ DEPENDENCIES
   rack
   rake
   tilt
-  warbler
+  warbler (~> 1.4.9)
+
+BUNDLED WITH
+   1.10.6
