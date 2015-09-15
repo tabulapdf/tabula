@@ -24,7 +24,7 @@ GEM
       rack
     execjs (2.5.2)
     ffi (1.9.8-java)
-    jruby-jars (1.7.15)
+    jruby-jars (1.7.22)
     jruby-rack (1.1.19)
     json (1.8.2-java)
     multi_json (1.11.0)
@@ -52,9 +52,12 @@ DEPENDENCIES
   bootstrap-sass
   compass
   cuba
-  jruby-jars (= 1.7.15)
+  jruby-jars (= 1.7.22)
   rack
   rake
   tabula-extractor (~> 0.8.0)
   tilt
   warbler (~> 1.4.9)
+
+BUNDLED WITH
+   1.10.6
