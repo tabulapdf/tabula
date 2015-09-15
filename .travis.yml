@@ -1,0 +1,14 @@
+sudo: false
+cache: bundler
+language: ruby
+before_install:
+  - gem update --system
+  - gem install bundler
+rvm:
+  - jruby-1.7.22
+jdk:
+  - oraclejdk8
+  - openjdk7
+script: bundle exec rake war && bundle exec rake jardist
+notifications:
+  email: false
