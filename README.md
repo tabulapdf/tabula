@@ -52,6 +52,9 @@ If you have a problem, check [Known Issues](#knownissues) first, then [report an
 
   Note: If you’re running Mac OS X 10.8 or later, you might get an error like "Tabula is damaged and can't be opened." We're working on fixing this, but click [here](#gatekeeper) for a workaround.
 
+* ###ArchLinux
+  A package is available on the [AUR](https://aur.archlinux.org/packages/tabula/). You can install it with `yaourt -S tabula` and then run it with `tabula` (or `tabula PORT_NUMBER` if you want something else than 8080).
+
 * ###Other platforms (e.g. Linux)
   Download `tabula-jar.zip` from [the download site][tabula_dl] and unzip it
   to the directory of your choice. Open a terminal window, and `cd` to inside
