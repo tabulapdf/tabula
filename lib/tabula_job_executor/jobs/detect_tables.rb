@@ -18,6 +18,7 @@ class DetectTablesJob < Tabula::Background::Job
       page_index = page.getPageNumber
 
       at( (page_count + page_index) / 2, page_count, "auto-detecting tables...") #starting at 50%...
+      changed
 
       cells = Java::TechnologyTabulaExtractors::SpreadsheetExtractionAlgorithm.findCells(page.getHorizontalRulings, page.getVerticalRulings)
       areas = sea.findSpreadsheetsFromCells(cells)

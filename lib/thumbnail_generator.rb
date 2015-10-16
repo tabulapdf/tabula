@@ -33,7 +33,7 @@ end
 class MUDrawThumbnailGenerator < AbstractThumbnailGenerator
 
   def initialize(pdf_filename, output_directory, sizes=[2048, 560], mudraw='/usr/local/bin/mudraw')
-    super(pdf_filename, output_directory, sizes, pages)
+    super(pdf_filename, output_directory, sizes)
     @mudraw = mudraw
   end
 
