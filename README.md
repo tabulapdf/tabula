@@ -188,6 +188,8 @@ Download a [3.1.X (beta) copy of Launch4J][launch4j].
 Unzip it into the Tabula repo so that "launch4j" (with subdirectories "bin", etc.)
 is in the repository root.
 
+(If you're building on a 64bit Linux, you may need to install 32bit libs like, in Ubuntu `sudo apt-get install lib32z1 lib32ncurses5`)
+
 
 Then:
 
