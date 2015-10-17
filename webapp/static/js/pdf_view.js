@@ -459,7 +459,17 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     if(!this.model.get('data')) this.startSpinner();
 
     if (uniq_extraction_methods.length == 1){
+      // prospectively support renaming the methods in tabula-extractor to "lattice"/"stream"
+      // and cope with "basic" extraction algorithm ID in tabula-java
+      // https://github.com/tabulapdf/tabula-extractor/issues/96
+      if (["basic", "original", "stream"].indexOf(uniq_extraction_methods[0]) > -1){
+        uniq_extraction_methods[0] = "original";
+      }else if(["spreadsheet", "lattice"].indexOf(uniq_extraction_methods[0]) > -1){
+        uniq_extraction_methods[0] = "spreadsheet";
+      }
       this.$el.find('#' + uniq_extraction_methods[0] + '-method-btn').button('toggle');
+    }else{
+      console.log("A mix of unique extraction methods found, not selecting either extraction method radio button: " + uniq_extraction_methods.join(", "))
     }
 
     this.$el.find('.has-tooltip').tooltip();
