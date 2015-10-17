@@ -1,5 +1,6 @@
 var Tabula;
 window.Tabula = Tabula || {};
+$.ajaxSetup({ cache: false }); // fixes a dumb issue where Internet Explorer caches Ajax requests. See https://github.com/tabulapdf/tabula/issues/408
 
 Tabula.UI_VERSION = "1.0.0-2015-08-05" // when we make releases, we should remember to up this.
 // Add '-pre' to the end of this for a prerelease version; this will let
