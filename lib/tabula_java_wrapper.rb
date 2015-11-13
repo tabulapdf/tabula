@@ -44,7 +44,7 @@ module Tabula
     Enumerator.new do |y|
       extractor.extract(pages.map { |p| p.to_java(:int) }).each do |page|
         specs[page.getPageNumber].each do |spec|
-          if ["spreadsheet", "original"].include?(spec['extraction_method'])
+          if ["spreadsheet", "original", "basic"].include?(spec['extraction_method'])
             use_spreadsheet_extraction_method = spec['extraction_method'] == "spreadsheet"
           else
             use_spreadsheet_extraction_method = sea.isTabular(page)
