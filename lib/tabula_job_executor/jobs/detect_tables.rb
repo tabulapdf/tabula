@@ -11,24 +11,30 @@ class DetectTablesJob < Tabula::Background::Job
 
     page_areas_by_page = []
 
-    extractor = Tabula::Extraction::ObjectExtractor.new(filepath, :all)
-    page_count = extractor.page_count
-    sea = Java::TechnologyTabulaExtractors::SpreadsheetExtractionAlgorithm.new
-    extractor.extract.each do |page|
-      page_index = page.getPageNumber
+    begin
+      extractor = Tabula::Extraction::ObjectExtractor.new(filepath, :all)
+      page_count = extractor.page_count
+      sea = Java::TechnologyTabulaExtractors::SpreadsheetExtractionAlgorithm.new
+      extractor.extract.each do |page|
+        page_index = page.getPageNumber
 
-      at( (page_count + page_index) / 2, page_count, "auto-detecting tables...") #starting at 50%...
-      changed
+        at( (page_count + page_index) / 2, page_count, "auto-detecting tables...") #starting at 50%...
+        changed
 
-      cells = Java::TechnologyTabulaExtractors::SpreadsheetExtractionAlgorithm.findCells(page.getHorizontalRulings, page.getVerticalRulings)
-      areas = sea.findSpreadsheetsFromCells(cells)
-      page_areas_by_page << areas.map { |rect|
-        [ rect.getLeft,
-          rect.getTop,
-          rect.getWidth,
-          rect.getHeight ]
-      }
+        cells = Java::TechnologyTabulaExtractors::SpreadsheetExtractionAlgorithm.findCells(page.getHorizontalRulings, page.getVerticalRulings)
+        areas = sea.findSpreadsheetsFromCells(cells)
+        page_areas_by_page << areas.map { |rect|
+          [ rect.getLeft,
+            rect.getTop,
+            rect.getWidth,
+            rect.getHeight ]
+        }
+      end
+
+    rescue Java::JavaLang::Exception => e
+      warn("Table auto-detect failed. You may need to select tables manually.")
     end
+
     File.open(output_dir + "/tables.json", 'w') do |f|
       f.puts page_areas_by_page.to_json
     end

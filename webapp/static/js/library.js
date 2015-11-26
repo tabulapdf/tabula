@@ -8,6 +8,7 @@ Tabula.FileUpload = Backbone.Model.extend({
     this.set({
       message: 'waiting to be processed...',
       pct_complete: 0,
+      warnings: []
     });
   },
 
@@ -27,6 +28,7 @@ Tabula.FileUpload = Backbone.Model.extend({
             }
 
             this.set('pct_complete', data.pct_complete);
+            this.set('warnings', data.warnings);
 
             if (data.status == "error" && data.error_type == "unknown") {
                 // window.location.reload(true);
