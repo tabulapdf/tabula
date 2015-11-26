@@ -117,6 +117,10 @@ module Tabula
         self.status.merge!({ 'status' => 'queued', 'queued_on' => Time.now })
       end
 
+      def warn(*warnings)
+        self.status.merge!({ 'warnings' => warnings })
+      end
+
       def failed(*messages)
         self.status.merge!({ 'status' => 'failed', 'messages' => messages})
       end
@@ -140,6 +144,12 @@ module Tabula
       end
 
       alias_method :message?, :message
+
+      def warning
+        self.status['warnings']
+      end
+
+      alias_method :warning?, :warning
 
       STATUSES = %w{queued working completed failed killed}.freeze
       STATUSES.each do |status|

@@ -212,6 +212,11 @@
       <script type='text/template' id='file-upload-template'>
         <h5><%= filename %></h5>
         <span id="message"><%= message %></span>
+        <ul class="list-unstyled">
+          <% for(var warning in warnings) { %>
+              <li class="text-danger">Warning: <%= warnings[warning] %></li>
+          <% } %>
+        </ul>
         <div class="progress">
           <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= pct_complete %>%;"><span class="sr-only"> <%= pct_complete %>% Complete </span></div>
         </div>
