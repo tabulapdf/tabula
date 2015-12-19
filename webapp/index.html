@@ -255,16 +255,20 @@
               <h4>Import one or more PDFs</h4>
               <form id="upload" action="/upload.json" method="post" enctype="multipart/form-data" class="form-inline">
 
-              <div class="input-group">
-              <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
+                <div class="input-group">
+                  <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
                   <span class="input-group-btn">
                       <span class="btn btn-primary btn-file">
                           Browse&hellip; <input type="file" id="file" name="files[]" multiple accept="application/pdf">
                       </span>
                   </span>
                   <input type="text" class="form-control" readonly>
-              </div>
-                 <button type="submit" class="btn btn-default">Import</button>
+                </div>
+
+                <!-- fix for the fact that IE11 is trash https://blog.yorkxin.org/posts/2014/02/06/ajax-with-formdata-is-broken-on-ie10-ie11/ -->
+                <input type="hidden" name="_dontcare">
+
+                <button type="submit" class="btn btn-default">Import</button>
               </form>
 
             </div>
