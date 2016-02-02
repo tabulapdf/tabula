@@ -7,7 +7,7 @@
 # Tabula
 
 [tabula `master`](https://github.com/tabulapdf/tabula/tree/master) [![Build Status](https://travis-ci.org/tabulapdf/tabula.svg?branch=master)](https://travis-ci.org/tabulapdf/tabula)  
-[tabula-extractor `master`](https://github.com/tabulapdf/tabula-extractor/tree/master) [![Build Status](https://travis-ci.org/tabulapdf/tabula-extractor.svg?branch=master)](https://travis-ci.org/tabulapdf/tabula-extractor)
+
 
 Tabula helps you liberate data tables trapped inside PDF files.
 
