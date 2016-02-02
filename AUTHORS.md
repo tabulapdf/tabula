@@ -2,7 +2,7 @@ Tabula was originally started by Manuel Aristarán in late 2012
 
 The PRIMARY AUTHORS are (and/or have been):
 
-* Manuel Aristarán - La Nación (Buenos Aires, Argentina), Knight-Mozilla OpenNews
+* Manuel Aristarán - MIT Media Lab (formerly La Nación, Knight-Mozilla OpenNews)
 * Mike Tigas - ProPublica, Knight-Mozilla OpenNews
 * Jeremy B. Merrill - The New York Times (formerly ProPublica)
 * Jason Das, designer <https://jasondas.com>
