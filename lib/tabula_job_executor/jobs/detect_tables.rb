@@ -14,15 +14,14 @@ class DetectTablesJob < Tabula::Background::Job
     begin
       extractor = Tabula::Extraction::ObjectExtractor.new(filepath, :all)
       page_count = extractor.page_count
-      sea = Java::TechnologyTabulaExtractors::SpreadsheetExtractionAlgorithm.new
+      nda = Java::TechnologyTabulaDetectors::NurminenDetectionAlgorithm.new
       extractor.extract.each do |page|
         page_index = page.getPageNumber
 
         at( (page_count + page_index) / 2, page_count, "auto-detecting tables...") #starting at 50%...
         changed
 
-        cells = Java::TechnologyTabulaExtractors::SpreadsheetExtractionAlgorithm.findCells(page.getHorizontalRulings, page.getVerticalRulings)
-        areas = sea.findSpreadsheetsFromCells(cells)
+        areas = nda.detect(page)
         page_areas_by_page << areas.map { |rect|
           [ rect.getLeft,
             rect.getTop,
