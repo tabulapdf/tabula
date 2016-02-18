@@ -19,13 +19,13 @@ GEM
     cuba (3.5.0)
       rack (~> 1.6.0)
     ffi (1.9.10-java)
-    jruby-jars (1.7.22)
+    jruby-jars (1.7.24)
     jruby-rack (1.1.20)
     multi_json (1.11.2)
     rack (1.6.4)
     rake (10.5.0)
     rb-fsevent (0.9.7)
-    rb-inotify (0.9.5)
+    rb-inotify (0.9.7)
       ffi (>= 0.5.0)
     rubyzip (1.1.7)
     sass (3.4.21)
@@ -43,7 +43,7 @@ DEPENDENCIES
   bootstrap-sass (~> 3.2.0)
   compass
   cuba
-  jruby-jars (= 1.7.22)
+  jruby-jars (= 1.7.24)
   rack (~> 1.6.0)
   rake
   tilt (~> 1.4.0)
