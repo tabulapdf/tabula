@@ -1,12 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    autoprefixer-rails (5.1.11)
-      execjs
-      json
-    bootstrap-sass (3.3.4.1)
-      autoprefixer-rails (>= 5.0.0.1)
-      sass (>= 3.2.19)
+    bootstrap-sass (3.2.0.2)
+      sass (~> 3.2)
     chunky_png (1.3.4)
     compass (1.0.3)
       chunky_png (~> 1.2)
@@ -20,18 +16,16 @@ GEM
       sass (>= 3.3.0, < 3.5)
     compass-import-once (1.0.5)
       sass (>= 3.2, < 3.5)
-    cuba (3.3.0)
-      rack
-    execjs (2.5.2)
-    ffi (1.9.8-java)
-    jruby-jars (1.7.22)
-    jruby-rack (1.1.19)
-    json (1.8.2-java)
-    multi_json (1.11.0)
-    rack (1.5.2)
-    rake (10.3.2)
-    rb-fsevent (0.9.4)
-    rb-inotify (0.9.5)
+    cuba (3.5.0)
+      rack (~> 1.6.0)
+    ffi (1.9.10-java)
+    jruby-jars (1.7.24)
+    jruby-rack (1.1.20)
+    multi_json (1.11.2)
+    rack (1.6.4)
+    rake (10.5.0)
+    rb-fsevent (0.9.7)
+    rb-inotify (0.9.7)
       ffi (>= 0.5.0)
     rubyzip (1.1.7)
     sass (3.4.10)
@@ -49,10 +43,10 @@ PLATFORMS
   java
 
 DEPENDENCIES
-  bootstrap-sass
+  bootstrap-sass (~> 3.2.0)
   compass
   cuba
-  jruby-jars (= 1.7.22)
+  jruby-jars (= 1.7.24)
   rack
   rake
   tabula-extractor (~> 0.8.0)
@@ -60,4 +54,4 @@ DEPENDENCIES
   warbler (~> 1.4.9)
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
