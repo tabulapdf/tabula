@@ -15,7 +15,7 @@ Tabula helps you liberate data tables trapped inside PDF files.
 * [Read more about Tabula on OpenNews Source](https://source.opennews.org/en-US/articles/introducing-tabula/)
 * See also: [tabula-extractor](https://github.com/jazzido/tabula-extractor), a command-line interface for Tabula. (Also, this is the extraction library that powers Tabula.)
 
-© 2012-2015 Manuel Aristarán. Available under MIT License. See
+© 2012-2016 Manuel Aristarán. Available under MIT License. See
 [`AUTHORS.md`](AUTHORS.md) and [`LICENSE.md`](LICENSE.md).
 
 ## Why Tabula?
@@ -108,7 +108,7 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
 
 ## Incorporating Tabula into your own project
 
-Tabula is open-source, so we'd love for you to incorporate pieces of Tabula into your own projects. The "guts" of Tabula -- that is, the logic and heuristics that reconstruct tables from PDFs -- is contained in the [tabula-java](https://github.com/tabulapdf/tabula-java/) repo. There's a JAR file that you can easily incorporate into JVM languages like Java, Scala or Clojure. [tabula-extractor](https://github.com/tabulapdf/tabula-extractor/) is JRuby bindings for tabula-java. If you end up writing bindings for another language (Python, in particular!), let us know and we'll add a link here. 
+Tabula is open-source, so we'd love for you to incorporate pieces of Tabula into your own projects. The "guts" of Tabula -- that is, the logic and heuristics that reconstruct tables from PDFs -- is contained in the [tabula-java](https://github.com/tabulapdf/tabula-java/) repo. There's a JAR file that you can easily incorporate into JVM languages like Java, Scala or Clojure. [tabula-extractor](https://github.com/tabulapdf/tabula-extractor/) is JRuby bindings for tabula-java. If you end up writing bindings for another language (Python, in particular!), let us know and we'll add a link here.
 
 ## Running Tabula from source (for developers)
 
