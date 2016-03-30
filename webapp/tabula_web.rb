@@ -9,7 +9,7 @@ require 'tempfile'
 require 'fileutils'
 require 'securerandom'
 
-require_relative '../lib/jars/tabula-0.8.0-jar-with-dependencies.jar'
+require_relative '../lib/jars/tabula-0.9.0-jar-with-dependencies.jar'
 
 require_relative '../lib/tabula_java_wrapper.rb'
 java_import 'java.io.ByteArrayOutputStream'
@@ -278,7 +278,7 @@ Cuba.define do
           # /* use more Entries to add more files
           #    and use closeEntry() to close each file entry */
           zos.putNextEntry(entry)
-          zos.write(table.to_csv.to_java_bytes) # lol java BITES... 
+          zos.write(table.to_csv.to_java_bytes) # lol java BITES...
           zos.closeEntry()
         end
         zos.finish
