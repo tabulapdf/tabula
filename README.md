@@ -1,6 +1,6 @@
-**Repo Note**: The `master` branch is an *in development* version of Tabula that may or may not work. For stable, working code, please see [releases](https://github.com/tabulapdf/tabula/releases) or [switch to a `stable/` branch](https://github.com/tabulapdf/tabula/branches).
+**Repo Note**: The `master` branch is an *in development* version of Tabula. This may be substantially different from the latest [releases of Tabula](https://github.com/tabulapdf/tabula/releases).
 
-*As of August 2015, the master branch uses [tabula-java](https://github.com/tabulapdf/tabula-java) instead of [tabula-extractor](https://github.com/tabulapdf/tabula-extractor) under the hood.*
+*As of August 2015, the master branch (and Tabula 1.1.X+) uses [tabula-java](https://github.com/tabulapdf/tabula-java) instead of [tabula-extractor](https://github.com/tabulapdf/tabula-extractor) under the hood. Previous versions of Tabula use tabula-extractor. *
 
 ---
 
@@ -12,10 +12,10 @@
 Tabula helps you liberate data tables trapped inside PDF files.
 
 * [Download from the official site](http://tabula.technology/)
-* [Read more about Tabula on OpenNews Source](http://source.mozillaopennews.org/en-US/articles/introducing-tabula/)
+* [Read more about Tabula on OpenNews Source](https://source.opennews.org/en-US/articles/introducing-tabula/)
 * See also: [tabula-extractor](https://github.com/jazzido/tabula-extractor), a command-line interface for Tabula. (Also, this is the extraction library that powers Tabula.)
 
-© 2012-2015 Manuel Aristarán. Available under MIT License. See
+© 2012-2016 Manuel Aristarán. Available under MIT License. See
 [`AUTHORS.md`](AUTHORS.md) and [`LICENSE.md`](LICENSE.md).
 
 ## Why Tabula?
@@ -106,6 +106,9 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
 
   `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Dwarbler.port=9999 -jar tabula.jar`
 
+## Incorporating Tabula into your own project
+
+Tabula is open-source, so we'd love for you to incorporate pieces of Tabula into your own projects. The "guts" of Tabula -- that is, the logic and heuristics that reconstruct tables from PDFs -- is contained in the [tabula-java](https://github.com/tabulapdf/tabula-java/) repo. There's a JAR file that you can easily incorporate into JVM languages like Java, Scala or Clojure. [tabula-extractor](https://github.com/tabulapdf/tabula-extractor/) is JRuby bindings for tabula-java. If you end up writing bindings for another language (Python, in particular!), let us know and we'll add a link here.
 
 ## Running Tabula from source (for developers)
 

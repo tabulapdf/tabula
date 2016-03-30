@@ -11,7 +11,7 @@ The PRIMARY AUTHORS are (and/or have been):
 
 Special thanks to these organizations:
 
-* Knight-Mozilla OpenNews <http://www.mozillaopennews.org/>
+* Knight-Mozilla OpenNews <https://opennews.org/>
 * ProPublica <http://propublica.org>
 * La Nación <http://www.lanacion.com.ar>
 * The New York Times <http://www.nytimes.com>
