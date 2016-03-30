@@ -53,7 +53,7 @@
 
 
 
-    <div id="tabula-app"> <!-- TODO remember to change this ID to match what page we're on.  id="page-selections", id="page-export"-->   
+    <div id="tabula-app"> <!-- TODO remember to change this ID to match what page we're on.  id="page-selections", id="page-export"-->
     </div>
     <div id="tabula-dataview">
 
@@ -63,7 +63,7 @@
       <script type="text/template" id="page-template" >
         <span class="page-number"><%= number %>. </span>
         <div class="page" id="page-div-<%= number %>">
-          <img onload="$(this).data('loaded', 'loaded');" src="<%= image_url %>" draggable="false" unselectable="on" > <!-- unselectable is for IE/Opera --> 
+          <img onload="$(this).data('loaded', 'loaded');" src="<%= image_url %>" draggable="false" unselectable="on" > <!-- unselectable is for IE/Opera -->
         </div>
       </script>
       <script type="text/template" id="thumbnail-template" >
@@ -186,14 +186,14 @@
         <div id="main-pane">
           <div id="control-panel">
           </div>
- 
+
           <div id="pages-container">
           </div>
         </div>
-        <nestedscript type="text/javascript" src="/js/vendor/spin.min.js"></nestedscript> 
-        <nestedscript type="text/javascript" src="/js/resizableSelection.js"></nestedscript> 
-        <nestedscript type="text/javascript" src="/js/rectangularSelector.js"></nestedscript> 
-        <nestedscript type="text/javascript" src="/js/vendor/ZeroClipboard.min.js"></nestedscript> 
+        <nestedscript type="text/javascript" src="/js/vendor/spin.min.js"></nestedscript>
+        <nestedscript type="text/javascript" src="/js/resizableSelection.js"></nestedscript>
+        <nestedscript type="text/javascript" src="/js/rectangularSelector.js"></nestedscript>
+        <nestedscript type="text/javascript" src="/js/vendor/ZeroClipboard.min.js"></nestedscript>
         <!-- <nestedscript type="text/javascript" src="/js/debug_pdf_view.js"></nestedscript>  -->
       </script>
 
@@ -202,7 +202,7 @@
         <h4>Failed Uploads</h4>
         <ol id="failed-uploads">
 
-        </ol>        
+        </ol>
       </script>
       <script type="text/template" id="failed-uploaded-file-template">
         <a href='/pdf/<%= id %>'><%= original_filename %></a>: <%= failure_message %>
@@ -301,9 +301,9 @@
         </div> <!-- /container -->
 
         <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
-        <nestedscript type="text/javascript" src="/js/vendor/upload-group.js"></nestedscript> 
+        <nestedscript type="text/javascript" src="/js/vendor/upload-group.js"></nestedscript>
         <nestedscript type="text/javascript" src="/js/vendor/jquery.tablesorter.min.js"></nestedscript>
-        <nestedscript type="text/javascript" src="/js/vendor/spin.min.js"></nestedscript> 
+        <nestedscript type="text/javascript" src="/js/vendor/spin.min.js"></nestedscript>
       </script>
 
       <script type="text/template" id="uploaded-file-template">
@@ -336,7 +336,7 @@
           <div class="jumbotron about">
 
             <h1>About Tabula</h1>
-            <p>Tabula is a tool for liberating data tables trapped inside PDF files</p>
+            <p>Tabula is a tool for liberating data tables trapped inside PDF files.</p>
 
             <p>Tabula was created by journalists for journalists and anyone else working with data locked away in PDFs. Tabula will always be free and open source.</p>
             <p>If you’ve ever tried to do anything with data provided to you in PDFs, you know how painful it is — there's no easy way to copy-and-paste rows of data out of PDF files. Tabula allows you to extract that data into a CSV or Microsoft Excel spreadsheet using a simple, easy-to-use interface. Tabula works on Mac, Windows and Linux.</p>
@@ -349,7 +349,7 @@
             <p>And researchers of all kinds use Tabula to turn PDF reports into Excel spreadsheets, CSVs, and JSON files for use in analysis and database applications.</p>
 
             <h2>Credits</h2>
-            <p>Tabula was created by <a href="http://jazzido.com/" target="_blank">Manuel Aristarán</a>, <a href="https://mike.tig.as/" target="_blank">Mike Tigas</a> and <a href="http://jeremybmerrill.com/" target="_blank">Jeremy B. Merrill</a> with the support of <a href="http://propublica.org">ProPublica</a>, <a href="http://blogs.lanacion.com.ar/data/">La Nación DATA</a>, <a href="http://www.mozillaopennews.org/">Knight-Mozilla OpenNews</a>, <a href="http://nytimes.com">The New York Times</a> and <a href="http://www.knightfoundation.org/">The Knight Foundation</a>. Tabula was designed by <a href="http://jasondas.com">Jason Das.</a></p>
+            <p>Tabula was created by <a href="http://jazzido.com/" target="_blank">Manuel Aristarán</a>, <a href="https://mike.tig.as/" target="_blank">Mike Tigas</a> and <a href="http://jeremybmerrill.com/" target="_blank">Jeremy B. Merrill</a> with the support of <a href="https://www.propublica.org">ProPublica</a>, <a href="http://blogs.lanacion.com.ar/data/">La Nación DATA</a>, <a href="https://opennews.org/">Knight-Mozilla OpenNews</a>, <a href="http://www.nytimes.com">The New York Times</a> and <a href="http://www.knightfoundation.org/">The Knight Foundation</a>. Tabula was designed by <a href="http://jasondas.com">Jason Das.</a></p>
           </div> <!-- /jumbotron -->
         </div> <!-- /container -->
        </script>
