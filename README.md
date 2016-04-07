@@ -13,7 +13,6 @@ Tabula helps you liberate data tables trapped inside PDF files.
 
 * [Download from the official site](http://tabula.technology/)
 * [Read more about Tabula on OpenNews Source](https://source.opennews.org/en-US/articles/introducing-tabula/)
-
 * Interested in using Tabula on the command-line? Check out [tabula-java](https://github.com/tabulapdf/tabula-java), a Java library and command-line interface for Tabula. (This is the extraction library that powers Tabula.)
 
 © 2012-2016 Manuel Aristarán. Available under MIT License. See
