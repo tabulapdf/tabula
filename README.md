@@ -13,7 +13,8 @@ Tabula helps you liberate data tables trapped inside PDF files.
 
 * [Download from the official site](http://tabula.technology/)
 * [Read more about Tabula on OpenNews Source](https://source.opennews.org/en-US/articles/introducing-tabula/)
-* See also: [tabula-extractor](https://github.com/jazzido/tabula-extractor), a command-line interface for Tabula. (Also, this is the extraction library that powers Tabula.)
+
+* Interested in using Tabula on the command-line? Check out [tabula-java](https://github.com/tabulapdf/tabula-java), a Java library and command-line interface for Tabula. (This is the extraction library that powers Tabula.)
 
 © 2012-2016 Manuel Aristarán. Available under MIT License. See
 [`AUTHORS.md`](AUTHORS.md) and [`LICENSE.md`](LICENSE.md).
@@ -34,7 +35,7 @@ a simple web interface ([Check out this short screencast](https://erika.makes.or
 First, make sure you have a recent copy of Java installed. You can
 [download Java here][jre_download]. Tabula requires
 a Java Runtime Environment compatible with Java 6 or Java 7.
-If you have a problem, check [Known Issues](#knownissues) first, then [report an issue](http://www.github.com/jazzido/tabula/issues).
+If you have a problem, check [Known Issues](#knownissues) first, then [report an issue](http://www.github.com/tabulapdf/tabula/issues).
 
 * ### Windows
   Download `tabula-win.zip` from [the download site][tabula_dl]. Unzip the whole thing
@@ -76,7 +77,7 @@ Tabula binds to port 8080 by default. You can change it with the `warbler.port` 
 
 ## <a name="knownissues">Known issues</a>
 
-There are some bugs that we're aware of that we haven't managed to fix yet. If there's not a solution here or you need more help, please go ahead and [report an issue](http://www.github.com/jazzido/tabula/issues).
+There are some bugs that we're aware of that we haven't managed to fix yet. If there's not a solution here or you need more help, please go ahead and [report an issue](http://www.github.com/tabulapdf/tabula/issues).
 
 
 * <a name='legacy'>**Legacy Java Environment (SE 6) Is Required:**</a> (Mac):
@@ -110,7 +111,7 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
 
 Tabula is open-source, so we'd love for you to incorporate pieces of Tabula into your own projects. The "guts" of Tabula -- that is, the logic and heuristics that reconstruct tables from PDFs -- is contained in the [tabula-java](https://github.com/tabulapdf/tabula-java/) repo. There's a JAR file that you can easily incorporate into JVM languages like Java, Scala or Clojure and it includes a command-line tool for you to automate your extraction tasks. Visit that repo for more information on how to use `tabula-java` on the CLI and on how Tabula exports `tabula-java` scripts.
 
-[tabula-extractor](https://github.com/tabulapdf/tabula-extractor/) is JRuby bindings for tabula-java. If you end up writing bindings for another language (Python, in particular!), let us know and we'll add a link here.
+[tabula-extractor](https://github.com/tabulapdf/tabula-extractor/) contains JRuby bindings for tabula-java. If you end up writing bindings for another language (Python, in particular!), let us know and we'll add a link here.
 
 ## Running Tabula from source (for developers)
 
@@ -121,7 +122,7 @@ Tabula is open-source, so we'd love for you to incorporate pieces of Tabula into
    `rbenv`, ensure that JRuby is being used.
 
     ~~~
-    git clone git://github.com/jazzido/tabula.git
+    git clone git://github.com/tabulapdf/tabula.git
     cd tabula
 
     gem install bundler
@@ -182,7 +183,7 @@ This results in a 98MB zip file, versus the 30MB zip file for other platforms,
 but allows users to run Tabula without having to worry about [Java version
 incompatibilities](https://github.com/tabulapdf/tabula/issues/237).
 
-[buildxml_cert]: https://github.com/jazzido/tabula/blob/master/build.xml#L44-53
+[buildxml_cert]: https://github.com/tabulapdf/tabula/blob/master/build.xml#L44-53
 
 **Windows**
 
@@ -233,7 +234,7 @@ Interested in helping out? We'd love to have your help!
 
 You can help by:
 
-- [Reporting a bug](https://github.com/jazzido/tabula).
+- [Reporting a bug](https://github.com/tabulapdf/tabula/issues).
 - Adding or editing documentation.
 - Contributing code via a Pull Request from ideas or bugs listed in the [Enhancements](https://github.com/tabulapdf/tabula/labels/enhancement) section of the issues. [see `CONTRIBUTING.md`](CONTRIBUTING.md)
 - Spreading the word about Tabula to people who might be able to benefit from using it.
