@@ -301,7 +301,7 @@ Cuba.define do
                                      else
                                         ""
                                      end
-          res.write "tabula #{extraction_method_switch} -a #{c['y1'].round(3)},#{c['x1'].round(3)},#{c['y2'].round(3)},#{c['x2'].round(3)} -p #{c['page']} \"$1\" \n"
+          res.write "java -jar tabula-java.jar #{extraction_method_switch} -a #{c['y1'].round(3)},#{c['x1'].round(3)},#{c['y2'].round(3)},#{c['x2'].round(3)} -p #{c['page']} \"$1\" \n"
         end
       when 'bbox'
         # Write json representation of bounding boxes and pages for
