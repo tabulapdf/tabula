@@ -1,4 +1,6 @@
-Tabula was originally started by Manuel Aristarán in late 2012
+# Authors & Acknowledgments
+
+Tabula was originally started by Manuel Aristarán in late 2012.
 
 The PRIMARY AUTHORS are (and/or have been):
 
@@ -16,3 +18,4 @@ Special thanks to these organizations:
 * La Nación <http://www.lanacion.com.ar>
 * The New York Times <http://www.nytimes.com>
 * Knight Lab at Northwestern University <http://knightlab.northwestern.edu/>
+* The John S. and James L. Knight Foundation <http://www.knightfoundation.org/>

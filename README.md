@@ -239,6 +239,8 @@ You can help by:
 - Contributing code via a Pull Request from ideas or bugs listed in the [Enhancements](https://github.com/tabulapdf/tabula/labels/enhancement) section of the issues. [see `CONTRIBUTING.md`](CONTRIBUTING.md)
 - Spreading the word about Tabula to people who might be able to benefit from using it.
 
+### Backers
+
 You can also support our continued work on Tabula with a one-time or monthly donation [on OpenCollective](https://opencollective.com/tabulapdf#support). Organizations who use Tabula can also [sponsor the project](https://opencollective.com/tabulapdf#support) for acknolwedgement on [our official site](http://tabula.technology/) and this README.
 
 Special thanks to the following users and organizations for generously supporting Tabula with donations and grants:
@@ -250,5 +252,6 @@ Special thanks to the following users and organizations for generously supportin
 <a href="https://opencollective.com/tabulapdf/backer/4/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/4/avatar"></a>
 <a href="https://opencollective.com/tabulapdf/backer/5/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/5/avatar"></a>
 
-
 <a title="The John S. and James L. Knight Foundation" href="http://www.knightfoundation.org/" target="_blank"><img alt="The John S. and James L. Knight Foundation" src="http://www.knightfoundation.org/media/uploads/media_images/knight-logo-300.jpg"></a>
+
+More acknowledgments can be found in [`AUTHORS.md`](AUTHORS.md).
