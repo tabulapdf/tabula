@@ -3,12 +3,12 @@
 *As of August 2015, the master branch (and Tabula 1.1.X+) uses [tabula-java](https://github.com/tabulapdf/tabula-java) instead of [tabula-extractor](https://github.com/tabulapdf/tabula-extractor) under the hood. Previous versions of Tabula use tabula-extractor.*
 
 ---
-[![OpenCollective](https://opencollective.com/tabulapdf/backers/badge.svg)](#backers) [![OpenCollective](https://opencollective.com/tabulapdf/sponsors/badge.svg)](#sponsors)
+
 
 # Tabula
 
-[tabula `master`](https://github.com/tabulapdf/tabula/tree/master) [![Build Status](https://travis-ci.org/tabulapdf/tabula.svg?branch=master)](https://travis-ci.org/tabulapdf/tabula)  
-
+[tabula `master`](https://github.com/tabulapdf/tabula/tree/master)
+[![Build Status](https://travis-ci.org/tabulapdf/tabula.svg?branch=master)](https://travis-ci.org/tabulapdf/tabula)  
 
 Tabula helps you liberate data tables trapped inside PDF files.
 
@@ -239,9 +239,9 @@ You can help by:
 - Contributing code via a Pull Request from ideas or bugs listed in the [Enhancements](https://github.com/tabulapdf/tabula/labels/enhancement) section of the issues. [see `CONTRIBUTING.md`](CONTRIBUTING.md)
 - Spreading the word about Tabula to people who might be able to benefit from using it.
 
-## Backers
+You can also support our continued work on Tabula with a one-time or monthly donation [on OpenCollective](https://opencollective.com/tabulapdf#support). Organizations who use Tabula can also [sponsor the project](https://opencollective.com/tabulapdf#support) for acknolwedgement on [our official site](http://tabula.technology/) and this README.
 
-Support us with a monthly donation and help us continue our activities. We will send a heartfelt thank you your way!  [[Become a backer](https://opencollective.com/tabulapdf#backer)]
+Special thanks to the following users and organizations for generously supporting Tabula with donations and grants:
 
 <a href="https://opencollective.com/tabulapdf/backer/0/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/0/avatar"></a>
 <a href="https://opencollective.com/tabulapdf/backer/1/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/1/avatar"></a>
@@ -249,65 +249,6 @@ Support us with a monthly donation and help us continue our activities. We will 
 <a href="https://opencollective.com/tabulapdf/backer/3/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/3/avatar"></a>
 <a href="https://opencollective.com/tabulapdf/backer/4/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/4/avatar"></a>
 <a href="https://opencollective.com/tabulapdf/backer/5/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/5/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/6/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/6/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/7/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/7/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/8/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/8/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/9/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/9/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/10/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/10/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/11/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/11/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/12/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/12/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/13/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/13/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/14/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/14/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/15/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/15/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/16/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/16/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/17/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/17/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/18/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/18/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/19/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/19/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/20/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/20/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/21/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/21/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/22/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/22/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/23/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/23/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/24/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/24/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/25/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/25/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/26/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/26/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/27/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/27/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/28/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/28/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/backer/29/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/29/avatar"></a>
 
 
-## Sponsors
-
-Become a sponsor and have a perferred spot on our site and your logo on our Readme. [[Become a sponsor](https://opencollective.com/tabulapdf#sponsor)]
-
-<a href="https://opencollective.com/tabulapdf/sponsor/0/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/0/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/1/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/1/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/2/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/2/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/3/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/3/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/4/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/4/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/5/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/5/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/6/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/6/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/7/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/7/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/8/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/8/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/9/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/9/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/10/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/10/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/11/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/11/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/12/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/12/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/13/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/13/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/14/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/14/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/15/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/15/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/16/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/16/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/17/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/17/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/18/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/18/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/19/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/19/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/20/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/20/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/21/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/21/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/22/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/22/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/23/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/23/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/24/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/24/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/25/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/25/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/26/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/26/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/27/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/27/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/28/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/28/avatar"></a>
-<a href="https://opencollective.com/tabulapdf/sponsor/29/website" target="_blank"><img src="https://opencollective.com/tabulapdf/sponsor/29/avatar"></a>
-
-
+<a title="The John S. and James L. Knight Foundation" href="http://www.knightfoundation.org/" target="_blank"><img alt="The John S. and James L. Knight Foundation" src="http://www.knightfoundation.org/media/uploads/media_images/knight-logo-300.jpg"></a>
