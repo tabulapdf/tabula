@@ -5,6 +5,7 @@
 ---
 
 
+
 # Tabula
 
 [tabula `master`](https://github.com/tabulapdf/tabula/tree/master)
@@ -18,6 +19,18 @@ Tabula helps you liberate data tables trapped inside PDF files.
 
 © 2012-2016 Manuel Aristarán. Available under MIT License. See
 [`AUTHORS.md`](AUTHORS.md) and [`LICENSE.md`](LICENSE.md).
+
+-   [Why Tabula?](#why-tabula)
+-   [Using Tabula](#using-tabula)
+-   [Known issues](#known-issues)
+-   [Incorporating Tabula into your own
+    project](#incorporating-tabula-into-your-own-project)
+-   [Running Tabula from source
+    (for developers)](#running-tabula-from-source-for-developers)
+    -   [Building a packaged application
+        version](#building-a-packaged-application-version)
+-   [Contributing](#contributing)
+    -   [Backers](#backers)
 
 ## Why Tabula?
 
