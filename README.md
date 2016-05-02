@@ -47,7 +47,7 @@ a simple web interface ([Check out this short screencast](https://erika.makes.or
 
 First, make sure you have a recent copy of Java installed. You can
 [download Java here][jre_download]. Tabula requires
-a Java Runtime Environment compatible with Java 6 or Java 7.
+a Java Runtime Environment compatible with Java 7.
 If you have a problem, check [Known Issues](#knownissues) first, then [report an issue](http://www.github.com/tabulapdf/tabula/issues).
 
 * ### Windows
