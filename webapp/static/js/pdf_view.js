@@ -62,9 +62,9 @@ Tabula.Selection = Backbone.Model.extend({
 
     var original_pdf_width = page.get('width');
     var original_pdf_height = page.get('height');
-    var pdf_rotation = page.get('rotation');
+    // var pdf_rotation = page.get('rotation');
 
-    var scale = (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width) / imageWidth;
+    var scale = original_pdf_width / imageWidth;
     var rp = this.attributes.getDims().relativePos;
     this.set({
       x1: rp.left * scale,
@@ -708,8 +708,8 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
                   }));
     this.$el.find('img').attr('data-page', this.model.get('number'))
                         .attr('data-original-width', this.model.get('width'))
-                        .attr('data-original-height', this.model.get('height'))
-                        .attr('data-rotation', this.model.get('rotation'));
+                        .attr('data-original-height', this.model.get('height'));
+                        // .attr('data-rotation', this.model.get('rotation'));
     this.$image = this.$el.find('img');
     return this;
   },
@@ -1139,7 +1139,7 @@ Tabula.PDFView = Backbone.View.extend(
       var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page});
       var original_pdf_width = page.get('width');
       var original_pdf_height = page.get('height');
-      var pdf_rotation = page.get('rotation');
+      // var pdf_rotation = page.get('rotation');
 
       // TODO: create selection models for pages that aren't lazyloaded, but obviously don't display them.
       if(Tabula.LazyLoad && !pageView){
@@ -1152,7 +1152,7 @@ Tabula.PDFView = Backbone.View.extend(
       if (!$img.length || $img.data('loaded') !== 'loaded' || !$img.height() ){ // if this page isn't shown currently or the image hasn't been rendered yet, then create a hidden selectionx
         return this.pdf_document.selections.createHiddenSelection(sel);
       }
-      var scale = image_width / (Math.abs(pdf_rotation) == 90 ? original_pdf_height : original_pdf_width);
+      var scale = image_width / original_pdf_width;
       var offset = $img.offset();
       var absolutePos = _.extend({}, offset,
                                 {
