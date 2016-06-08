@@ -7,7 +7,7 @@
 
 
 # Tabula
-
+j
 [tabula `master`](https://github.com/tabulapdf/tabula/tree/master)
 [![Build Status](https://travis-ci.org/tabulapdf/tabula.svg?branch=master)](https://travis-ci.org/tabulapdf/tabula)  
 
@@ -47,7 +47,7 @@ a simple web interface ([Check out this short screencast](https://erika.makes.or
 
 First, make sure you have a recent copy of Java installed. You can
 [download Java here][jre_download]. Tabula requires
-a Java Runtime Environment compatible with Java 7.
+a Java Runtime Environment compatible with Java 7 (i.e. Java 7, 8 or higher).
 If you have a problem, check [Known Issues](#knownissues) first, then [report an issue](http://www.github.com/tabulapdf/tabula/issues).
 
 * ### Windows
