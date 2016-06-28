@@ -293,23 +293,29 @@ Tabula.Query = Backbone.Model.extend({
         success: _.bind(function(resp) {
           this.set('data', resp);
 
-          // this only needs to happen on the first select, when we don't know what the extraction method is yet
-          // (because it's set by the heuristic on the server-side).
-          // TODO: only execute it when one of the list_of_coords has guess or undefined as its extraction_method
-          _(_.zip(this.get('list_of_coords'), resp)).each(function(stuff, i){
-            var coord_set = stuff[0];
-            var resp_item = stuff[1];
-            if (stashed_selections.get(coord_set.selection_id)){
-              stashed_selections.get(coord_set.selection_id).
-                set('extraction_method', resp_item["extraction_method"]);
+          if (resp.length > 0) {
+            // this only needs to happen on the first select, when we don't know what the extraction method is yet
+            // (because it's set by the heuristic on the server-side).
+            // TODO: only execute it when one of the list_of_coords has guess or undefined as its extraction_method
+            _(_.zip(this.get('list_of_coords'), resp)).each(function(stuff, i){
+              var coord_set = stuff[0];
+              var resp_item = stuff[1];
+              if (stashed_selections.get(coord_set.selection_id)){
+                stashed_selections.get(coord_set.selection_id).
+                  set('extraction_method', resp_item["extraction_method"]);
+              }
+              coord_set["extraction_method"] = resp_item["extraction_method"];
+            });
+
+            this.trigger("tabula:query-success");
+
+            if (options !== undefined && _.isFunction(options.success)){
+              Tabula.pdf_view.options.success(resp);
             }
-            coord_set["extraction_method"] = resp_item["extraction_method"];
-          });
-
-          this.trigger("tabula:query-success");
-
-          if (options !== undefined && _.isFunction(options.success)){
-            Tabula.pdf_view.options.success(resp);
+          } else {
+            // no tables were extracted
+            var error_message = "No tables were extracted. Please try selecting a different extraction method from the sidebar.";
+            this.triggerQueryError(error_message, options);
           }
 
           }, this),
@@ -324,13 +330,16 @@ Tabula.Query = Backbone.Model.extend({
             var info = error_html.find('#info').text().trim();
             error_text = [summary, meta, info].join("<br />");
           }
-          var debugging_text = "Tabula API version: " + Tabula.api_version + "\nFilename: " + Tabula.pdf_view.pdf_document.get('original_filename') + "\n" + error_text
-          this.set('error_message', debugging_text);
-          this.trigger("tabula:query-error");
-          if (options !== undefined && _.isFunction(options.error))
-            options.error(resp);
+          this.triggerQueryError(error_text, options);
         }, this),
       });
+  },
+  triggerQueryError: function(error_text, options){
+    var debugging_text = "Tabula API version: " + Tabula.api_version + "\nFilename: " + Tabula.pdf_view.pdf_document.get('original_filename') + "\n" + error_text
+    this.set('error_message', debugging_text);
+    this.trigger("tabula:query-error");
+    if (options !== undefined && _.isFunction(options.error))
+      options.error(resp);
   },
   setExtractionMethod: function(extractionMethod){
     _(this.get('list_of_coords')).each(function(coord_set){ coord_set['extraction_method'] = extractionMethod; });
