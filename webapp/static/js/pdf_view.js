@@ -296,15 +296,20 @@ Tabula.Query = Backbone.Model.extend({
           // this only needs to happen on the first select, when we don't know what the extraction method is yet
           // (because it's set by the heuristic on the server-side).
           // TODO: only execute it when one of the list_of_coords has guess or undefined as its extraction_method
-          _(_.zip(this.get('list_of_coords'), resp)).each(function(stuff, i){
-            var coord_set = stuff[0];
-            var resp_item = stuff[1];
+          _(resp).each(_.bind(function(resp_item, i){
+            var coord_set = this.get('list_of_coords')[resp_item['spec_index']];
+          // _(_.zip(this.get('list_of_coords'), resp)).each(function(stuff, i){
+            // var coord_set = stuff[0];
+            // var resp_item = stuff[1];
+            // if(!coord_set) return; // DIRTY HACK, see https://github.com/tabulapdf/tabula/issues/497
+            //                        // if one set of coords returns 2+ tables, 
+            //                        // then this zip won't work.
             if (stashed_selections.get(coord_set.selection_id)){
               stashed_selections.get(coord_set.selection_id).
                 set('extraction_method', resp_item["extraction_method"]);
             }
             coord_set["extraction_method"] = resp_item["extraction_method"];
-          });
+          },this));
 
           this.trigger("tabula:query-success");
 
