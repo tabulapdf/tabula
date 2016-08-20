@@ -316,7 +316,7 @@ Cuba.define do
         res.write  "["
         tables.each_with_index do |table, index|
           res.write ", " if index > 0
-          res.write table.to_json
+          res.write table.to_json[0...-1] + ", \"spec_index\": #{table.spec_index}}"
         end
 
         # end JSON array
