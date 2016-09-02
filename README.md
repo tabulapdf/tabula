@@ -7,7 +7,7 @@
 
 
 # Tabula
-j
+
 [tabula `master`](https://github.com/tabulapdf/tabula/tree/master)
 [![Build Status](https://travis-ci.org/tabulapdf/tabula.svg?branch=master)](https://travis-ci.org/tabulapdf/tabula)  
 
