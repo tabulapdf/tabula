@@ -309,6 +309,21 @@ Cuba.define do
         res['Content-Type'] = 'application/json'
         res['Content-Disposition'] = "attachment; filename=\"#{filename}.json\""
         res.write coords.to_json
+      when 'json'
+        # Write json representation of bounding boxes and pages for
+        # use in OCR and other back ends.
+        res['Content-Type'] = 'application/json'
+        res['Content-Disposition'] = "attachment; filename=\"#{filename}.json\""
+
+        # start JSON array
+        res.write  "["
+        tables.each_with_index do |table, index|
+          res.write ", " if index > 0
+          res.write table.to_json[0...-1] + ", \"spec_index\": #{table.spec_index}}"
+        end
+
+        # end JSON array
+        res.write "]"
      else
         res['Content-Type'] = 'application/json'
 
