@@ -104,8 +104,19 @@ Tabula.getNotifications = function(){
           var d = data[i];
           if (!!d.draft) { continue; } // ignore drafts
           if (!prerelease && !!d.prerelease) { continue; } // ignore prereleases unless we're on a prerelease
+
+          var rel_ver_re = /\((\d+\.\d+\.\d+\.\d+)\)/;
           console.log("checking " + d.name + " vs " + Tabula.api_version);
-          if ((non_prerelease_i === 0) && (d.name == Tabula.api_version)){
+
+          // Either the name of the GitHub release is the the version or the
+          // name of the GitHub release contains the full 4-part "build id"
+          // in parenthesis.
+          //   * "1.1.0"
+          //   * "Tabula 1.1.0 Release (1.1.0.16091701)" (YYMMDDxx, with xx as a day-based serial number in case we need it)
+          if ((non_prerelease_i === 0) && (
+            (d.name == Tabula.api_version) ||
+            (!!d.name.match(rel_ver_re) && (d.name.match(rel_ver_re)[1] === Tabula.api_version))
+          )) {
             // if index == 0, current release is the newest, so break out of this fn
             console.log(" -> IS LATEST");
             return;
