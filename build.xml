@@ -17,7 +17,7 @@
     <mkdir dir="${mac.dir}"/>
 
     <!-- this must be a real JDK -->
-    <property name="java_home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_77.jdk/Contents/Home"/>
+    <property name="java_home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home"/>
 
     <taskdef
         name="bundleapp"
@@ -55,8 +55,8 @@
       [3]: https://developer.apple.com/account/mac/certificate/certificateList.action
     -->
     <exec executable="codesign" os="Mac OS X">
-      <!-- <arg line="-f -s 'Developer ID Application: Mike Tigas (68QUP6KP2C)' ${build.dir}/mac/Tabula.app/Contents/PlugIns/jdk1.8.0_77.jdk" /> -->
-      <arg line="-f -s 'Tabula' ${build.dir}/mac/Tabula.app/Contents/PlugIns/jdk1.8.0_77.jdk" />
+      <!-- <arg line="-f -s 'Developer ID Application: Mike Tigas (68QUP6KP2C)' ${build.dir}/mac/Tabula.app/Contents/PlugIns/jdk1.8.0_102.jdk" /> -->
+      <arg line="-f -s 'Tabula' ${build.dir}/mac/Tabula.app/Contents/PlugIns/jdk1.8.0_102.jdk" />
     </exec>
     <exec executable="codesign" os="Mac OS X">
       <!-- <arg line="-f -s 'Developer ID Application: Mike Tigas (68QUP6KP2C)' ${build.dir}/mac/Tabula.app" /> -->
