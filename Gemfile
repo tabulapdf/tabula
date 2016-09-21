@@ -10,8 +10,8 @@ platform :jruby do
 
   group :development do
     gem "rake"
-    gem "warbler", "~> 1.4.9"
-    gem "jruby-jars", "1.7.24"
+    gem "warbler", "~> 2.0.3"
+    gem "jruby-jars", "9.1.5.0"
     gem "bootstrap-sass", "~> 3.2.0"
     gem "compass"
   end
