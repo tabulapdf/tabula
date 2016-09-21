@@ -143,7 +143,7 @@ Tabula has bindings for JRuby and R. If you end up writing bindings for another 
 ## Running Tabula from source (for developers)
 
 1. Download JRuby. You can install it from its website, or using tools like
-   `rvm` or `rbenv`
+   `rvm` or `rbenv`. Note that as of Tabula 1.1.0 (7875582becb2799b65586d5680782cafd399bb33), Tabula uses the JRuby 9000 series (i.e. JRuby 9.1.5.0).
 
 2. Download Tabula and install the Ruby dependencies. (Note: if using `rvm` or
    `rbenv`, ensure that JRuby is being used.
