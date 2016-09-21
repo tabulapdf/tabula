@@ -49,3 +49,6 @@ the Tabula interface. Tabula binds to port 8080 by default. You can change
 it with the `warbler.port` option; for example, if you want to use port 9999:
 
   java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Dwarbler.port=9999 -jar tabula.jar
+
+(You can enable the old "automatically open browser" behavior by using
+the `-Dtabula.openBrowser=true` option.)

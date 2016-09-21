@@ -77,15 +77,21 @@ If you have a problem, check [Known Issues](#knownissues) first, then [report an
 
   `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -jar tabula.jar`
 
+  Then manually navigate your browser to http://127.0.0.1:8080/ (New in
+  Tabula 1.1. To go back to the old behavior that automatically launches
+  your web browser, use the `-Dtabula.openBrowser=true` option.
+
+  Tabula binds to port 8080 by default. You can change it with the `warbler.port` option; for example, to use port 9999:
+
+  `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Dwarbler.port=9999 -jar tabula.jar`
+
+
 If the program fails to run, double-check that you have [Java installed][jre_download]
 and then try again.
 
 [jre_download]: https://www.java.com/download/
 [tabula_dl]: http://tabula.technology
 
-Tabula binds to port 8080 by default. You can change it with the `warbler.port` property:
-
-`java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Dwarbler.port=9999 -jar tabula.jar`
 
 
 ## <a name="knownissues">Known issues</a>

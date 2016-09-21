@@ -27,14 +27,21 @@ if "#{$PROGRAM_NAME}".include?("tabula.jar")
   uri = java.net.URI.new(url)
   sleep 0.5
 
+  puts "should we open browser?"
+  puts "java.lang.Boolean.getBoolean('tabula.openBrowser'): #{java.lang.Boolean.getBoolean('tabula.openBrowser')}"
   have_desktop = false
-  if java.awt.Desktop.isDesktopSupported
-    begin
-      desktop = java.awt.Desktop.getDesktop()
-    rescue
-      desktop = nil
-    else
-      have_desktop = true
+  if java.lang.Boolean.getBoolean('tabula.openBrowser')
+    puts "java.awt.Desktop.isDesktopSupported: #{java.awt.Desktop.isDesktopSupported}"
+    if java.awt.Desktop.isDesktopSupported
+      begin
+        desktop = java.awt.Desktop.getDesktop()
+      rescue
+        puts "java.awt.Desktop.getDesktop(): no"
+        desktop = nil
+      else
+        puts "java.awt.Desktop.getDesktop(): yes"
+        have_desktop = true
+      end
     end
   end
 
