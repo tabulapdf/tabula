@@ -159,7 +159,7 @@ Tabula has bindings for JRuby and R. If you end up writing bindings for another 
 
 **Then, start the development server:**
 
-    bundle exec rackup
+    jruby -G -S rackup
 
 (If you get encoding errors, set the `JAVA_OPTS` environment variable to `-Dfile.encoding=utf-8`)
 
@@ -169,7 +169,7 @@ You can a couple some options when executing the server in this manner:
 
     TABULA_DATA_DIR="/tmp/tabula" \
     TABULA_DEBUG=1 \
-    bundle exec rackup
+    jruby -G -S rackup
 
 * `TABULA_DATA_DIR` controls where uploaded data for Tabula is stored. By default,
   data is stored in the OS-dependent application data directory for the current
@@ -183,7 +183,7 @@ You can a couple some options when executing the server in this manner:
 Testing in this manner will be closer to testing the "packaged application"
 version of the app.
 
-    bundle exec rake war
+    jruby -G -S rake war
     java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -jar build/tabula.jar
 
 ### Building a packaged application version
