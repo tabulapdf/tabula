@@ -122,7 +122,7 @@ There are some bugs that we're aware of that we haven't managed to fix yet. If t
   4. Run Tabula by typing `tabula.exe`
 
 * <a name='portproblems'>**A browser tab opens, but something other than Tabula loads there. Or Tabula doesn't start.**</a>
-  It's possible another program is using port 8080, whichh Tabula binds to by default. You can try closing the other program, or change the port Tabula uses by running Tabula from the terminal with the `warbler.port` property:
+  It's possible another program is using port 8080, which Tabula binds to by default. You can try closing the other program, or change the port Tabula uses by running Tabula from the terminal with the `warbler.port` property:
 
   `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Dwarbler.port=9999 -jar tabula.jar`
 
