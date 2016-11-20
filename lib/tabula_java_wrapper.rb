@@ -43,7 +43,6 @@ module Tabula
     bea = Java::TechnologyTabulaExtractors.BasicExtractionAlgorithm.new
 
     Enumerator.new do |y|
-      puts pages.inspect
       extractor.extract(pages.map { |p| p.to_java(:int) }).each do |page|
         specs[page.getPageNumber].each do |spec|
           if ["spreadsheet", "original", "basic", "stream", "lattice"].include?(spec['extraction_method'])
