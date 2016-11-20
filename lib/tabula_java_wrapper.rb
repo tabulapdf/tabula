@@ -46,7 +46,7 @@ module Tabula
       puts pages.inspect
       extractor.extract(pages.map { |p| p.to_java(:int) }).each do |page|
         specs[page.getPageNumber].each do |spec|
-          if ["spreadsheet", "original", "basic", "stream"].include?(spec['extraction_method'])
+          if ["spreadsheet", "original", "basic", "stream", "lattice"].include?(spec['extraction_method'])
             use_spreadsheet_extraction_method = (spec['extraction_method'] == "spreadsheet" || spec['extraction_method'] == "lattice"  )
           else # guess
             use_spreadsheet_extraction_method = sea.isTabular(page)
