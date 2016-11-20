@@ -93,7 +93,6 @@ def upload(file)
 end
 
 Cuba.define do
-
   if TabulaSettings::ENABLE_DEBUG_METHODS
     require_relative './tabula_debug.rb'
     on 'debug' do
@@ -168,7 +167,11 @@ Cuba.define do
 
     [root, "about", "pdf/:file_id", "help"].each do |paths_to_single_page_app|
       on paths_to_single_page_app do
-        res.write File.read("webapp/index.html")
+        index = File.read("webapp/index.html")
+        if ROOT_URI != ''
+          index.sub!("<base href=\"/\">", "<base href=\"#{ROOT_URI}\">")
+        end
+        res.write index
       end
     end
 

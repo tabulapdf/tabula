@@ -1,6 +1,7 @@
 var Tabula;
 window.Tabula = Tabula || {};
 $.ajaxSetup({ cache: false }); // fixes a dumb issue where Internet Explorer caches Ajax requests. See https://github.com/tabulapdf/tabula/issues/408
+var base_uri = $('base').attr("href");
 
 Tabula.UI_VERSION = "1.1.0-2016-09-21" // when we make releases, we should remember to up this.
 // Add '-pre' to the end of this for a prerelease version; this will let
@@ -9,6 +10,7 @@ Tabula.UI_VERSION = "1.1.0-2016-09-21" // when we make releases, we should remem
 // Note that this is separate from the "API version" (internal app version)
 // which is what we check against GitHub. In the future, this will allow us
 // to modularize the UI from the backend some more.
+
 
 var TabulaRouter = Backbone.Router.extend({
   routes: {
@@ -41,7 +43,7 @@ var TabulaRouter = Backbone.Router.extend({
     document.title="Import | Tabula";
     $('nav li a').removeClass('active'); $('nav #upload-nav').addClass('active');
     $.ajax({
-      url: "/js/library.js",
+      url: (base_uri || '/') + "js/library.js",
       dataType: "script",
       async: true,
       success: function(data, status, jqxhr){
@@ -60,7 +62,7 @@ var TabulaRouter = Backbone.Router.extend({
     $('#tabula-app').html( _.template( $('#pdf-view-template').html().replace(/nestedscript/g, 'script') )({}) );
 
     $.ajax({
-      url: "/js/pdf_view.js",
+      url: (base_uri || '/') + "js/pdf_view.js",
       dataType: "script",
       async: true,
       success: function(data, status, jqxhr){
@@ -78,7 +80,7 @@ var TabulaRouter = Backbone.Router.extend({
 Tabula.getVersion = function(){
   Tabula.notification = new Backbone.Model({});
   Tabula.new_version = new Backbone.Model({});
-  $.getJSON("/version", function(data){
+  $.getJSON((base_uri || '/') + "version", function(data){
     Tabula.api_version = data["api"];
     Tabula.getNotifications();
 
@@ -169,5 +171,8 @@ Tabula.getNotifications = function(){
 $(function(){
   Tabula.getVersion();
   window.tabula_router = new TabulaRouter();
-  Backbone.history.start({pushState: true});
+  Backbone.history.start({
+    pushState: true,
+    root: base_uri
+  });
 });

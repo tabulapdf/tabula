@@ -77,7 +77,7 @@ Tabula.UploadedFile = Backbone.Model.extend({
 
 Tabula.UploadedFilesCollection = Backbone.Collection.extend({
     model: Tabula.UploadedFile,
-    url: function(){ return '/pdfs/workspace.json'+ '?' + Number(new Date()).toString() },
+    url: function(){ return 'pdfs/workspace.json'+ '?' + Number(new Date()).toString() },
     comparator: function(i){ return -i.get('time')},
     parse: function(items){
       _(items).each(function(i){
