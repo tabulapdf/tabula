@@ -153,7 +153,6 @@ Tabula has bindings for JRuby and R. If you end up writing bindings for another 
     cd tabula
 
     gem install bundler
-    gem install tabula-extractor
     bundle install
     ~~~
 
