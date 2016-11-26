@@ -113,13 +113,11 @@
         <a href="javascript:void(0)"><button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disable_detected_tables %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button></a>
         <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
         <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><span class="glyphicon glyphicon-eye-open"></span> Preview & Export Extracted Data</button></a>
-        <div>
-          <span class="regex_title">Regex</span>
-          <input id="top_regex" type="text" placeholder="Upper Bound">
-          <input id="bottom_regex" type="text" placeholder="Lower Bound">
+          <span style="margin-right: 10px" class="regex_title">Regex</span>
+          <input style="margin-right: 10px" class="regexI" id="top_regex" type="text" placeholder="Upper Bound">
+          <input style="margin-right: 10px" class="regexI" id="bottom_regex" type="text" placeholder="Lower Bound">
           <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %><span class="glyphicon glyphicon-remove-circle"></span> Clear Regex</button></a>
           <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %><span class="glyphicon glyphicon-eye-open"></span> Preview Regex</button></a>
-        </div>
       </script>
 
       <script type="text/template" id="export-page-sidebar-template">
@@ -194,7 +192,7 @@
         <div id="main-pane">
           <div id="control-panel">
           </div>
-          
+
           <div id="pages-container">
           </div>
         </div>
