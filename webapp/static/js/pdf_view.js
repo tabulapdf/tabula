@@ -121,14 +121,10 @@ Tabula.Options = Backbone.Model.extend({
   The canonical store of selections now needs to be in Backbone, not in imgareaselect.
   The UI can listen to the Selections; imgAreaselect creates adds to the collection,
   causing the thumbnail to be drawn.
-
   Clearing or repeating is much easier, because we don't have to mess around with the UI.
   Querying all is likewise easy.
-
   We could also store extraction option info on the selections, if we want.
-
   On imgareaselect's _onSelectEnd, add the selection to Selections
-
   On Selections's remove (or change), find the right imgAreaSelect
 */
 
@@ -781,6 +777,8 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     'click #restore-detected-tables': 'restoreDetectedTables',
     'click #all-data': 'queryAllData',
     'click #repeat-lassos': 'repeatLassos',
+	  'click #preview-regex': 'previewRegex',
+    'click #clear-regex': 'clearRegex'
   },
 
   template: _.template($('#templates #select-control-panel-template').html().replace(/nestedscript/g, 'script')),
@@ -792,6 +790,37 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     /* TODO: write this */
   },
 
+  clearRegex: function(){
+
+  },
+  
+  previewRegex: function(){
+	
+	var upper = document.getElementById('top-regex').value;
+	var lower =	document.getElementById('bottom-regex').value;
+	
+	if( upper == "" ){
+		// empty field
+		console.log("Bad upper");
+		return;
+	}
+	
+	else if ( lower == "" ){
+		// empty field
+		console.log("Bad bottom");
+		return;
+	}
+	
+	else
+	{
+		// do something
+		console.log("Good job");
+		return;
+	}
+	
+  },
+  
+  
   clearAllSelections: function(){
     _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
     Tabula.pdf_view.pdf_document.selections.reset([]);
@@ -843,7 +872,9 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 
                   // three states: autodetection still incomplete, autodetection done but no tables found, autodetection done and tables found
                   'restore_detected_tables': this.pdf_view.hasAutodetectedTables ? "autodetect-finished" : "autodetect-in-progress",
-                  'disable_detected_tables': numOfSelectionsOnPage > 0 || this.pdf_view.pdf_document.autodetected_selections.size() === 0 ? 'disabled="disabled"' : ''
+                  'disable_detected_tables': numOfSelectionsOnPage > 0 || this.pdf_view.pdf_document.autodetected_selections.size() === 0 ? 'disabled="disabled"' : '',
+                  'preview_regex': '',
+                  'clear_regex': ''
                   })));
     return this;
   },
