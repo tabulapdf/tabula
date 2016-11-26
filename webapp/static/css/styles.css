@@ -1,4 +1,4 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
@@ -7987,6 +7987,17 @@ form {
   vertical-align: middle;
 }
 
+#control-panel .regex_title {
+  display: inline-block;
+  margin-right: 20px;
+  max-width: 270px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#control-panel span.regex_title {
+  vertical-align: middle;
+}
 #main-pane {
   background: #777777;
   padding: 4.25em 2em 2em 2em;
