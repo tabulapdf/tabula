@@ -791,33 +791,27 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   clearRegex: function(){
-
+	document.getElementById('top-regex').value = '';
+	document.getElementById('bottom-regex').value = '';
+	return;
   },
   
   previewRegex: function(){
-	
 	var upper = document.getElementById('top-regex').value;
 	var lower =	document.getElementById('bottom-regex').value;
-	
 	if( upper == "" ){
 		// empty field
-		console.log("Bad upper");
+		alert("Bad upper");
 		return;
-	}
-	
-	else if ( lower == "" ){
+	}else if ( lower == "" ){
 		// empty field
-		console.log("Bad bottom");
+		alert("Bad bottom");
 		return;
-	}
-	
-	else
-	{
+	}else{
 		// do something
-		console.log("Good job");
+		alert("Good job");
 		return;
 	}
-	
   },
   
   
