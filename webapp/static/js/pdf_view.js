@@ -777,8 +777,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     'click #restore-detected-tables': 'restoreDetectedTables',
     'click #all-data': 'queryAllData',
     'click #repeat-lassos': 'repeatLassos',
-	  'click #preview-regex': 'previewRegex',
-    'click #clear-regex': 'clearRegex'
+    'click #set-regex': 'setRegex'
   },
 
   template: _.template($('#templates #select-control-panel-template').html().replace(/nestedscript/g, 'script')),
@@ -790,30 +789,10 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     /* TODO: write this */
   },
 
-  clearRegex: function(){
-	document.getElementById('top-regex').value = '';
-	document.getElementById('bottom-regex').value = '';
+  setRegex: function(){
+	window.open('file:///regex_window.html');
 	return;
   },
-  
-  previewRegex: function(){
-	var upper = document.getElementById('top-regex').value;
-	var lower =	document.getElementById('bottom-regex').value;
-	if( upper == "" ){
-		// empty field
-		alert("Bad upper");
-		return;
-	}else if ( lower == "" ){
-		// empty field
-		alert("Bad bottom");
-		return;
-	}else{
-		// do something
-		alert("Good job");
-		return;
-	}
-  },
-  
   
   clearAllSelections: function(){
     _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
@@ -867,8 +846,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
                   // three states: autodetection still incomplete, autodetection done but no tables found, autodetection done and tables found
                   'restore_detected_tables': this.pdf_view.hasAutodetectedTables ? "autodetect-finished" : "autodetect-in-progress",
                   'disable_detected_tables': numOfSelectionsOnPage > 0 || this.pdf_view.pdf_document.autodetected_selections.size() === 0 ? 'disabled="disabled"' : '',
-                  'preview_regex': '',
-                  'clear_regex': ''
+                  'set_regex': ''
                   })));
     return this;
   },

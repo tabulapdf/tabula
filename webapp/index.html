@@ -113,11 +113,7 @@
         <a href="javascript:void(0)"><button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disable_detected_tables %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button></a>
         <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
         <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><span class="glyphicon glyphicon-eye-open"></span> Preview & Export Extracted Data</button></a>
-          <span style="margin-right: 10px" class="regex_title">Regex</span>
-          <input style="margin-right: 10px" class="regexI" id="top-regex" type="text" placeholder="Upper Bound">
-          <input style="margin-right: 10px" class="regexI" id="bottom-regex" type="text" placeholder="Lower Bound">
-          <a href="javascript:void(0)"><button type="button" id="clear-regex" class="btn btn-success" <%= clear_regex %><span class="glyphicon glyphicon-remove-circle"></span> Clear Regex</button></a>
-          <a href="javascript:void(0)"><button type="button" id="preview-regex" class="btn btn-success" <%= preview_regex %><span class="glyphicon glyphicon-eye-open"></span> Preview Regex</button></a>
+          <a href="javascript:void(0)"><button type="button" id="set-regex" class="btn btn-default" <%= set_regex %>><span class="glyphicon glyphicon-search"></span> Set Regex</button></a>
       </script>
 
       <script type="text/template" id="export-page-sidebar-template">

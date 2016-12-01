@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Regex Window</title>
+		<link href="./static/css/styles.css" rel="stylesheet">
+		<script type="text/javascript" src="./static/js/regex.js"></script>
+	</head>
+	<body style="padding: 20px"> 
+		<div id="placeholder">
+			<div align="center" id="template">
+				<input type="text" style="margin-right: 10px" name="regex-top" placeholder="Top regex match">
+				<input type="text" style="margin-right: 10px" name="regex-bottom" placeholder="Bottom regex match">
+				<button type="button" id="removebuttonID" onclick="removeRegex(this)" id="regexRemove"><span class="glyphicon glyphicon-remove-circle"></span> Remove</button>
+			</div>
+		</div>
+		<div style="margin-top: 10px" align="center">
+			<button type="button" style="margin-right: 10px" onclick="addRegex()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+			<button type="submit" onclick="finishRegex()"><span class="glyphicon glyphicon-ok"></span> Finish</button>
+		</div>
+	</body>
+</html>
