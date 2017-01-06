@@ -269,7 +269,7 @@ You can help by:
 
 You can also support our continued work on Tabula with a one-time or monthly donation [on OpenCollective](https://opencollective.com/tabulapdf#support). Organizations who use Tabula can also [sponsor the project](https://opencollective.com/tabulapdf#support) for acknolwedgement on [our official site](http://tabula.technology/) and this README.
 
-Special thanks to the following users and organizations for generously supporting Tabula with donations and grants:
+Tabula is made possible in part through <a href="https://opencollective.com/tabulapdf">the generosity of our users</a> and through grants from the <a href="http://www.knightfoundation.org/">Knight Foundation</a> and the <a href="https://shuttleworthfoundation.org/">Shuttleworth Foundation</a>. Special thanks to all the users and organizations that support Tabula!
 
 <a href="https://opencollective.com/tabulapdf/backer/0/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/0/avatar"></a>
 <a href="https://opencollective.com/tabulapdf/backer/1/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/1/avatar"></a>
@@ -278,6 +278,7 @@ Special thanks to the following users and organizations for generously supportin
 <a href="https://opencollective.com/tabulapdf/backer/4/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/4/avatar"></a>
 <a href="https://opencollective.com/tabulapdf/backer/5/website" target="_blank"><img src="https://opencollective.com/tabulapdf/backer/5/avatar"></a>
 
-<a title="The John S. and James L. Knight Foundation" href="http://www.knightfoundation.org/" target="_blank"><img alt="The John S. and James L. Knight Foundation" src="http://www.knightfoundation.org/media/uploads/media_images/knight-logo-300.jpg"></a>
+<a title="The John S. and James L. Knight Foundation" href="http://www.knightfoundation.org/" target="_blank"><img width="220" alt="The John S. and James L. Knight Foundation" src="http://www.knightfoundation.org/media/uploads/media_images/knight-logo-300.jpg"></a>
+<a title="The Shuttleworth Foundation" href="https://shuttleworthfoundation.org/" target="_blank"><img width="200" alt="The Shuttleworth Foundation" src="https://raw.githubusercontent.com/tabulapdf/tabula/gh-pages/shuttleworth.jpg"></a>
 
 More acknowledgments can be found in [`AUTHORS.md`](AUTHORS.md).
