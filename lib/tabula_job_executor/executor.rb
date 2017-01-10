@@ -101,7 +101,7 @@ module Tabula
 
       def call
         self.status.merge!({ 'status' => 'working', 'started_on' => Time.now })
-        perform
+        performRegex
         @uuid
       end
 
