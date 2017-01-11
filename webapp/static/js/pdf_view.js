@@ -790,8 +790,21 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   setRegex: function(){
-	window.open('file:///regex_window.html');
-	return;
+	var upper = document.getElementById('top-regex').value;
+	var lower =	document.getElementById('bottom-regex').value;
+	if( upper == "" ){
+		// empty field
+		alert("Bad upper");
+		return;
+	}else if ( lower == "" ){
+		// empty field
+		alert("Bad bottom");
+		return;
+	}else{
+		// do something
+		alert("Good job");
+		return;
+	}
   },
   
   clearAllSelections: function(){
