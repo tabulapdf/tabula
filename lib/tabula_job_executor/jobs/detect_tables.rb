@@ -67,7 +67,7 @@ class DetectTablesJob < Tabula::Background::Job
       warn("Regex bounds detect failed. You may need to select tables manually.")
     end
 
-    File.open(output_dir + "/tables.json", 'w') do |f|
+    File.open(output_dir + "/regex.json", 'w') do |f|
       f.puts page_areas_by_page.to_json
     end
 
