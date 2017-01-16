@@ -5,10 +5,8 @@ require_relative '../executor.rb'
 class DetectTablesJob < Tabula::Background::Job
   include Observable
   def perform
-    filepath = options[:filepath]
+	filepath = options[:filepath]
     output_dir = options[:output_dir]
-
-
     page_areas_by_page = []
 
     begin
@@ -39,14 +37,15 @@ class DetectTablesJob < Tabula::Background::Job
     end
 
     at(100, 100, "complete")
-    return nil
+	return nil
+	end
   end
   
   def performRegex
 	filepath = options[:filepath]
 	output_dir = options[:output_dir]
 	page_areas_by_page = []
-	upper = "New"
+	upper = "New Well I"
 	lower = "Report"
 	begin
 		extractor = Tabula::Extraction::ObjectExtractor.new(filepath, :all)
@@ -67,11 +66,11 @@ class DetectTablesJob < Tabula::Background::Job
       warn("Regex bounds detect failed. You may need to select tables manually.")
     end
 
-    File.open(output_dir + "/regex.json", 'w') do |f|
+    File.open(output_dir + "/tables.json", 'w') do |f|
       f.puts page_areas_by_page.to_json
     end
 
     at(100, 100, "complete")
     return nil
-  end
+	
 end
