@@ -46,6 +46,10 @@ class DetectTablesJob < Tabula::Background::Job
 	output_dir = options[:output_dir]
 	page_areas_by_page = []
 	upper = "New Well I"
+	#upper = options[:uppertext]
+	#File.open(output_dir + "/uppertext.txt", 'w') do |f|
+	#	f.puts upper
+	#end
 	lower = "Report"
 	begin
 		extractor = Tabula::Extraction::ObjectExtractor.new(filepath, :all)

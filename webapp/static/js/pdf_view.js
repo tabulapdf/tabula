@@ -802,7 +802,25 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 		return;
 	}else{
 		// do something
-		alert("Good job");
+		// alert("Good job");
+		var regex_data = {
+			"upper_text": upper,
+			"lower_text": lower
+		}
+		$.ajax({
+			type: 'GET',
+			url: '/regex',
+			data: this.regex_data,
+			dataType: 'json',
+			contentType: 'json',
+			crossDomain: true,
+			success: _.bind(function() {
+				console.log('neat');
+			}, this),
+			error: function(xhr, status, err) {
+				console.log('err', err);
+			}
+		});
 		return;
 	}
   },

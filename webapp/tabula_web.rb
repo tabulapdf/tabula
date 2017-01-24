@@ -55,6 +55,7 @@ Cuba.use Rack::Reloader
 
 def upload(file)
   original_filename = file[:filename]
+  upper_text = "TEST"
   file_id = Digest::SHA1.hexdigest(Time.now.to_s + original_filename) # just SHA1 of time isn't unique with multiple uploads
   file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
   FileUtils.mkdir(file_path)
@@ -82,7 +83,8 @@ def upload(file)
 
   DetectTablesJob.create(:filepath => filepath,
                          :output_dir => file_path,
-                         :batch => job_batch)
+                         :batch => job_batch,
+						 :uppertext => upper_text)
 
   GenerateThumbnailJob.create(:file_id => file_id,
                               :filepath => filepath,
@@ -100,7 +102,6 @@ Cuba.define do
       run TabulaDebug
     end
   end
-
 
   on 'queue' do
     require_relative './tabula_job_progress.rb'
@@ -148,6 +149,10 @@ Cuba.define do
   end
 
   on get do
+	on 'regex' do
+	  res.write JSON.dump({api: $TABULA_VERSION})
+	end
+  
     on 'pdfs' do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
     end
