@@ -792,33 +792,26 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   setRegex: function(){
 	var upper = document.getElementById('top-regex').value;
 	var lower =	document.getElementById('bottom-regex').value;
-	if( upper == "" ){
-		// empty field
-		alert("Bad upper");
-		return;
-	}else if ( lower == "" ){
-		// empty field
-		alert("Bad bottom");
+	if ( upper == "" && lower == "") {
+		// both fields empty
+		alert("At least one text string must be entered.");
 		return;
 	}else{
-		// do something
-		// alert("Good job");
-		var regex_data = {
-			"upper_text": upper,
-			"lower_text": lower
+		// run regex search
+		regex_data = {
+			'file_path': PDF_ID,
+			'upper_text': upper,
+			'lower_text': lower
 		}
 		$.ajax({
 			type: 'GET',
 			url: '/regex',
-			data: this.regex_data,
-			dataType: 'json',
-			contentType: 'json',
-			crossDomain: true,
+			data: regex_data,
 			success: _.bind(function() {
-				console.log('neat');
+				console.log('regex search completed successfully');
 			}, this),
 			error: function(xhr, status, err) {
-				console.log('err', err);
+				console.log('regex search err: ', err);
 			}
 		});
 		return;

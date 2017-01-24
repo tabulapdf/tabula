@@ -32,6 +32,7 @@ require_relative '../lib/tabula_job_executor/executor.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_document_data.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
 require_relative '../lib/tabula_job_executor/jobs/detect_tables.rb'
+require_relative '../lib/tabula_job_executor/jobs/regex_search.rb'
 
 
 def is_valid_pdf?(path)
@@ -52,10 +53,8 @@ Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/swf", "
 Cuba.use Rack::ContentLength
 Cuba.use Rack::Reloader
 
-
 def upload(file)
   original_filename = file[:filename]
-  upper_text = "TEST"
   file_id = Digest::SHA1.hexdigest(Time.now.to_s + original_filename) # just SHA1 of time isn't unique with multiple uploads
   file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
   FileUtils.mkdir(file_path)
@@ -83,8 +82,7 @@ def upload(file)
 
   DetectTablesJob.create(:filepath => filepath,
                          :output_dir => file_path,
-                         :batch => job_batch,
-						 :uppertext => upper_text)
+                         :batch => job_batch)
 
   GenerateThumbnailJob.create(:file_id => file_id,
                               :filepath => filepath,
@@ -149,10 +147,16 @@ Cuba.define do
   end
 
   on get do
-	on 'regex' do
+    on 'regex' do
 	  res.write JSON.dump({api: $TABULA_VERSION})
+	  pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf')
+	  output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
+	  RegexSearchJob.create(:filepath => pdf_path,
+                         :output_dir => output_dir,
+						 :uppertext => req.params['upper_text'],
+						 :lowertext => req.params['lower_text'])
 	end
-  
+	
     on 'pdfs' do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
     end
