@@ -9,7 +9,7 @@ require 'tempfile'
 require 'fileutils'
 require 'securerandom'
 
-require_relative '../lib/jars/tabula-0.9.1-jar-with-dependencies.jar'
+require_relative '../lib/jars/tabula-0.9.2-jar-with-dependencies.jar'
 
 require_relative '../lib/tabula_java_wrapper.rb'
 java_import 'java.io.ByteArrayOutputStream'
