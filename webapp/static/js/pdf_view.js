@@ -807,8 +807,8 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 			type: 'GET',
 			url: '/regex',
 			data: regex_data,
-			success: _.bind(function() {
-				console.log('regex search completed successfully');
+			success: _.bind(function(data) {
+				console.log(data);
 			}, this),
 			error: function(xhr, status, err) {
 				console.log('regex search err: ', err);

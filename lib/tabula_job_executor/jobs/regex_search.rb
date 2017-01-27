@@ -1,15 +1,9 @@
 require 'java'
 
-require_relative '../executor.rb'
+class RegexSearchJob 
 
-class RegexSearchJob < Tabula::Background::Job
-  include Observable
-  def perform
-	filepath = options[:filepath]
-	output_dir = options[:output_dir]
+  def performRegex(filepath, output_dir, upper, lower)
 	page_areas_by_page = []
-	upper = options[:uppertext]
-	lower = options[:lowertext]
 	begin
 		extractor = Tabula::Extraction::ObjectExtractor.new(filepath, :all)
 		page_count = extractor.page_count
@@ -32,8 +26,7 @@ class RegexSearchJob < Tabula::Background::Job
     File.open(output_dir + "/regex.json", 'w') do |f|
       f.puts page_areas_by_page.to_json
     end
-
-    at(100, 100, "complete")
-    return nil
+	
+    return page_areas_by_page
   end
 end

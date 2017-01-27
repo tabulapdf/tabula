@@ -148,13 +148,13 @@ Cuba.define do
 
   on get do
     on 'regex' do
-	  res.write JSON.dump({api: $TABULA_VERSION})
 	  pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf')
 	  output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
-	  RegexSearchJob.create(:filepath => pdf_path,
-                         :output_dir => output_dir,
-						 :uppertext => req.params['upper_text'],
-						 :lowertext => req.params['lower_text'])
+	  regex_search_job = RegexSearchJob.new()
+	  res.write regex_search_job.performRegex(pdf_path,
+									output_dir,
+									req.params['upper_text'],
+									req.params['lower_text'])
 	end
 	
     on 'pdfs' do
