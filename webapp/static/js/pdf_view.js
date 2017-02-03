@@ -790,18 +790,22 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   setRegex: function(){
-	var upper = document.getElementById('top-regex').value;
-	var lower =	document.getElementById('bottom-regex').value;
-	if ( upper == "" && lower == "") {
+	var upper_left = document.getElementById('top-left-regex').value;
+	var upper_right = document.getElementById('top-left-regex').value;
+	var lower_left = document.getElementById('bottom-left-regex').value;
+	var lower_right = document.getElementById('bottom-right-regex').value;
+	if ((upper_left == "" && upper_right == "") || (lower_left == "" && lower_right == "")) {
 		// both fields empty
-		alert("At least one text string must be entered.");
+		alert("Must specify an upper and lower input or all four corners");
 		return;
 	}else{
 		// run regex search
 		regex_data = {
 			'file_path': PDF_ID,
-			'upper_text': upper,
-			'lower_text': lower
+			'upper_left': upper_left,
+			'upper_right': upper_right,
+			'lower_left' : lower_left,
+			'lower_right' : lower_right
 		}
 		$.ajax({
 			type: 'GET',
