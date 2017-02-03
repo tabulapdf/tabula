@@ -153,8 +153,10 @@ Cuba.define do
 	  regex_search_job = RegexSearchJob.new()
 	  res.write regex_search_job.performRegex(pdf_path,
 									output_dir,
-									req.params['upper_text'],
-									req.params['lower_text'])
+									req.params['upper_left'],
+									req.params['upper_right'],
+									req.params['lower_left'],
+									req.params['lower_right'])
 	end
 	
     on 'pdfs' do
