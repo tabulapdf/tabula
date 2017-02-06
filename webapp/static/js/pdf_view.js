@@ -163,6 +163,41 @@ Tabula.Selections = Backbone.Collection.extend({
 
 });
 
+// replicated from Tabula.AutodetectedSelections
+Tabula.RegexSelections = Tabula.Selections.extend({
+  url: null,
+  initialize: function(){
+    this.url = '/pdfs/' + PDF_ID + '/regex.json?_=' + Math.round(+new Date()).toString();
+    _.bindAll(this, 'updateOrCreateByVendorSelectorId');
+  },
+
+  parse: function(response){
+    // a JSON list of pages, which are each just a list of coords
+    var tables = [];
+    var selections = _(response).map(_.bind(function(page_tables, listIndex){
+      var pageIndex = listIndex + 1;
+
+      return _(page_tables).map(_.bind(function(tableCoords){
+        if(tableCoords[2] * tableCoords[3] < 400){ //exclude tiny selections
+          return null;
+        }
+        return {
+          x1: tableCoords[0],
+          y1: tableCoords[1],
+          x2: tableCoords[0] + tableCoords[2],
+          y2: tableCoords[1] + tableCoords[3],
+          width: tableCoords[2],
+          height: tableCoords[3],
+          page: pageIndex,
+          extraction_method: 'spreadsheet',
+          selection_id: null
+        };
+      }, this));
+    }, this));
+    return _.select(_.flatten(selections), function(i){ return i; });
+  }
+
+});
 
 Tabula.AutodetectedSelections = Tabula.Selections.extend({
   url: null, //set on init
@@ -812,7 +847,20 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 			url: '/regex',
 			data: regex_data,
 			success: _.bind(function(data) {
-				console.log(data);
+				this.pdf_view.pdf_document.regex_selections = new Tabula.RegexSelections([], {pdf_document: this});
+				this.pdf_view.pdf_document.regex_selections.fetch({
+					success: _.bind(function(){
+						var regex_selections = this.pdf_view.pdf_document.regex_selections.models.map(function(sel){
+							console.log(sel);
+							return Tabula.pdf_view.renderSelection(sel.attributes);
+						});
+					this.render();
+				}, this),
+				error: _.bind(function(){
+					console.log("no predetected tables (404 on regex.json)");
+					this.render();
+					}, this)
+				});
 			}, this),
 			error: function(xhr, status, err) {
 				console.log('regex search err: ', err);
