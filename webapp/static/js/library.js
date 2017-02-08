@@ -36,13 +36,16 @@ Tabula.FileUpload = Backbone.Model.extend({
                 console.log('no text');
                 window.clearTimeout(this.timer);
 
-                // resets upload/input form
-                $('form#upload').find('button').removeAttr('disabled');
-                $('form#upload')[0].reset();
-
                 //TODO: something prettier.
-                alert("Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned from paper... Tabula isn't able to extract any data from image-based PDFs. Click the Help button for more information.");
-            } else if(data.pct_complete < 100) {
+                var yesOCR = window.confirm("Sorry, your PDF file is image-based; it does not have any embedded text. Tabula can convert this using OCR, However please verify after extraction that the data is still the same as the process is not perfect");
+				if(yesOCR == true){
+					//MAKE THAT AJAX CALL
+				}else{
+					// resets upload/input form
+					$('form#upload').find('button').removeAttr('disabled');
+					$('form#upload')[0].reset();
+				}
+			} else if(data.pct_complete < 100) {
                 this.timer = setTimeout(_.bind(this.checkStatus, this), 1000);
             } else {
               this.collection.remove(this);
