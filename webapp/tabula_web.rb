@@ -147,6 +147,9 @@ Cuba.define do
   end
 
   on get do
+	on 'ocr' do
+		res.write "Test"
+	end
     on 'regex' do
 	  pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf')
 	  output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])

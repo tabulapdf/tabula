@@ -851,14 +851,11 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 				this.pdf_view.pdf_document.regex_selections.fetch({
 					success: _.bind(function(){
 						var regex_selections = this.pdf_view.pdf_document.regex_selections.models.map(function(sel){
-							console.log(sel);
 							return Tabula.pdf_view.renderSelection(sel.attributes);
 						});
-					this.render();
 				}, this),
 				error: _.bind(function(){
 					console.log("no predetected tables (404 on regex.json)");
-					this.render();
 					}, this)
 				});
 			}, this),

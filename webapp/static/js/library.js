@@ -40,6 +40,16 @@ Tabula.FileUpload = Backbone.Model.extend({
                 var yesOCR = window.confirm("Sorry, your PDF file is image-based; it does not have any embedded text. Tabula can convert this using OCR, However please verify after extraction that the data is still the same as the process is not perfect");
 				if(yesOCR == true){
 					//MAKE THAT AJAX CALL
+					$.ajax({
+						type: 'GET',
+						url: '/ocr',
+						success: _.bind(function(data) {
+							console.log(data);
+						}, this),
+						error: function(xhr, status, err) {
+							console.log('OCR convertion  search err: ', err);
+						}
+					});
 				}else{
 					// resets upload/input form
 					$('form#upload').find('button').removeAttr('disabled');
