@@ -147,9 +147,12 @@ Cuba.define do
   end
 
   on get do
+	#require_relative '../lib/jars/tesseract.jar'
 	on 'ocr' do
-		res.write "Test"
+		OCR_Module = Java::OcrConverter.new
+		res.write OCR_Module.convert(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'))
 	end
+	
     on 'regex' do
 	  pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf')
 	  output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])

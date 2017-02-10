@@ -47,7 +47,7 @@ Tabula.FileUpload = Backbone.Model.extend({
 							console.log(data);
 						}, this),
 						error: function(xhr, status, err) {
-							console.log('OCR convertion  search err: ', err);
+							console.log('OCR convertion error: ', err);
 						}
 					});
 				}else{
