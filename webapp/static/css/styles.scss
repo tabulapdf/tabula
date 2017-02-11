@@ -41,7 +41,7 @@ body {
 .navbar-default a.navbar-brand {
 	padding-left: 30px;
 	position: relative;
-	font-weight: bold; 
+	font-weight: bold;
 	color: black;
 	&::before {
 		position: absolute;
@@ -55,7 +55,7 @@ body {
 		left: 0;
 		top: 10px;
 	}
-}	
+}
 
 .btn-file {
     position: relative;
@@ -74,7 +74,7 @@ body {
     outline: none;
     background: white;
     cursor: inherit;
-    display: block; 
+    display: block;
 }
 
 .form-inline .input-group > .form-control {
@@ -91,12 +91,12 @@ form {
 		text-align: center;
 		cursor: pointer;
 		position: relative;
-		border-right: 1px solid $table-border-color; 
+		border-right: 1px solid $table-border-color;
 		padding-right: 20px;
 		&::before, &::after {
 			text-align: right;
 			width: 11px;
-			color: $table-border-color; 
+			color: $table-border-color;
 		  position: absolute;
 		  display: block;
 		  font-family: 'Glyphicons Halflings';
@@ -150,7 +150,7 @@ form {
 			}
 		}
 	}
-}	
+}
 
 .glyphicon-remove {
 	color: $gray-light;
@@ -166,7 +166,7 @@ form {
 	height: calc(100% - 51px);
 	text-align: center;
 	overflow: scroll;
-	position: fixed;  
+	position: fixed;
 	left: 0;
 	top: 51px;
 	z-index: 2;
@@ -184,7 +184,7 @@ form {
 		font-size: .9em;
 	}
 	div.page  {
-		margin: 0 auto 1.25em;
+		margin: 0 auto 1.75em;
 		display: block;
 		width: 90%;
 		padding: 1em .5em .5em 1em;
@@ -203,7 +203,7 @@ form {
 				cursor: pointer;
 				@include box-shadow ( 0 0 0 .1em rgba(0,0,0,0.1) );
 			}
-		}	
+		}
 		&.active {
 			img {
 				@include box-shadow ( 0 0 0 .1em $brand-info );
@@ -211,7 +211,7 @@ form {
 		}
 		.remove {
 			position: absolute;
-			left: -.25em; 
+			left: -.25em;
 			top: 1em;
 			height: 1em;
 			display: block;
@@ -250,7 +250,7 @@ form {
 #main-pane {
 	background: $gray-light;
 	padding: 4.25em 2em 2em 2em;
-	left: 180px; 
+	left: 180px;
 	height: 100%;
 	width: calc(100% - 200px);
 	position: relative;
@@ -277,7 +277,7 @@ form {
 				cursor: move;
 				.selection-panel {
 					display: block;
-				}	
+				}
 			}
 		}
 		img {
@@ -287,7 +287,7 @@ form {
 			&:hover {
 				cursor: crosshair;
 			}
-		}		
+		}
 	}
 }
 

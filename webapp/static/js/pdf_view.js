@@ -275,7 +275,7 @@ Tabula.Query = Backbone.Model.extend({
     var delimiter = typeof delimiter_maybe_undef == "undefined" ? ',' : delimiter_maybe_undef
     var csv = _(this.get('data')).chain().pluck('data').map(function(table){
       return _(table).chain().map(function(row){
-        return _.map(row, function(cell){ 
+        return _.map(row, function(cell){
           var text = cell.text;
           text = text.replace("\"", "\\\""); //escape quotes
           text = text.indexOf(delimiter) > -1 ? "\"" + text + "\"" : text; //enquote cells containing the delimiter.
@@ -333,7 +333,7 @@ Tabula.Query = Backbone.Model.extend({
             // var coord_set = stuff[0];
             // var resp_item = stuff[1];
             // if(!coord_set) return; // DIRTY HACK, see https://github.com/tabulapdf/tabula/issues/497
-            //                        // if one set of coords returns 2+ tables, 
+            //                        // if one set of coords returns 2+ tables,
             //                        // then this zip won't work.
             if (stashed_selections.get(coord_set.selection_id)){
               stashed_selections.get(coord_set.selection_id).
@@ -653,7 +653,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
         if(!already_on_page) this.$el.append(page_view.render().el);
       }, this));
     }else{
-      //useful in the console for debugging: 
+      //useful in the console for debugging:
       // $('.pdf-page:visible').map(function(i, el){ return $(el).find('img').data('page') }).get();
 
 
@@ -866,7 +866,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 		return;
 	}
   },
-  
+
   clearAllSelections: function(){
     _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
     Tabula.pdf_view.pdf_document.selections.reset([]);
@@ -1180,7 +1180,7 @@ Tabula.PDFView = Backbone.View.extend(
       }
       Tabula.pdf_view.lazyLoadCursor = new_cursor;
 
-      this.components['document_view'].render(); 
+      this.components['document_view'].render();
       this.components['sidebar_view'].render();
       // console.log("cursor", Tabula.pdf_view.lazyLoadCursor)
     },
