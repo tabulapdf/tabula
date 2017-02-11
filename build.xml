@@ -5,7 +5,7 @@
   <property name="build.dir" value="build"/>
   <property name="mac.dir" value="${build.dir}/mac" />
   <property name="windows.dir" value="${build.dir}/windows" />
-  <property name="full_version" value="1.1.0.16092117"/>
+  <property name="full_version" value="1.1.1.17021116"/>
   <property name="launch4j.dir" location="${build.dir}/../launch4j"  />
   <property name="launch4j.bindir" location="${build.dir}/../launch4j/bin" />
 
@@ -17,7 +17,7 @@
     <mkdir dir="${mac.dir}"/>
 
     <!-- this must be a real JDK -->
-    <property name="java_home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home"/>
+    <property name="java_home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home"/>
 
     <taskdef
         name="bundleapp"
@@ -56,12 +56,12 @@
       [3]: https://developer.apple.com/account/mac/certificate/certificateList.action
     -->
     <exec executable="codesign" os="Mac OS X">
-      <!-- <arg line="-f -s 'Developer ID Application: Mike Tigas (68QUP6KP2C)' ${build.dir}/mac/Tabula.app/Contents/PlugIns/jdk1.8.0_102.jdk" /> -->
-      <arg line="-f -s 'Tabula' ${build.dir}/mac/Tabula.app/Contents/PlugIns/jdk1.8.0_102.jdk" />
+      <arg line="-f -s 'Developer ID Application: Mike Tigas (68QUP6KP2C)' ${build.dir}/mac/Tabula.app/Contents/PlugIns/jdk1.8.0_121.jdk" />
+      <!-- <arg line="-f -s 'Tabula' ${build.dir}/mac/Tabula.app/Contents/PlugIns/jdk1.8.0_121.jdk" /> -->
     </exec>
     <exec executable="codesign" os="Mac OS X">
-      <!-- <arg line="-f -s 'Developer ID Application: Mike Tigas (68QUP6KP2C)' ${build.dir}/mac/Tabula.app" /> -->
-      <arg line="-f -s 'Tabula' ${build.dir}/mac/Tabula.app" />
+      <arg line="-f -s 'Developer ID Application: Mike Tigas (68QUP6KP2C)' ${build.dir}/mac/Tabula.app" />
+      <!-- <arg line="-f -s 'Tabula' ${build.dir}/mac/Tabula.app" /> -->
     </exec>
   </target>
 
@@ -91,7 +91,7 @@
             fileVersion="${full_version}"
             txtFileVersion="${full_version}"
             fileDescription="tabula"
-            copyright="© 2012-2015 Manuel Aristarán"
+            copyright="© 2012-2017 Manuel Aristarán"
             productVersion="${full_version}"
             txtProductVersion="${full_version}"
             productName="Tabula"
