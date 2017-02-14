@@ -32,19 +32,26 @@ Tabula.FileUpload = Backbone.Model.extend({
 
             if (data.status == "error" && data.error_type == "unknown") {
                 // window.location.reload(true);
-            } else if (data.status == "error" && data.error_type == "no-text") {
+            } else if (data.status == "warning" && data.error_type == "no-text") {
                 console.log('no text');
                 window.clearTimeout(this.timer);
 
                 //TODO: something prettier.
-                var yesOCR = window.confirm("Sorry, your PDF file is image-based; it does not have any embedded text. Tabula can convert this using OCR, However please verify after extraction that the data is still the same as the process is not perfect");
+				//TODO: only display this window one time per import
+				var message = "Sorry, your PDF file is image-based; it does not have any embedded text. Tabula can convert this using OCR, however data should be verified personally after extraction. Click OK to continue with OCR.";
+                var yesOCR = window.confirm(message);
 				if(yesOCR == true){
-					//MAKE THAT AJAX CALL
+					// ajax call to run OCR
+					regex_data = {
+						'file_path': this.get('file_id')
+					}
 					$.ajax({
 						type: 'GET',
 						url: '/ocr',
+						data: regex_data,
 						success: _.bind(function(data) {
 							console.log(data);
+							this.timer = setTimeout(_.bind(this.checkStatus, this), 1000);
 						}, this),
 						error: function(xhr, status, err) {
 							console.log('OCR convertion error: ', err);

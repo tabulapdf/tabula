@@ -3,6 +3,7 @@ require 'cuba'
 require 'cuba/render'
 
 require 'digest/sha1'
+require 'java'
 require 'json'
 require 'csv'
 require 'tempfile'
@@ -149,8 +150,12 @@ Cuba.define do
   on get do
 	#require_relative '../lib/jars/tesseract.jar'
 	on 'ocr' do
-		OCR_Module = Java::OcrConverter.new
-		res.write OCR_Module.convert(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'))
+		puts "maybe print?"
+		puts TabulaSettings::DOCUMENTS_BASEPATH
+		puts req.params['file_path']
+		puts "All done."
+		OCR_Module = Java::TechnologyTabulaExtractors::OcrConverter.new
+		res.write OCR_Module.extract(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'))
 	end
 	
     on 'regex' do

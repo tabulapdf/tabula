@@ -19,9 +19,9 @@ class TabulaJobProgress < Cuba
         progress[:error_type] = "no-such-job"
         progress[:pct_complete] = 0
       elsif batch.any?{|uuid, job| job.failed? && job.kind_of?(GenerateDocumentDataJob) && job.message.first.include?("NoTextDataException") }
-        progress[:status] = "error"
+        progress[:status] = "warning"
         progress[:error_type] = "no-text"
-        progress[:message] = "Fatal Error: No text data is contained in this PDF file. Tabula can't process it."
+        progress[:message] = "No text data is contained in this PDF file. Tabula must run OCR to process it."
         progress[:pct_complete] = 99
         res.write progress.to_json
       elsif batch.any? { |uuid, job| job.failed? }
