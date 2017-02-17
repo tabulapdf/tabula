@@ -93,6 +93,33 @@ def upload(file)
   return [job_batch, file_id]
 end
 
+def rerun_processing_jobs(file_id, original_filename)
+  job_batch = SecureRandom.uuid
+  thumbnail_sizes =  [800]
+
+  file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
+  filepath = File.join(file_path, 'document.pdf')
+
+  GenerateDocumentDataJob.create(:filepath => filepath,
+                                 :original_filename => original_filename,
+                                 :id => file_id,
+                                 :output_dir => file_path,
+                                 :thumbnail_sizes => thumbnail_sizes,
+                                 :batch => job_batch)
+
+  DetectTablesJob.create(:filepath => filepath,
+                         :output_dir => file_path,
+                         :batch => job_batch)
+
+  GenerateThumbnailJob.create(:file_id => file_id,
+                              :filepath => filepath,
+                              :output_dir => file_path,
+                              :thumbnail_sizes => thumbnail_sizes,
+                              :batch => job_batch)
+
+  return [job_batch, file_id]
+end
+
 Cuba.define do
 
   if TabulaSettings::ENABLE_DEBUG_METHODS
@@ -154,8 +181,10 @@ Cuba.define do
 		OCR_Module = Java::TechnologyTabulaExtractors::OcrConverter.new
 		
 		if(OCR_Module.extract(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'))=="Success")then
+			puts "SUCCESS"
 			File.rename(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'), File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document_image.pdf'))
 			File.rename(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document_OCR.pdf'), File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'))
+			job_batch, file_id = *rerun_processing_jobs(req.params['file_path'], "TEMPNAME")
 			res.write "Success"
 		else
 			res.write "Failed"

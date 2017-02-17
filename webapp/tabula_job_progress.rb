@@ -22,7 +22,7 @@ class TabulaJobProgress < Cuba
         progress[:status] = "warning"
         progress[:error_type] = "no-text"
         progress[:message] = "No text data is contained in this PDF file. Tabula must run OCR to process it."
-        progress[:pct_complete] = 99
+        progress[:pct_complete] = 10
         res.write progress.to_json
       elsif batch.any? { |uuid, job| job.failed? }
         job =  batch.find{|uuid, job| job.failed? }.last
