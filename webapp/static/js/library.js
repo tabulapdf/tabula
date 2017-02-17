@@ -45,13 +45,22 @@ Tabula.FileUpload = Backbone.Model.extend({
 					regex_data = {
 						'file_path': this.get('file_id')
 					}
+					this.message = "Performing OCR"
 					$.ajax({
 						type: 'GET',
 						url: '/ocr',
 						data: regex_data,
 						success: _.bind(function(data) {
-							console.log(data);
-							this.timer = setTimeout(_.bind(this.checkStatus, this), 1000);
+							if(data=="Success"){
+								console.log(data);
+								this.timer = setTimeout(_.bind(this.checkStatus, this), 1000);
+							}else{
+								// resets upload/input form
+								window.clearTimeout(this.timer);
+								window.alert("OCR Conversion failed");
+								$('form#upload').find('button').removeAttr('disabled');
+								$('form#upload')[0].reset();
+							}
 						}, this),
 						error: function(xhr, status, err) {
 							console.log('OCR convertion error: ', err);
@@ -59,6 +68,7 @@ Tabula.FileUpload = Backbone.Model.extend({
 					});
 				}else{
 					// resets upload/input form
+					window.clearTimeout(this.timer);
 					$('form#upload').find('button').removeAttr('disabled');
 					$('form#upload')[0].reset();
 				}
