@@ -184,7 +184,7 @@ Cuba.define do
 			puts "SUCCESS"
 			File.rename(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'), File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document_image.pdf'))
 			File.rename(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document_OCR.pdf'), File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'))
-			job_batch, file_id = *rerun_processing_jobs(req.params['file_path'], "TEMPNAME")
+			job_batch, file_id = *rerun_processing_jobs(req.params['file_path'], req.params['file_name'])
 			res.write "Success"
 		else
 			res.write "Failed"

@@ -12,7 +12,7 @@ Tabula.FileUpload = Backbone.Model.extend({
     });
   },
 
-  checkStatus: function() {
+  checkStatus: function(OGName) {
     if(typeof this.get('file_id') == 'undefined' && typeof !this.get('upload_id') == 'undefined'){
       this.pct_complete = 1;
       this.message = "waiting to be processed..."
@@ -43,7 +43,8 @@ Tabula.FileUpload = Backbone.Model.extend({
 				if(yesOCR == true){
 					// ajax call to run OCR
 					regex_data = {
-						'file_path': this.get('file_id')
+						'file_path': this.get('file_id'),
+						'file_name': OGName
 					}
 					this.message = "Performing OCR"
 					$.ajax({
@@ -53,7 +54,7 @@ Tabula.FileUpload = Backbone.Model.extend({
 						success: _.bind(function(data) {
 							if(data=="Success"){
 								console.log(data);
-								this.timer = setTimeout(_.bind(this.checkStatus, this), 1000);
+								this.timer = setTimeout(_.bind(this.checkStatus(), this), 1000,OGName);
 							}else{
 								// resets upload/input form
 								window.clearTimeout(this.timer);
@@ -73,7 +74,7 @@ Tabula.FileUpload = Backbone.Model.extend({
 					$('form#upload')[0].reset();
 				}
 			} else if(data.pct_complete < 100) {
-                this.timer = setTimeout(_.bind(this.checkStatus, this), 1000);
+                this.timer = setTimeout(_.bind(this.checkStatus, this), 1000,OGName);
             } else {
               this.collection.remove(this);
               Tabula.library.files_collection.fetch();
@@ -242,7 +243,7 @@ Tabula.Library = Backbone.View.extend({
                   file_upload.set('id', status.file_id);
                   file_upload.set('upload_id', status.upload_id);
                   file_upload.set('error', !status.success);
-                  file_upload.checkStatus(); //
+                  file_upload.checkStatus(status.filename); //
                 }else{
                   console.log('TODO: failure')
                   file_upload.set('file_id', status.file_id);
