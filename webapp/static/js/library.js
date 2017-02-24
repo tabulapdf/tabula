@@ -54,7 +54,7 @@ Tabula.FileUpload = Backbone.Model.extend({
 						success: _.bind(function(data) {
 							if(data=="Success"){
 								console.log(data);
-								this.timer = setTimeout(_.bind(this.checkStatus(), this), 1000,OGName);
+								this.timer = setTimeout(_.bind(this.checkStatus, this), 1000,OGName);
 							}else{
 								// resets upload/input form
 								window.clearTimeout(this.timer);
