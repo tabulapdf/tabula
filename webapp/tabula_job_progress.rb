@@ -12,6 +12,8 @@ class TabulaJobProgress < Cuba
       batch = Tabula::Background::JobExecutor.get_by_batch(batch_id)
       res['Content-Type'] = 'application/json'
       progress = {}
+	  puts "CHECKING BATCH STATUS"
+	  puts batch_id
       if batch.empty?
         res.status = 404
         progress[:status] = "error"
@@ -22,7 +24,7 @@ class TabulaJobProgress < Cuba
         progress[:status] = "warning"
         progress[:error_type] = "no-text"
         progress[:message] = "No text data is contained in this PDF file. Tabula must run OCR to process it."
-        progress[:pct_complete] = 10
+        progress[:pct_complete] = 15
         res.write progress.to_json
       elsif batch.any? { |uuid, job| job.failed? }
         job =  batch.find{|uuid, job| job.failed? }.last

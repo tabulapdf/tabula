@@ -12,7 +12,7 @@ Tabula.FileUpload = Backbone.Model.extend({
     });
   },
 
-  checkStatus: function(OGName) {
+  checkStatus: function(original_filename) {
     if(typeof this.get('file_id') == 'undefined' && typeof !this.get('upload_id') == 'undefined'){
       this.pct_complete = 1;
       this.message = "waiting to be processed..."
@@ -37,14 +37,14 @@ Tabula.FileUpload = Backbone.Model.extend({
                 window.clearTimeout(this.timer);
 
                 //TODO: something prettier.
-				//TODO: only display this window one time per import
+
 				var message = "Sorry, your PDF file is image-based; it does not have any embedded text. Tabula can convert this using OCR, however data should be verified personally after extraction. Click OK to continue with OCR.";
                 var yesOCR = window.confirm(message);
 				if(yesOCR == true){
 					// ajax call to run OCR
 					regex_data = {
 						'file_path': this.get('file_id'),
-						'file_name': OGName
+						'file_name': original_filename
 					}
 					this.message = "Performing OCR"
 					$.ajax({
@@ -52,9 +52,11 @@ Tabula.FileUpload = Backbone.Model.extend({
 						url: '/ocr',
 						data: regex_data,
 						success: _.bind(function(data) {
-							if(data=="Success"){
-								console.log(data);
-								this.timer = setTimeout(_.bind(this.checkStatus, this), 1000,OGName);
+							data = JSON.parse(data);
+							console.log(data.message);
+							if(data.message == "Success"){
+								this.set('upload_id', data.batch_id);
+								this.timer = setTimeout(_.bind(this.checkStatus, this), 1000, original_filename);
 							}else{
 								// resets upload/input form
 								window.clearTimeout(this.timer);
@@ -74,7 +76,7 @@ Tabula.FileUpload = Backbone.Model.extend({
 					$('form#upload')[0].reset();
 				}
 			} else if(data.pct_complete < 100) {
-                this.timer = setTimeout(_.bind(this.checkStatus, this), 1000,OGName);
+                this.timer = setTimeout(_.bind(this.checkStatus, this), 1000, original_filename);
             } else {
               this.collection.remove(this);
               Tabula.library.files_collection.fetch();
