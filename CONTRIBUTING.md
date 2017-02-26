@@ -7,7 +7,7 @@ Interested in helping out? We'd love to have your help!
 
 You can help by:
 
-- [Reporting a bug](https://github.com/jazzido/tabula).
+- [Reporting a bug](https://github.com/tabulapdf/tabula/issues/new).
 - Adding or editing documentation.
 - Contributing code via a Pull Request from ideas listed in the [Enhancements](https://github.com/tabulapdf/tabula/labels/enhancement) section of the issues.
 - Spreading the word about Tabula to people who might be able to benefit from using it.
