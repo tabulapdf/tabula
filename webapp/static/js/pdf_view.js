@@ -826,14 +826,24 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 
   setRegex: function(){
 	var upper_left = document.getElementById('top-left-regex').value;
-	var upper_right = document.getElementById('top-left-regex').value;
+	var upper_right = document.getElementById('top-right-regex').value;
 	var lower_left = document.getElementById('bottom-left-regex').value;
 	var lower_right = document.getElementById('bottom-right-regex').value;
-	if ((upper_left == "" && upper_right == "") || (lower_left == "" && lower_right == "")) {
+	if ((upper_left == "") || (lower_left == "")) {
 		// both fields empty
-		alert("Must specify an upper and lower input or all four corners");
+		alert("2 String search requires top string in upper left and bottom string in lower left");
 		return;
 	}else{
+		if((upper_left != "") && (lower_left != "")){
+			if((upper_right != "") && (lower_right == "")){
+				alert("4 String search requires 4 input strings");
+				return;
+			}
+			if((upper_right == "") && (lower_right != "")){
+				alert("4 String search requires 4 input strings");
+				return;
+			}
+		}
 		// run regex search
 		regex_data = {
 			'file_path': PDF_ID,
