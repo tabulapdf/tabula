@@ -155,12 +155,18 @@ Cuba.define do
   end
 
   on get do
-	#require_relative '../lib/jars/tesseract.jar'
 	on 'ocr' do
 		puts "OCR Processing on " + File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf')
 		OCR_Module = Java::TechnologyTabulaExtractors::OcrConverter.new
 		
-		if(OCR_Module.extract(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'))=="Success")then
+		ocr_ret = begin
+            OCR_Module.extract(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'))
+		        rescue StandardError => e
+            puts "an error"
+            puts e.inspect
+            false
+        end
+		if(ocr_ret=="Success")then
 			puts "SUCCESS"
 			File.rename(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'), File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document_image.pdf'))
 			File.rename(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document_OCR.pdf'), File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'))
