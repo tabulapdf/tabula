@@ -115,7 +115,13 @@ Cuba.define do
   end
 
   on delete do
-
+  
+	on 'pdf/:file_id/page/regex' do |file_id|
+		path_to_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'regex_list.json')
+		File.delete(path_to_file) if File.exists?(path_to_file)
+		res.write '' # Firefox complains about an empty response without this. 
+	end
+	
     on 'pdf/:file_id/page/:page_number' do |file_id, page_number|
       index_fname = File.join(TabulaSettings::DOCUMENTS_BASEPATH,
                               file_id,
