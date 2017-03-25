@@ -104,6 +104,20 @@
             <span class="glyphicon glyphicon-paperclip"></span>
             <span class="clipboard-text">Copy to Clipboard</span>
           </button>
+		  
+		  <div>
+			  <label>Batch Process:</label>
+			  <select <%=disableIfNoData%>>
+				<option value="coords">Coordinates</option>
+				<option value="regex">Regex Search</option>
+				<option value="Both">Both with overlap</option>
+			  </select>
+			  <button <%=disableIfNoData%>>
+				<span class="glyphicon glyphicon-download"></span>
+				Run Batch
+			  </button>
+			  <input id="overlap" type="number" placeholder="% overlap to ignore" max="100" min="0">
+		  </div>
         </form>
       </script>
 
