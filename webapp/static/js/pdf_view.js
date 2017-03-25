@@ -812,7 +812,8 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     'click #restore-detected-tables': 'restoreDetectedTables',
     'click #all-data': 'queryAllData',
     'click #repeat-lassos': 'repeatLassos',
-    'click #set-regex': 'setRegex'
+    'click #set-regex': 'setRegex',
+    'click #run-batch': 'runbatch'
   },
 
   template: _.template($('#templates #select-control-panel-template').html().replace(/nestedscript/g, 'script')),
@@ -823,6 +824,11 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     return;
     /* TODO: write this */
   },
+
+runbatch: function(){
+  alert("Batch is running!")
+  return;
+},
 
   setRegex: function(){
 	var upper_left = document.getElementById('top-left-regex').value;

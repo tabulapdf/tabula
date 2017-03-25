@@ -104,7 +104,7 @@
             <span class="glyphicon glyphicon-paperclip"></span>
             <span class="clipboard-text">Copy to Clipboard</span>
           </button>
-		  
+
 		  <div>
 			  <label>Batch Process:</label>
 			  <select <%=disableIfNoData%>>
@@ -112,11 +112,13 @@
 				<option value="regex">Regex Search</option>
 				<option value="Both">Both with overlap</option>
 			  </select>
-			  <button <%=disableIfNoData%>>
-				<span class="glyphicon glyphicon-download"></span>
-				Run Batch
+        <input id="overlap" type="number" placeholder="% overlap" max="100" min="1">
+        <input style="margin-right: 10px" class="which_batch" id="batch-input-path" type="text" placeholder="Batch Input folder">
+        <input style="margin-right: 10px" class="which_batch" id="batch-output-path" type="text" placeholder="Batch Output folder">
+        <button type="button" id="run-batch" class="btn btn-success" <%= disableIfNoData %>>
+          <span class="glyphicon glyphicon-download"></span>
+           Run Batch
 			  </button>
-			  <input id="overlap" type="number" placeholder="% overlap to ignore" max="100" min="0">
 		  </div>
         </form>
       </script>
