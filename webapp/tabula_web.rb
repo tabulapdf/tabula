@@ -245,7 +245,6 @@ Cuba.define do
 			else
 				res.write "No Regex list file found"
 			end
-		end
 		when 'both'
 			status = res.write batch_processor.extract(input_folder, output_folder, file_fullpath, process_type, overlap)
 		end
