@@ -394,6 +394,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
   events: {
     'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod',
+    'click #run-batch': 'runBatch',
     'click #download-data': 'setFormAction',
     'keyup .filename': 'updateFilename',
     //N.B.: Download button (and format-specific download buttons) are an HTML form, so not handled here.
@@ -407,7 +408,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
 
   initialize: function(stuff){
-    _.bindAll(this, 'render', 'renderFlashClipboardNonsense', 'updateFilename', 'queryWithToggledExtractionMethod', 'closeAndRenderSelectionView', 'setFormAction');
+    _.bindAll(this, 'render', 'renderFlashClipboardNonsense', 'updateFilename', 'queryWithToggledExtractionMethod', 'closeAndRenderSelectionView', 'setFormAction', 'runBatch');
     this.pdf_view = stuff.pdf_view;
     this.listenTo(this.model, 'tabula:query-start', this.render);
     this.listenTo(this.model, 'tabula:query-success', this.render);
@@ -441,6 +442,13 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     });
     this.pdf_view.pdf_document.selections.reset(oldSelections);
   },
+
+  runBatch: function(){
+    alert("Batch is running!")
+    return;
+  },
+
+
 
   setFormAction: function(e){
     var formActionUrl = $(e.currentTarget).data('action');
@@ -812,8 +820,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     'click #restore-detected-tables': 'restoreDetectedTables',
     'click #all-data': 'queryAllData',
     'click #repeat-lassos': 'repeatLassos',
-    'click #set-regex': 'setRegex',
-    'click #run-batch': 'runbatch'
+    'click #set-regex': 'setRegex'
   },
 
   template: _.template($('#templates #select-control-panel-template').html().replace(/nestedscript/g, 'script')),
@@ -825,12 +832,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     /* TODO: write this */
   },
 
-runbatch: function(){
-  alert("Batch is running!")
-  return;
-},
-
-  setRegex: function(){
+  setRegex: function() {
 	var upper_left = document.getElementById('top-left-regex').value;
 	var upper_right = document.getElementById('top-right-regex').value;
 	var lower_left = document.getElementById('bottom-left-regex').value;
@@ -1041,7 +1043,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
   'events': {
     // on load, create an empty div with class 'selection-show' to be the selection thumbnail.
     'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
-    'click i.delete-page': 'deletePage',
+    'click i.delete-page': 'deletePage'
   },
   tagName: 'li',
   className: "page-thumbnail page",
