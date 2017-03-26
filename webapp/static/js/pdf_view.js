@@ -445,7 +445,30 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
   runBatch: function(){
     alert("Batch is running!")
-    return;
+	var overlap = document.getElementById('overlap').value;
+	var input_directory = document.getElementById('batch-input-path').value;
+	var output_directory = document.getElementById('batch-output-path').value;
+	var batch_selection_object = document.getElementById('batch-selection');
+	var batch_selection = batch_selection_object.options[batch_selection_object.selectedIndex].value;
+	batch_data = {
+			'file_path': PDF_ID,
+			'process_type': batch_selection,
+			'input_folder': input_directory,
+			'output_folder': output_directory,
+			'overlap' : overlap,
+		}
+	$.ajax({
+			type: 'POST',
+			url: '/batch',
+			data: batch_data,
+			success: _.bind(function(data) {
+				console.log(data);
+			}, this),
+			error: function(xhr, status, err) {
+				console.log('batch err: ', err);
+			}
+		});
+	return;
   },
 
 

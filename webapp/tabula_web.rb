@@ -153,7 +153,7 @@ Cuba.define do
     end
 
   end
-
+  
   on put do
     on 'pdf/:file_id/page/:page_number' do |file_id, page_number|
       # nothing yet
@@ -222,6 +222,35 @@ Cuba.define do
   end # /get
 
   on post do
+  
+    on 'batch' do
+		process_type = req.params['process_type']
+		input_folder = req.params['input_folder']
+		output_folder = req.params['output_folder']
+		overlap = req.params['overlap']
+		file_path = req.params['file_path']
+		batch_processor = Java::TechnologyTabulaExtractors::BatchSelectionExtractor.new
+		case process_type
+		when 'coords'
+			coordslist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'tables.json');
+			if(File.file?(coordslist_fullpath)==true)then
+				res.write batch_processor.extract(input_folder, output_folder, coordslist_fullpath, process_type, 0)
+			else
+				res.write "No coordinate list file found"
+			end
+		when 'regex'
+			regexlist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'regex_list.json');
+			if(File.file?(regexlist_fullpath)==true)then
+				res.write batch_processor.extract(input_folder, output_folder, regexlist_fullpath, process_type, 0)
+			else
+				res.write "No Regex list file found"
+			end
+		end
+		when 'both'
+			status = res.write batch_processor.extract(input_folder, output_folder, file_fullpath, process_type, overlap)
+		end
+	end
+  
     on 'upload.json' do
       # Make sure this is a PDF, before doing anything
 
