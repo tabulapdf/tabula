@@ -222,7 +222,15 @@ Cuba.define do
   end # /get
 
   on post do
-  
+	
+	on 'cordlist' do
+		coordlist = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'coords_list.json');
+		File.open(coordlist, 'w') do |f|
+		  f.puts req.params['all_the_sel']
+		end
+		res.write "Coord list file written"
+	end
+	
     on 'batch' do
 		process_type = req.params['process_type']
 		input_folder = req.params['input_folder']
@@ -232,7 +240,7 @@ Cuba.define do
 		batch_processor = Java::TechnologyTabulaExtractors::BatchSelectionExtractor.new
 		case process_type
 		when 'coords'
-			coordslist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'tables.json');
+			coordslist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'coords_list.json');
 			if(File.file?(coordslist_fullpath)==true)then
 				res.write batch_processor.extract(input_folder, output_folder, coordslist_fullpath, process_type, 0)
 			else
