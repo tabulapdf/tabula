@@ -444,31 +444,37 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   },
 
   runBatch: function(){
-    alert("Batch is running!")
 	var overlap = document.getElementById('overlap').value;
 	var input_directory = document.getElementById('batch-input-path').value;
 	var output_directory = document.getElementById('batch-output-path').value;
 	var batch_selection_object = document.getElementById('batch-selection');
 	var batch_selection = batch_selection_object.options[batch_selection_object.selectedIndex].value;
-	if(batch_selection=="coords"){
-		var coordinates = _.map(this.model.get('list_of_coords'), function(l){ return [l.page, l.y1, l.x1, l.y2, l.x2].join(', '); }).join("\n");
-		coordsData = {
-			'all_the_sel': coordinates,
-			'file_path': PDF_ID
-		}
-		$.ajax({
-			type: 'POST',
-			url: '/cordlist',
-			async: false,
-			data: coordsData,
-			success: _.bind(function(data) {
-				console.log(data);
-			}, this),
-			error: function(xhr, status, err) {
-				console.log('Create coordinate err: ', err);
-			}
-		});
-	}
+  if(!input_directory || !output_directory){
+    alert('Please specify an input and output directory before attempting to run batch processing')
+    return
+  }
+  else {
+    alert('Batch is running!')
+  	if(batch_selection=="coords"){
+  		var coordinates = _.map(this.model.get('list_of_coords'), function(l){ return [l.page, l.y1, l.x1, l.y2, l.x2].join(', '); }).join("\n");
+  		coordsData = {
+  			'all_the_sel': coordinates,
+  			'file_path': PDF_ID
+  		}
+  		$.ajax({
+  			type: 'POST',
+  			url: '/cordlist',
+  			async: false,
+  			data: coordsData,
+  			success: _.bind(function(data) {
+  				console.log(data);
+  			}, this),
+  			error: function(xhr, status, err) {
+  				console.log('Create coordinate err: ', err);
+  			}
+  		});
+  	}
+  }
 	batch_data = {
 			'file_path': PDF_ID,
 			'process_type': batch_selection,

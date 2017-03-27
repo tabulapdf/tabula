@@ -107,14 +107,14 @@
 
 		  <div>
 			  <label>Batch Process:</label>
-			  <select <%=disableIfNoData%> id="batch-selection">
+			  <select <%=disableIfNoData%>>
 				<option value="coords">Coordinates</option>
 				<option value="regex">Regex Search</option>
-				<!–– <option value="Both">Both with overlap</option> --!>
+				<option value="Both">Both with overlap</option>
 			  </select>
         <input id="overlap" type="number" placeholder="overlap %" max="100" min="1">
-        <input style="margin-right: 10px" id="batch-input-path" type="text" placeholder="Batch Input folder">
-        <input style="margin-right: 10px" id="batch-output-path" type="text" placeholder="Batch Output folder">
+        <input style="margin-right: 10px" class="which_batch" id="batch-input-path" type="text" placeholder="Batch Input folder">
+        <input style="margin-right: 10px" class="which_batch" id="batch-output-path" type="text" placeholder="Batch Output folder">
         <button type="button" id="run-batch" class="btn btn-default"> <span class="glyphicon glyphicon-download"></span>
          Run Batch
 			  </button>
@@ -395,7 +395,7 @@
           <p>Note: Tabula works best with text-based documents but has the functionality to work with image-based documents as well.</p>
           <h3 name="trouble">Having trouble with Tabula?</h3>
           <ol>
-          <li><strong>Tabula alerted you that your PDF is image based and that your data could be compromised during the conversion process. -- what does that mean?</strong> Your PDF does not have any embedded text. It might have been scanned from paper. Whatever the reason, Tabula is able to extract data from image-based PDFs by OCRing the PDF with <a href="https://github.com/tesseract-ocr">Tesseract</a>. However, you must verify your data is still correct after the OCR process is completed. You may also follow the link to tesseract and convert your PDF manually which would allow you to adjust conversion options to be more or less conservative, functionality that Tabula does not currently support. </li>
+          <li><strong>Tabula alerted you that your PDF is image based and that your data could be compromised during the conversion process. -- what does that mean?</strong> Your PDF does not have any embedded text. It might have been scanned from paper. Whatever the reason, Tabula is able to extract data from image-based PDFs by OCRing the PDF with <a href="https://github.com/tesseract-ocr">Tesseract</a>. However, you must verify your data is still correct after the OCR process is completed. You may also follow the link to tesseract and convert your PDF manually which would allow you to adjust conversion options to be more or less conservative, functionality that Tabula does not currently support.</li>
           <li><strong>Some columns of my table are combined. What can I do?</strong> Tabula sometimes uses "streams" of whitespace to recreate your table's structure. If headers span multiple columns, they're probably causing a problem. Try excluding them from your selection (or selecting them separately). </li>
           <li><strong>Some columns of my table are combined. And the headers aren't the problem! What <em>else</em> can I do?</strong> Tabula has two extraction methods. It tries to guess which one is right for document, but it's wrong sometimes. Try selecting the other (of "stream" and "lattice"), on the left in extraction mode, to see if that fixes the problem.</li>
           <li><strong>Tabula's taking too long!</strong> Sorry! Tabula has to do a lot of weird math to reconstruct your table. Tabula's command-line counterpart, <a href="https://www.github.com/tabulapdf/tabula-extractor">tabula-extractor</a> is faster, but a little harder to use. You might give it a try.</li>
