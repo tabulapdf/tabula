@@ -247,6 +247,7 @@ Cuba.define do
 				res.write "No coordinate list file found"
 			end
 		when 'regex'
+			puts process_type
 			regexlist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'regex_list.json');
 			if(File.file?(regexlist_fullpath)==true)then
 				res.write batch_processor.extract(input_folder, output_folder, regexlist_fullpath, process_type, 0)
