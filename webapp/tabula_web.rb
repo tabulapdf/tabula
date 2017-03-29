@@ -250,12 +250,15 @@ Cuba.define do
 			puts process_type
 			regexlist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'regex_list.json');
 			if(File.file?(regexlist_fullpath)==true)then
-				res.write batch_processor.extract(input_folder, output_folder, regexlist_fullpath, process_type, 0)
+				if(overlap=='')then
+					overlap = 0
+				else
+					overlap = Integer(overlap)
+				end
+				res.write batch_processor.extract(input_folder, output_folder, regexlist_fullpath, process_type, overlap)
 			else
 				res.write "No Regex list file found"
 			end
-		when 'both'
-			status = res.write batch_processor.extract(input_folder, output_folder, file_fullpath, process_type, overlap)
 		end
 	end
   

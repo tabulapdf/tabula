@@ -445,6 +445,10 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
   runBatch: function(){
 	var overlap = document.getElementById('overlap').value;
+	if(isNaN(overlap)){
+		alert("Overlap must be empty or a number");
+		return;
+	}
 	var input_directory = document.getElementById('batch-input-path').value;
 	var output_directory = document.getElementById('batch-output-path').value;
 	var batch_selection_object = document.getElementById('batch-selection');
@@ -887,19 +891,9 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 	var lower_right = document.getElementById('bottom-right-regex').value;
 	if ((upper_left == "") || (lower_left == "")) {
 		// both fields empty
-		alert("2 String search requires top string in upper left and bottom string in lower left");
+		alert("Minimum 2 strings required. Top string in upper left and bottom string in lower left for 2 string search");
 		return;
 	}else{
-		if((upper_left != "") && (lower_left != "")){
-			if((upper_right != "") && (lower_right == "")){
-				alert("4 String search requires 4 input strings");
-				return;
-			}
-			if((upper_right == "") && (lower_right != "")){
-				alert("4 String search requires 4 input strings");
-				return;
-			}
-		}
 		// run regex search
 		regex_data = {
 			'file_path': PDF_ID,
