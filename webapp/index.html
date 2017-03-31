@@ -115,13 +115,23 @@
 				<input style="margin-right: 10px" class="which_batch" id="batch-output-path" type="text" placeholder="Batch Output folder">
 				<input id="overlap" type="number" placeholder="Autodetect Overlap" max="100" min="0">
 				<label for="ocr-ok">OCR</label>
-				<input id="ocr-ok" type="checkbox" value="1">
+				<input id="ocr-ok" type="checkbox" value="1" onclick="ocrCheck()">
 				<button type="button" id="run-batch" class="btn btn-default"> <span class="glyphicon glyphicon-download"></span>
 				 Run Batch
 				</button>
 		  </div>
         </form>
       </script>
+	<script type="text/javascript">
+		function ocrCheck() {
+			if (document.getElementById('ocr-ok').checked) {
+				var response = confirm("Are you sure? OCR is imperfect and can create issues with data validity");
+				if(!response){
+					document.getElementById('ocr-ok').checked = false;
+				}
+			}
+		}
+	</script>
 
       <script type="text/template" id="select-control-panel-template" >
         <span class="filename"><%= original_filename %></span>
