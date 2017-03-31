@@ -942,7 +942,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     // reset doesn't trigger the right events because we have to remove from the collection and from the page (with selection.remove())
     // we can't use _.each because we're mutating the collection that we're iterating over
     // ugh
-	$.post('/pdf/' + PDF_ID + '/page/' + 'regex',
+	$.post('/pdf/' + PDF_ID + '/' + 'regex',
            { _method: 'delete' });
 	// Clear all regex lists
   },
@@ -1226,6 +1226,10 @@ Tabula.PDFView = Backbone.View.extend(
           Tabula.pdf_view.components['data_view'].closeAndRenderSelectionView();
         });
       });
+	  
+	  // Clear all regex lists
+	  $.post('/pdf/' + PDF_ID + '/' + 'regex',
+           { _method: 'delete' });
     },
 
     handleScroll: function(e){
