@@ -907,17 +907,23 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 			url: '/regex',
 			data: regex_data,
 			success: _.bind(function(data) {
-				this.pdf_view.pdf_document.regex_selections = new Tabula.RegexSelections([], {pdf_document: this});
-				this.pdf_view.pdf_document.regex_selections.fetch({
-					success: _.bind(function(){
-						var regex_selections = this.pdf_view.pdf_document.regex_selections.models.map(function(sel){
-							return Tabula.pdf_view.renderSelection(sel.attributes);
-						});
-				}, this),
-				error: _.bind(function(){
-					console.log("no predetected tables (404 on regex.json)");
-					}, this)
-				});
+				data = data.replace(/\D/g,'');
+				console.log(data);
+				if(data.length==0){
+					alert("No Regex results found");
+				}else{
+					this.pdf_view.pdf_document.regex_selections = new Tabula.RegexSelections([], {pdf_document: this});
+					this.pdf_view.pdf_document.regex_selections.fetch({
+						success: _.bind(function(){
+							var regex_selections = this.pdf_view.pdf_document.regex_selections.models.map(function(sel){
+								return Tabula.pdf_view.renderSelection(sel.attributes);
+							});
+					}, this),
+					error: _.bind(function(){
+						console.log("no predetected tables (404 on regex.json)");
+						}, this)
+					});
+				}
 			}, this),
 			error: function(xhr, status, err) {
 				console.log('regex search err: ', err);
