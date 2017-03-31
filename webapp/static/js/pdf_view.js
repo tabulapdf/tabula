@@ -452,6 +452,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 	var input_directory = document.getElementById('batch-input-path').value;
 	var output_directory = document.getElementById('batch-output-path').value;
 	var batch_selection_object = document.getElementById('batch-selection');
+	var ocr_ok = document.getElementById('ocr-ok').checked;
 	var batch_selection = batch_selection_object.options[batch_selection_object.selectedIndex].value;
   if(!input_directory || !output_directory){
     alert('Please specify an input and output directory before attempting to run batch processing')
@@ -485,6 +486,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 			'input_folder': input_directory,
 			'output_folder': output_directory,
 			'overlap' : overlap,
+			'ocr' : ocr_ok
 		}
 	$.ajax({
 			type: 'POST',

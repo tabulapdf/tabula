@@ -237,12 +237,18 @@ Cuba.define do
 		output_folder = req.params['output_folder']
 		overlap = req.params['overlap']
 		file_path = req.params['file_path']
+		ocr_ok = req.params['ocr']
+		if ocr_ok.to_s == 'true'
+			ocr_ok = true
+		else
+			ocr_ok = false
+		end
 		batch_processor = Java::TechnologyTabulaExtractors::BatchSelectionExtractor.new
 		case process_type
 		when 'coords'
 			coordslist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'coords_list.json');
 			if(File.file?(coordslist_fullpath)==true)then
-				res.write batch_processor.extract(input_folder, output_folder, coordslist_fullpath, process_type, 0)
+				res.write batch_processor.extract(input_folder, output_folder, coordslist_fullpath, process_type, ocr_ok, 0)
 			else
 				res.write "No coordinate list file found"
 			end
@@ -255,7 +261,7 @@ Cuba.define do
 				else
 					overlap = Integer(overlap)
 				end
-				res.write batch_processor.extract(input_folder, output_folder, regexlist_fullpath, process_type, overlap)
+				res.write batch_processor.extract(input_folder, output_folder, regexlist_fullpath, process_type, ocr_ok, overlap)
 			else
 				res.write "No Regex list file found"
 			end
