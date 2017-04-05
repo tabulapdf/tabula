@@ -59,7 +59,7 @@ If you have a problem, check [Known Issues](#knownissues) first, then [report an
   To close Tabula, just go back to the console window and press "Control-C"
   (as if to copy).
 
-* ###Mac OS X
+* ### Mac OS X
   Download `tabula-mac.zip` from [the download site][tabula_dl]. Unzip and open
   the Tabula app inside. A browser should automatically open
   to http://127.0.0.1:8080/ . If not, open your web browser of choice and
@@ -70,7 +70,7 @@ If you have a problem, check [Known Issues](#knownissues) first, then [report an
 
   Note: If you’re running Mac OS X 10.8 or later, you might get an error like "Tabula is damaged and can't be opened." We're working on fixing this, but click [here](#gatekeeper) for a workaround.
 
-* ###Other platforms (e.g. Linux)
+* ### Other platforms (e.g. Linux)
   Download `tabula-jar.zip` from [the download site][tabula_dl] and unzip it
   to the directory of your choice. Open a terminal window, and `cd` to inside
   the `tabula` directory you just unzipped. Then run:
