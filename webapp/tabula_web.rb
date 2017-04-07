@@ -195,6 +195,15 @@ Cuba.define do
 									req.params['lower_right'])
 	end
 	
+	on 'searches' do
+		regexSearches_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'regex_list.json')
+		if(File.file?(regexSearches_path)==true)then
+			file = File.open(regexSearches_path, "r")
+			res.write file.read
+		else
+			res.write ''
+		end
+	end
     on 'pdfs' do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
     end
