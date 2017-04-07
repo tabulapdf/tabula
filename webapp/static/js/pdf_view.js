@@ -926,7 +926,6 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 			data: regex_data,
 			success: _.bind(function(data) {
 				data = data.replace(/\D/g,'');
-				console.log(data);
 				if(data.length==0){
 					alert("No Regex results found");
 				}else{
