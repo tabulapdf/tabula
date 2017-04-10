@@ -403,6 +403,9 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     this.pdf_view.$el.show();
     this.pdf_view.render();
 
+    $('body').removeClass('page-export');
+    $('body').addClass('page-selections');
+
     var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
       var selection = Tabula.pdf_view.renderSelection(sel.toCoords());
       // selection.attributes.rebind(); // o. m. g.

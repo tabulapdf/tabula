@@ -300,7 +300,7 @@ form {
 }
 
 
-body#page-selections {
+body.page-selections {
 	padding-top: 50px;
 	background: $gray-light;
 	#main-pane {
@@ -308,7 +308,7 @@ body#page-selections {
 	}
 }
 
-body#page-export {
+body.page-export {
 	padding-top: 50px;
 	background: white;
 	#sidebar {
