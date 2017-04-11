@@ -7,7 +7,7 @@ The PRIMARY AUTHORS are (and/or have been):
 * Manuel Aristarán - MIT Media Lab (formerly La Nación, Knight-Mozilla OpenNews)
 * Mike Tigas - ProPublica, Knight-Mozilla OpenNews
 * Jeremy B. Merrill - The New York Times (formerly ProPublica)
-* Jason Das, designer <https://jasondas.com>
+* Jason Das, designer <http://jasondas.com>
 * David Frackman
 * Travis Swicegood - Texas Tribune
 
