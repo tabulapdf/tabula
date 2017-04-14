@@ -67,12 +67,13 @@ module Tabula
 
     def Extraction.openPDF(pdf_filename, password='')
       raise Errno::ENOENT unless File.exists?(pdf_filename)
-      document = PDDocument.load(pdf_filename)
+      document = PDDocument.load(java.io.File.new(pdf_filename))
       #document = PDDocument.loadNonSeq(java.io.File.new(pdf_filename), nil, password)
       document
     end
 
     class ObjectExtractor < Java::TechnologyTabula.ObjectExtractor
+      field_accessor :pdfDocument
 
       alias_method :close!, :close
 
@@ -84,6 +85,10 @@ module Tabula
         document = Extraction.openPDF(pdf_filename, password)
 
         super(document)
+      end
+
+      def page_count
+        self.pdfDocument.get_number_of_pages
       end
     end
 
