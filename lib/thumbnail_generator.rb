@@ -89,6 +89,7 @@ if __FILE__ == $0
       STDERR.puts "#{page}///#{total_pages}"
     end
   end
+  require_relative '../lib/jars/tabula-1.0.0-SNAPSHOT-jar-with-dependencies.jar'
 
   # pdftg = MUDrawThumbnailGenerator.new(ARGV[0], '/tmp', [560])
   pdftg = PDFBox2ThumbnailGenerator.new(ARGV[0], '/tmp', [560])
