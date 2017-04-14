@@ -74,7 +74,6 @@ class PDFBox2ThumbnailGenerator  < AbstractThumbnailGenerator
                     'png',
                     java.io.File.new(File.join(@output_directory,
                                                filename)))
-      STDERR.puts "Writing page thumbnail #{filename}"
       notify_observers(pi+1, total_pages, "generating page thumbnails...")
     end
 
@@ -91,7 +90,6 @@ if __FILE__ == $0
     end
   end
 
-  #pdftg = JPedalThumbnailGenerator.new(ARGV[0], '/tmp', [560])
   # pdftg = MUDrawThumbnailGenerator.new(ARGV[0], '/tmp', [560])
   pdftg = PDFBox2ThumbnailGenerator.new(ARGV[0], '/tmp', [560])
   pdftg.add_observer(STDERRProgressReporter.new)
