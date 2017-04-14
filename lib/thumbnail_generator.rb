@@ -1,8 +1,6 @@
 require 'java'
 require 'observer'
 
-require_relative '../lib/jars/tabula-1.0.0-SNAPSHOT-jar-with-dependencies.jar'
-
 java_import javax.imageio.ImageIO
 java_import java.awt.image.BufferedImage
 java_import java.awt.Image
