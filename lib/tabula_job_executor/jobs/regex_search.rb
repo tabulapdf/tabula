@@ -9,11 +9,7 @@ class RegexSearchJob
 		page_count = extractor.page_count
 		rda = Java::TechnologyTabulaDetectors::RegexSearch.new
 		extractor.extract.each do |page|
-			if upper_right.empty? || lower_right.empty?
-				areas = rda.detect(page, upper_left, lower_left)
-			else
-				areas = rda.detect(page, upper_left, upper_right, lower_left, lower_right)
-			end
+			areas = rda.detect(page, upper_left, upper_right, lower_left, lower_right)
 			page_areas_by_page << areas.map { |rect|
           [ rect.getLeft,
             rect.getTop,
