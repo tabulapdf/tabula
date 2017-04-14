@@ -12,7 +12,7 @@ class GenerateThumbnailJob < Tabula::Background::Job
     output_dir = options[:output_dir]
     thumbnail_sizes = options[:thumbnail_sizes]
 
-    generator = JPedalThumbnailGenerator.new(filepath, output_dir, thumbnail_sizes)
+    generator = PDFBox2ThumbnailGenerator.new(filepath, output_dir, thumbnail_sizes)
     generator.add_observer(self, :at)
     generator.generate_thumbnails!
 
