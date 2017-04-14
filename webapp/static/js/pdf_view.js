@@ -444,78 +444,83 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   },
 
   runBatch: function(){
-	var overlap = document.getElementById('overlap').value;
-	if(isNaN(overlap)){
-		alert("Overlap must be empty or a number");
-		return;
-	}
-	var input_directory = document.getElementById('batch-input-path').value;
-	var output_directory = document.getElementById('batch-output-path').value;
-	var batch_selection_object = document.getElementById('batch-selection');
-	var ocr_ok = document.getElementById('ocr-ok').checked;
-	var batch_selection = batch_selection_object.options[batch_selection_object.selectedIndex].value;
-  if(!input_directory || !output_directory){
-    alert('Please specify an input and output directory before attempting to run batch processing')
-    return
-  }
-  else {
-	if(batch_selection=="coords"){
-  		var coordinates = _.map(this.model.get('list_of_coords'), function(l){ return [l.page, l.y1, l.x1, l.y2, l.x2].join(', '); }).join("\n");
-  		coordsData = {
-  			'all_the_sel': coordinates,
-  			'file_path': PDF_ID
-  		}
-  		$.ajax({
-  			type: 'POST',
-  			url: '/cordlist',
-  			async: false,
-  			data: coordsData,
-  			success: _.bind(function(data) {
-  				console.log(data);
-  			}, this),
-  			error: function(xhr, status, err) {
-  				console.log('Create coordinate err: ', err);
-  			}
-  		});
-  	}else{
-		regexRequestData = {
-  			'file_path': PDF_ID
-  		}
-		$.ajax({
-			type: 'GET',
-			url: '/searches',
-			async: false,
-			data: regexRequestData,
-			success: _.bind(function(data){
-				console.log(data);
-			}, this),
-			error: function(xhr, status, err){
-				console.log('Getting regex search list err:', err);
-			}
-		});
-	}
-  }
-	alert('Batch is running!');
-	batch_data = {
-			'file_path': PDF_ID,
-			'process_type': batch_selection,
-			'input_folder': input_directory,
-			'output_folder': output_directory,
-			'overlap' : overlap,
-			'ocr' : ocr_ok
-		}
-	$.ajax({
-			type: 'POST',
-			url: '/batch',
-			data: batch_data,
-			success: _.bind(function(data) {
-				console.log(data);
-			}, this),
-			error: function(xhr, status, err) {
-				console.log('batch err: ', err);
-			}
-		});
-	return;
+  	var overlap = document.getElementById('overlap').value;
+  	if(isNaN(overlap)){
+  		alert("Overlap must be empty or a number");
+  		return;
+  	}
+  	var input_directory = document.getElementById('batch-input-path').value;
+  	var output_directory = document.getElementById('batch-output-path').value;
+  	var batch_selection_object = document.getElementById('batch-selection');
+  	var ocr_ok = document.getElementById('ocr-ok').checked;
+  	var batch_selection = batch_selection_object.options[batch_selection_object.selectedIndex].value;
+    if(!input_directory || !output_directory){
+      alert('Please specify an input and output directory before attempting to run batch processing')
+      return
+    }
+    else {
+      if(batch_selection=="coords"){
+      		var coordinates = _.map(this.model.get('list_of_coords'), function(l){ return [l.page, l.y1, l.x1, l.y2, l.x2].join(', '); }).join("\n");
+      		coordsData = {
+        		'all_the_sel': coordinates,
+        		'file_path': PDF_ID
+        	}
+        	$.ajax({
+        		type: 'POST',
+        		url: '/cordlist',
+        		async: false,
+        		data: coordsData,
+        		success: _.bind(function(data) {
+        			console.log(data);
+        		}, this),
+        		error: function(xhr, status, err) {
+        			console.log('Create coordinate err: ', err);
+        		}
+        	});
+      } else{
+      	regexRequestData = {
+        		'file_path': PDF_ID
+        	}
+          $.ajax({
+      		type: 'GET',
+      		url: '/searches',
+      		async: false,
+      		data: regexRequestData,
+      		success: _.bind(function(data){
+      			console.log(data);
+      		}, this),
+      		error: function(xhr, status, err){
+      			console.log('Getting regex search list err:', err);
+      			  }
+      		});
+       }
+       if(confirm('Tabula will run '+batch_selection+' based batch processing with '+overlap+'% overlap on pdf files located in '+input_directory+' directory. Is this correct?')==true){
+      	// alert('Batch is running!');
+      	batch_data = {
+      			'file_path': PDF_ID,
+      			'process_type': batch_selection,
+      			'input_folder': input_directory,
+      			'output_folder': output_directory,
+      			'overlap' : overlap,
+      			'ocr' : ocr_ok
+      		}
+      	$.ajax({
+      			type: 'POST',
+      			url: '/batch',
+      			data: batch_data,
+      			success: _.bind(function(data) {
+      				console.log(data);
+      			}, this),
+      			error: function(xhr, status, err) {
+      				console.log('batch err: ', err);
+      			}
+      		});
+        }
+        else{
+          alert('Please refine your search parameters and run again');
+        }
+  	return;
+    }
   },
 
 
@@ -1241,7 +1246,7 @@ Tabula.PDFView = Backbone.View.extend(
           Tabula.pdf_view.components['data_view'].closeAndRenderSelectionView();
         });
       });
-	  
+
 	  // Clear all regex lists
 	  $.post('/pdf/' + PDF_ID + '/' + 'regex',
            { _method: 'delete' });
