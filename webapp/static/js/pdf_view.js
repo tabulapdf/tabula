@@ -454,6 +454,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   	var batch_selection_object = document.getElementById('batch-selection');
   	var ocr_ok = document.getElementById('ocr-ok').checked;
   	var batch_selection = batch_selection_object.options[batch_selection_object.selectedIndex].value;
+    var batch_searches = '';
     if(!input_directory || !output_directory){
       alert('Please specify an input and output directory before attempting to run batch processing')
       return
@@ -471,7 +472,8 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
         		async: false,
         		data: coordsData,
         		success: _.bind(function(data) {
-        			console.log(data);
+        		batch_searches = coordinates;
+            console.log(data);
         		}, this),
         		error: function(xhr, status, err) {
         			console.log('Create coordinate err: ', err);
@@ -487,6 +489,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
       		async: false,
       		data: regexRequestData,
       		success: _.bind(function(data){
+            batch_searches = data;
       			console.log(data);
       		}, this),
       		error: function(xhr, status, err){
@@ -494,7 +497,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
       			  }
       		});
        }
-       if(confirm('Tabula will run '+batch_selection+' based batch processing with '+overlap+'% overlap on pdf files located in '+input_directory+' directory. Is this correct?')==true){
+       if(confirm('Tabula will run '+batch_selection+' based batch processing with '+overlap+'% overlap on pdf files located in '+input_directory+' directory while doing searches for '+batch_searches+' . Is this correct?')==true){
       	// alert('Batch is running!');
       	batch_data = {
       			'file_path': PDF_ID,
