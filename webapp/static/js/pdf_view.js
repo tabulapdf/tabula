@@ -497,7 +497,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
       			  }
       		});
        }
-       if(confirm('Tabula will run '+batch_selection+' based batch processing with '+overlap+'% overlap on pdf files located in '+input_directory+' directory while doing searches for '+batch_searches+' . Is this correct?')==true){
+       if(confirm('Tabula will run '+batch_selection+' based batch processing with '+overlap+'% overlap on pdf files located in '+input_directory+' directory while doing searches for '+batch_searches+'Is this correct?')==true){
       	// alert('Batch is running!');
       	batch_data = {
       			'file_path': PDF_ID,
@@ -915,7 +915,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 	var upper_right = document.getElementById('top-right-regex').value;
 	var lower_left = document.getElementById('bottom-left-regex').value;
 	var lower_right = document.getElementById('bottom-right-regex').value;
-	
+
 	var empties = 0;
 	if (upper_left == "") {
 		empties = empties + 1;
@@ -929,7 +929,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 	if (lower_right == "") {
 		empties = empties + 1;
 	}
-	
+
 	if (empties >= 3) {
 		// both fields empty
 		alert("Minimum 2 strings required.");
