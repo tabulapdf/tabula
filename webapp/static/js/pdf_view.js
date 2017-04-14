@@ -912,9 +912,24 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 	var upper_right = document.getElementById('top-right-regex').value;
 	var lower_left = document.getElementById('bottom-left-regex').value;
 	var lower_right = document.getElementById('bottom-right-regex').value;
-	if ((upper_left == "") || (lower_left == "")) {
+	
+	var empties = 0;
+	if (upper_left == "") {
+		empties = empties + 1;
+	}
+	if (upper_right == "") {
+		empties = empties + 1;
+	}
+	if (lower_left == "") {
+		empties = empties + 1;
+	}
+	if (lower_right == "") {
+		empties = empties + 1;
+	}
+	
+	if (empties >= 3) {
 		// both fields empty
-		alert("Minimum 2 strings required. Top string in upper left and bottom string in lower left for 2 string search");
+		alert("Minimum 2 strings required.");
 		return;
 	}else{
 		// run regex search

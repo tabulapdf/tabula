@@ -12,8 +12,6 @@ class TabulaJobProgress < Cuba
       batch = Tabula::Background::JobExecutor.get_by_batch(batch_id)
       res['Content-Type'] = 'application/json'
       progress = {}
-	  puts "CHECKING BATCH STATUS"
-	  puts batch_id
       if batch.empty?
         res.status = 404
         progress[:status] = "error"

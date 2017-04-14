@@ -73,8 +73,6 @@ end
 
 def run_processing_jobs(file_id, original_filename)
   job_batch = SecureRandom.uuid
-  puts "GENERATED JOB BATCH:"
-  puts job_batch
   thumbnail_sizes =  [800]
 
   file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
