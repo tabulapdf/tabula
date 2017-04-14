@@ -104,8 +104,34 @@
             <span class="glyphicon glyphicon-paperclip"></span>
             <span class="clipboard-text">Copy to Clipboard</span>
           </button>
+
+		  <div>
+			  <label>Batch Process:</label>
+			  <select id="batch-selection" <%=disableIfNoData%>>
+				<option value="coords">Coordinates</option>
+				<option value="regex">Regex Search</option>
+			  </select>
+				<input style="margin-right: 10px" class="which_batch" id="batch-input-path" type="text" placeholder="Batch Input folder">
+				<input style="margin-right: 10px" class="which_batch" id="batch-output-path" type="text" placeholder="Batch Output folder">
+				<input id="overlap" type="number" placeholder="Autodetect Overlap" max="100" min="0">
+				<label for="ocr-ok">OCR</label>
+				<input id="ocr-ok" type="checkbox" value="1" onclick="ocrCheck()">
+				<button type="button" id="run-batch" class="btn btn-default"> <span class="glyphicon glyphicon-download"></span>
+				 Run Batch
+				</button>
+		  </div>
         </form>
       </script>
+	<script type="text/javascript">
+		function ocrCheck() {
+			if (document.getElementById('ocr-ok').checked) {
+				var response = confirm("Are you sure? OCR is imperfect and can create issues with data validity");
+				if(!response){
+					document.getElementById('ocr-ok').checked = false;
+				}
+			}
+		}
+	</script>
 
       <script type="text/template" id="select-control-panel-template" >
         <span class="filename"><%= original_filename %></span>
@@ -113,7 +139,15 @@
         <a href="javascript:void(0)"><button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disable_detected_tables %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button></a>
         <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
         <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><span class="glyphicon glyphicon-eye-open"></span> Preview & Export Extracted Data</button></a>
-      </script>
+        <div>
+          <span style="margin-right: 10px" class="regex_title">Regex</span>
+            <input style="margin-right: 10px" class="regexI" id="top-left-regex" type="text" placeholder="Upper Left Bound">
+            <input style="margin-right: 10px" class="regexI" id="top-right-regex" type="text" placeholder="Upper Right Bound">
+            <input style="margin-right: 10px" class="regexI" id="bottom-left-regex" type="text" placeholder="Lower Left Bound">
+            <input style="margin-right: 10px" class="regexI" id="bottom-right-regex" type="text" placeholder="Lower Right Bound">
+		       <a href="javascript:void(0)"><button type="button" id="set-regex" class="btn btn-success" <%= set_regex %>><span class="glyphicon glyphicon-eye-open"></span> Search Regex</button></a>
+        </div>
+       </script>
 
       <script type="text/template" id="export-page-sidebar-template">
           <h4>Is the extracted data incorrect?</h4>
@@ -341,7 +375,7 @@
 
             <p>Tabula was created by journalists for journalists and anyone else working with data locked away in PDFs. Tabula will always be free and open source.</p>
             <p>If you’ve ever tried to do anything with data provided to you in PDFs, you know how painful it is — there's no easy way to copy-and-paste rows of data out of PDF files. Tabula allows you to extract that data into a CSV or Microsoft Excel spreadsheet using a simple, easy-to-use interface. Tabula works on Mac, Windows and Linux.</p>
-            <p>Caveat: Tabula only works on text-based PDFs, not scanned documents. If you can click-and-drag to select text in your table in a PDF viewer (even if the output is unorganized trash), then your PDF is text-based and Tabula should work.</p>
+            <p>Caveat: Tabula only works on text-based PDFs, not scanned documents. If Tabula receives an image-based PDF as input it will first alert you then, if you wish, attempt to convert the PDF to text using, Tesseract, Google's open-source OCR software. Please note that OCR is not 100% accurate and we strongly recommend that you verify the output data.</p>
             <p><strong>Security Concerns?</strong> Tabula is designed with security in mind. Your PDF and the extracted data never touch the net -- when you use Tabula, as long as your browser's URL bar says "localhost" or "127.0.0.1", all processing takes place on your local machine. Tabula does download a list of Tabula versions from our server to alert you if Tabula has been updated (and we use hits to that list to count how often Tabula is being used); it also downloads a few badges and assets from the web.</p>
 
             <h2>Who Uses Tabula?</h2>
@@ -360,17 +394,17 @@
           <div class="jumbotron help">
           <h3 name="howto">How to Use Tabula</h3>
           <ol>
-            <li>Upload a PDF file containing a data table.</li>
+            <li>Upload a PDF file or group of PDF files that contain data tables.</li>
             <li>Select the table by clicking the top left corner of a table and dragging the mouse to the bottom right corner, until all of the data is included in the shaded selection area.</li>
             <li>A window will then appear containing your data. Inspect the data to make sure it looks correct. If data is missing, you may have to slightly expand your selection.</li>
             <li>Click the Download button.</li>
             <li>Now you can work with your data as text file or a spreadsheet rather than a PDF! <br>
             (You can open the downloaded file in Microsoft Excel or the free <a href="http://www.libreoffice.org/discover/calc/">LibreOffice Calc</a>)<p></p></li>
           </ol>
-          <p>Note: Tabula only works on text-based PDFs, not scanned documents.</p>
+          <p>Note: Tabula works best with text-based documents but has the functionality to work with image-based documents as well.</p>
           <h3 name="trouble">Having trouble with Tabula?</h3>
           <ol>
-          <li><strong>Tabula said "Sorry, your PDF file is image-based" -- what does that mean?</strong> Your PDF does not have any embedded text. It might have been scanned from paper. Tabula is not able to extract any data from image-based PDFs. You can try OCRing the PDF with a tool like Adobe Acrobat Pro (paid), Tesseract, <a href="http://www.tobias-elze.de/pdfsandwich/">PDFSandwich</a> (Mac/Linux, free) or <a href="https://code.google.com/p/lime-ocr/">Lime OCR</a> (Windows, free) and then trying Tabula again.</li>
+          <li><strong>Tabula alerted you that your PDF is image based and that your data could be compromised during the conversion process. -- what does that mean?</strong> Your PDF does not have any embedded text. It might have been scanned from paper. Whatever the reason, Tabula is able to extract data from image-based PDFs by OCRing the PDF with <a href="https://github.com/tesseract-ocr">Tesseract</a>. However, you must verify your data is still correct after the OCR process is completed. You may also follow the link to tesseract and convert your PDF manually which would allow you to adjust conversion options to be more or less conservative, functionality that Tabula does not currently support.</li>
           <li><strong>Some columns of my table are combined. What can I do?</strong> Tabula sometimes uses "streams" of whitespace to recreate your table's structure. If headers span multiple columns, they're probably causing a problem. Try excluding them from your selection (or selecting them separately). </li>
           <li><strong>Some columns of my table are combined. And the headers aren't the problem! What <em>else</em> can I do?</strong> Tabula has two extraction methods. It tries to guess which one is right for document, but it's wrong sometimes. Try selecting the other (of "stream" and "lattice"), on the left in extraction mode, to see if that fixes the problem.</li>
           <li><strong>Tabula's taking too long!</strong> Sorry! Tabula has to do a lot of weird math to reconstruct your table. Tabula's command-line counterpart, <a href="https://www.github.com/tabulapdf/tabula-extractor">tabula-extractor</a> is faster, but a little harder to use. You might give it a try.</li>

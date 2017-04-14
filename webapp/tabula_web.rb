@@ -3,6 +3,7 @@ require 'cuba'
 require 'cuba/render'
 
 require 'digest/sha1'
+require 'java'
 require 'json'
 require 'csv'
 require 'tempfile'
@@ -32,6 +33,7 @@ require_relative '../lib/tabula_job_executor/executor.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_document_data.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
 require_relative '../lib/tabula_job_executor/jobs/detect_tables.rb'
+require_relative '../lib/tabula_job_executor/jobs/regex_search.rb'
 
 
 def is_valid_pdf?(path)
@@ -52,7 +54,6 @@ Cuba.use Rack::Static, root: STATIC_ROOT, urls: ["/css","/js", "/img", "/swf", "
 Cuba.use Rack::ContentLength
 Cuba.use Rack::Reloader
 
-
 def upload(file)
   original_filename = file[:filename]
   file_id = Digest::SHA1.hexdigest(Time.now.to_s + original_filename) # just SHA1 of time isn't unique with multiple uploads
@@ -67,11 +68,15 @@ def upload(file)
     FileUtils.rm_rf(file[:tempfile].path)
   end
 
-  filepath = File.join(file_path, 'document.pdf')
+  return run_processing_jobs(file_id, original_filename)
+end
 
+def run_processing_jobs(file_id, original_filename)
   job_batch = SecureRandom.uuid
-
   thumbnail_sizes =  [800]
+
+  file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
+  filepath = File.join(file_path, 'document.pdf')
 
   GenerateDocumentDataJob.create(:filepath => filepath,
                                  :original_filename => original_filename,
@@ -89,6 +94,7 @@ def upload(file)
                               :output_dir => file_path,
                               :thumbnail_sizes => thumbnail_sizes,
                               :batch => job_batch)
+
   return [job_batch, file_id]
 end
 
@@ -101,14 +107,19 @@ Cuba.define do
     end
   end
 
-
   on 'queue' do
     require_relative './tabula_job_progress.rb'
     run TabulaJobProgress
   end
 
   on delete do
-
+  
+	on 'pdf/:file_id/regex' do |file_id|
+		path_to_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'regex_list.json')
+		File.delete(path_to_file) if File.exists?(path_to_file)
+		res.write '' # Firefox complains about an empty response without this. 
+	end
+	
     on 'pdf/:file_id/page/:page_number' do |file_id, page_number|
       index_fname = File.join(TabulaSettings::DOCUMENTS_BASEPATH,
                               file_id,
@@ -140,7 +151,7 @@ Cuba.define do
     end
 
   end
-
+  
   on put do
     on 'pdf/:file_id/page/:page_number' do |file_id, page_number|
       # nothing yet
@@ -148,6 +159,49 @@ Cuba.define do
   end
 
   on get do
+	on 'ocr' do
+		puts "OCR Processing on " + File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf')
+		OCR_Module = Java::TechnologyTabulaExtractors::OcrConverter.new
+		
+		ocr_ret = begin
+            OCR_Module.extract(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'))
+		        rescue StandardError => e
+            puts "an error"
+            puts e.inspect
+            false
+        end
+		if(ocr_ret=="Success")then
+			puts "SUCCESS"
+			File.rename(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'), File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document_image.pdf'))
+			File.rename(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document_OCR.pdf'), File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'))
+			job_batch, file_id = *run_processing_jobs(req.params['file_path'], req.params['file_name'])
+			res.write JSON.dump({message: "Success", batch_id: job_batch, file_id: file_id})
+		else
+			res.write "Failed"
+		end
+	end
+	
+    on 'regex' do
+	  pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf')
+	  output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
+	  regex_search_job = RegexSearchJob.new()
+	  res.write regex_search_job.performRegex(pdf_path,
+									output_dir,
+									req.params['upper_left'],
+									req.params['upper_right'],
+									req.params['lower_left'],
+									req.params['lower_right'])
+	end
+	
+	on 'searches' do
+		regexSearches_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'regex_list.json')
+		if(File.file?(regexSearches_path)==true)then
+			file = File.open(regexSearches_path, "r")
+			res.write file.read
+		else
+			res.write ''
+		end
+	end
     on 'pdfs' do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
     end
@@ -175,6 +229,52 @@ Cuba.define do
   end # /get
 
   on post do
+	
+	on 'cordlist' do
+		coordlist = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'coords_list.json');
+		File.open(coordlist, 'w') do |f|
+		  f.puts req.params['all_the_sel']
+		end
+		res.write "Coord list file written"
+	end
+	
+    on 'batch' do
+		process_type = req.params['process_type']
+		input_folder = req.params['input_folder']
+		output_folder = req.params['output_folder']
+		overlap = req.params['overlap']
+		file_path = req.params['file_path']
+		ocr_ok = req.params['ocr']
+		if ocr_ok.to_s == 'true'
+			ocr_ok = true
+		else
+			ocr_ok = false
+		end
+		batch_processor = Java::TechnologyTabulaExtractors::BatchSelectionExtractor.new
+		case process_type
+		when 'coords'
+			coordslist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'coords_list.json');
+			if(File.file?(coordslist_fullpath)==true)then
+				res.write batch_processor.extract(input_folder, output_folder, coordslist_fullpath, process_type, ocr_ok, 0)
+			else
+				res.write "No coordinate list file found"
+			end
+		when 'regex'
+			puts process_type
+			regexlist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'regex_list.json');
+			if(File.file?(regexlist_fullpath)==true)then
+				if(overlap=='')then
+					overlap = 0
+				else
+					overlap = Integer(overlap)
+				end
+				res.write batch_processor.extract(input_folder, output_folder, regexlist_fullpath, process_type, ocr_ok, overlap)
+			else
+				res.write "No Regex list file found"
+			end
+		end
+	end
+  
     on 'upload.json' do
       # Make sure this is a PDF, before doing anything
 

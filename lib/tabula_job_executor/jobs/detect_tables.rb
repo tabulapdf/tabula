@@ -5,10 +5,8 @@ require_relative '../executor.rb'
 class DetectTablesJob < Tabula::Background::Job
   include Observable
   def perform
-    filepath = options[:filepath]
+	filepath = options[:filepath]
     output_dir = options[:output_dir]
-
-
     page_areas_by_page = []
 
     begin
@@ -39,6 +37,6 @@ class DetectTablesJob < Tabula::Background::Job
     end
 
     at(100, 100, "complete")
-    return nil
+	return nil
   end
 end
