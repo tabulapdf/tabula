@@ -238,6 +238,11 @@ Cuba.define do
 		input_folder = req.params['input_folder']
 		output_folder = req.params['output_folder']
 		overlap = req.params['overlap']
+		if(overlap=='')then
+			overlap = 0
+		else
+			overlap = Integer(overlap)
+		end
 		file_path = req.params['file_path']
 		ocr_ok = req.params['ocr']
 		if ocr_ok.to_s == 'true'
@@ -250,7 +255,7 @@ Cuba.define do
 		when 'coords'
 			coordslist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'coords_list.json');
 			if(File.file?(coordslist_fullpath)==true)then
-				res.write batch_processor.extract(input_folder, output_folder, coordslist_fullpath, process_type, ocr_ok, 0)
+				res.write batch_processor.extract(input_folder, output_folder, coordslist_fullpath, process_type, ocr_ok, overlap)
 			else
 				res.write "No coordinate list file found"
 			end
@@ -258,11 +263,6 @@ Cuba.define do
 			puts process_type
 			regexlist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'regex_list.json');
 			if(File.file?(regexlist_fullpath)==true)then
-				if(overlap=='')then
-					overlap = 0
-				else
-					overlap = Integer(overlap)
-				end
 				res.write batch_processor.extract(input_folder, output_folder, regexlist_fullpath, process_type, ocr_ok, overlap)
 			else
 				res.write "No Regex list file found"
