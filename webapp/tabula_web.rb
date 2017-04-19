@@ -182,15 +182,10 @@ Cuba.define do
 	end
 	
     on 'regex' do
-	  pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf')
 	  output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
+	  boundariesArray = [req.params['upper_left'], req.params['upper_right'], req.params['lower_left'],req.params['lower_right']]
 	  regex_search_job = RegexSearchJob.new()
-	  res.write regex_search_job.performRegex(pdf_path,
-									output_dir,
-									req.params['upper_left'],
-									req.params['upper_right'],
-									req.params['lower_left'],
-									req.params['lower_right'])
+	  res.write regex_search_job.performRegex(output_dir, boundariesArray)
 	end
 	
 	on 'searches' do

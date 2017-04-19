@@ -2,14 +2,14 @@ require 'java'
 
 class RegexSearchJob 
 
-  def performRegex(filepath, output_dir, upper_left, upper_right, lower_left, lower_right)
+  def performRegex(output_dir, boundariesArray)
 	page_areas_by_page = []
 	begin
-		extractor = Tabula::Extraction::ObjectExtractor.new(filepath, :all)
+		extractor = Tabula::Extraction::ObjectExtractor.new(File.join(output_dir, 'document.pdf'), :all)
 		page_count = extractor.page_count
 		rda = Java::TechnologyTabulaDetectors::RegexSearch.new
 		extractor.extract.each do |page|
-			areas = rda.detect(page, upper_left, upper_right, lower_left, lower_right)
+			areas = rda.detect(page, boundariesArray)
 			page_areas_by_page << areas.map { |rect|
           [ rect.getLeft,
             rect.getTop,
@@ -27,7 +27,7 @@ class RegexSearchJob
     end
 	
 	File.open(output_dir + "/regex_list.json", 'a') do |f|
-      f.puts upper_left + "," + upper_right + "," + lower_left + "," + lower_right + "\n"
+      f.puts boundariesArray[0] + "," + boundariesArray[1] + "," + boundariesArray[2] + "," + boundariesArray[3] + "\n"
     end
 	
     return page_areas_by_page
