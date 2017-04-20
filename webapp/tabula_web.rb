@@ -172,8 +172,6 @@ Cuba.define do
         end
 		if(ocr_ret=="Success")then
 			puts "SUCCESS"
-			File.rename(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'), File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document_image.pdf'))
-			File.rename(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document_OCR.pdf'), File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'))
 			job_batch, file_id = *run_processing_jobs(req.params['file_path'], req.params['file_name'])
 			res.write JSON.dump({message: "Success", batch_id: job_batch, file_id: file_id})
 		else
