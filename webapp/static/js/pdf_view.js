@@ -452,6 +452,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   		alert("Overlap must be empty or a number");
   		return;
   	}
+    if(overlap>100) overlap = 100;
   	var input_directory = document.getElementById('batch-input-path').value;
   	var output_directory = document.getElementById('batch-output-path').value;
   	var batch_selection_object = document.getElementById('batch-selection');
