@@ -164,7 +164,7 @@ Cuba.define do
 		OCR_Module = Java::TechnologyTabulaExtractors::OcrConverter.new
 		
 		ocr_ret = begin
-            OCR_Module.extract(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'))
+            OCR_Module.extract(File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'document.pdf'), false)
 		        rescue StandardError => e
             puts "an error"
             puts e.inspect
