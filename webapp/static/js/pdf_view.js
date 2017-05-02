@@ -517,6 +517,11 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
       			data: batch_data,
       			success: _.bind(function(data) {
       				console.log(data);
+					if(data=="No list file found"){
+						alert("Error: no search lists found");
+					}else{
+						alert("Batch Processing done");
+					}
       			}, this),
       			error: function(xhr, status, err) {
       				console.log('batch err: ', err);

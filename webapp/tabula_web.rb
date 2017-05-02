@@ -255,7 +255,7 @@ Cuba.define do
 			if(File.file?(coordslist_fullpath)==true)then
 				res.write batch_processor.extract(input_folder, output_folder, coordslist_fullpath, process_type, ocr_ok, overlap)
 			else
-				res.write "No coordinate list file found"
+				res.write "No list file found"
 			end
 		when 'regex'
 			puts process_type
@@ -263,7 +263,7 @@ Cuba.define do
 			if(File.file?(regexlist_fullpath)==true)then
 				res.write batch_processor.extract(input_folder, output_folder, regexlist_fullpath, process_type, ocr_ok, overlap)
 			else
-				res.write "No Regex list file found"
+				res.write "No list file found"
 			end
 		end
 	end
