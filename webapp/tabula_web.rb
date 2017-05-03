@@ -237,7 +237,7 @@ Cuba.define do
 		output_folder = req.params['output_folder']
 		overlap = req.params['overlap']
 		if(overlap=='')then
-			overlap = 0
+			overlap = 100
 		else
 			overlap = Integer(overlap)
 		end
