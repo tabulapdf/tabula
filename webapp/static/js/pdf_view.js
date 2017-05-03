@@ -465,7 +465,8 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     }
     else {
       if(batch_selection=="coords"){
-      		var coordinates = _.map(this.model.get('list_of_coords'), function(l){ return [l.page, l.y1, l.x1, l.x2-l.x1, l.y2-l.y1].join(', '); }).join("\n");
+      		var coordinates = _.map(this.model.get('list_of_coords'), function(l){ return [l.page, l.x1, l.y1, l.x2-l.x1, l.y2-l.y1].join(', '); }).join("\n");
+			batch_searches = coordinates;
       		coordsData = {
         		'all_the_sel': coordinates,
         		'file_path': PDF_ID
@@ -476,7 +477,6 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
         		async: false,
         		data: coordsData,
         		success: _.bind(function(data) {
-					batch_searches = coordinates;
 					console.log(data);
         		}, this),
         		error: function(xhr, status, err) {
