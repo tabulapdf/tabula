@@ -448,17 +448,18 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
   runBatch: function(){
   	var overlap = document.getElementById('overlap').value;
+	console.log(overlap);
   	if(isNaN(overlap)){
   		alert("Overlap must be empty or a number");
   		return;
   	}
-    if(overlap>100) overlap = 100;
+    if(overlap>100 || overlap=='') overlap = 100;
   	var input_directory = document.getElementById('batch-input-path').value;
   	var output_directory = document.getElementById('batch-output-path').value;
   	var batch_selection_object = document.getElementById('batch-selection');
   	var ocr_ok = document.getElementById('ocr-ok').checked;
   	var batch_selection = batch_selection_object.options[batch_selection_object.selectedIndex].value;
-    var batch_searches = '';
+	var batch_searches_formatted = '';
     if(!input_directory || !output_directory){
       alert('Please specify an input and output directory before attempting to run batch processing')
       return
@@ -466,7 +467,6 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     else {
       if(batch_selection=="coords"){
       		var coordinates = _.map(this.model.get('list_of_coords'), function(l){ return [l.page, l.x1, l.y1, l.x2-l.x1, l.y2-l.y1].join(', '); }).join("\n");
-			batch_searches = coordinates;
       		coordsData = {
         		'all_the_sel': coordinates,
         		'file_path': PDF_ID
@@ -483,6 +483,12 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
         			console.log('Create coordinate err: ', err);
         		}
         	});
+			
+			var batch_strings_list = coordinates.split('\n');
+			for (var count = 0; count < batch_strings_list.length; count++) {
+				var batch_strings = batch_strings_list[count].split(',');
+				batch_searches_formatted = batch_searches_formatted.concat('Page: ' + batch_strings[0] + ', X: ' + Math.round(batch_strings[1]) + ', Y: ' + Math.round(batch_strings[2]) + ', W: ' + Math.round(batch_strings[3]) + ', H: ' + Math.round(batch_strings[4]) + '\n');
+			}
       } else{
       	regexRequestData = {
         		'file_path': PDF_ID
@@ -493,15 +499,27 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
       		async: false,
       		data: regexRequestData,
       		success: _.bind(function(data){
-				batch_searches = data;
-      			console.log(data);
+				if (data!='') {
+					console.log(data);
+					
+					var batch_strings_list = data.split('\n');
+					for (var count = 0; count < batch_strings_list.length - 1; count++) {
+						var batch_strings = batch_strings_list[count].split(',');
+						batch_searches_formatted = batch_searches_formatted.concat(batch_strings[0] + ',' + batch_strings[1] + '\n' + batch_strings[2] + ',' + batch_strings[3] + '\n');
+					}
+				} else {
+					alert('Error getting regex search list.');
+					batch_searches_formatted = '';
+				}
       		}, this),
       		error: function(xhr, status, err){
       			console.log('Getting regex search list err:', err);
-      			  }
+				alert('Error getting regex search list.');
+				batch_searches_formatted = '';
+				}
       		});
        }
-       if(confirm('Tabula will run '+batch_selection+' based batch processing with '+overlap+'% overlap on pdf files located in '+input_directory+' directory while doing searches for \n'+batch_searches+'\nIs this correct?')==true){
+       if(batch_searches_formatted!='' && confirm('Tabula will run '+batch_selection+' based batch processing with '+overlap+'% overlap on pdf files located in '+input_directory+' directory while doing searches for \n'+batch_searches_formatted+'\nIs this correct?')==true){
       	// alert('Batch is running!');
       	batch_data = {
       			'file_path': PDF_ID,
