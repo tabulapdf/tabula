@@ -571,7 +571,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   },
 
   initialize: function(stuff){
-    _.bindAll(this, 'render', 'removePage', '_onRectangularSelectorEnd', '_selectionsGetter');
+    _.bindAll(this, 'render', 'removePage', 'addSelection', '_onRectangularSelectorEnd', '_selectionsGetter');
     this.pdf_view = stuff.pdf_view;
     this.listenTo(this.collection, 'remove', this.removePage);
 
@@ -590,9 +590,8 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     );
   },
 
-  // listens to mouseup of RectangularSelector
-  _onRectangularSelectorEnd: function(d) {
-    var page_number = $(d.pageView).data('page');
+  addSelection: function (d) {
+    var page_number = $(d.pageView).data('page') || d.pageNumber;
     var pv = this.page_views[page_number];
     var rs = new ResizableSelection({
       position: d.absolutePos,
@@ -606,6 +605,11 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     pv._onSelectEnd(rs);
     this.$el.append(rs.el);
     rs.$el.css('z-index', 100 - this._selectionsGetter($(d.pageView)).length);
+  },
+
+  // listens to mouseup of RectangularSelector
+  _onRectangularSelectorEnd: function(d) {
+    this.addSelection(d);
   },
 
   removePage: function(pageModel){
@@ -1036,7 +1040,9 @@ Tabula.PDFView = Backbone.View.extend(
 
     initialize: function(){
       _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections', 'renderSelection',
-        'createDataView', 'checkForAutodetectedTables', 'getData', 'handleScroll');
+        'createDataView', 'checkForAutodetectedTables', 'getData', 'handleScroll',
+        'serializeSelections', 'loadSerializedSelections', 'getSavedStates',
+        'save', 'load', 'saveAs');
 
       this.pdf_document = new Tabula.Document({
         pdf_id: PDF_ID,
@@ -1239,6 +1245,84 @@ Tabula.PDFView = Backbone.View.extend(
 
     updateActiveSelections: function() {
       console.log(this.pdf_document.selections);
+    },
+
+    serializeSelections: function () {
+      return this.pdf_document.selections.map(function (x) {
+        return _.extend(
+          { pageNumber: x.attributes.page_number },
+          _.omit(x.attributes.getDims(), '$el'))
+      });
+    },
+
+    loadSerializedSelections: function (serializedSelections) {
+      serializedSelections.forEach(this.components.document_view.addSelection);
+    },
+
+    getSavedStates: function () {
+      return JSON.parse(localStorage.getItem('savedStates')) || [];
+    },
+
+    saveAs: function (state, options) {
+      var shouldOverwrite = options.shouldOverwrite;
+      var savedStates = this.getSavedStates();
+
+      var windowDimensions = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      };
+
+      var conflictingSavedState = _.findWhere(savedStates, {id: state.id});
+
+      if (conflictingSavedState && !shouldOverwrite) {
+        console.error('Failed to save selection due to conflicting id. "' + state.id + '" already exists. Pass in `save("' + state.id +'", "' + state.name + '", { shouldOverride: true })` to overwrite');
+        return;
+      }
+
+      var stateToSave = _.defaults(state, {
+        windowDimensions: windowDimensions,
+        dateSaved: new Date().toISOString(),
+        selections: this.serializeSelections(),
+      });
+
+      var statesToSave = _.without(savedStates, conflictingSavedState).concat(stateToSave);
+      localStorage.setItem('savedStates', JSON.stringify(statesToSave));
+    },
+
+    save: function () {
+      var stateToSave = {
+        id: (this.loadedSavedState && this.loadedSavedState.id) || _.max(_.pluck(this.getSavedStates(), 'id').concat(0)) + 1,
+        name: (this.loadedSavedState && this.loadedSavedState.name) || this.pdf_document.attributes.original_filename || this.pdf_document.attributes.original_filename,
+        selections: this.serializeSelections(),
+      };
+
+      this.saveAs(stateToSave, { shouldOverwrite: true });
+    },
+
+    load: function (id) {
+      if (!id) {
+        console.error('Missing id of stored save to load');
+        return;
+      }
+      var saveToLoad = _.findWhere(this.getSavedStates(), { id: id });
+      console.log('', saveToLoad);
+      if (window.innerWidth !== saveToLoad.windowDimensions.width || window.innerHeight !== saveToLoad.windowDimensions.height) {
+        console.warn('Warning: These selections were saved with window dimensions of width: '
+          + saveToLoad.windowDimensions.width + ', height: ' + saveToLoad.windowDimensions.height
+          + ', which are different from your current window dimensions of width: ' + window.innerWidth +' , height: ' + window.innerHeight);
+      }
+      this.loadSerializedSelections(saveToLoad.selections);
+      this.loadedSavedState = saveToLoad;
+    },
+
+    delete: function (id) {
+      if (!id) {
+        console.error('An id is required');
+        return;
+      }
+      var savedStates = this.getSavedStates();
+      var stateToDelete = _.findWhere(savedStates, {id: id});
+      localStorage.setItem('savedStates', JSON.stringify(_.without(savedStates, stateToDelete)));
     },
 
     render : function(){
