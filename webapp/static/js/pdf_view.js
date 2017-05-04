@@ -8,6 +8,23 @@ Tabula.HideOnLazyLoad = false; // ideally, set to true, but this requires differ
 
 ZeroClipboard.config( { swfPath: "/swf/ZeroClipboard.swf" } );
 
+Tabula.entityMap = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+  '/': '&#x2F;',
+  '`': '&#x60;',
+  '=': '&#x3D;'
+};
+Tabula.escapeHtml = function(string) {
+  return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+    return Tabula.entityMap[s];
+  });
+}
+
+
 Tabula.Page = Backbone.Model.extend({
   // number: null, //set on initialize
   // width: null, //set on initialize
@@ -340,17 +357,22 @@ Tabula.Query = Backbone.Model.extend({
   setExtractionMethod: function(extractionMethod){
     _(this.get('list_of_coords')).each(function(coord_set){ coord_set['extraction_method'] = extractionMethod; });
   },
-  getDataArray: function(){
+ getDataArray: function(){
     // this.data is a list of responses (because we sent a list of coordinate sets)
     // $.each( _.pluck(this.model.get('data'), 'data'), function(i, rows) {
     //   $.each(rows, function(j, row) {
     //     tableHTML += '<tr><td>' + _.pluck(row, 'text').join('</td><td>') + '</td></tr>';
     //   });
     // });
+
+    /* via https://stackoverflow.com/questions/24816/escaping-html-strings-with-jquery
+     * if a PDF contains the string "<iframe>" we want to display that, not an actual iframe!
+     */
+
     if (!this.get('data')){ return []; }
     var data = _(this.get('data')).chain().pluck('data').map(function(table){
       return _(table).chain().map(function(row){
-        return _.pluck(row, 'text');
+        return (_.pluck(row, 'text')).map(Tabula.escapeHtml);
       }).value();
     })/*.flatten(true)*/.value();
     return data.length == 1 && data[0].length === 0 ? [] : data; // checking whether there's no data, i.e. data == [[]]
