@@ -1,12 +1,13 @@
 Tabula = Tabula || {};
 
 var clip = null;
+var base_uri = $('base').attr("href");
 
-PDF_ID = window.location.pathname.split('/')[2];
+PDF_ID = window.location.pathname.replace(base_uri, '').split('/')[1];
 Tabula.LazyLoad = 10; // max number of pages around the cursor to show (2x Tabula.LazyLoad pages are shown)
 Tabula.HideOnLazyLoad = false; // ideally, set to true, but this requires differently positioned selections, see https://github.com/tabulapdf/tabula/issues/245#issuecomment-75182061
 
-ZeroClipboard.config( { swfPath: "/swf/ZeroClipboard.swf" } );
+ZeroClipboard.config( { swfPath: (base_uri || '/') + "swf/ZeroClipboard.swf" } );
 
 Tabula.entityMap = {
   '&': '&amp;',
@@ -35,7 +36,7 @@ Tabula.Page = Backbone.Model.extend({
   },
   imageUrl: function(){
     var resolution = Math.max(Tabula.pdf_view.pdf_document.get('thumbnail_sizes')) || 560;
-    this.set('image_url', '/pdfs/' + PDF_ID + '/document_'+resolution+'_' + this.get('number') + '.png');
+    this.set('image_url', (base_uri || '/') + 'pdfs/' + PDF_ID + '/document_'+resolution+'_' + this.get('number') + '.png');
     return this.get('image_url');
   }
 });
@@ -45,7 +46,7 @@ Tabula.Pages = Backbone.Collection.extend({
   url: null, //set on initialize
   comparator: 'number',
   initialize: function(){
-    this.url = '/pdfs/' + PDF_ID + '/pages.json?_=' + Math.round(+new Date()).toString();
+    this.url = (base_uri || '/') + 'pdfs/' + PDF_ID + '/pages.json?_=' + Math.round(+new Date()).toString();
   }
 });
 
@@ -59,7 +60,7 @@ Tabula.Document = Backbone.Model.extend({
     this.page_collection = new Tabula.Pages([], {pdf_document: this});
     this.selections = new Tabula.Selections([], {pdf_document: this});
     this.autodetected_selections = new Tabula.AutodetectedSelections([], {pdf_document: this});
-    this.url = '/pdf/' + this.pdf_id + '/metadata.json';
+    this.url = (base_uri || '/') + 'pdf/' + this.pdf_id + '/metadata.json';
 
     this.set('original_filename', '');
     this.set('new_filename', false);
@@ -188,7 +189,7 @@ Tabula.Selections = Backbone.Collection.extend({
 Tabula.AutodetectedSelections = Tabula.Selections.extend({
   url: null, //set on init
   initialize: function(){
-    this.url = '/pdfs/' + PDF_ID + '/tables.json?_=' + Math.round(+new Date()).toString();
+    this.url = (base_uri || '/') + 'pdfs/' + PDF_ID + '/tables.json?_=' + Math.round(+new Date()).toString();
     _.bindAll(this, 'updateOrCreateByVendorSelectorId');
   },
 
@@ -305,7 +306,7 @@ Tabula.Query = Backbone.Model.extend({
     window.tabula_router.navigate('pdf/' + PDF_ID + '/extract'); // TODO: this should probably go in a view!! -JBM
     $.ajax({
         type: 'POST',
-        url: '/pdf/' + PDF_ID + '/data',
+        url: (base_uri || '/') + 'pdf/' + PDF_ID + '/data',
         data: this.query_data,
         success: _.bind(function(resp) {
           this.set('data', resp);
@@ -1213,7 +1214,7 @@ Tabula.PDFView = Backbone.View.extend(
     },
 
     removePage: function(removedPageModel){
-      $.post('/pdf/' + PDF_ID + '/page/' + removedPageModel.get('number'),
+      $.post((base_uri || '/') + 'pdf/' + PDF_ID + '/page/' + removedPageModel.get('number'),
            { _method: 'delete' },
            function () {
                Tabula.pdf_view.pageCount -= 1;
