@@ -4,7 +4,21 @@ require 'bundler'
 Bundler.require
 require_relative './webapp/tabula_settings.rb'
 require_relative './webapp/tabula_web.rb'
-run Cuba
+
+potential_root_uri_without_slashes = (defined?($servlet_context) ? $servlet_context.getContextPath : ENV["ROOT_URI"])
+
+if potential_root_uri_without_slashes.nil? || potential_root_uri_without_slashes == ''
+  ROOT_URI = '/'
+else
+  ROOT_URI = (potential_root_uri_without_slashes[0] == "/" ? '' : '/') + potential_root_uri_without_slashes +  (potential_root_uri_without_slashes[-1] == "/" ? '' : '/')
+end
+
+puts "running under #{ROOT_URI} as root URI" 
+
+
+map ROOT_URI do 
+  run Cuba
+end
 
 if "#{$PROGRAM_NAME}".include?("tabula.jar")
   # only do this if running as jar or app. (if "rackup", we don't

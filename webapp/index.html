@@ -7,15 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
 
     <title>Tabula</title>
 
-    <link href="/css/styles.css" rel="stylesheet">
+    <base href="/"><!-- overwritten dynamically with the value of $servlet_context.getContextPath or ENV["ROOT_URI"] -->
+
+    <link href="css/styles.css" rel="stylesheet">
 
     <!-- Selector-specific CSS -->
-    <link href="/css/selectors.css" rel="stylesheet">
+    <link href="css/selectors.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -23,10 +25,10 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <script type="text/javascript" src="/js/vendor/jquery.min.js"></script>
-    <script type="text/javascript" src="/js/vendor/underscore-min.js"></script>
-    <script type="text/javascript" src="/js/vendor/backbone-min.js"></script>
-    <script type="text/javascript" src="/js/vendor/bootstrap.js"></script>
+    <script type="text/javascript" src="js/vendor/jquery.min.js"></script>
+    <script type="text/javascript" src="js/vendor/underscore-min.js"></script>
+    <script type="text/javascript" src="js/vendor/backbone-min.js"></script>
+    <script type="text/javascript" src="js/vendor/bootstrap.js"></script>
   </head>
 
 
@@ -37,13 +39,13 @@
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="/">Tabula</a>
+          <a class="navbar-brand" href="">Tabula</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a id="upload-nav" href="/">My Files</a></li>
-            <li><a id="about-nav" href="/about">About</a></li>
-            <li><a id="help-nav" href="/help">Help</a></li>
+            <li><a id="upload-nav" href="">My Files</a></li>
+            <li><a id="about-nav" href="about">About</a></li>
+            <li><a id="help-nav" href="help">Help</a></li>
             <li><a href="https://github.com/tabulapdf/tabula">Source Code</a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -77,7 +79,7 @@
       </script>
 
       <script type="text/template" id="export-control-panel-template">
-        <form id="download-form" action="/pdf/<%=pdf_id%>/data?format=csv" method="post">
+        <form id="download-form" action="pdf/<%=pdf_id%>/data?format=csv" method="post">
           <div id="hidden-fields">
             <input type='hidden' class='data-query' name='new_filename' value='<%=original_filename%>' >
             <input type='hidden' class='data-query' name='coords' value='<%=list_of_coords%>' >
@@ -95,7 +97,7 @@
             <!-- <option value="xml">XML</option> -->
             <option value="script">Script</option>
           </select>
-          <button type="submit" <%=disableIfNoData%> id="download-data" class="btn btn-default" data-action='/pdf/<%=pdf_id%>/data'>
+          <button type="submit" <%=disableIfNoData%> id="download-data" class="btn btn-default" data-action='pdf/<%=pdf_id%>/data'>
             <span class="glyphicon glyphicon-refresh"></span>
             <span class="glyphicon glyphicon-download"></span>
             Export
@@ -191,11 +193,11 @@
           <div id="pages-container">
           </div>
         </div>
-        <nestedscript type="text/javascript" src="/js/vendor/spin.min.js"></nestedscript>
-        <nestedscript type="text/javascript" src="/js/resizableSelection.js"></nestedscript>
-        <nestedscript type="text/javascript" src="/js/rectangularSelector.js"></nestedscript>
-        <nestedscript type="text/javascript" src="/js/vendor/ZeroClipboard.min.js"></nestedscript>
-        <!-- <nestedscript type="text/javascript" src="/js/debug_pdf_view.js"></nestedscript>  -->
+        <nestedscript type="text/javascript" src="js/vendor/spin.min.js"></nestedscript>
+        <nestedscript type="text/javascript" src="js/resizableSelection.js"></nestedscript>
+        <nestedscript type="text/javascript" src="js/rectangularSelector.js"></nestedscript>
+        <nestedscript type="text/javascript" src="js/vendor/ZeroClipboard.min.js"></nestedscript>
+        <!-- <nestedscript type="text/javascript" src="js/debug_pdf_view.js"></nestedscript>  -->
       </script>
 
 
@@ -302,9 +304,9 @@
         </div> <!-- /container -->
 
         <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
-        <nestedscript type="text/javascript" src="/js/vendor/upload-group.js"></nestedscript>
-        <nestedscript type="text/javascript" src="/js/vendor/jquery.tablesorter.min.js"></nestedscript>
-        <nestedscript type="text/javascript" src="/js/vendor/spin.min.js"></nestedscript>
+        <nestedscript type="text/javascript" src="js/vendor/upload-group.js"></nestedscript>
+        <nestedscript type="text/javascript" src="js/vendor/jquery.tablesorter.min.js"></nestedscript>
+        <nestedscript type="text/javascript" src="js/vendor/spin.min.js"></nestedscript>
       </script>
 
       <script type="text/template" id="uploaded-file-template">
@@ -313,7 +315,7 @@
         <td><%= page_count || '??' %></td>
         <td><%= new Date(parseInt(time) * 1000).toUTCString().slice(5, -7) %></td>
         <td><a href="javascript:"><span data-filename=<%= original_filename %> data-pdfid=<%= id %> class="glyphicon glyphicon-remove delete-pdf"></span></a></td>
-        <td><a href="/pdf/<%= id %>"><button type="button" class="btn btn-sm btn-success">Extract Data</button></a></td>
+        <td><a href="pdf/<%= id %>"><button type="button" class="btn btn-sm btn-success">Extract Data</button></a></td>
       </script>
 
       <script type="text/template" id="upload-error-template" >
@@ -375,7 +377,7 @@
           <li><strong>Some columns of my table are combined. And the headers aren't the problem! What <em>else</em> can I do?</strong> Tabula has two extraction methods. It tries to guess which one is right for document, but it's wrong sometimes. Try selecting the other (of "stream" and "lattice"), on the left in extraction mode, to see if that fixes the problem.</li>
           <li><strong>Tabula helps, but my extracted data isn't in the layout I want! How can I fix <em>that</em>?</strong> Tabula tries to recreate the table structure of the original document. You can think of Tabula as a data <em>extraction</em> tool rather than a data <em>transformation</em> tool. If you want to clean and transform your exported CSV or TSV, tools such as <a href="http://openrefine.org/">OpenRefine</a> or a spreadsheet program might be a good place to start.</li>
           <li><strong>Tabula's taking too long!</strong> Sorry! Tabula has to do a lot of weird math to reconstruct your table. Tabula's command-line counterpart, <a href="https://www.github.com/tabulapdf/tabula-extractor">tabula-extractor</a> is faster, but a little harder to use. You might give it a try.</li>
-          <li><strong>I had some other problem!</strong> Sorry! You can <a href="https://www.github.com/tabulapdf/tabula/issues/new">report it to us here</a>. Be sure to include your PDF, either as a link or attached to the issue -- or email it to <a href="/about">one of the Tabula creators.</a> </li>
+          <li><strong>I had some other problem!</strong> Sorry! You can <a href="https://www.github.com/tabulapdf/tabula/issues/new">report it to us here</a>. Be sure to include your PDF, either as a link or attached to the issue -- or email it to <a href="about">one of the Tabula creators.</a> </li>
           </ol>
 
           </div> <!-- /jumbotron -->
@@ -394,7 +396,7 @@
 
     </script> <!-- TODO: move this to tabula.js, only run it if we're in upload page viewer -->
 
-    <script type="text/javascript" src="/js/tabula.js?_cachebuster=201510300905"></script> <!-- actually starts Tabula -->
+    <script type="text/javascript" src="js/tabula.js?_cachebuster=201510300905"></script> <!-- actually starts Tabula -->
 
   </body>
 </html>
