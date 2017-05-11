@@ -508,13 +508,13 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 						batch_searches_formatted = batch_searches_formatted.concat(batch_strings[0] + ',' + batch_strings[1] + '\n' + batch_strings[2] + ',' + batch_strings[3] + '\n');
 					}
 				} else {
-					alert('Error getting regex search list.');
+					alert('Error getting String search list.');
 					batch_searches_formatted = '';
 				}
       		}, this),
       		error: function(xhr, status, err){
       			console.log('Getting regex search list err:', err);
-				alert('Error getting regex search list.');
+				alert('Error getting String search list.');
 				batch_searches_formatted = '';
 				}
       		});
@@ -954,9 +954,9 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 		empties = empties + 1;
 	}
 
-	if (empties >= 3) {
+	if (empties > 3) {
 		// both fields empty
-		alert("Minimum 2 strings required.");
+		alert("Minimum 1 strings required.");
 		return;
 	}else{
 		// run regex search
@@ -974,7 +974,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 			success: _.bind(function(data) {
 				data = data.replace(/\D/g,'');
 				if(data.length==0){
-					alert("No Regex results found");
+					alert("No String results found");
 				}else{
 					this.pdf_view.pdf_document.regex_selections = new Tabula.RegexSelections([], {pdf_document: this});
 					this.pdf_view.pdf_document.regex_selections.fetch({

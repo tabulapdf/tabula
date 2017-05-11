@@ -107,13 +107,13 @@
 
 		  <div>
 			  <label>Batch Process:</label>
-			  <select id="batch-selection" <%=disableIfNoData%>>
+			  <select id="batch-selection" onchange="autodetectDisable()" <%=disableIfNoData%>>
 				<option value="coords">Coordinates</option>
 				<option value="regex">String Search</option>
 			  </select>
 				<input style="margin-right: 10px" class="which_batch" id="batch-input-path" type="text" placeholder="Batch Input folder">
 				<input style="margin-right: 10px" class="which_batch" id="batch-output-path" type="text" placeholder="Batch Output folder">
-				<input id="overlap" type="number" placeholder="Autodetect Overlap" min=0>
+				<input id="overlap" type="number" placeholder="Autodetect Overlap" min=0 disabled>
 				<label for="ocr-ok">OCR</label>
 				<input id="ocr-ok" type="checkbox" value="1" onclick="ocrCheck()">
 				<button type="button" id="run-batch" class="btn btn-default"> <span class="glyphicon glyphicon-download"></span>
@@ -131,6 +131,17 @@
 				}
 			}
 		}
+	</script>
+	<script type="text/javascript">
+		function autodetectDisable(){
+			var batch_selection_object = document.getElementById('batch-selection');
+			if(batch_selection_object.options[batch_selection_object.selectedIndex].value == "coords"){
+				document.getElementById('overlap').disabled = true;
+			}else{
+				document.getElementById('overlap').disabled = false;
+			}
+		}
+
 	</script>
 
       <script type="text/template" id="select-control-panel-template" >
