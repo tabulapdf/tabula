@@ -109,7 +109,7 @@
 			  <label>Batch Process:</label>
 			  <select id="batch-selection" onchange="autodetectDisable()" <%=disableIfNoData%>>
 				<option value="coords">Coordinates</option>
-				<option value="regex">String Search</option>
+				<option value="string">String Search</option>
 			  </select>
 				<input style="margin-right: 10px" class="which_batch" id="batch-input-path" type="text" placeholder="Batch Input folder">
 				<input style="margin-right: 10px" class="which_batch" id="batch-output-path" type="text" placeholder="Batch Output folder">
@@ -151,12 +151,12 @@
         <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
         <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><span class="glyphicon glyphicon-eye-open"></span> Preview & Export Extracted Data</button></a>
         <div>
-          <span style="margin-right: 10px" class="regex_title">String Search</span>
-            <input style="margin-right: 10px" class="regexI" id="top-left-regex" type="text" placeholder="Upper Left Bound">
-            <input style="margin-right: 10px" class="regexI" id="top-right-regex" type="text" placeholder="Upper Right Bound">
-            <input style="margin-right: 10px" class="regexI" id="bottom-left-regex" type="text" placeholder="Lower Left Bound">
-            <input style="margin-right: 10px" class="regexI" id="bottom-right-regex" type="text" placeholder="Lower Right Bound">
-		       <a href="javascript:void(0)"><button type="button" id="set-regex" class="btn btn-success" <%= set_regex %>><span class="glyphicon glyphicon-eye-open"></span> Search Strings</button></a>
+          <span style="margin-right: 10px" class="string_title">String Search</span>
+            <input style="margin-right: 10px" class="stringI" id="top-left-string" type="text" placeholder="Upper Left Bound">
+            <input style="margin-right: 10px" class="stringI" id="top-right-string" type="text" placeholder="Upper Right Bound">
+            <input style="margin-right: 10px" class="stringI" id="bottom-left-string" type="text" placeholder="Lower Left Bound">
+            <input style="margin-right: 10px" class="stringI" id="bottom-right-string" type="text" placeholder="Lower Right Bound">
+		       <a href="javascript:void(0)"><button type="button" id="set-string" class="btn btn-success" <%= set_string %>><span class="glyphicon glyphicon-eye-open"></span> Search Strings</button></a>
         </div>
        </script>
 

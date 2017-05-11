@@ -33,7 +33,7 @@ require_relative '../lib/tabula_job_executor/executor.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_document_data.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
 require_relative '../lib/tabula_job_executor/jobs/detect_tables.rb'
-require_relative '../lib/tabula_job_executor/jobs/regex_search.rb'
+require_relative '../lib/tabula_job_executor/jobs/string_search.rb'
 
 
 def is_valid_pdf?(path)
@@ -114,8 +114,8 @@ Cuba.define do
 
   on delete do
   
-	on 'pdf/:file_id/regex' do |file_id|
-		path_to_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'regex_list.json')
+	on 'pdf/:file_id/string' do |file_id|
+		path_to_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'string_list.json')
 		File.delete(path_to_file) if File.exists?(path_to_file)
 		res.write '' # Firefox complains about an empty response without this. 
 	end
@@ -179,17 +179,17 @@ Cuba.define do
 		end
 	end
 	
-    on 'regex' do
+    on 'string' do
 	  output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
 	  boundariesArray = [req.params['upper_left'], req.params['upper_right'], req.params['lower_left'],req.params['lower_right']]
-	  regex_search_job = RegexSearchJob.new()
-	  res.write regex_search_job.performRegex(output_dir, boundariesArray)
+	  string_search_job = StringSearchJob.new()
+	  res.write string_search_job.performString(output_dir, boundariesArray)
 	end
 	
 	on 'searches' do
-		regexSearches_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'regex_list.json')
-		if(File.file?(regexSearches_path)==true)then
-			file = File.open(regexSearches_path, "r")
+		stringSearches_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'], 'string_list.json')
+		if(File.file?(stringSearches_path)==true)then
+			file = File.open(stringSearches_path, "r")
 			res.write file.read
 		else
 			res.write ''
@@ -257,11 +257,11 @@ Cuba.define do
 			else
 				res.write "No list file found"
 			end
-		when 'regex'
+		when 'string'
 			puts process_type
-			regexlist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'regex_list.json');
-			if(File.file?(regexlist_fullpath)==true)then
-				res.write batch_processor.extract(input_folder, output_folder, regexlist_fullpath, process_type, ocr_ok, overlap)
+			stringlist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'string_list.json');
+			if(File.file?(stringlist_fullpath)==true)then
+				res.write batch_processor.extract(input_folder, output_folder, stringlist_fullpath, process_type, ocr_ok, overlap)
 			else
 				res.write "No list file found"
 			end

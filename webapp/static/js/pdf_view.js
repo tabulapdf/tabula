@@ -164,10 +164,10 @@ Tabula.Selections = Backbone.Collection.extend({
 });
 
 // replicated from Tabula.AutodetectedSelections
-Tabula.RegexSelections = Tabula.Selections.extend({
+Tabula.StringSelections = Tabula.Selections.extend({
   url: null,
   initialize: function(){
-    this.url = '/pdfs/' + PDF_ID + '/regex.json?_=' + Math.round(+new Date()).toString();
+    this.url = '/pdfs/' + PDF_ID + '/string.json?_=' + Math.round(+new Date()).toString();
     _.bindAll(this, 'updateOrCreateByVendorSelectorId');
   },
 
@@ -490,14 +490,14 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 				batch_searches_formatted = batch_searches_formatted.concat('Page: ' + batch_strings[0] + ', X: ' + Math.round(batch_strings[1]) + ', Y: ' + Math.round(batch_strings[2]) + ', W: ' + Math.round(batch_strings[3]) + ', H: ' + Math.round(batch_strings[4]) + '\n');
 			}
       } else{
-      	regexRequestData = {
+      	stringRequestData = {
         		'file_path': PDF_ID
         	}
           $.ajax({
       		type: 'GET',
       		url: '/searches',
       		async: false,
-      		data: regexRequestData,
+      		data: stringRequestData,
       		success: _.bind(function(data){
 				if (data!='') {
 					console.log(data);
@@ -513,7 +513,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 				}
       		}, this),
       		error: function(xhr, status, err){
-      			console.log('Getting regex search list err:', err);
+      			console.log('Getting string search list err:', err);
 				alert('Error getting String search list.');
 				batch_searches_formatted = '';
 				}
@@ -922,7 +922,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     'click #restore-detected-tables': 'restoreDetectedTables',
     'click #all-data': 'queryAllData',
     'click #repeat-lassos': 'repeatLassos',
-    'click #set-regex': 'setRegex'
+    'click #set-string': 'setString'
   },
 
   template: _.template($('#templates #select-control-panel-template').html().replace(/nestedscript/g, 'script')),
@@ -934,11 +934,11 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     /* TODO: write this */
   },
 
-  setRegex: function() {
-	var upper_left = document.getElementById('top-left-regex').value;
-	var upper_right = document.getElementById('top-right-regex').value;
-	var lower_left = document.getElementById('bottom-left-regex').value;
-	var lower_right = document.getElementById('bottom-right-regex').value;
+  setString: function() {
+	var upper_left = document.getElementById('top-left-string').value;
+	var upper_right = document.getElementById('top-right-string').value;
+	var lower_left = document.getElementById('bottom-left-string').value;
+	var lower_right = document.getElementById('bottom-right-string').value;
 
 	var empties = 0;
 	if (upper_left == "") {
@@ -959,8 +959,8 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 		alert("Minimum 1 strings required.");
 		return;
 	}else{
-		// run regex search
-		regex_data = {
+		// run string search
+		string_data = {
 			'file_path': PDF_ID,
 			'upper_left': upper_left,
 			'upper_right': upper_right,
@@ -969,28 +969,28 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 		}
 		$.ajax({
 			type: 'GET',
-			url: '/regex',
-			data: regex_data,
+			url: '/string',
+			data: string_data,
 			success: _.bind(function(data) {
 				data = data.replace(/\D/g,'');
 				if(data.length==0){
 					alert("No String results found");
 				}else{
-					this.pdf_view.pdf_document.regex_selections = new Tabula.RegexSelections([], {pdf_document: this});
-					this.pdf_view.pdf_document.regex_selections.fetch({
+					this.pdf_view.pdf_document.string_selections = new Tabula.StringSelections([], {pdf_document: this});
+					this.pdf_view.pdf_document.string_selections.fetch({
 						success: _.bind(function(){
-							var regex_selections = this.pdf_view.pdf_document.regex_selections.models.map(function(sel){
+							var string_selections = this.pdf_view.pdf_document.string_selections.models.map(function(sel){
 								return Tabula.pdf_view.renderSelection(sel.attributes);
 							});
 					}, this),
 					error: _.bind(function(){
-						console.log("no predetected tables (404 on regex.json)");
+						console.log("no predetected tables (404 on string.json)");
 						}, this)
 					});
 				}
 			}, this),
 			error: function(xhr, status, err) {
-				console.log('regex search err: ', err);
+				console.log('string search err: ', err);
 			}
 		});
 		return;
@@ -1004,9 +1004,9 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     // reset doesn't trigger the right events because we have to remove from the collection and from the page (with selection.remove())
     // we can't use _.each because we're mutating the collection that we're iterating over
     // ugh
-	$.post('/pdf/' + PDF_ID + '/' + 'regex',
+	$.post('/pdf/' + PDF_ID + '/' + 'string',
            { _method: 'delete' });
-	// Clear all regex lists
+	// Clear all string lists
   },
 
   restoreDetectedTables: function(){
@@ -1052,7 +1052,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
                   // three states: autodetection still incomplete, autodetection done but no tables found, autodetection done and tables found
                   'restore_detected_tables': this.pdf_view.hasAutodetectedTables ? "autodetect-finished" : "autodetect-in-progress",
                   'disable_detected_tables': numOfSelectionsOnPage > 0 || this.pdf_view.pdf_document.autodetected_selections.size() === 0 ? 'disabled="disabled"' : '',
-                  'set_regex': ''
+                  'set_string': ''
                   })));
     return this;
   },
@@ -1289,8 +1289,8 @@ Tabula.PDFView = Backbone.View.extend(
         });
       });
 
-	  // Clear all regex lists
-	  $.post('/pdf/' + PDF_ID + '/' + 'regex',
+	  // Clear all string lists
+	  $.post('/pdf/' + PDF_ID + '/' + 'string',
            { _method: 'delete' });
     },
 

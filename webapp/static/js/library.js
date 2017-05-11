@@ -42,7 +42,7 @@ Tabula.FileUpload = Backbone.Model.extend({
                 var yesOCR = window.confirm(message);
 				if(yesOCR == true){
 					// ajax call to run OCR
-					regex_data = {
+					ocr_data = {
 						'file_path': this.get('file_id'),
 						'file_name': original_filename
 					}
@@ -50,7 +50,7 @@ Tabula.FileUpload = Backbone.Model.extend({
 					$.ajax({
 						type: 'GET',
 						url: '/ocr',
-						data: regex_data,
+						data: ocr_data,
 						success: _.bind(function(data) {
 							data = JSON.parse(data);
 							console.log(data.message);
