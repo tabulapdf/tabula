@@ -170,8 +170,8 @@ Cuba.define do
             puts e.inspect
             false
         end
-		if(ocr_ret=="Success")then
-			puts "SUCCESS"
+		if(ocr_ret==true)then
+			puts "Success"
 			job_batch, file_id = *run_processing_jobs(req.params['file_path'], req.params['file_name'])
 			res.write JSON.dump({message: "Success", batch_id: job_batch, file_id: file_id})
 		else
