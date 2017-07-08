@@ -92,6 +92,45 @@ def upload(file)
   return [job_batch, file_id]
 end
 
+def upload_template(template_metadata)
+  template_filename = template_metadata[:filename]
+  template_id = Digest::SHA1.hexdigest(Time.now.to_s + template_filename) # just SHA1 of time isn't unique with multiple uploads
+  file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "templates")
+  # write to file
+  FileUtils.mkdir_p(file_path)
+  begin
+    FileUtils.mv(template_metadata[:tempfile].path,
+                 File.join(file_path, template_filename))
+  rescue Errno::EACCES # move fails on windows sometimes
+    FileUtils.cp_r(template_metadata[:tempfile].path,
+                   File.join(file_path, template_filename))
+    FileUtils.rm_rf(template_metadata[:tempfile].path)
+  end
+
+  # write to workspace
+  workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
+  raise if !File.exists?(workspace_filepath)
+
+  workspace_file = File.open(workspace_filepath) { |f| JSON.load(f) }
+  workspace = if workspace_file.is_a? Array
+                {"pdfs" => workspace_file, "templates" => [], "version" => 2}
+              else
+                workspace_file
+              end
+  workspace["templates"].insert(0,{"name": template_filename.gsub(".tabula-template.json", ""), 
+                  "selection_count": 0, # TODO
+                  "page_count": 0,  #TODO
+                  "time": Time.now.to_i, 
+                  "id": template_id})
+  tmp = Tempfile.new('workspace')
+  tmp.write(JSON.generate(workspace))
+  tmp.flush; tmp.close
+  FileUtils.cp(tmp.path, workspace_filepath)
+  tmp.unlink
+
+  return template_id
+end
+
 Cuba.define do
   if TabulaSettings::ENABLE_DEBUG_METHODS
     require_relative './tabula_debug.rb'
@@ -120,11 +159,16 @@ Cuba.define do
 
     # delete an uploaded file
     on 'pdf/:file_id' do |file_id|
-      workspace_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
-      raise if !File.exists?(workspace_file)
+      workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
+      raise if !File.exists?(workspace_filepath)
 
-      workspace = File.open(workspace_file) { |f| JSON.load(f) }
-      f = workspace.find { |g| g['id'] == file_id }
+      workspace_file = File.open(workspace_filepath) { |f| JSON.load(f) }
+      workspace = if workspace_file.is_a? Array
+                    {"pdfs" => workspace_file, "templates" => [], "version" => 2}
+                  else
+                    workspace_file
+                  end
+      f = workspace[:pdfs].find { |g| g['id'] == file_id }
 
       FileUtils.rm_rf(File.join(TabulaSettings::DOCUMENTS_BASEPATH, f['id']))
       workspace.delete(f)
@@ -133,7 +177,7 @@ Cuba.define do
       tmp = Tempfile.new('workspace')
       tmp.write(JSON.generate(workspace))
       tmp.flush; tmp.close
-      FileUtils.cp(tmp.path, workspace_file)
+      FileUtils.cp(tmp.path, workspace_filepath)
       tmp.unlink
       res.write '' # Firefox complains about an empty response without this.
     end
@@ -156,11 +200,17 @@ Cuba.define do
     end
 
     on 'pdf/:file_id/metadata.json' do |file_id|
-      workspace_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
-      raise if !File.exists?(workspace_file)
+      workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
+      raise if !File.exists?(workspace_filepath)
 
-      workspace = File.open(workspace_file) { |f| JSON.load(f) }
-      f = workspace.find { |g| g['id'] == file_id }
+      workspace_file = File.open(workspace_filepath) { |f| JSON.load(f) }
+      workspace = if workspace_file.is_a? Array
+                    {"pdfs" => workspace_file, "templates" => [], "version" => 2}
+                  else
+                    workspace_file
+                  end
+
+      f = workspace[:pdfs].find { |g| g['id'] == file_id }
       res['Content-Type'] = 'application/json'
       res.write f.to_json
     end
@@ -178,6 +228,16 @@ Cuba.define do
   end # /get
 
   on post do
+    on 'uploadtemplate.json' do
+      if req.params['file'] # single upload mode. this should be deleting once if decide to enable multiple upload for realzies
+        template_ids = [upload_template(req.params['file'])]
+      elsif req.params['files']
+        template_ids = req.params['files'].map{|f| upload_template(f)}
+      end
+      res.status = 200
+      res.write(JSON.dump({template_ids: template_ids}))
+    end
+
     on 'upload.json' do
       # Make sure this is a PDF, before doing anything
 

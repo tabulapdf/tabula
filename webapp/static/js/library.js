@@ -80,19 +80,32 @@ Tabula.UploadedFilesCollection = Backbone.Collection.extend({
     url: function(){ return 'pdfs/workspace.json'+ '?' + Number(new Date()).toString() },
     comparator: function(i){ return -i.get('time')},
     parse: function(items){
-      _(items).each(function(i){
+      var pdfs = items.pdfs;
+      _(pdfs).each(function(i){
         if(!i.original_filename){
           i.original_filename = i.file;
         }
       });
       // if it's still being processed, don't enter it into the library.
-      items = _(items).reject(_.bind(function(uploaded_file){
+      pdfs = _(pdfs).reject(_.bind(function(uploaded_file){
         var in_progress = Tabula.library && Tabula.library.uploads_collection.findWhere({file_id: uploaded_file.id});
         return in_progress
       }, this));
-      return items;
+      return pdfs;
     }
 });
+
+Tabula.TemplatesCollection = Backbone.Collection.extend({
+    model: Tabula.UploadedFile,
+    url: function(){ return 'pdfs/workspace.json'+ '?' + Number(new Date()).toString() },
+    comparator: function(i){ return -i.get('time')},
+    parse: function(items){
+      var templates = items.templates || [];
+      templates.push({"name": "fake test template", "selection_count": 0, "page_count": 0, "time": "1499535056", "id": "asdfasdf"})
+      return templates;
+    }
+});
+
 
 Tabula.UploadedFileView = Backbone.View.extend({
   tagName: 'tr',
@@ -124,6 +137,38 @@ Tabula.UploadedFileView = Backbone.View.extend({
           });
     },
 })
+Tabula.SavedTemplateView = Backbone.View.extend({
+  tagName: 'tr',
+  className: 'saved-template',
+  events: {
+    'click .delete-template': 'deleteTemplate'
+  },
+  template: _.template( $('#saved-template-template').html().replace(/nestedscript/g, 'script')),
+  initialize: function(){
+    _.bindAll(this, 'render', 'deleteTemplate');
+  },
+  render: function(){
+    this.$el.append(this.template(this.model.attributes));
+    this.$el.addClass('file-id-' + this.model.get('id')); // more efficient lookups than data-attr
+    this.$el.data('id', this.model.get('id')); //more cleanly accesse than a class
+    return this;
+  },
+  deleteTemplate: function(e) {
+    alert("not yet implemnted")
+    // var btn = $(e.currentTarget);
+    // var tr = btn.parents('tr');
+
+    // if (!confirm('Delete file "'+btn.data('filename')+'"?')) return;
+    // var pdf_id = btn.data('pdfid');
+
+    // $.post('/pdf/' + pdf_id,
+    //       { _method: 'delete' },
+    //       function() {
+    //         tr.fadeOut(200, function() { $(this).remove(); });
+    //       });
+    },
+})
+
 
 Tabula.ProgressBars = Backbone.View.extend({
   template: _.template( $('#progress-bars-template').html().replace(/nestedscript/g, 'script')),
@@ -147,13 +192,18 @@ Tabula.ProgressBars = Backbone.View.extend({
 Tabula.Library = Backbone.View.extend({
     events: {
         "submit form#upload": 'uploadPDF',
+        "submit form#uploadtemplate": 'uploadTemplate',
     },
     template: _.template( $('#uploader-template').html().replace(/nestedscript/g, 'script')),
     initialize: function(){
-      _.bindAll(this, 'uploadPDF', 'render', 'renderFileLibrary');
+      _.bindAll(this, 'uploadPDF', 'uploadTemplate', 'render', 'renderFileLibrary');
       this.files_collection = new Tabula.UploadedFilesCollection([]);
-      this.files_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); this.renderFileLibrary(); }, this) });
+      this.files_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); }, this) });
+      this.templates_collection = new Tabula.TemplatesCollection([]);
+      this.templates_collection.fetch({silent: true, complete: _.bind(function(){ console.log(this.templates_collection); this.render(); }, this) });
+      
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
+      this.listenTo(this.templates_collection, 'add', this.renderTemplateLibrary);
       this.uploads_collection = new Tabula.FileUploadsCollection([]);
 
       this.listenTo(Tabula.notification, 'change', this.renderNotification);
@@ -239,12 +289,78 @@ Tabula.Library = Backbone.View.extend({
       e.preventDefault();
       return false; // don't actually submit the form
     },
+    uploadTemplate: function(e){
+      $(e.currentTarget).find('button').attr('disabled', 'disabled');
+
+      // var files_list = $(e.currentTarget).find('#file')[0].files
+      // _(files_list).each(_.bind(function(file, index){
+      //   //TODO: the model should get the data, then fire an event that the view listens for, to rerender
+      //   var file_upload = new Tabula.FileUpload({
+      //     collection: this.uploads_collection,
+      //     filename: file.name,
+      //     uploadTime: new Date(),
+      //     uploadOrder: index,
+      //     isOneOfMultiple: files_list.length != 1
+      //   });
+      //   this.uploads_collection.add(file_upload);
+      //   var checker = new Tabula.ProgressBar({model: file_upload });
+      //   this.progress_bars.render().$el.find('#progress-bars-container').append(checker.render().el)
+      // },this));
+
+      var formdata = new FormData($('form#uploadtemplate')[0]);
+      $.ajax({
+          url: $('form#uploadtemplate').attr('action'),
+          type: 'POST',
+          success: _.bind(function (res) {
+              // var statuses = JSON.parse(res);
+              // _(statuses).each(_.bind(function(status){
+              //   var file_upload = this.uploads_collection.findWhere({filename: status.filename });
+              //   if(!file_upload){
+              //     console.log("couldn't find upload objcect for " + status.filename );
+              //     return
+              //   }
+              //   if(status.success){
+              //     file_upload.set('file_id', status.file_id);
+              //     file_upload.set('id', status.file_id);
+              //     file_upload.set('upload_id', status.upload_id);
+              //     file_upload.set('error', !status.success);
+              //     file_upload.checkStatus(); //
+              //   }else{
+              //     console.log('TODO: failure')
+              //     file_upload.set('file_id', status.file_id);
+              //     file_upload.set('id', status.file_id);
+              //     file_upload.set('upload_id', status.upload_id);
+              //     file_upload.set('error', !status.success);
+              //   }
+              // }, this))
+            $(e.currentTarget).find('button').removeAttr('disabled');
+          }, this),
+          error: _.bind(function(a,b,c){
+            this.uploads_collection.each(function(file_upload){
+              file_upload.message = "Sorry, your file upload could not be processed. ("+a.statusText+")";
+              file_upload.pct_complete = 100;
+              file_upload.error = true;
+            })
+            $(e.currentTarget).find('button').removeAttr('disabled');
+          },this),
+          data: formdata,
+
+          cache: false,
+          contentType: false,
+          processData: false
+      });
+      e.preventDefault();
+      return false; // don't actually submit the form
+    },
+
+
 
     renderFileLibrary: function(added_model){
       if(this.files_collection.length > 0){
         $('#library-container').show();
         ($('#uploaded-files-container').is(':empty') ? this.files_collection.reverse() : this.files_collection).
         each(_.bind(function(uploaded_file){
+          console.log("uplaoded_file", uploaded_file);
           if(this.$el.find('.file-id-' + uploaded_file.get('id') ).length){
             return;
           }
@@ -275,12 +391,45 @@ Tabula.Library = Backbone.View.extend({
       }
     },
 
+    renderTemplateLibrary: function(added_model){
+      if(this.templates_collection.length > 0){
+        $('#templates-library-container').show();
+        ($('#saved-templates-container').is(':empty') ? this.templates_collection.reverse() : this.templates_collection).
+        each(_.bind(function(template){
+          // if(this.$el.find('.template-id-' + uploaded_file.get('id') ).length){
+          //   return;
+          // }
+          var template_element = new Tabula.SavedTemplateView({model: template}).render().$el;
+          if(added_model && added_model.get('id') == template.get('id')){
+            template_element.addClass('flash');
+          }
+          $('#saved-templates-container').prepend(template_element);
+        }, this));
+
+        // //remove anything that was deleted
+        // this.$el.find('.uploaded-file').each(_.bind(function(i, el){
+        //   if(typeof this.templates_collection.findWhere({id: $(el).data('id')}) === "undefined"){
+        //     $(el).remove();
+        //   }
+        // }, this));
+
+        $("#templateTable").tablesorter( {
+          headers: { 3: { sorter: "usLongDate" },  4: { sorter: false}, 5: {sorter: false} },
+          sortList: [[3,1]]  // initial sort
+          } );
+      }else{
+        $('#template-library-container').hide();
+      }
+    },
+
     render: function(){
       $('#tabula-app').html( this.template({
         TABULA_VERSION: Tabula.version,
         pct_complete: 0,
         importing: false
       }) );
+      this.renderFileLibrary();
+      this.renderTemplateLibrary();
       this.renderNotification();
       this.renderVersion();
       return this;

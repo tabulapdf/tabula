@@ -38,8 +38,7 @@ var TabulaRouter = Backbone.Router.extend({
     }) );
   },
 
-
-  upload: function() {
+  upload: function() { // library page.
     document.title="Import | Tabula";
     $('nav li a').removeClass('active'); $('nav #upload-nav').addClass('active');
     $.ajax({

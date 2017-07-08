@@ -21,12 +21,17 @@ class GenerateDocumentDataJob < Tabula::Background::Job
     workspace_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
 
     workspace = if File.exist?(workspace_file)
-                  File.open(workspace_file) { |f| JSON.load(f) }
+                  workspace_file = File.open(workspace_file) { |f| JSON.load(f) }
+                  if workspace_file.is_a? Array
+                {"pdfs" => workspace_file, "templates" => [], "version" => 2}
+                  else
+                    workspace_file
+                  end
                 else
-                  []
+                {"pdfs" => [], "templates" => [], "version" => 2}
                 end
 
-    workspace.insert(0, { 'original_filename' => original_filename,
+    workspace[:pdfs].insert(0, { 'original_filename' => original_filename,
                           'id' => id,
                           'time' => Time.now.to_i,
                           'page_count' => '?',
@@ -39,7 +44,7 @@ class GenerateDocumentDataJob < Tabula::Background::Job
     extractor = Tabula::Extraction::PagesInfoExtractor.new(filepath)
     File.open(output_dir + "/pages.json", 'w') do |f|
       page_data = extractor.pages.to_a
-      workspace[0]['page_count'] = page_data.size
+      workspace[:pdfs][0]['page_count'] = page_data.size
       unless page_data.any? { |pd| pd[:hasText] }
         at(0, 100, "No text data found")
         raise Tabula::NoTextDataException, "no text data found"
