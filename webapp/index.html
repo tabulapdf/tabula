@@ -298,6 +298,49 @@
                   </tbody>
                 </table>
                 </div>
+
+              </div>
+
+              <hr >
+              <div id="template-library-container">
+                <h4>Saved Templates</h4>
+                <div id="file-list-container">
+                <table class="table file-list tablesorter" id="templateTable">
+                  <thead>
+                    <tr>
+                      <th>Template Name</th>
+                      <th>Selection Count</th>
+                      <th>Page Count</th>
+                      <th>Date Added</th>
+                      <th>Remove</th>
+                    </tr>
+                  </thead>
+                  <tbody id="saved-templates-container">
+                  </tbody>
+                </table>
+                </div>
+
+                <div id="template-upload-form-container">
+                  <h4>Import one or more Tabula Templates</h4>
+                  <form id="uploadtemplate" action="/uploadtemplate.json" method="post" enctype="multipart/form-data" class="form-inline">
+
+                    <div class="input-group">
+                      <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
+                      <span class="input-group-btn">
+                          <span class="btn btn-primary btn-file">
+                              Browse&hellip; <input type="file" id="file" name="files[]" multiple accept="application/json">
+                          </span>
+                      </span>
+                      <input type="text" class="form-control" readonly>
+                    </div>
+
+                    <!-- fix for the fact that IE11 is trash https://blog.yorkxin.org/posts/2014/02/06/ajax-with-formdata-is-broken-on-ie10-ie11/ -->
+                    <input type="hidden" name="_dontcare">
+
+                    <button type="submit" class="btn btn-default">Import</button>
+                  </form>
+
+                </div>
               </div>
 
           </div> <!-- /jumbotron -->
@@ -316,6 +359,14 @@
         <td><%= new Date(parseInt(time) * 1000).toUTCString().slice(5, -7) %></td>
         <td><a href="javascript:"><span data-filename=<%= original_filename %> data-pdfid=<%= id %> class="glyphicon glyphicon-remove delete-pdf"></span></a></td>
         <td><a href="pdf/<%= id %>"><button type="button" class="btn btn-sm btn-success">Extract Data</button></a></td>
+      </script>
+
+      <script type="text/template" id="saved-template-template">
+        <td><%= name %></td>
+        <td><%= selection_count %> selections</td>
+        <td><%= page_count || '??' %></td>
+        <td><%= new Date(parseInt(time) * 1000).toUTCString().slice(5, -7) %></td>
+        <td><a href="javascript:"><span data-name=<%= name %> data-templateid=<%= id %> class="glyphicon glyphicon-remove delete-template"></span></a></td>
       </script>
 
       <script type="text/template" id="upload-error-template" >
