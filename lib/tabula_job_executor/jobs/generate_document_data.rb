@@ -18,10 +18,10 @@ class GenerateDocumentDataJob < Tabula::Background::Job
     # return some status to browser
     at(1, 100, "opening workspace...")
 
-    workspace_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
+    workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
 
-    workspace = if File.exist?(workspace_file)
-                  workspace_file = File.open(workspace_file) { |f| JSON.load(f) }
+    workspace = if File.exist?(workspace_filepath)
+                  workspace_file = File.open(workspace_filepath) { |f| JSON.load(f) }
                   if workspace_file.is_a? Array
                 {"pdfs" => workspace_file, "templates" => [], "version" => 2}
                   else
@@ -31,7 +31,7 @@ class GenerateDocumentDataJob < Tabula::Background::Job
                 {"pdfs" => [], "templates" => [], "version" => 2}
                 end
 
-    workspace[:pdfs].insert(0, { 'original_filename' => original_filename,
+    workspace["pdfs"].insert(0, { 'original_filename' => original_filename,
                           'id' => id,
                           'time' => Time.now.to_i,
                           'page_count' => '?',
@@ -44,7 +44,7 @@ class GenerateDocumentDataJob < Tabula::Background::Job
     extractor = Tabula::Extraction::PagesInfoExtractor.new(filepath)
     File.open(output_dir + "/pages.json", 'w') do |f|
       page_data = extractor.pages.to_a
-      workspace[:pdfs][0]['page_count'] = page_data.size
+      workspace["pdfs"][0]['page_count'] = page_data.size
       unless page_data.any? { |pd| pd[:hasText] }
         at(0, 100, "No text data found")
         raise Tabula::NoTextDataException, "no text data found"
@@ -54,7 +54,7 @@ class GenerateDocumentDataJob < Tabula::Background::Job
 
     # safely update
     begin
-      File.open(workspace_file + '.tmp', 'w') { |tmp|
+      File.open(workspace_filepath + '.tmp', 'w') { |tmp|
         tmp.write JSON.generate(workspace)
       }
     rescue
@@ -62,13 +62,13 @@ class GenerateDocumentDataJob < Tabula::Background::Job
       return
     end
 
-    if File.exists?(workspace_file)
-      File.rename(workspace_file, workspace_file + '.old')
+    if File.exists?(workspace_filepath)
+      File.rename(workspace_filepath, workspace_filepath + '.old')
     end
 
-    File.rename(workspace_file + '.tmp', workspace_file)
-    if File.exists?(workspace_file + '.old')
-      File.delete(workspace_file + '.old')
+    File.rename(workspace_filepath + '.tmp', workspace_filepath)
+    if File.exists?(workspace_filepath + '.old')
+      File.delete(workspace_filepath + '.old')
     end
 
     at(100, 100, "complete")

@@ -92,21 +92,19 @@ def upload(file)
   return [job_batch, file_id]
 end
 
-def upload_template(template_metadata)
-  template_filename = template_metadata[:filename]
-  template_id = Digest::SHA1.hexdigest(Time.now.to_s + template_filename) # just SHA1 of time isn't unique with multiple uploads
-  file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "templates")
-  # write to file
-  FileUtils.mkdir_p(file_path)
-  begin
-    FileUtils.mv(template_metadata[:tempfile].path,
-                 File.join(file_path, template_filename))
-  rescue Errno::EACCES # move fails on windows sometimes
-    FileUtils.cp_r(template_metadata[:tempfile].path,
-                   File.join(file_path, template_filename))
-    FileUtils.rm_rf(template_metadata[:tempfile].path)
-  end
+def list_templates
+  workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
+  raise if !File.exists?(workspace_filepath)
 
+  workspace_file = File.open(workspace_filepath) { |f| JSON.load(f) }
+  workspace = if workspace_file.is_a? Array
+                {"pdfs" => workspace_file, "templates" => [], "version" => 2}
+              else
+                workspace_file
+              end
+  workspace["templates"]
+end
+def persist_template(template_metadata)
   # write to workspace
   workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
   raise if !File.exists?(workspace_filepath)
@@ -117,17 +115,70 @@ def upload_template(template_metadata)
               else
                 workspace_file
               end
-  workspace["templates"].insert(0,{"name": template_filename.gsub(".tabula-template.json", ""), 
-                  "selection_count": 0, # TODO
-                  "page_count": 0,  #TODO
-                  "time": Time.now.to_i, 
-                  "id": template_id})
+  workspace["templates"].insert(0,{
+                    "name" => template_metadata[:template_name].gsub(".tabula-template.json", ""), 
+                    "selection_count" => template_metadata[:selection_count],
+                    "page_count" => template_metadata[:page_count], 
+                    "time" => template_metadata[:time], 
+                    "id" => template_metadata[:id]
+                  })
   tmp = Tempfile.new('workspace')
   tmp.write(JSON.generate(workspace))
   tmp.flush; tmp.close
   FileUtils.cp(tmp.path, workspace_filepath)
   tmp.unlink
+end
 
+def retrieve_template_metadata(template_id)
+  workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
+  raise if !File.exists?(workspace_filepath)
+
+  workspace_file = File.open(workspace_filepath) { |f| JSON.load(f) }
+  workspace = if workspace_file.is_a? Array
+                {"pdfs" => workspace_file, "templates" => [], "version" => 2}
+              else
+                workspace_file
+              end
+  workspace["templates"].find{|t| t["id"] == template_id}
+end
+
+def get_template_body(template_id)
+  template_filename = template_id + ".tabula-template.json"
+  file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "../templates")
+  open(file_path, 'r'){|f| f.read }
+end
+
+def create_template(template_info)
+  template_name = template_info["name"]
+  puts "template_name: #{template_info.inspect}"
+  template_id = Digest::SHA1.hexdigest(Time.now.to_s + template_name) # just SHA1 of time isn't unique with multiple uploads
+  template_filename = template_id + ".tabula-template.json"
+  file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "../templates")
+  # write to file 
+  FileUtils.mkdir_p(file_path)
+  open(File.join(file_path, template_filename), 'w'){|f| f << JSON.dump(template_info["template"])}
+  page_count = template_info.has_key?("page_count") ? template_info["page_count"] : template_info["template"].map{|f| f["page"]}.uniq.count
+  selection_count = template_info.has_key?("selection_count") ? template_info["selection_count"] :  template_info["template"].count
+  persist_template({id: template_id, template_name: template_name, page_count: page_count, time: Time.now.to_i, selection_count: selection_count})
+  return template_id
+end
+def upload_template(template_file)
+  template_name = template_file[:filename].gsub(/\.json$/, "").gsub(/\.tabula-template$/, "")
+  template_id = Digest::SHA1.hexdigest(Time.now.to_s + template_name) # just SHA1 of time isn't unique with multiple uploads
+  template_filename = template_id + ".tabula-template.json"
+  file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "../templates")
+  # write to file
+  FileUtils.mkdir_p(file_path)
+  begin
+    FileUtils.mv(template_file[:tempfile].path,
+                 File.join(file_path, template_filename))
+  rescue Errno::EACCES # move fails on windows sometimes
+    FileUtils.cp_r(template_file[:tempfile].path,
+                   File.join(file_path, template_filename))
+    FileUtils.rm_rf(template_file[:tempfile].path)
+  end
+
+  persist_template({id: template_id, template_name: template_name, page_count: 0, time: Time.now.to_i,selection_count: 0})
   return template_id
 end
 
@@ -190,6 +241,61 @@ Cuba.define do
     end
   end
 
+  on "templates" do 
+    # GET  /books/ .... collection.fetch();
+    # POST /books/ .... collection.create();
+    # GET  /books/1 ... model.fetch();
+    # PUT  /books/1 ... model.save();
+    # DEL  /books/1 ... model.destroy();
+
+    on get do
+      # list them all
+      res.status = 200
+      res.write(JSON.dump(list_templates))
+    end
+
+    on post do 
+
+      # create a template from the GUI
+      on root do
+        template_id = create_template(JSON.parse(req.params["model"]))
+        res.status = 200
+        res.write(JSON.dump({template_id: template_id}))
+      end
+
+      # upload a template from disk
+      on 'upload.json' do
+        if req.params['file']
+          template_ids = [upload_template(req.params['file'])]
+        elsif req.params['files']
+          template_ids = req.params['files'].map{|f| upload_template(f)}
+        end
+        res.status = 200
+        res.write(JSON.dump({template_ids: template_ids}))
+      end
+    end
+    on put do 
+      on ":template_id.json" do |template_id|
+        # TODO
+      end
+    end
+    on get do
+      on ":template_id" do |template_id|
+        # TODO: (maybe, do I need this?)
+      end
+      on ":template_id.json" do |template_id|
+        # Write json representation of bounding boxes and pages for
+        # use in OCR and other back ends.
+        template_name = retrieve_template_metadata(template_id)["name"]
+        res['Content-Type'] = 'application/json'
+        res['Content-Disposition'] = "attachment; filename=\"#{template_name}.tabula-template.json\""
+
+        # end JSON array
+        res.write get_template_body(template_id)
+      end
+    end
+  end
+
   on get do
     on 'pdfs' do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
@@ -210,7 +316,7 @@ Cuba.define do
                     workspace_file
                   end
 
-      f = workspace[:pdfs].find { |g| g['id'] == file_id }
+      f = workspace["pdfs"].find { |g| g['id'] == file_id }
       res['Content-Type'] = 'application/json'
       res.write f.to_json
     end
@@ -228,16 +334,6 @@ Cuba.define do
   end # /get
 
   on post do
-    on 'uploadtemplate.json' do
-      if req.params['file'] # single upload mode. this should be deleting once if decide to enable multiple upload for realzies
-        template_ids = [upload_template(req.params['file'])]
-      elsif req.params['files']
-        template_ids = req.params['files'].map{|f| upload_template(f)}
-      end
-      res.status = 200
-      res.write(JSON.dump({template_ids: template_ids}))
-    end
-
     on 'upload.json' do
       # Make sure this is a PDF, before doing anything
 
