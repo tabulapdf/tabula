@@ -95,17 +95,6 @@ Tabula.UploadedFilesCollection = Backbone.Collection.extend({
     }
 });
 
-Tabula.TemplatesCollection = Backbone.Collection.extend({
-    model: Tabula.UploadedFile,
-    url: function(){ return 'pdfs/workspace.json'+ '?' + Number(new Date()).toString() },
-    comparator: function(i){ return -i.get('time')},
-    parse: function(items){
-      var templates = items.templates || [];
-      templates.push({"name": "fake test template", "selection_count": 0, "page_count": 0, "time": "1499535056", "id": "asdfasdf"})
-      return templates;
-    }
-});
-
 
 Tabula.UploadedFileView = Backbone.View.extend({
   tagName: 'tr',
@@ -145,13 +134,17 @@ Tabula.SavedTemplateView = Backbone.View.extend({
   },
   template: _.template( $('#saved-template-template').html().replace(/nestedscript/g, 'script')),
   initialize: function(){
-    _.bindAll(this, 'render', 'deleteTemplate');
+    _.bindAll(this, 'render', 'deleteTemplate', 'renameTemplate', 'exportTemplate');
   },
   render: function(){
     this.$el.append(this.template(this.model.attributes));
     this.$el.addClass('file-id-' + this.model.get('id')); // more efficient lookups than data-attr
     this.$el.data('id', this.model.get('id')); //more cleanly accesse than a class
     return this;
+  },
+  renameTemplate: function(e) {
+    alert("not yet implemented: TODO")
+    this.model.rename(new_name);
   },
   deleteTemplate: function(e) {
     alert("not yet implemnted")
@@ -161,12 +154,13 @@ Tabula.SavedTemplateView = Backbone.View.extend({
     // if (!confirm('Delete file "'+btn.data('filename')+'"?')) return;
     // var pdf_id = btn.data('pdfid');
 
-    // $.post('/pdf/' + pdf_id,
-    //       { _method: 'delete' },
-    //       function() {
-    //         tr.fadeOut(200, function() { $(this).remove(); });
-    //       });
+    this.model.delete(function() {
+            tr.fadeOut(200, function() { $(this).remove(); });
+          });
     },
+    exportTemplate: function(e) {
+      alert("not yet implemnted")
+    }
 })
 
 
@@ -200,7 +194,7 @@ Tabula.Library = Backbone.View.extend({
       this.files_collection = new Tabula.UploadedFilesCollection([]);
       this.files_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); }, this) });
       this.templates_collection = new Tabula.TemplatesCollection([]);
-      this.templates_collection.fetch({silent: true, complete: _.bind(function(){ console.log(this.templates_collection); this.render(); }, this) });
+      this.templates_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); }, this) });
       
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
       this.listenTo(this.templates_collection, 'add', this.renderTemplateLibrary);
@@ -273,12 +267,12 @@ Tabula.Library = Backbone.View.extend({
               }, this))
           }, this),
           error: _.bind(function(a,b,c){
+            $(e.currentTarget).find('button').removeAttr('disabled');
             this.uploads_collection.each(function(file_upload){
               file_upload.message = "Sorry, your file upload could not be processed. ("+a.statusText+")";
               file_upload.pct_complete = 100;
               file_upload.error = true;
             })
-            $(e.currentTarget).find('button').removeAttr('disabled');
           },this),
           data: formdata,
 
@@ -360,7 +354,6 @@ Tabula.Library = Backbone.View.extend({
         $('#library-container').show();
         ($('#uploaded-files-container').is(':empty') ? this.files_collection.reverse() : this.files_collection).
         each(_.bind(function(uploaded_file){
-          console.log("uplaoded_file", uploaded_file);
           if(this.$el.find('.file-id-' + uploaded_file.get('id') ).length){
             return;
           }

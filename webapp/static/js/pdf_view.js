@@ -811,9 +811,17 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     'click #restore-detected-tables': 'restoreDetectedTables',
     'click #all-data': 'queryAllData',
     'click #repeat-lassos': 'repeatLassos',
+    'click #save-template': 'saveTemplate',
   },
 
   template: _.template($('#templates #select-control-panel-template').html().replace(/nestedscript/g, 'script')),
+  initialize: function(stuff){
+    this.pdf_view = stuff.pdf_view;
+    this.saved_template_collection = stuff.saved_template_collection;
+    _.bindAll(this, 'queryAllData', 'render');
+    this.listenTo(this.pdf_view.pdf_document, 'sync', this.render );
+    this.saved_template_library_view = new Tabula.SavedTemplateLibraryView({collection: this.saved_template_collection, el: this.$el.find("#template-dropdown-container")})
+  },
 
   /* in case there's a PDF with a complex format that's repeated on multiple pages */
   repeatFirstPageLassos: function(){
@@ -831,17 +839,18 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     // ugh
   },
 
+  saveTemplate: function(){
+    this.pdf_view.saveTemplate();
+  },
+  loadTemplate: function(){
+
+  },
+
   restoreDetectedTables: function(){
     var autodetected_selections = this.pdf_view.pdf_document.autodetected_selections.models.map(function(sel){
       return Tabula.pdf_view.renderSelection(sel.attributes);
     });
     this.pdf_view.pdf_document.selections.reset(autodetected_selections);
-  },
-
-  initialize: function(stuff){
-    this.pdf_view = stuff.pdf_view;
-    _.bindAll(this, 'queryAllData', 'render');
-    this.listenTo(this.pdf_view.pdf_document, 'sync', this.render );
   },
 
   queryAllData : function(){
@@ -873,11 +882,17 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 
                   // three states: autodetection still incomplete, autodetection done but no tables found, autodetection done and tables found
                   'restore_detected_tables': this.pdf_view.hasAutodetectedTables ? "autodetect-finished" : "autodetect-in-progress",
-                  'disable_detected_tables': numOfSelectionsOnPage > 0 || this.pdf_view.pdf_document.autodetected_selections.size() === 0 ? 'disabled="disabled"' : ''
+                  'disable_detected_tables': numOfSelectionsOnPage > 0 || this.pdf_view.pdf_document.autodetected_selections.size() === 0 ? 'disabled="disabled"' : '',
+
+                  'disable_save_template':numOfSelectionsOnPage == 0 ? 'disabled="disabled"' : '',
+                  'disable_load_template': numOfSelectionsOnPage > 0 ? 'disabled="disabled"' : ''
+
                   })));
+    this.saved_template_library_view.render() // TODO: render in the template dropdown collection object
     return this;
   },
 });
+
 
 Tabula.SidebarView = Backbone.View.extend({ // only one
   tagName: 'ul',
@@ -1064,8 +1079,8 @@ Tabula.PDFView = Backbone.View.extend(
     initialize: function(){
       _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections', 'renderSelection',
         'createDataView', 'checkForAutodetectedTables', 'getData', 'handleScroll',
-        'serializeSelections', 'loadSerializedSelections', 'getSavedStates',
-        'save', 'load', 'saveAs');
+        'updateActiveSelections', 'loadSavedTemplate', 'saveTemplate', 'saveTemplateAs',
+        'deleteTemplate');
 
       this.pdf_document = new Tabula.Document({
         pdf_id: PDF_ID,
@@ -1083,9 +1098,10 @@ Tabula.PDFView = Backbone.View.extend(
       // this caused page ordering issues. Makes me wonder if pdf_view rendering is not idempotent.
       // anyways, I don't remember why I had this. probably you shouldn't reenable it.
       // this.listenTo(this.pdf_document.page_collection, 'all', _.bind(function(){ console.log('pdfview render page all'); this.render()}, this));
+      this.saved_template_collection = new Tabula.TemplatesCollection(); // this is mandatorily ordered above `new Tabula.ControlPanelView`
 
       this.components['document_view'] = new Tabula.DocumentView({el: '#pages-container' , pdf_view: this, collection: this.pdf_document.page_collection}); //creates page_views
-      this.components['control_panel'] = new Tabula.ControlPanelView({pdf_view: this});
+      this.components['control_panel'] = new Tabula.ControlPanelView({pdf_view: this, saved_template_collection: this.saved_template_collection});
       this.components['sidebar_view'] = new Tabula.SidebarView({pdf_view: this, collection: this.pdf_document.page_collection});
 
       $(document).on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
@@ -1270,75 +1286,32 @@ Tabula.PDFView = Backbone.View.extend(
       console.log(this.pdf_document.selections);
     },
 
-    serializeSelections: function () {
-      return this.pdf_document.selections.map(function (x) {
-        return _.extend(
-          { pageNumber: x.attributes.page_number },
-          _.omit(x.attributes.getDims(), '$el'))
-      });
+    loadSavedTemplate: function(template_model){
+      template_model.fetch(); // go actually get the selections from the server, this model *might* only be metadata
+      this.pdf_view.pdf_document.selections.reset(template_model.selections);
     },
 
-    loadSerializedSelections: function (serializedSelections) {
-      serializedSelections.forEach(this.components.document_view.addSelection);
+    saveTemplate: function () {
+      var name = (this.loadedSavedState && this.loadedSavedState.name) || (this.pdf_document.attributes.original_filename || this.pdf_document.attributes.original_filename).replace(".pdf", "")
+      this.saveTemplateAs(null, name)
     },
 
-    getSavedStates: function () {
-      return JSON.parse(localStorage.getItem('savedStates')) || [];
-    },
-
-    saveAs: function (state, options) {
-      var shouldOverwrite = options.shouldOverwrite;
-      var savedStates = this.getSavedStates();
-
-      var windowDimensions = {
-        width: window.innerWidth,
-        height: window.innerHeight,
+    saveTemplateAs: function(id, name){
+      var list_of_coords = Tabula.pdf_view.pdf_document.selections.invoke("toCoords");
+      // {"name": "fake test template", "selection_count": 0, "page_count": 0, "time": "1499535056", "id": "asdfasdf"}
+      var templateMetadata = {
+        name: name,
+        selection_count: list_of_coords.length,
+        page_count: Tabula.pdf_view.pageCount,
+        time: Math.floor(Date.now() / 1000),
+        template: list_of_coords
       };
-
-      var conflictingSavedState = _.findWhere(savedStates, {id: state.id});
-
-      if (conflictingSavedState && !shouldOverwrite) {
-        console.error('Failed to save selection due to conflicting id. "' + state.id + '" already exists. Pass in `save("' + state.id +'", "' + state.name + '", { shouldOverride: true })` to overwrite');
-        return;
-      }
-
-      var stateToSave = _.defaults(state, {
-        windowDimensions: windowDimensions,
-        dateSaved: new Date().toISOString(),
-        selections: this.serializeSelections(),
-      });
-
-      var statesToSave = _.without(savedStates, conflictingSavedState).concat(stateToSave);
-      localStorage.setItem('savedStates', JSON.stringify(statesToSave));
+      var saved_template = new Tabula.SavedTemplate(templateMetadata);
+      console.log('metadata page_count', templateMetadata['page_count']);
+      saved_template.save();
     },
 
-    save: function () {
-      var stateToSave = {
-        id: (this.loadedSavedState && this.loadedSavedState.id) || _.max(_.pluck(this.getSavedStates(), 'id').concat(0)) + 1,
-        name: (this.loadedSavedState && this.loadedSavedState.name) || this.pdf_document.attributes.original_filename || this.pdf_document.attributes.original_filename,
-        selections: this.serializeSelections(),
-      };
-
-      this.saveAs(stateToSave, { shouldOverwrite: true });
-    },
-
-    load: function (id) {
-      if (!id) {
-        console.error('Missing id of stored save to load');
-        return;
-      }
-      var saveToLoad = _.findWhere(this.getSavedStates(), { id: id });
-      console.log('', saveToLoad);
-      if (window.innerWidth !== saveToLoad.windowDimensions.width || window.innerHeight !== saveToLoad.windowDimensions.height) {
-        console.warn('Warning: These selections were saved with window dimensions of width: '
-          + saveToLoad.windowDimensions.width + ', height: ' + saveToLoad.windowDimensions.height
-          + ', which are different from your current window dimensions of width: ' + window.innerWidth +' , height: ' + window.innerHeight);
-      }
-      this.loadSerializedSelections(saveToLoad.selections);
-      this.loadedSavedState = saveToLoad;
-    },
-
-    delete: function (id) {
+    deleteTemplate: function (id) {
       if (!id) {
         console.error('An id is required');
         return;
@@ -1369,6 +1342,44 @@ Tabula.PDFView = Backbone.View.extend(
       return this;
     },
   }, Tabula.DebugPDFView));
+
+
+Tabula.SavedTemplateView = Backbone.View.extend({
+  tagName: 'li',
+  className: 'saved-template',
+  events: {
+    'click': 'loadTemplate'
+  },
+  // template: _.template( $('#tk-tk').html().replace(/nestedscript/g, 'script')),
+  initialize: function(){
+    _.bindAll(this, 'render', 'loadTemplate');
+  },
+  render: function(){
+    this.$el.append(this.template(this.model.attributes));
+    this.$el.addClass('file-id-' + this.model.get('id')); // more efficient lookups than data-attr
+    this.$el.data('id', this.model.get('id')); //more cleanly accesse than a class
+    return this;
+  },
+  loadTemplate: function(){
+    Tabula.pdf_view.loadSavedTemplate(this.model); // TODO: make this not a reference to global Tabula.pdf_view
+  }
+});
+Tabula.SavedTemplateLibraryView = Backbone.View.extend({
+  tagName: 'ul',
+  initialize: function(stuff){
+    _.bindAll(this, 'render');
+    this.listenTo(this.collection, 'change', this.render); // TODO: make this not a reference to global Tabula.pdf_view
+  },
+  render: function(){
+    this.$el.empty();
+    this.collection.each(function(saved_template_model){
+      var page_view = new Tabula.SavedTemplateView({model: saved_template_model, collection: this.saved_template_collection});
+      this.$el.append(page_view)
+    })
+  }
+});
+
+
 
 function isElementPartiallyInViewport (el) {
   if (el instanceof jQuery) {
