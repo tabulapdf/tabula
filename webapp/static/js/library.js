@@ -147,16 +147,17 @@ Tabula.SavedTemplateView = Backbone.View.extend({
     this.model.rename(new_name);
   },
   deleteTemplate: function(e) {
-    alert("not yet implemnted")
+    var template_id = $(e.currentTarget).data("id");
     // var btn = $(e.currentTarget);
     // var tr = btn.parents('tr');
 
     // if (!confirm('Delete file "'+btn.data('filename')+'"?')) return;
     // var pdf_id = btn.data('pdfid');
+    console.log('this.model.id', this.model.id);
 
-    this.model.delete(function() {
-            tr.fadeOut(200, function() { $(this).remove(); });
-          });
+    this.model.destroy({success: _.bind(function() {
+            this.$el.fadeOut(200, function() { $(this).remove(); });
+          }, this)});
     },
     exportTemplate: function(e) {
       alert("not yet implemnted")
@@ -197,7 +198,7 @@ Tabula.Library = Backbone.View.extend({
       this.templates_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); }, this) });
       
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
-      this.listenTo(this.templates_collection, 'add', this.renderTemplateLibrary);
+      this.listenTo(this.templates_collection, 'change', this.renderTemplateLibrary);
       this.uploads_collection = new Tabula.FileUploadsCollection([]);
 
       this.listenTo(Tabula.notification, 'change', this.renderNotification);

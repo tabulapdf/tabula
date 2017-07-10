@@ -1079,8 +1079,7 @@ Tabula.PDFView = Backbone.View.extend(
     initialize: function(){
       _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections', 'renderSelection',
         'createDataView', 'checkForAutodetectedTables', 'getData', 'handleScroll',
-        'updateActiveSelections', 'loadSavedTemplate', 'saveTemplate', 'saveTemplateAs',
-        'deleteTemplate');
+        'updateActiveSelections', 'loadSavedTemplate', 'saveTemplate', 'saveTemplateAs');
 
       this.pdf_document = new Tabula.Document({
         pdf_id: PDF_ID,
@@ -1307,18 +1306,7 @@ Tabula.PDFView = Backbone.View.extend(
         template: list_of_coords
       };
       var saved_template = new Tabula.SavedTemplate(templateMetadata);
-      console.log('metadata page_count', templateMetadata['page_count']);
       saved_template.save();
-    },
-
-    deleteTemplate: function (id) {
-      if (!id) {
-        console.error('An id is required');
-        return;
-      }
-      var savedStates = this.getSavedStates();
-      var stateToDelete = _.findWhere(savedStates, {id: id});
-      localStorage.setItem('savedStates', JSON.stringify(_.without(savedStates, stateToDelete)));
     },
 
     render : function(){

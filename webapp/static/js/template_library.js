@@ -6,7 +6,7 @@ Tabula.SavedTemplate = Backbone.Model.extend({
   selection_count: null,
   id: null,
   time: 0,
-  url: "templates",
+  urlRoot: "templates",
   initialize: function(){
     this.set('name', this.get('name') || null);
     this.set('page_count', this.get('page_count') || null)
