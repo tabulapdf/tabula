@@ -132,7 +132,7 @@ Tabula.SavedTemplateView = Backbone.View.extend({
   events: {
     'click .delete-template': 'deleteTemplate'
   },
-  template: _.template( $('#saved-template-template').html().replace(/nestedscript/g, 'script')),
+  template: _.template( $('#saved-template-library-item-template').html().replace(/nestedscript/g, 'script')),
   initialize: function(){
     _.bindAll(this, 'render', 'deleteTemplate', 'renameTemplate', 'exportTemplate');
   },

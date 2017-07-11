@@ -270,8 +270,9 @@ Cuba.define do
         template_metadata = retrieve_template_metadata(template_id)
         template_name = template_metadata["name"]
         template_body = get_template_body(template_id)
+        template_metadata["selections"] = JSON.parse template_body
         res.status = 200
-        res.write template_body
+        res.write JSON.dump(template_metadata)
       end
       on put do 
         # TODO

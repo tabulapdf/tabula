@@ -121,9 +121,10 @@
 
           <div class="dropdown" <%= disable_load_template %>>
             <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-open"> Load Template</a>
-            <div id="template-dropdown-container">
+            <div id="template-dropdown-container" class="dropdown-menu">
             </div>
           </div>
+
         </span>
         <span style="clear: both;">
       </script>
@@ -374,9 +375,9 @@
         <td><a href="pdf/<%= id %>"><button type="button" class="btn btn-sm btn-success">Extract Data</button></a></td>
       </script>
 
-      <script type="text/template" id="saved-template-template">
+      <script type="text/template" id="saved-template-library-item-template">
         <td><%= name %></td>
-        <td><%= selection_count %> selections</td>
+        <td><%= selection_count %> selection<%= selection_count == "!" ? '' : 's' %></td>
         <td><%= page_count || '??' %></td>
         <td><%= new Date(parseInt(time) * 1000).toUTCString().slice(5, -7) %></td>
         <td><a href="javascript:"><span data-name=<%= name %> data-templateid=<%= id %> class="glyphicon glyphicon-remove delete-template"></span></a></td>
