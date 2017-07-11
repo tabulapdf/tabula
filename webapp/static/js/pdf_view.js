@@ -820,7 +820,8 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     this.saved_template_collection = stuff.saved_template_collection;
     _.bindAll(this, 'queryAllData', 'render');
     this.listenTo(this.pdf_view.pdf_document, 'sync', this.render );
-    this.saved_template_library_view = new Tabula.SavedTemplateLibraryView({collection: this.saved_template_collection, el: this.$el.find("#template-dropdown-container")})
+    console.log("stuff.saved_template_collection", this.saved_template_collection);
+    this.saved_template_library_view = new Tabula.SavedTemplateLibraryView({collection: this.saved_template_collection})
   },
 
   /* in case there's a PDF with a complex format that's repeated on multiple pages */
@@ -888,7 +889,9 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
                   'disable_load_template': numOfSelectionsOnPage > 0 ? 'disabled="disabled"' : ''
 
                   })));
-    this.saved_template_library_view.render() // TODO: render in the template dropdown collection object
+    
+    this.$el.find("#template-dropdown-container").html(this.saved_template_library_view.render().el);
+
     return this;
   },
 });
@@ -1098,6 +1101,7 @@ Tabula.PDFView = Backbone.View.extend(
       // anyways, I don't remember why I had this. probably you shouldn't reenable it.
       // this.listenTo(this.pdf_document.page_collection, 'all', _.bind(function(){ console.log('pdfview render page all'); this.render()}, this));
       this.saved_template_collection = new Tabula.TemplatesCollection(); // this is mandatorily ordered above `new Tabula.ControlPanelView`
+      this.saved_template_collection.fetch();
 
       this.components['document_view'] = new Tabula.DocumentView({el: '#pages-container' , pdf_view: this, collection: this.pdf_document.page_collection}); //creates page_views
       this.components['control_panel'] = new Tabula.ControlPanelView({pdf_view: this, saved_template_collection: this.saved_template_collection});
@@ -1286,8 +1290,17 @@ Tabula.PDFView = Backbone.View.extend(
     },
 
     loadSavedTemplate: function(template_model){
-      template_model.fetch(); // go actually get the selections from the server, this model *might* only be metadata
-      this.pdf_view.pdf_document.selections.reset(template_model.selections);
+      template_model.fetch({success: _.bind(function(template_model){
+        console.log(template_model.get('selections'));
+        var selections_to_load = _(template_model.get('selections')).map(function(sel){
+          console.log(sel);
+          return Tabula.pdf_view.renderSelection(sel);
+        });
+        console.log(selections_to_load);
+        this.pdf_document.selections.reset(selections_to_load);
+
+
+      }, this)});
     },
 
     saveTemplate: function () {
@@ -1338,7 +1351,7 @@ Tabula.SavedTemplateView = Backbone.View.extend({
   events: {
     'click': 'loadTemplate'
   },
-  // template: _.template( $('#tk-tk').html().replace(/nestedscript/g, 'script')),
+  template: _.template("<%= name %>"),
   initialize: function(){
     _.bindAll(this, 'render', 'loadTemplate');
   },
@@ -1360,10 +1373,11 @@ Tabula.SavedTemplateLibraryView = Backbone.View.extend({
   },
   render: function(){
     this.$el.empty();
-    this.collection.each(function(saved_template_model){
-      var page_view = new Tabula.SavedTemplateView({model: saved_template_model, collection: this.saved_template_collection});
-      this.$el.append(page_view)
-    })
+    this.collection.each(_.bind(function(saved_template_model){
+      var template_view = new Tabula.SavedTemplateView({model: saved_template_model, collection: this.collection});
+      this.$el.append(template_view.render().el);
+    }, this));
+    return this;
   }
 });
 
