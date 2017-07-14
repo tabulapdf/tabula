@@ -143,7 +143,7 @@ Tabula.SavedTemplateView = Backbone.View.extend({
     console.log("render stv");
     this.$el.append(this.template(this.model.attributes));
     this.$el.addClass('saved-template-id-' + this.model.get('id')); // more efficient lookups than data-attr
-    this.$el.data('id', this.model.get('id')); //more cleanly accesse than a class
+    this.$el.data('id', this.model.get('id')); //more cleanly accessed than a class
     return this;
   },
   editTemplateName: function(e) {
@@ -162,7 +162,7 @@ Tabula.SavedTemplateView = Backbone.View.extend({
 
   },
   downloadTemplate: function(e) {
-    
+    // no-op, this is handled old-school by a form element. No javascript, no jquery, certainly no backbone involved.
   },
   deleteTemplate: function(e) {
     var template_id = $(e.currentTarget).data("id");
@@ -215,7 +215,7 @@ Tabula.Library = Backbone.View.extend({
       this.templates_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); }, this) });
       
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
-      // this.listenTo(this.templates_collection, 'change', this.renderTemplateLibrary);
+      // this line caused problems I didn't understnad and dind't feel like debugging --> this.listenTo(this.templates_collection, 'change', this.renderTemplateLibrary);
       this.uploads_collection = new Tabula.FileUploadsCollection([]);
 
       this.listenTo(Tabula.notification, 'change', this.renderNotification);
@@ -304,55 +304,19 @@ Tabula.Library = Backbone.View.extend({
     uploadTemplate: function(e){
       $(e.currentTarget).find('button').attr('disabled', 'disabled');
 
-      // var files_list = $(e.currentTarget).find('#file')[0].files
-      // _(files_list).each(_.bind(function(file, index){
-      //   //TODO: the model should get the data, then fire an event that the view listens for, to rerender
-      //   var file_upload = new Tabula.FileUpload({
-      //     collection: this.uploads_collection,
-      //     filename: file.name,
-      //     uploadTime: new Date(),
-      //     uploadOrder: index,
-      //     isOneOfMultiple: files_list.length != 1
-      //   });
-      //   this.uploads_collection.add(file_upload);
-      //   var checker = new Tabula.ProgressBar({model: file_upload });
-      //   this.progress_bars.render().$el.find('#progress-bars-container').append(checker.render().el)
-      // },this));
-
       var formdata = new FormData($('form#uploadtemplate')[0]);
       $.ajax({
           url: $('form#uploadtemplate').attr('action'),
           type: 'POST',
           success: _.bind(function (res) {
-              // var statuses = JSON.parse(res);
-              // _(statuses).each(_.bind(function(status){
-              //   var file_upload = this.uploads_collection.findWhere({filename: status.filename });
-              //   if(!file_upload){
-              //     console.log("couldn't find upload objcect for " + status.filename );
-              //     return
-              //   }
-              //   if(status.success){
-              //     file_upload.set('file_id', status.file_id);
-              //     file_upload.set('id', status.file_id);
-              //     file_upload.set('upload_id', status.upload_id);
-              //     file_upload.set('error', !status.success);
-              //     file_upload.checkStatus(); //
-              //   }else{
-              //     console.log('TODO: failure')
-              //     file_upload.set('file_id', status.file_id);
-              //     file_upload.set('id', status.file_id);
-              //     file_upload.set('upload_id', status.upload_id);
-              //     file_upload.set('error', !status.success);
-              //   }
-              // }, this))
+            console.log("template upload succuess", res);
             $(e.currentTarget).find('button').removeAttr('disabled');
+            this.templates_collection.fetch({complete: _.bind(function(){ this.renderTemplateLibrary(); }, this)});
+            $('form#uploadtemplate')[0].reset();
           }, this),
           error: _.bind(function(a,b,c){
-            this.uploads_collection.each(function(file_upload){
-              file_upload.message = "Sorry, your file upload could not be processed. ("+a.statusText+")";
-              file_upload.pct_complete = 100;
-              file_upload.error = true;
-            })
+            alert('error in uploading template!')
+            console.log("error in uploading template",a,b,c);
             $(e.currentTarget).find('button').removeAttr('disabled');
           },this),
           data: formdata,
@@ -403,16 +367,18 @@ Tabula.Library = Backbone.View.extend({
     },
 
     renderTemplateLibrary: function(added_model){
+      console.log('renderTemplateLibrary');
       if(this.templates_collection.length > 0){
         $('#templates-library-container').show();
+        var templates_table = this.$el.find('#saved-templates-container')
 
-        this.$el.find('#saved-templates-container').empty();
-        this.templates_collection.each(_.bind(function(template){
+        templates_table.html('');
+        this.templates_collection.each(_.bind(function(template, i){
           var template_element = new Tabula.SavedTemplateView({model: template}).render().$el;
           if(added_model && added_model.get('id') == template.get('id')){
             template_element.addClass('flash');
           }
-          this.$el.find('#saved-templates-container').append(template_element);
+          templates_table.prepend(template_element);
         }, this));
 
         $("#templateTable").tablesorter( {

@@ -193,23 +193,40 @@ end
 
 def create_template(template_info)
   template_name = template_info["name"]
-  puts "template_name: #{template_info.inspect}"
   template_id = Digest::SHA1.hexdigest(Time.now.to_s + template_name) # just SHA1 of time isn't unique with multiple uploads
   template_filename = template_id + ".tabula-template.json"
   file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "..", "templates")
   # write to file 
   FileUtils.mkdir_p(file_path)
+  puts template_info["template"].inspect
   open(File.join(file_path, template_filename), 'w'){|f| f << JSON.dump(template_info["template"])}
   page_count = template_info.has_key?("page_count") ? template_info["page_count"] : template_info["template"].map{|f| f["page"]}.uniq.count
   selection_count = template_info.has_key?("selection_count") ? template_info["selection_count"] :  template_info["template"].count
   persist_template({id: template_id, template_name: template_name, page_count: page_count, time: Time.now.to_i, selection_count: selection_count})
   return template_id
 end
+class InvalidTemplateError < StandardError; end
+TEMPLATE_REQUIRED_KEYS = ["page", "extraction_method", "x1", "x2", "y1", "y2", "width", "height"]
 def upload_template(template_file)
   template_name = template_file[:filename].gsub(/\.json$/, "").gsub(/\.tabula-template$/, "")
   template_id = Digest::SHA1.hexdigest(Time.now.to_s + template_name) # just SHA1 of time isn't unique with multiple uploads
   template_filename = template_id + ".tabula-template.json"
   file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "..", "templates")
+
+  # validate the uploaded template, since it really could be anything.
+  template_json = open(template_file[:tempfile].path, 'r'){|f| f.read }
+  begin
+    template_data = JSON.parse(template_json)
+  rescue JSON::ParserError => e
+    raise InvalidTemplateError.new("template is invalid json: #{e}")
+  end
+
+  raise InvalidTemplateError.new("template is invalid, must be an array of selection objects") unless template_data.is_a?(Array)
+  raise InvalidTemplateError.new("template is invalid; a selection object is invalid") unless template_data.all?{|sel| TEMPLATE_REQUIRED_KEYS.all?{|k| sel.has_key?(k)} }
+
+  page_count = template_data.map{|sel| sel["page"]}.uniq.size
+  selection_count = template_data.size
+
   # write to file
   FileUtils.mkdir_p(file_path)
   begin
@@ -220,8 +237,7 @@ def upload_template(template_file)
                    File.join(file_path, template_filename))
     FileUtils.rm_rf(template_file[:tempfile].path)
   end
-
-  persist_template({id: template_id, template_name: template_name, page_count: 0, time: Time.now.to_i,selection_count: 0})
+  persist_template({id: template_id, template_name: template_name, page_count: page_count, time: Time.now.to_i,selection_count: selection_count})
   return template_id
 end
 

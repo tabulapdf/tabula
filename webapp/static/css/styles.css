@@ -7514,6 +7514,13 @@ form {
 #control-panel span.filename {
   vertical-align: middle;
 }
+#control-panel .template-menu #template-dropdown-container ul {
+  padding-left: 20px;
+}
+#control-panel .template-menu #template-dropdown-container li {
+  cursor: pointer;
+  text-decoration: underline;
+}
 
 #main-pane {
   background: #777777;
