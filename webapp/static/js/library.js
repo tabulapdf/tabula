@@ -130,20 +130,39 @@ Tabula.SavedTemplateView = Backbone.View.extend({
   tagName: 'tr',
   className: 'saved-template',
   events: {
-    'click .delete-template': 'deleteTemplate'
+    'click .delete-template': 'deleteTemplate',
+    'click .download-template': 'downloadTemplate',
+    'click .edit-template-name': 'editTemplateName',
+    'click .save-template-name': 'renameTemplate'
   },
   template: _.template( $('#saved-template-library-item-template').html().replace(/nestedscript/g, 'script')),
   initialize: function(){
-    _.bindAll(this, 'render', 'deleteTemplate', 'renameTemplate', 'exportTemplate');
+    _.bindAll(this, 'render', 'deleteTemplate', 'renameTemplate', 'exportTemplate', 'editTemplateName');
   },
   render: function(){
+    console.log("render stv");
     this.$el.append(this.template(this.model.attributes));
-    this.$el.addClass('file-id-' + this.model.get('id')); // more efficient lookups than data-attr
+    this.$el.addClass('saved-template-id-' + this.model.get('id')); // more efficient lookups than data-attr
     this.$el.data('id', this.model.get('id')); //more cleanly accesse than a class
     return this;
   },
-  renameTemplate: function(e) {
-    alert("not yet implemented: TODO")
+  editTemplateName: function(e) {
+    console.log("editTemplateName")
+    var name_el = this.$el.find(".template-name");
+    $(name_el).replaceWith($('<input type="text" value="'+this.model.get('name')+'">'));
+    $(e.currentTarget).replaceWith($("<a href=\"javascript:\"><span class=\"glyphicon glyphicon-floppy-disk save-template-name\"></span></a>"));
+  },
+  renameTemplate: function(e){
+    var input_el = $(e.currentTarget).closest("td").find("input");
+    var new_name = input_el.val();
+    this.model.set({'name': new_name});
+    this.model.save();
+    $(input_el).replaceWith($('<span class="template-name">'+this.model.get('name')+'</span>'));
+    $(e.currentTarget).replaceWith($('<a href="javascript:"><span class="glyphicon glyphicon-pencil edit-template-name"></span></a>'));
+
+  },
+  downloadTemplate: function(e) {
+    alert("downloading templates not yet implemented: TODO")
     this.model.rename(new_name);
   },
   deleteTemplate: function(e) {
@@ -154,7 +173,6 @@ Tabula.SavedTemplateView = Backbone.View.extend({
     // if (!confirm('Delete file "'+btn.data('filename')+'"?')) return;
     // var pdf_id = btn.data('pdfid');
     console.log('this.model.id', this.model.id);
-
     this.model.destroy({success: _.bind(function() {
             this.$el.fadeOut(200, function() { $(this).remove(); });
           }, this)});
@@ -191,14 +209,14 @@ Tabula.Library = Backbone.View.extend({
     },
     template: _.template( $('#uploader-template').html().replace(/nestedscript/g, 'script')),
     initialize: function(){
-      _.bindAll(this, 'uploadPDF', 'uploadTemplate', 'render', 'renderFileLibrary');
+      _.bindAll(this, 'uploadPDF', 'uploadTemplate', 'render', 'renderFileLibrary', 'renderTemplateLibrary');
       this.files_collection = new Tabula.UploadedFilesCollection([]);
       this.files_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); }, this) });
       this.templates_collection = new Tabula.TemplatesCollection([]);
       this.templates_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); }, this) });
       
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
-      this.listenTo(this.templates_collection, 'change', this.renderTemplateLibrary);
+      // this.listenTo(this.templates_collection, 'change', this.renderTemplateLibrary);
       this.uploads_collection = new Tabula.FileUploadsCollection([]);
 
       this.listenTo(Tabula.notification, 'change', this.renderNotification);
@@ -388,24 +406,15 @@ Tabula.Library = Backbone.View.extend({
     renderTemplateLibrary: function(added_model){
       if(this.templates_collection.length > 0){
         $('#templates-library-container').show();
-        ($('#saved-templates-container').is(':empty') ? this.templates_collection.reverse() : this.templates_collection).
-        each(_.bind(function(template){
-          // if(this.$el.find('.template-id-' + uploaded_file.get('id') ).length){
-          //   return;
-          // }
+
+        this.$el.find('#saved-templates-container').empty();
+        this.templates_collection.each(_.bind(function(template){
           var template_element = new Tabula.SavedTemplateView({model: template}).render().$el;
           if(added_model && added_model.get('id') == template.get('id')){
             template_element.addClass('flash');
           }
-          $('#saved-templates-container').prepend(template_element);
+          this.$el.find('#saved-templates-container').append(template_element);
         }, this));
-
-        // //remove anything that was deleted
-        // this.$el.find('.uploaded-file').each(_.bind(function(i, el){
-        //   if(typeof this.templates_collection.findWhere({id: $(el).data('id')}) === "undefined"){
-        //     $(el).remove();
-        //   }
-        // }, this));
 
         $("#templateTable").tablesorter( {
           headers: { 3: { sorter: "usLongDate" },  4: { sorter: false}, 5: {sorter: false} },
