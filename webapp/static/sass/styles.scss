@@ -267,6 +267,16 @@ form {
 	span.filename {
 		vertical-align: middle;
 	}
+
+	.template-menu #template-dropdown-container{
+		ul {
+			padding-left: 20px;
+		}
+		li {
+			cursor: pointer;
+			text-decoration: underline;
+		}
+	}
 }
 
 

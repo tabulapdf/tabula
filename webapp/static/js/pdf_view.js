@@ -1083,7 +1083,7 @@ Tabula.PDFView = Backbone.View.extend(
     initialize: function(){
       _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections', 'renderSelection',
         'createDataView', 'checkForAutodetectedTables', 'getData', 'handleScroll',
-        'updateActiveSelections', 'loadSavedTemplate', 'saveTemplate', 'saveTemplateAs');
+        'loadSavedTemplate', 'saveTemplate', 'saveTemplateAs');
 
       this.pdf_document = new Tabula.Document({
         pdf_id: PDF_ID,
@@ -1110,7 +1110,6 @@ Tabula.PDFView = Backbone.View.extend(
 
       $(document).on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
       $('#sidebar').on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
-      $(window).on('resize', _.throttle(_.bind(this.updateActiveSelections, this), 100, {leading: false}));
 
 
       $('body').
@@ -1127,7 +1126,6 @@ Tabula.PDFView = Backbone.View.extend(
 
       _(['', '/', '/select']).each(function(path_suffix){
         window.tabula_router.route("pdf/:file_id" + path_suffix, function(){
-          console.log('asfdasfads');
           Tabula.pdf_view.components['data_view'].closeAndRenderSelectionView();
         });
       });
@@ -1192,8 +1190,15 @@ Tabula.PDFView = Backbone.View.extend(
       // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
       // cause it to be rendered onto the page, and as a thumbnail
       // and causes it to get an 'id' attr.
+      console.log("sel.page", sel);
       var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page];
       var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page});
+      if(!page){
+        // the page we're trying to render a selection on might have been deleted.
+        // or, we may be trying to load a template with more pages on it than this PDF has.
+        console.log("can't render selection on page " + sel.page + " because that page can't be found", sel)
+        return;
+      }
       var original_pdf_width = page.get('width');
       var original_pdf_height = page.get('height');
       // var pdf_rotation = page.get('rotation');
@@ -1286,18 +1291,11 @@ Tabula.PDFView = Backbone.View.extend(
       return this.pdf_document.selections.size();
     },
 
-    updateActiveSelections: function() {
-      console.log(this.pdf_document.selections);
-    },
-
     loadSavedTemplate: function(template_model){
       template_model.fetch({success: _.bind(function(template_model){
-        console.log(template_model.get('selections'));
         var selections_to_load = _(template_model.get('selections')).map(function(sel){
-          console.log(sel);
           return Tabula.pdf_view.renderSelection(sel);
         });
-        console.log(selections_to_load);
         this.pdf_document.selections.reset(selections_to_load);
 
 
@@ -1315,12 +1313,12 @@ Tabula.PDFView = Backbone.View.extend(
       var templateMetadata = {
         name: name,
         selection_count: list_of_coords.length,
-        page_count: Tabula.pdf_view.pageCount,
+        page_count: _(_(list_of_coords).map(function(obj){ return obj["page"] })).uniq().length,
         time: Math.floor(Date.now() / 1000),
-        template: _(list_of_coords).map(function(obj){ return _.omit(list_of_coords, 'selection_id') })
+        template: _(list_of_coords).map(function(obj){ return _.omit(obj, 'selection_id') })
       };
       var saved_template = new Tabula.SavedTemplate(templateMetadata);
-      saved_template.save(nil,{success: cb, error: cb});
+      saved_template.save(null,{success: cb, error: cb});
     },
 
     render : function(){

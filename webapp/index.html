@@ -116,14 +116,14 @@
         <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
         <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><span class="glyphicon glyphicon-eye-open"></span> Preview & Export Extracted Data</button></a>
 
-        <span style="float: right;">
-          <a href="javascript:void(0)"><button type="button" id="save-template" class="btn btn-success" <%= disable_save_template %>><span class="glyphicon glyphicon-save"></span> Save as Template</button></a>
+        <span style="float: right;" class="template-menu">
 
-          <div class="dropdown" <%= disable_load_template %>>
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-open"> Load Template</a>
+          <div class="dropdown" <%= disable_load_template %> style="display: inline;">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-import"></span> Load Template</a>
             <div id="template-dropdown-container" class="dropdown-menu">
             </div>
           </div>
+          <a href="javascript:void(0)"><button type="button" id="save-template" class="btn btn-success" <%= disable_save_template %>><span class="glyphicon glyphicon-export"></span> Save as Template</button></a>
 
         </span>
         <span style="clear: both;">
@@ -337,7 +337,7 @@
                 <div id="template-upload-form-container">
                   <h4>Import one or more Tabula Templates</h4>
                   <p>Once you save a Tabula Template, it'll appear here.<p>
-                  <form id="uploadtemplate" action="/uploadtemplate.json" method="post" enctype="multipart/form-data" class="form-inline">
+                  <form id="uploadtemplate" action="templates/upload.json" method="post" enctype="multipart/form-data" class="form-inline">
 
                     <div class="input-group">
                       <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
