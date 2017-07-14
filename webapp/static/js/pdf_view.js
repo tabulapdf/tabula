@@ -818,7 +818,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   initialize: function(stuff){
     this.pdf_view = stuff.pdf_view;
     this.saved_template_collection = stuff.saved_template_collection;
-    _.bindAll(this, 'queryAllData', 'render');
+    _.bindAll(this, 'queryAllData', 'render', 'saveTemplate', 'loadTemplate');
     this.listenTo(this.pdf_view.pdf_document, 'sync', this.render );
     console.log("stuff.saved_template_collection", this.saved_template_collection);
     this.saved_template_library_view = new Tabula.SavedTemplateLibraryView({collection: this.saved_template_collection})
@@ -840,8 +840,9 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     // ugh
   },
 
-  saveTemplate: function(){
-    this.pdf_view.saveTemplate();
+  saveTemplate: function(e){
+    $(e.currentTarget).attr("disabled", "disabled");
+    this.pdf_view.saveTemplate(function(){ $(e.currentTarget).removeAttr("disabled") });
   },
   loadTemplate: function(){
 
@@ -1303,12 +1304,12 @@ Tabula.PDFView = Backbone.View.extend(
       }, this)});
     },
 
-    saveTemplate: function () {
+    saveTemplate: function (cb) {
       var name = (this.loadedSavedState && this.loadedSavedState.name) || (this.pdf_document.attributes.original_filename || this.pdf_document.attributes.original_filename).replace(".pdf", "")
-      this.saveTemplateAs(null, name)
+      this.saveTemplateAs(null, name, cb)
     },
 
-    saveTemplateAs: function(id, name){
+    saveTemplateAs: function(id, name, cb){
       var list_of_coords = Tabula.pdf_view.pdf_document.selections.invoke("toCoords");
       // {"name": "fake test template", "selection_count": 0, "page_count": 0, "time": "1499535056", "id": "asdfasdf"}
       var templateMetadata = {
@@ -1316,10 +1317,10 @@ Tabula.PDFView = Backbone.View.extend(
         selection_count: list_of_coords.length,
         page_count: Tabula.pdf_view.pageCount,
         time: Math.floor(Date.now() / 1000),
-        template: list_of_coords
+        template: _(list_of_coords).map(function(obj){ return _.omit(list_of_coords, 'selection_id') })
       };
       var saved_template = new Tabula.SavedTemplate(templateMetadata);
-      saved_template.save();
+      saved_template.save(nil,{success: cb, error: cb});
     },
 
     render : function(){

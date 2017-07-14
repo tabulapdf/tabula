@@ -104,6 +104,25 @@ def list_templates
               end
   workspace["templates"]
 end
+def replace_template_metadata(template_id, template_metadata)
+  # write to workspace
+  workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
+  raise if !File.exists?(workspace_filepath)
+
+  workspace_file = File.open(workspace_filepath) { |f| JSON.load(f) }
+  workspace = if workspace_file.is_a? Array
+                {"pdfs" => workspace_file, "templates" => [], "version" => 2}
+              else
+                workspace_file
+              end
+  idx = workspace["templates"].index{|t| t["id"] == template_id}
+  workspace["templates"][idx] = template_metadata.select{|k,_| ["name", "selection_count", "page_count", "time", "id"].include?(k) }
+  tmp = Tempfile.new('workspace')
+  tmp.write(JSON.generate(workspace))
+  tmp.flush; tmp.close
+  FileUtils.cp(tmp.path, workspace_filepath)
+  tmp.unlink
+end
 def persist_template(template_metadata)
   # write to workspace
   workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
@@ -162,7 +181,6 @@ def retrieve_template_metadata(template_id)
               else
                 workspace_file
               end
-  puts workspace["templates"].map{|t| t["id"]}.inspect
   workspace["templates"].find{|t| t["id"] == template_id}
 end
 
@@ -274,10 +292,16 @@ Cuba.define do
         res.status = 200
         res.write JSON.dump(template_metadata)
       end
-      on put do 
-        # TODO
+      on put do
+        old_metadata = retrieve_template_metadata(template_id)
+        puts "template_id: #{template_id}"
+        puts old_metadata.inspect
+        new_metadata = old_metadata.merge(JSON.parse(req.params["model"]))
+        replace_template_metadata(template_id, new_metadata)
+        res.status = 200
+        res.write(JSON.dump({template_id: template_id}))
       end
-      on delete do 
+      on delete do
         delete_template(template_id)
         res.status = 200
         res.write ''

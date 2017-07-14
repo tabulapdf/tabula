@@ -376,11 +376,12 @@
       </script>
 
       <script type="text/template" id="saved-template-library-item-template">
-        <td><%= name %></td>
+        <td><span class="template-name"><%= name %></span> <a href="javascript:"><span data-name=<%= name %> data-templateid=<%= id %> class="glyphicon glyphicon-pencil edit-template-name"></span></a></td>
         <td><%= selection_count %> selection<%= selection_count == "!" ? '' : 's' %></td>
         <td><%= page_count || '??' %></td>
         <td><%= new Date(parseInt(time) * 1000).toUTCString().slice(5, -7) %></td>
         <td><a href="javascript:"><span data-name=<%= name %> data-templateid=<%= id %> class="glyphicon glyphicon-remove delete-template"></span></a></td>
+        <td><a href="javascript:"><span data-name=<%= name %> data-templateid=<%= id %> class="glyphicon glyphicon-download-alt download-template"></span></a></td>
       </script>
 
       <script type="text/template" id="upload-error-template" >
