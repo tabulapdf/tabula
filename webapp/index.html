@@ -326,6 +326,7 @@
                       <th>Page Count</th>
                       <th>Date Added</th>
                       <th>Remove</th>
+                      <th>Download</th>
                     </tr>
                   </thead>
                   <tbody id="saved-templates-container">
@@ -381,7 +382,14 @@
         <td><%= page_count || '??' %></td>
         <td><%= new Date(parseInt(time) * 1000).toUTCString().slice(5, -7) %></td>
         <td><a href="javascript:"><span data-name=<%= name %> data-templateid=<%= id %> class="glyphicon glyphicon-remove delete-template"></span></a></td>
-        <td><a href="javascript:"><span data-name=<%= name %> data-templateid=<%= id %> class="glyphicon glyphicon-download-alt download-template"></span></a></td>
+        <td>
+          <form class="template-download-form" action="templates/<%= id %>.json" method="get" style="margin-bottom: 0;">
+            <button type="submit" class="btn btn-default" data-action=>
+              <span class="glyphicon glyphicon-download-alt download-template"></span>
+              Download
+            </button>
+          </form>
+        </td>
       </script>
 
       <script type="text/template" id="upload-error-template" >

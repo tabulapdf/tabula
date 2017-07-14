@@ -162,8 +162,7 @@ Tabula.SavedTemplateView = Backbone.View.extend({
 
   },
   downloadTemplate: function(e) {
-    alert("downloading templates not yet implemented: TODO")
-    this.model.rename(new_name);
+    
   },
   deleteTemplate: function(e) {
     var template_id = $(e.currentTarget).data("id");
