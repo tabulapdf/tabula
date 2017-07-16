@@ -137,17 +137,15 @@ Tabula.SavedTemplateView = Backbone.View.extend({
   },
   template: _.template( $('#saved-template-library-item-template').html().replace(/nestedscript/g, 'script')),
   initialize: function(){
-    _.bindAll(this, 'render', 'deleteTemplate', 'renameTemplate', 'exportTemplate', 'editTemplateName');
+    _.bindAll(this, 'render', 'deleteTemplate', 'renameTemplate', 'editTemplateName');
   },
   render: function(){
-    console.log("render stv");
     this.$el.append(this.template(this.model.attributes));
     this.$el.addClass('saved-template-id-' + this.model.get('id')); // more efficient lookups than data-attr
     this.$el.data('id', this.model.get('id')); //more cleanly accessed than a class
     return this;
   },
   editTemplateName: function(e) {
-    console.log("editTemplateName")
     var name_el = this.$el.find(".template-name");
     $(name_el).replaceWith($('<input type="text" value="'+this.model.get('name')+'">'));
     $(e.currentTarget).replaceWith($("<a href=\"javascript:\"><span class=\"glyphicon glyphicon-floppy-disk save-template-name\"></span></a>"));
@@ -171,13 +169,9 @@ Tabula.SavedTemplateView = Backbone.View.extend({
 
     // if (!confirm('Delete file "'+btn.data('filename')+'"?')) return;
     // var pdf_id = btn.data('pdfid');
-    console.log('this.model.id', this.model.id);
     this.model.destroy({success: _.bind(function() {
             this.$el.fadeOut(200, function() { $(this).remove(); });
           }, this)});
-    },
-    exportTemplate: function(e) {
-      alert("not yet implemnted")
     }
 })
 
@@ -215,7 +209,7 @@ Tabula.Library = Backbone.View.extend({
       this.templates_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); }, this) });
       
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
-      // this line caused problems I didn't understnad and dind't feel like debugging --> this.listenTo(this.templates_collection, 'change', this.renderTemplateLibrary);
+      this.listenTo(this.templates_collection, 'add', this.renderTemplateLibrary);
       this.uploads_collection = new Tabula.FileUploadsCollection([]);
 
       this.listenTo(Tabula.notification, 'change', this.renderNotification);
@@ -309,9 +303,8 @@ Tabula.Library = Backbone.View.extend({
           url: $('form#uploadtemplate').attr('action'),
           type: 'POST',
           success: _.bind(function (res) {
-            console.log("template upload succuess", res);
             $(e.currentTarget).find('button').removeAttr('disabled');
-            this.templates_collection.fetch({complete: _.bind(function(){ this.renderTemplateLibrary(); }, this)});
+            this.templates_collection.fetch() // {complete: _.bind(function(){ this.renderTemplateLibrary(); }, this)});
             $('form#uploadtemplate')[0].reset();
           }, this),
           error: _.bind(function(a,b,c){
@@ -328,8 +321,6 @@ Tabula.Library = Backbone.View.extend({
       e.preventDefault();
       return false; // don't actually submit the form
     },
-
-
 
     renderFileLibrary: function(added_model){
       if(this.files_collection.length > 0){
@@ -367,24 +358,30 @@ Tabula.Library = Backbone.View.extend({
     },
 
     renderTemplateLibrary: function(added_model){
-      console.log('renderTemplateLibrary');
       if(this.templates_collection.length > 0){
-        $('#templates-library-container').show();
+        $('#template-library-container').show();
         var templates_table = this.$el.find('#saved-templates-container')
 
-        templates_table.html('');
+        templates_table.empty();
+
         this.templates_collection.each(_.bind(function(template, i){
           var template_element = new Tabula.SavedTemplateView({model: template}).render().$el;
           if(added_model && added_model.get('id') == template.get('id')){
             template_element.addClass('flash');
           }
-          templates_table.prepend(template_element);
+          templates_table.append(template_element);
         }, this));
 
-        $("#templateTable").tablesorter( {
-          headers: { 3: { sorter: "usLongDate" },  4: { sorter: false}, 5: {sorter: false} },
-          sortList: [[3,1]]  // initial sort
-          } );
+        var table_for_sorting = $('#templateTable');
+        if(table_for_sorting.hasClass("tablesorter")){
+          table_for_sorting.trigger('update');
+        }else{
+         table_for_sorting.addClass('tablesorter');
+         table_for_sorting.tablesorter( {
+            headers: { 3: { sorter: "usLongDate" },  4: { sorter: false}, 5: {sorter: false} },
+            sortList: [[3,1]]  // initial sort
+            } );
+        }
       }else{
         $('#template-library-container').hide();
       }
