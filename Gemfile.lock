@@ -19,7 +19,7 @@ GEM
     cuba (3.8.1)
       rack (>= 1.6.0)
     ffi (1.9.10-java)
-    jruby-jars (9.1.5.0)
+    jruby-jars (9.1.12.0)
     jruby-rack (1.1.20)
     multi_json (1.11.2)
     rack (2.0.3)
@@ -43,11 +43,11 @@ DEPENDENCIES
   bootstrap-sass (~> 3.2.0)
   compass
   cuba (~> 3.8.1)
-  jruby-jars (= 9.1.5.0)
+  jruby-jars (= 9.1.12.0)
   rack (~> 2.0.3)
   rake
   tilt (~> 2.0.7)
   warbler (~> 2.0.3)
 
 BUNDLED WITH
-   1.14.3
+   1.15.3

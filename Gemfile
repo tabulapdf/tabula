@@ -11,7 +11,7 @@ platform :jruby do
   group :development do
     gem "rake"
     gem "warbler", "~> 2.0.3"
-    gem "jruby-jars", "9.1.5.0"
+    gem "jruby-jars", "9.1.12.0"
     gem "bootstrap-sass", "~> 3.2.0"
     gem "compass"
   end
