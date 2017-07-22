@@ -74,6 +74,7 @@ class PDFBoxThumbnailGenerator < AbstractThumbnailGenerator
       changed
       notify_observers(pi+1, total_pages, "generating page thumbnails…")
     end
+    @pdf_document.close
   end
 end
 
