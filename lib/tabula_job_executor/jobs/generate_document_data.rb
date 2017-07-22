@@ -67,6 +67,7 @@ class GenerateDocumentDataJob < Tabula::Background::Job
     end
 
     at(100, 100, "complete")
+    extractor.close!
     return nil
 
   end
