@@ -12,7 +12,7 @@ Tabula.FileUpload = Backbone.Model.extend({
     });
   },
 
-  checkStatus: function() {
+  checkStatus: function(original_filename) {
     if(typeof this.get('file_id') == 'undefined' && typeof !this.get('upload_id') == 'undefined'){
       this.pct_complete = 1;
       this.message = "waiting to be processed..."
@@ -32,18 +32,51 @@ Tabula.FileUpload = Backbone.Model.extend({
 
             if (data.status == "error" && data.error_type == "unknown") {
                 // window.location.reload(true);
-            } else if (data.status == "error" && data.error_type == "no-text") {
+            } else if (data.status == "warning" && data.error_type == "no-text") {
                 console.log('no text');
                 window.clearTimeout(this.timer);
 
-                // resets upload/input form
-                $('form#upload').find('button').removeAttr('disabled');
-                $('form#upload')[0].reset();
-
                 //TODO: something prettier.
-                alert("Sorry, your PDF file is image-based; it does not have any embedded text. It might have been scanned from paper... Tabula isn't able to extract any data from image-based PDFs. Click the Help button for more information.");
-            } else if(data.pct_complete < 100) {
-                this.timer = setTimeout(_.bind(this.checkStatus, this), 1000);
+
+				var message = "Sorry, your PDF file is image-based; it does not have any embedded text. Tabula can convert this using OCR, however data should be verified personally after extraction. Click OK to continue with OCR.";
+                var yesOCR = window.confirm(message);
+				if(yesOCR == true){
+					// ajax call to run OCR
+					ocr_data = {
+						'file_path': this.get('file_id'),
+						'file_name': original_filename
+					}
+					this.message = "Performing OCR"
+					$.ajax({
+						type: 'GET',
+						url: '/ocr',
+						data: ocr_data,
+						success: _.bind(function(data) {
+							data = JSON.parse(data);
+							console.log(data.message);
+							if(data.message == "Success"){
+								this.set('upload_id', data.batch_id);
+								this.timer = setTimeout(_.bind(this.checkStatus, this), 1000, original_filename);
+							}else{
+								// resets upload/input form
+								window.clearTimeout(this.timer);
+								window.alert("OCR Conversion failed");
+								$('form#upload').find('button').removeAttr('disabled');
+								$('form#upload')[0].reset();
+							}
+						}, this),
+						error: function(xhr, status, err) {
+							console.log('OCR convertion error: ', err);
+						}
+					});
+				}else{
+					// resets upload/input form
+					window.clearTimeout(this.timer);
+					$('form#upload').find('button').removeAttr('disabled');
+					$('form#upload')[0].reset();
+				}
+			} else if(data.pct_complete < 100) {
+                this.timer = setTimeout(_.bind(this.checkStatus, this), 1000, original_filename);
             } else {
               this.collection.remove(this);
               Tabula.library.files_collection.fetch();
@@ -212,7 +245,7 @@ Tabula.Library = Backbone.View.extend({
                   file_upload.set('id', status.file_id);
                   file_upload.set('upload_id', status.upload_id);
                   file_upload.set('error', !status.success);
-                  file_upload.checkStatus(); //
+                  file_upload.checkStatus(status.filename); //
                 }else{
                   console.log('TODO: failure')
                   file_upload.set('file_id', status.file_id);

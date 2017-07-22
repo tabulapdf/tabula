@@ -121,14 +121,10 @@ Tabula.Options = Backbone.Model.extend({
   The canonical store of selections now needs to be in Backbone, not in imgareaselect.
   The UI can listen to the Selections; imgAreaselect creates adds to the collection,
   causing the thumbnail to be drawn.
-
   Clearing or repeating is much easier, because we don't have to mess around with the UI.
   Querying all is likewise easy.
-
   We could also store extraction option info on the selections, if we want.
-
   On imgareaselect's _onSelectEnd, add the selection to Selections
-
   On Selections's remove (or change), find the right imgAreaSelect
 */
 
@@ -167,6 +163,41 @@ Tabula.Selections = Backbone.Collection.extend({
 
 });
 
+// replicated from Tabula.AutodetectedSelections
+Tabula.StringSelections = Tabula.Selections.extend({
+  url: null,
+  initialize: function(){
+    this.url = '/pdfs/' + PDF_ID + '/string.json?_=' + Math.round(+new Date()).toString();
+    _.bindAll(this, 'updateOrCreateByVendorSelectorId');
+  },
+
+  parse: function(response){
+    // a JSON list of pages, which are each just a list of coords
+    var tables = [];
+    var selections = _(response).map(_.bind(function(page_tables, listIndex){
+      var pageIndex = listIndex + 1;
+
+      return _(page_tables).map(_.bind(function(tableCoords){
+        if(tableCoords[2] * tableCoords[3] < 400){ //exclude tiny selections
+          return null;
+        }
+        return {
+          x1: tableCoords[0],
+          y1: tableCoords[1],
+          x2: tableCoords[0] + tableCoords[2],
+          y2: tableCoords[1] + tableCoords[3],
+          width: tableCoords[2],
+          height: tableCoords[3],
+          page: pageIndex,
+          extraction_method: 'spreadsheet',
+          selection_id: null
+        };
+      }, this));
+    }, this));
+    return _.select(_.flatten(selections), function(i){ return i; });
+  }
+
+});
 
 Tabula.AutodetectedSelections = Tabula.Selections.extend({
   url: null, //set on init
@@ -244,7 +275,7 @@ Tabula.Query = Backbone.Model.extend({
     var delimiter = typeof delimiter_maybe_undef == "undefined" ? ',' : delimiter_maybe_undef
     var csv = _(this.get('data')).chain().pluck('data').map(function(table){
       return _(table).chain().map(function(row){
-        return _.map(row, function(cell){ 
+        return _.map(row, function(cell){
           var text = cell.text;
           text = text.replace("\"", "\\\""); //escape quotes
           text = text.indexOf(delimiter) > -1 ? "\"" + text + "\"" : text; //enquote cells containing the delimiter.
@@ -302,7 +333,7 @@ Tabula.Query = Backbone.Model.extend({
             // var coord_set = stuff[0];
             // var resp_item = stuff[1];
             // if(!coord_set) return; // DIRTY HACK, see https://github.com/tabulapdf/tabula/issues/497
-            //                        // if one set of coords returns 2+ tables, 
+            //                        // if one set of coords returns 2+ tables,
             //                        // then this zip won't work.
             if (stashed_selections.get(coord_set.selection_id)){
               stashed_selections.get(coord_set.selection_id).
@@ -363,6 +394,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
   events: {
     'click .extraction-method-btn:not(.active)': 'queryWithToggledExtractionMethod',
+    'click #run-batch': 'runBatch',
     'click #download-data': 'setFormAction',
     'keyup .filename': 'updateFilename',
     //N.B.: Download button (and format-specific download buttons) are an HTML form, so not handled here.
@@ -376,7 +408,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
 
   initialize: function(stuff){
-    _.bindAll(this, 'render', 'renderFlashClipboardNonsense', 'updateFilename', 'queryWithToggledExtractionMethod', 'closeAndRenderSelectionView', 'setFormAction');
+    _.bindAll(this, 'render', 'renderFlashClipboardNonsense', 'updateFilename', 'queryWithToggledExtractionMethod', 'closeAndRenderSelectionView', 'setFormAction', 'runBatch');
     this.pdf_view = stuff.pdf_view;
     this.listenTo(this.model, 'tabula:query-start', this.render);
     this.listenTo(this.model, 'tabula:query-success', this.render);
@@ -413,6 +445,112 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     });
     this.pdf_view.pdf_document.selections.reset(oldSelections);
   },
+
+  runBatch: function(){
+  	var overlap = document.getElementById('overlap').value;
+	console.log(overlap);
+  	if(isNaN(overlap)){
+  		alert("Overlap must be empty or a number");
+  		return;
+  	}
+    if(overlap>100 || overlap=='') overlap = 100;
+  	var input_directory = document.getElementById('batch-input-path').value;
+  	var output_directory = document.getElementById('batch-output-path').value;
+  	var batch_selection_object = document.getElementById('batch-selection');
+  	var ocr_ok = document.getElementById('ocr-ok').checked;
+  	var batch_selection = batch_selection_object.options[batch_selection_object.selectedIndex].value;
+	var batch_searches_formatted = '';
+    if(!input_directory || !output_directory){
+      alert('Please specify an input and output directory before attempting to run batch processing')
+      return
+    }
+    else {
+      if(batch_selection=="coords"){
+      		var coordinates = _.map(this.model.get('list_of_coords'), function(l){ return [l.page, l.x1, l.y1, l.x2-l.x1, l.y2-l.y1].join(', '); }).join("\n");
+      		coordsData = {
+        		'all_the_sel': coordinates,
+        		'file_path': PDF_ID
+        	}
+        	$.ajax({
+        		type: 'POST',
+        		url: '/cordlist',
+        		async: false,
+        		data: coordsData,
+        		success: _.bind(function(data) {
+					console.log(data);
+        		}, this),
+        		error: function(xhr, status, err) {
+        			console.log('Create coordinate err: ', err);
+        		}
+        	});
+			
+			var batch_strings_list = coordinates.split('\n');
+			for (var count = 0; count < batch_strings_list.length; count++) {
+				var batch_strings = batch_strings_list[count].split(',');
+				batch_searches_formatted = batch_searches_formatted.concat('Page: ' + batch_strings[0] + ', X: ' + Math.round(batch_strings[1]) + ', Y: ' + Math.round(batch_strings[2]) + ', W: ' + Math.round(batch_strings[3]) + ', H: ' + Math.round(batch_strings[4]) + '\n');
+			}
+      } else{
+      	stringRequestData = {
+        		'file_path': PDF_ID
+        	}
+          $.ajax({
+      		type: 'GET',
+      		url: '/searches',
+      		async: false,
+      		data: stringRequestData,
+      		success: _.bind(function(data){
+				if (data!='') {
+					console.log(data);
+					
+					var batch_strings_list = data.split('\n');
+					for (var count = 0; count < batch_strings_list.length - 1; count++) {
+						var batch_strings = batch_strings_list[count].split(',');
+						batch_searches_formatted = batch_searches_formatted.concat(batch_strings[0] + ',' + batch_strings[1] + '\n' + batch_strings[2] + ',' + batch_strings[3] + '\n');
+					}
+				} else {
+					alert('Error getting String search list.');
+					batch_searches_formatted = '';
+				}
+      		}, this),
+      		error: function(xhr, status, err){
+      			console.log('Getting string search list err:', err);
+				alert('Error getting String search list.');
+				batch_searches_formatted = '';
+				}
+      		});
+       }
+       if(batch_searches_formatted!='' && confirm('Tabula will run '+batch_selection+' based batch processing with '+overlap+'% overlap on pdf files located in '+input_directory+' directory while doing searches for \n'+batch_searches_formatted+'\nIs this correct?')==true){
+      	// alert('Batch is running!');
+      	batch_data = {
+      			'file_path': PDF_ID,
+      			'process_type': batch_selection,
+      			'input_folder': input_directory,
+      			'output_folder': output_directory,
+      			'overlap' : overlap,
+      			'ocr' : ocr_ok
+      		}
+      	$.ajax({
+      			type: 'POST',
+      			url: '/batch',
+      			data: batch_data,
+      			success: _.bind(function(data) {
+      				console.log(data);
+					if(data=="No list file found"){
+						alert("Error: no search lists found");
+					}else{
+						alert("Batch Processing done");
+					}
+      			}, this),
+      			error: function(xhr, status, err) {
+      				console.log('batch err: ', err);
+      			}
+      		});
+        }
+  	return;
+    }
+  },
+
+
 
   setFormAction: function(e){
     var formActionUrl = $(e.currentTarget).data('action');
@@ -625,7 +763,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
         if(!already_on_page) this.$el.append(page_view.render().el);
       }, this));
     }else{
-      //useful in the console for debugging: 
+      //useful in the console for debugging:
       // $('.pdf-page:visible').map(function(i, el){ return $(el).find('img').data('page') }).get();
 
 
@@ -784,6 +922,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     'click #restore-detected-tables': 'restoreDetectedTables',
     'click #all-data': 'queryAllData',
     'click #repeat-lassos': 'repeatLassos',
+    'click #set-string': 'setString'
   },
 
   template: _.template($('#templates #select-control-panel-template').html().replace(/nestedscript/g, 'script')),
@@ -795,6 +934,69 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     /* TODO: write this */
   },
 
+  setString: function() {
+	var upper_left = document.getElementById('top-left-string').value;
+	var upper_right = document.getElementById('top-right-string').value;
+	var lower_left = document.getElementById('bottom-left-string').value;
+	var lower_right = document.getElementById('bottom-right-string').value;
+
+	var empties = 0;
+	if (upper_left == "") {
+		empties = empties + 1;
+	}
+	if (upper_right == "") {
+		empties = empties + 1;
+	}
+	if (lower_left == "") {
+		empties = empties + 1;
+	}
+	if (lower_right == "") {
+		empties = empties + 1;
+	}
+
+	if (empties > 3) {
+		// both fields empty
+		alert("Minimum 1 strings required.");
+		return;
+	}else{
+		// run string search
+		string_data = {
+			'file_path': PDF_ID,
+			'upper_left': upper_left,
+			'upper_right': upper_right,
+			'lower_left' : lower_left,
+			'lower_right' : lower_right
+		}
+		$.ajax({
+			type: 'GET',
+			url: '/string',
+			data: string_data,
+			success: _.bind(function(data) {
+				data = data.replace(/\D/g,'');
+				if(data.length==0){
+					alert("No String results found");
+				}else{
+					this.pdf_view.pdf_document.string_selections = new Tabula.StringSelections([], {pdf_document: this});
+					this.pdf_view.pdf_document.string_selections.fetch({
+						success: _.bind(function(){
+							var string_selections = this.pdf_view.pdf_document.string_selections.models.map(function(sel){
+								return Tabula.pdf_view.renderSelection(sel.attributes);
+							});
+					}, this),
+					error: _.bind(function(){
+						console.log("no predetected tables (404 on string.json)");
+						}, this)
+					});
+				}
+			}, this),
+			error: function(xhr, status, err) {
+				console.log('string search err: ', err);
+			}
+		});
+		return;
+	}
+  },
+
   clearAllSelections: function(){
     _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
     Tabula.pdf_view.pdf_document.selections.reset([]);
@@ -802,6 +1004,9 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     // reset doesn't trigger the right events because we have to remove from the collection and from the page (with selection.remove())
     // we can't use _.each because we're mutating the collection that we're iterating over
     // ugh
+	$.post('/pdf/' + PDF_ID + '/' + 'string',
+           { _method: 'delete' });
+	// Clear all string lists
   },
 
   restoreDetectedTables: function(){
@@ -846,7 +1051,8 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 
                   // three states: autodetection still incomplete, autodetection done but no tables found, autodetection done and tables found
                   'restore_detected_tables': this.pdf_view.hasAutodetectedTables ? "autodetect-finished" : "autodetect-in-progress",
-                  'disable_detected_tables': numOfSelectionsOnPage > 0 || this.pdf_view.pdf_document.autodetected_selections.size() === 0 ? 'disabled="disabled"' : ''
+                  'disable_detected_tables': numOfSelectionsOnPage > 0 || this.pdf_view.pdf_document.autodetected_selections.size() === 0 ? 'disabled="disabled"' : '',
+                  'set_string': ''
                   })));
     return this;
   },
@@ -949,7 +1155,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
   'events': {
     // on load, create an empty div with class 'selection-show' to be the selection thumbnail.
     'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
-    'click i.delete-page': 'deletePage',
+    'click i.delete-page': 'deletePage'
   },
   tagName: 'li',
   className: "page-thumbnail page",
@@ -1082,6 +1288,10 @@ Tabula.PDFView = Backbone.View.extend(
           Tabula.pdf_view.components['data_view'].closeAndRenderSelectionView();
         });
       });
+
+	  // Clear all string lists
+	  $.post('/pdf/' + PDF_ID + '/' + 'string',
+           { _method: 'delete' });
     },
 
     handleScroll: function(e){
@@ -1107,7 +1317,7 @@ Tabula.PDFView = Backbone.View.extend(
       }
       Tabula.pdf_view.lazyLoadCursor = new_cursor;
 
-      this.components['document_view'].render(); 
+      this.components['document_view'].render();
       this.components['sidebar_view'].render();
       // console.log("cursor", Tabula.pdf_view.lazyLoadCursor)
     },
