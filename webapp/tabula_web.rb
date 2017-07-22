@@ -248,23 +248,20 @@ Cuba.define do
 		else
 			ocr_ok = false
 		end
-		batch_processor = Java::TechnologyTabulaExtractors::BatchSelectionExtractor.new
+		puts process_type
+		coordslist_fullpath = ""
 		case process_type
 		when 'coords'
 			coordslist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'coords_list.json');
-			if(File.file?(coordslist_fullpath)==true)then
-				res.write batch_processor.extract(input_folder, output_folder, coordslist_fullpath, process_type, ocr_ok, overlap)
-			else
-				res.write "No list file found"
-			end
+			
 		when 'string'
-			puts process_type
-			stringlist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'string_list.json');
-			if(File.file?(stringlist_fullpath)==true)then
-				res.write batch_processor.extract(input_folder, output_folder, stringlist_fullpath, process_type, ocr_ok, overlap)
-			else
-				res.write "No list file found"
-			end
+			coordslist_fullpath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_path, 'string_list.json');
+		end
+		if(File.file?(coordslist_fullpath)==true)then
+			batch_extractor = Java::TechnologyTabula::BatchExtractor.new
+			res.write batch_extractor.performExtraction(input_folder, output_folder, coordslist_fullpath, process_type, ocr_ok, overlap)
+		else
+			res.write "No list file found"
 		end
 	end
   
