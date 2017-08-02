@@ -9,6 +9,7 @@ platform :jruby do
   gem "tilt", "~> 2.0.7"
 
   group :development do
+    gem 'jar-dependencies', '0.3.11'
     gem 'jbundler', '~> 0.9.3'
     gem "rake"
     gem "warbler", "~> 2.0.3"

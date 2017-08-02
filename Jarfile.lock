@@ -13,7 +13,6 @@
 - org.slf4j:slf4j-api:jar:1.7.25
 - commons-logging:commons-logging:jar:1.2
 - com.google.code.gson:gson:jar:2.8.0
-- org.yaml:snakeyaml:jar:1.18
 - org.apache.pdfbox:pdfbox:jar:2.0.7
 - net.sf.jsi:jsi:jar:1.1.0-SNAPSHOT
 - org.apache.pdfbox:pdfbox-debugger:jar:2.0.7
