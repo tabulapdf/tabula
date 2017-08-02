@@ -155,11 +155,12 @@ Tabula has bindings for JRuby and R. If you end up writing bindings for another 
 
     gem install bundler
     bundle install
+    jruby -S jbundle install
     ~~~
 
 **Then, start the development server:**
 
-    jruby -G -S rackup
+    jruby -G -r jbundler -S rackup
 
 (If you get encoding errors, set the `JAVA_OPTS` environment variable to `-Dfile.encoding=utf-8`)
 
@@ -169,7 +170,7 @@ You can a couple some options when executing the server in this manner:
 
     TABULA_DATA_DIR="/tmp/tabula" \
     TABULA_DEBUG=1 \
-    jruby -G -S rackup
+    jruby -G -r jbundler -S rackup
 
 * `TABULA_DATA_DIR` controls where uploaded data for Tabula is stored. By default,
   data is stored in the OS-dependent application data directory for the current
