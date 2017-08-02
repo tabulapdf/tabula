@@ -186,6 +186,13 @@ version of the app.
 
     jruby -G -S rake war
     java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -jar build/tabula.jar
+    
+
+If you intend to develop against an unreleased version of [`tabula-java`](https://github.com/tabulapdf/tabula-java), you need to install its JAR to your local Maven repository. From the directory that contains `tabula-java` source:
+
+    mvn install:install-file -Dfile=target/tabula-<version>-SNAPSHOT.jar -DgroupId=technology.tabula -DartifactId=tabula -Dversion=<version>-SNAPSHOT -Dpackaging=jar -DpomFile=pom.xml
+    
+Then, adjust the `Jarfile` accordingly.
 
 ### Building a packaged application version
 
