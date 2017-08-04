@@ -1,4 +1,4 @@
-FROM jruby:9.0-jdk
+FROM jruby:9.1-jdk
 
 RUN echo 'gem: --no-rdoc --no-ri' >> /.gemrc
 
@@ -17,8 +17,11 @@ WORKDIR /usr/src/app
 # these didn't work as ONBUILD, strangely. Idk why. -JBM
 ADD Gemfile /usr/src/app/
 ADD Gemfile.lock /usr/src/app/
+ADD Jarfile /usr/src/app/
+ADD Jarfile.lock /usr/src/app/
 RUN bundle install --system
+RUN jruby -S jbundle install
 ADD . /usr/src/app
 
 EXPOSE 9292
-CMD ["rackup", "-o", "0.0.0.0"]
+CMD ["jruby", "-G", "-r", "jbundler", "-S", "rackup", "-o", "0.0.0.0"]
