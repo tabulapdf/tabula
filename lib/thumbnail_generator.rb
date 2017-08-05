@@ -5,6 +5,7 @@ require 'observer'
 java_import javax.imageio.ImageIO
 java_import java.awt.image.BufferedImage
 java_import java.awt.Image
+java_import java.io.ByteArrayOutputStream
 
 java_import org.apache.pdfbox.pdmodel.PDDocument
 java_import org.apache.pdfbox.rendering.PDFRenderer
@@ -22,6 +23,41 @@ class AbstractThumbnailGenerator
 
   def generate_thumbnails!
     raise 'NotImplemented'
+  end
+end
+
+class PDFBoxThumbnailGenerator < AbstractThumbnailGenerator
+  def initialize(pdf_filename, output_directory, document_id, sizes=[2048, 560])
+    super(pdf_filename, output_directory, sizes)
+    @sizes = sizes
+    @pdf_document = PDDocument.load(java.io.File.new(pdf_filename))
+    @document_id = document_id
+  end
+
+  def generate_thumbnails!
+    total_pages = @pdf_document.getNumberOfPages
+    renderer = PDFRenderer.new(@pdf_document)
+
+    total_pages.times do |pi|
+      image = renderer.renderImageWithDPI(pi, 75)
+      imageWidth = image.getWidth.to_f
+      imageHeight = image.getHeight.to_f
+
+      @sizes.each do |size|
+        scale = size / imageWidth
+        bi = BufferedImage.new(size, (imageHeight * scale).round, image.getType)
+        bi.getGraphics.drawImage(image.getScaledInstance(size, (imageHeight * scale).round, Image::SCALE_SMOOTH), 0, 0, nil)
+
+        sio = StringIO.new
+        out = sio.to_outputstream
+        ImageIO.write(bi, 'png', out)
+        Tabula::Workspace.instance.add_file(sio.string, @document_id, "document_#{size}_#{pi+1}.png")
+      end
+
+      changed
+      notify_observers(pi+1, total_pages, "generating page thumbnails…")
+    end
+    @pdf_document.close
   end
 end
 
@@ -44,51 +80,4 @@ class MUDrawThumbnailGenerator < AbstractThumbnailGenerator
       notify_observers(i+1, @sizes.length, "generating page thumbnails...")
     end
   end
-end
-
-class PDFBoxThumbnailGenerator < AbstractThumbnailGenerator
-  def initialize(pdf_filename, output_directory, sizes=[2048, 560])
-    super(pdf_filename, output_directory, sizes)
-    @sizes = sizes
-    @pdf_document = PDDocument.load(java.io.File.new(pdf_filename))
-  end
-
-  def generate_thumbnails!
-    total_pages = @pdf_document.getNumberOfPages
-    renderer = PDFRenderer.new(@pdf_document)
-
-    total_pages.times do |pi|
-      image = renderer.renderImageWithDPI(pi, 75)
-      imageWidth = image.getWidth.to_f
-      imageHeight = image.getHeight.to_f
-
-      @sizes.each do |size|
-        scale = size / imageWidth
-        bi = BufferedImage.new(size, (imageHeight * scale).round, image.getType)
-        bi.getGraphics.drawImage(image.getScaledInstance(size, (imageHeight * scale).round, Image::SCALE_SMOOTH), 0, 0, nil)
-        ImageIO.write(bi,
-                      'png',
-                      java.io.File.new(File.join(@output_directory, "document_#{size}_#{pi+1}.png")))
-      end
-
-      changed
-      notify_observers(pi+1, total_pages, "generating page thumbnails…")
-    end
-    @pdf_document.close
-  end
-end
-
-
-if __FILE__ == $0
-
-  class STDERRProgressReporter
-    def update(page, total_pages, msg)
-      STDERR.puts "#{page}///#{total_pages} -- #{msg}"
-    end
-  end
-
-  pdftg = PDFBoxThumbnailGenerator.new(ARGV[0], '/tmp', [560])
-  #pdftg = MUDrawThumbnailGenerator.new(ARGV[0], '/tmp', [560])
-  pdftg.add_observer(STDERRProgressReporter.new)
-  pdftg.generate_thumbnails!
 end
