@@ -134,10 +134,11 @@ Tabula is open-source, so we'd love for you to incorporate pieces of Tabula into
 
 Tabula has bindings for JRuby and R. If you end up writing bindings for another language, let us know and we'll add a link here.
 
- - [tabula-extractor](https://github.com/tabulapdf/tabula-extractor/) provides JRuby bindings for tabula-java
  - [tabulizer](https://github.com/leeper/tabulizer) provides [R](https://www.r-project.org/) bindings for tabula-java and is community-supported by @leeper.
  - [tabula-js](https://github.com/ezodude/tabula-js) provides [Node.js](https://nodejs.org/en/) bindings for tabula-java; it is community-supported by @ezodude.
  - [tabula-py](https://github.com/chezou/tabula-py) provides [Python](https://python.org) bindings for tabula-java; it is community-supported by @chezou.
+ - [tabula-extractor](https://github.com/tabulapdf/tabula-extractor/) *DEPRECATED* - Provides JRuby bindings for tabula-java 
+
 
 
 
