@@ -35,7 +35,7 @@ Tabula.Page = Backbone.Model.extend({
     this.set('number_zero_indexed', this.get('number') - 1);
   },
   imageUrl: function(){
-    var resolution = Math.max(Tabula.pdf_view.pdf_document.get('thumbnail_sizes')) || 560;
+    var resolution = Math.max(Tabula.pdf_view.pdf_document.get('thumbnail_sizes')) || 800;
     this.set('image_url', (base_uri || '/') + 'pdfs/' + PDF_ID + '/document_'+resolution+'_' + this.get('number') + '.png');
     return this.get('image_url');
   }

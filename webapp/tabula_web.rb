@@ -16,16 +16,13 @@ java_import 'java.util.zip.ZipOutputStream'
 
 require_relative './tabula_settings.rb'
 
-unless File.directory?(TabulaSettings::DOCUMENTS_BASEPATH)
-  raise "DOCUMENTS_BASEPATH does not exist or is not a directory."
-end
-
 begin
   require_relative './tabula_version.rb'
 rescue LoadError
   $TABULA_VERSION = "rev#{`git rev-list --max-count=1 HEAD`.strip}"
 end
 
+require_relative '../lib/tabula_workspace.rb'
 require_relative '../lib/tabula_job_executor/executor.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_document_data.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
@@ -55,31 +52,21 @@ def upload(file)
   original_filename = file[:filename]
   file_id = Digest::SHA1.hexdigest(Time.now.to_s + original_filename) # just SHA1 of time isn't unique with multiple uploads
   file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
-  FileUtils.mkdir(file_path)
-  begin
-    FileUtils.mv(file[:tempfile].path,
-                 File.join(file_path, 'document.pdf'))
-  rescue Errno::EACCES # move fails on windows sometimes
-    FileUtils.cp_r(file[:tempfile].path,
-                   File.join(file_path, 'document.pdf'))
-    FileUtils.rm_rf(file[:tempfile].path)
-  end
 
-  filepath = File.join(file_path, 'document.pdf')
+  Tabula::Workspace.instance.move_file(file[:tempfile].path, file_id, 'document.pdf')
 
+  filepath = Tabula::Workspace.instance.get_document_path(file_id)
   job_batch = SecureRandom.uuid
-
   thumbnail_sizes =  [800]
 
   GenerateDocumentDataJob.create(:filepath => filepath,
                                  :original_filename => original_filename,
                                  :id => file_id,
-                                 :output_dir => file_path,
                                  :thumbnail_sizes => thumbnail_sizes,
                                  :batch => job_batch)
 
   DetectTablesJob.create(:filepath => filepath,
-                         :output_dir => file_path,
+                         :id => file_id,
                          :batch => job_batch)
 
   GenerateThumbnailJob.create(:file_id => file_id,
@@ -107,10 +94,7 @@ Cuba.define do
   on delete do
 
     on 'pdf/:file_id/page/:page_number' do |file_id, page_number|
-      index_fname = File.join(TabulaSettings::DOCUMENTS_BASEPATH,
-                              file_id,
-                              'pages.json')
-      index = File.open(index_fname) { |f| JSON.load(f) }
+      index = Tabula::Workspace.instance.get_document_pages(file_id)
       index.find { |p| p['number'] == page_number.to_i }['deleted'] = true
       File.open(index_fname, 'w') { |f| f.write JSON.generate(index) }
       res.write '' # Firefox complains about an empty response without this.
@@ -118,21 +102,7 @@ Cuba.define do
 
     # delete an uploaded file
     on 'pdf/:file_id' do |file_id|
-      workspace_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
-      raise if !File.exists?(workspace_file)
-
-      workspace = File.open(workspace_file) { |f| JSON.load(f) }
-      f = workspace.find { |g| g['id'] == file_id }
-
-      FileUtils.rm_rf(File.join(TabulaSettings::DOCUMENTS_BASEPATH, f['id']))
-      workspace.delete(f)
-
-      # update safely
-      tmp = Tempfile.new('workspace')
-      tmp.write(JSON.generate(workspace))
-      tmp.flush; tmp.close
-      FileUtils.cp(tmp.path, workspace_file)
-      tmp.unlink
+      Tabula::Workspace.instance.delete_document(file_id)
       res.write '' # Firefox complains about an empty response without this.
     end
 
@@ -154,13 +124,8 @@ Cuba.define do
     end
 
     on 'pdf/:file_id/metadata.json' do |file_id|
-      workspace_file = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
-      raise if !File.exists?(workspace_file)
-
-      workspace = File.open(workspace_file) { |f| JSON.load(f) }
-      f = workspace.find { |g| g['id'] == file_id }
       res['Content-Type'] = 'application/json'
-      res.write f.to_json
+      res.write Tabula::Workspace.instance.get_document_metadata(file_id)
     end
 
     [root, "about", "pdf/:file_id", "help"].each do |paths_to_single_page_app|
@@ -228,7 +193,7 @@ Cuba.define do
     end
 
     on "pdf/:file_id/data" do |file_id|
-      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      pdf_path = Tabula::Workspace.instance.get_document_path(file_id)
 
       coords = JSON.load(req.params['coords'])
       coords.sort_by! do |coord_set|
