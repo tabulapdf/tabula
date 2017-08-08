@@ -396,7 +396,7 @@ Cuba.define do
       res.write f.to_json
     end
 
-    [root, "about", "pdf/:file_id", "help"].each do |paths_to_single_page_app|
+    [root, "about", "pdf/:file_id", "help", "mytemplates"].each do |paths_to_single_page_app|
       on paths_to_single_page_app do
         index = File.read("webapp/index.html")
         if ROOT_URI != ''

@@ -21,21 +21,37 @@ var TabulaRouter = Backbone.Router.extend({
     "queue/:file_id":              'status',
     "error":                       'uploadError',
     "help":                        'help',
-    "about":                       'about'
+    "about":                       'about',
+    "mytemplates":                 'templates'
   },
 
   help: function(){
     document.title="Help | Tabula";
     $('nav li a').removeClass('active'); $('nav #help-nav').addClass('active');
-    $('#tabula-app').html( _.template( $('#help-template').html().replace(/nestedscript/g, 'script') )({
-    }) );
+    $('#tabula-app').html( _.template( $('#help-template').html().replace(/nestedscript/g, 'script') )({ }) );
   },
 
   about: function(){
     document.title="About | Tabula";
     $('nav li a').removeClass('active'); $('nav #about-nav').addClass('active');
-    $('#tabula-app').html( _.template( $('#about-template').html().replace(/nestedscript/g, 'script') )({
-    }) );
+    $('#tabula-app').html( _.template( $('#about-template').html().replace(/nestedscript/g, 'script') )({ }) );
+  },
+
+  templates: function(){
+    document.title="Templates | Tabula";
+    $('nav li a').removeClass('active'); $('nav #templates-nav').addClass('active');
+    $('#tabula-app').html( _.template( $('#templates-template').html().replace(/nestedscript/g, 'script') )({ }) );
+    $.ajax({
+      url: (base_uri || '/') + "js/template_library.js",
+      dataType: "script",
+      async: true,
+      success: function(data, status, jqxhr){
+        Tabula.library = new Tabula.TemplateLibrary({el: $('#tabula-app')[0]}).render();
+      },
+      error: function(a,b,c){
+        console.log(a,b,c);
+      }
+    });
   },
 
   upload: function() { // library page.
