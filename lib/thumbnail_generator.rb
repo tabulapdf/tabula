@@ -1,15 +1,13 @@
+# coding: utf-8
 require 'java'
 require 'observer'
-
-java.lang.System.setProperty('org.jpedal.jai', 'true')
-require_relative './jars/jpedal_lgpl.jar'
 
 java_import javax.imageio.ImageIO
 java_import java.awt.image.BufferedImage
 java_import java.awt.Image
 
-java_import org.jpedal.PdfDecoder
-java_import org.jpedal.fonts.FontMappings
+java_import org.apache.pdfbox.pdmodel.PDDocument
+java_import org.apache.pdfbox.rendering.PDFRenderer
 
 class AbstractThumbnailGenerator
   include Observable
@@ -48,54 +46,49 @@ class MUDrawThumbnailGenerator < AbstractThumbnailGenerator
   end
 end
 
-class JPedalThumbnailGenerator < AbstractThumbnailGenerator
+class PDFBoxThumbnailGenerator < AbstractThumbnailGenerator
   def initialize(pdf_filename, output_directory, sizes=[2048, 560])
     super(pdf_filename, output_directory, sizes)
-    @decoder = PdfDecoder.new(true)
-    FontMappings.setFontReplacements
-    @decoder.openPdfFile(pdf_filename)
-    @decoder.setExtractionMode(0, 1.0)
-    @decoder.useHiResScreenDisplay(true)
+    @sizes = sizes
+    @pdf_document = PDDocument.load(java.io.File.new(pdf_filename))
   end
 
   def generate_thumbnails!
-    total_pages = @decoder.getPageCount
+    total_pages = @pdf_document.getNumberOfPages
+    renderer = PDFRenderer.new(@pdf_document)
 
-    total_pages.times do |i|
+    total_pages.times do |pi|
+      image = renderer.renderImageWithDPI(pi, 75)
+      imageWidth = image.getWidth.to_f
+      imageHeight = image.getHeight.to_f
 
-      begin
-        image = @decoder.getPageAsImage(i+1);
-        image_w, image_h = image.getWidth, image.getHeight
-
-        @sizes.each do |s|
-          scale = s.to_f / image_w.to_f
-          bi = BufferedImage.new(s, image_h * scale, image.getType)
-          bi.getGraphics.drawImage(image.getScaledInstance(s, image_h * scale, Image::SCALE_SMOOTH), 0, 0, nil)
-          ImageIO.write(bi,
-                        'png',
-                        java.io.File.new(File.join(@output_directory,
-                                                   "document_#{s}_#{i+1}.png")))
-          changed
-          notify_observers(i+1, total_pages, "generating page thumbnails...")
-        end
-      rescue java.lang.RuntimeException
-        # TODO What?
+      @sizes.each do |size|
+        scale = size / imageWidth
+        bi = BufferedImage.new(size, (imageHeight * scale).round, image.getType)
+        bi.getGraphics.drawImage(image.getScaledInstance(size, (imageHeight * scale).round, Image::SCALE_SMOOTH), 0, 0, nil)
+        ImageIO.write(bi,
+                      'png',
+                      java.io.File.new(File.join(@output_directory, "document_#{size}_#{pi+1}.png")))
       end
+
+      changed
+      notify_observers(pi+1, total_pages, "generating page thumbnails…")
     end
-    @decoder.closePdfFile
+    @pdf_document.close
   end
 end
+
 
 if __FILE__ == $0
 
   class STDERRProgressReporter
-    def update(page, total_pages)
-      STDERR.puts "#{page}///#{total_pages}"
+    def update(page, total_pages, msg)
+      STDERR.puts "#{page}///#{total_pages} -- #{msg}"
     end
   end
 
-  #pdftg = JPedalThumbnailGenerator.new(ARGV[0], '/tmp', [560])
-  pdftg = MUDrawThumbnailGenerator.new(ARGV[0], '/tmp', [560])
+  pdftg = PDFBoxThumbnailGenerator.new(ARGV[0], '/tmp', [560])
+  #pdftg = MUDrawThumbnailGenerator.new(ARGV[0], '/tmp', [560])
   pdftg.add_observer(STDERRProgressReporter.new)
   pdftg.generate_thumbnails!
 end

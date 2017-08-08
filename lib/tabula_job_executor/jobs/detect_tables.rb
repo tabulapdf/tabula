@@ -32,6 +32,8 @@ class DetectTablesJob < Tabula::Background::Job
 
     rescue Java::JavaLang::Exception => e
       warn("Table auto-detect failed. You may need to select tables manually.")
+    ensure
+      extractor.close!
     end
 
     File.open(output_dir + "/tables.json", 'w') do |f|
