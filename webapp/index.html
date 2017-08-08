@@ -44,6 +44,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a id="upload-nav" href="">My Files</a></li>
+            <li><a id="templates-nav" href="mytemplates">My Templates</a></li>
             <li><a id="about-nav" href="about">About</a></li>
             <li><a id="help-nav" href="help">Help</a></li>
             <li><a href="https://github.com/tabulapdf/tabula">Source Code</a></li>
@@ -310,53 +311,10 @@
                   </tbody>
                 </table>
                 </div>
-
               </div>
 
-              <hr >
-              <div id="template-library-container">
-                <h4>Saved Templates</h4>
-                <p style="font-size: small;">If you want to extract the same data from multiple PDFs, you can select the appropriate regions once, save the selections as a Tabula Template, and load it in subsequent PDFs.</p>
-                <div id="file-list-container">
-                <table class="table file-list" id="templateTable">
-                  <thead>
-                    <tr>
-                      <th>Template Name</th>
-                      <th>Selection Count</th>
-                      <th>Page Count</th>
-                      <th>Date Added</th>
-                      <th>Remove</th>
-                      <th>Download</th>
-                    </tr>
-                  </thead>
-                  <tbody id="saved-templates-container">
-                  </tbody>
-                </table>
-                </div>
-
-                <div id="template-upload-form-container">
-                  <h4>Import one or more Tabula Templates</h4>
-                  <p>Once you save a Tabula Template, it'll appear here.<p>
-                  <form id="uploadtemplate" action="templates/upload.json" method="post" enctype="multipart/form-data" class="form-inline">
-
-                    <div class="input-group">
-                      <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
-                      <span class="input-group-btn">
-                          <span class="btn btn-primary btn-file">
-                              Browse&hellip; <input type="file" id="file" name="files[]" multiple accept="application/json">
-                          </span>
-                      </span>
-                      <input type="text" class="form-control" readonly>
-                    </div>
-
-                    <!-- fix for the fact that IE11 is trash https://blog.yorkxin.org/posts/2014/02/06/ajax-with-formdata-is-broken-on-ie10-ie11/ -->
-                    <input type="hidden" name="_dontcare">
-
-                    <button type="submit" class="btn btn-default">Import</button>
-                  </form>
-
-                </div>
-              </div>
+          <hr />
+          <p style="text-size: small;">If you have several PDFs with the same layout, you can select the appropriate regions once, then save the selections as a Tabula Template from the Select Tables page. If someone has shared a template with you, you can upload it to Tabula at the <a href="/mytemplates">My Templates page</a>.</p>
 
           </div> <!-- /jumbotron -->
         </div> <!-- /container -->
@@ -430,6 +388,60 @@
           </div> <!-- /jumbotron -->
         </div> <!-- /container -->
        </script>
+
+      <script type="text/templates" id="templates-template">
+        <div class="container">
+          <div class="jumbotron help">
+            <h1>My Saved Templates</h1>
+            <p style="font-size: small;">If you have several PDFs with the same layout, you can select the appropriate regions once, then save the selections as a Tabula Template, and load it in subsequent PDFs. You can see your saved templates here; you can also rename and delete them. If someone has shared a template with you, you can import it to Tabula here.</p>
+            <p>To use a template, <a href="">upload a file</a> or select it from <a href="">My Files</a>.</p>
+            <div id="template-library-container">
+              <div id="file-list-container">
+              <table class="table file-list" id="templateTable">
+                <thead>
+                  <tr>
+                    <th>Template Name</th>
+                    <th>Selection Count</th>
+                    <th>Page Count</th>
+                    <th>Date Added</th>
+                    <th>Remove</th>
+                    <th>Download</th>
+                  </tr>
+                </thead>
+                <tbody id="saved-templates-container">
+                </tbody>
+              </table>
+              </div>
+            </div>
+
+            <div id="template-upload-form-container">
+              <h2>Import one or more Tabula Templates</h2>
+              <p style="font-size: small;">Once you save a Tabula Template, it'll appear here.</p>
+              <form id="uploadtemplate" action="templates/upload.json" method="post" enctype="multipart/form-data" class="form-inline">
+
+                <div class="input-group">
+                  <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
+                  <span class="input-group-btn">
+                      <span class="btn btn-primary btn-file">
+                          Browse&hellip; <input type="file" id="file" name="files[]" multiple accept="application/json">
+                      </span>
+                  </span>
+                  <input type="text" class="form-control" readonly>
+                </div>
+
+                <!-- fix for the fact that IE11 is trash https://blog.yorkxin.org/posts/2014/02/06/ajax-with-formdata-is-broken-on-ie10-ie11/ -->
+                <input type="hidden" name="_dontcare">
+
+                <button type="submit" class="btn btn-default">Import</button>
+              </form>
+
+            </div>
+          </div> <!-- /jumbotron -->
+        </div> <!-- /container -->
+        <nestedscript type="text/javascript" src="js/vendor/upload-group.js"></nestedscript>
+        <nestedscript type="text/javascript" src="js/vendor/jquery.tablesorter.min.js"></nestedscript>
+      </script>
+
 
       <script type="text/template" id="help-template">
         <div class="container">
