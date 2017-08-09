@@ -30,8 +30,6 @@ If you'd like to contribute code, here's some stuff you should know: You're also
 
 Tabula comes in a bunch of parts, all located in the [TabulaPDF Github organization](github.com/tabulapdf). 
  -The [tabula](https://github.com/tabulapdf/tabula) repo is the UI. We aim for it to soon be all front-end, but right now has a small web server, written in Ruby, to interface between the front-end and extractor library, called "tabula-extractor"
- - the [tabula-extractor](https://github.com/tabulapdf/tabula-extractor/) Ruby gem actually extracts info from PDFs, using table locations provided by the UI (or on the command line). tabula-extractor will be deprecated soon too -- it'll be replaced by 'tabula-java'
  - [tabula-java](https://github.com/tabulapdf/tabula-java/) is a pure Java port, for speed/wider usability. 
- - [tabula-api](https://github.com/tabulapdf/tabula-api/) will eventually serve as the glue layer between tabula-java and the tabula UI (replacing that small web server mentioned above).
 
 The [Enhancements](https://github.com/tabulapdf/tabula/labels/enhancement) section of the issues lists some important improvements to Tabula that you could try out. They're well-suited to contributors, since they don't depend on a deep knowledge of all of Tabula's parts and they don't depend on close coordination.
