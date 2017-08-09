@@ -1089,7 +1089,10 @@ Tabula.PDFView = Backbone.View.extend(
         pdf_id: PDF_ID,
       });
 
-      this.pdf_document.fetch();
+      this.pdf_document.fetch({
+        success: function(m){ console.log("success"); console.log(m.attributes);}, 
+        error: function(m, r, o){ console.log("error", m, r, o) }
+      });
 
       this.options = new Tabula.Options();
       this.listenTo(this.options, 'change', this.options.write);
@@ -1303,7 +1306,8 @@ Tabula.PDFView = Backbone.View.extend(
     },
 
     saveTemplate: function (cb) {
-      var name = (this.loadedSavedState && this.loadedSavedState.name) || (this.pdf_document.attributes.original_filename || this.pdf_document.attributes.original_filename).replace(".pdf", "")
+      var name = (this.loadedSavedState && this.loadedSavedState.name) || (this.pdf_document.attributes.original_filename).replace(".pdf", "")
+      console.log(this.pdf_document.attributes);
       this.saveTemplateAs(null, name, cb)
     },
 
