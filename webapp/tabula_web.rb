@@ -77,37 +77,26 @@ def upload(file)
   return [job_batch, file_id]
 end
 
-def persist_template(template_metadata)
-  workspace["templates"].insert(0,{
-                    "name" => template_metadata[:template_name].gsub(".tabula-template.json", ""), 
-                    "selection_count" => template_metadata[:selection_count],
-                    "page_count" => template_metadata[:page_count], 
-                    "time" => template_metadata[:time], 
-                    "id" => template_metadata[:id]
-                  })
-end
-
-def delete_template(template_id)
-  workspace["templates"].delete_if{|t| t["id"] == template_id}
-
-  template_filename = template_id + ".tabula-template.json"
-  file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "..", "templates", template_filename)
-  File.delete(file_path)
-
-end
 
 def create_template(template_info)
-  template_name = template_info["name"]
+  puts template_info.inspect
+  template_name = template_info["name"] || "Unnamed Template #{Time.now.to_s}"
   template_id = Digest::SHA1.hexdigest(Time.now.to_s + template_name) # just SHA1 of time isn't unique with multiple uploads
   template_filename = template_id + ".tabula-template.json"
   file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "..", "templates")
   # write to file 
   FileUtils.mkdir_p(file_path)
-  puts template_info["template"].inspect
   open(File.join(file_path, template_filename), 'w'){|f| f << JSON.dump(template_info["template"])}
   page_count = template_info.has_key?("page_count") ? template_info["page_count"] : template_info["template"].map{|f| f["page"]}.uniq.count
   selection_count = template_info.has_key?("selection_count") ? template_info["selection_count"] :  template_info["template"].count
-  Tabula::Workspace.instance.add_template({id: template_id, template_name: template_name, page_count: page_count, time: Time.now.to_i, selection_count: selection_count})
+  Tabula::Workspace.instance.add_template({
+                                            "id" => template_id, 
+                                            "name" => template_name, 
+                                            "page_count" => page_count, 
+                                            "time" => Time.now.to_i, 
+                                            "selection_count" => selection_count,
+                                            "template" => template_info["template"]
+                                          })
   return template_id
 end
 
@@ -116,10 +105,9 @@ end
 class InvalidTemplateError < StandardError; end
 TEMPLATE_REQUIRED_KEYS = ["page", "extraction_method", "x1", "x2", "y1", "y2", "width", "height"]
 def upload_template(template_file)
-  template_name = template_file[:filename].gsub(/\.json$/, "").gsub(/\.tabula-template$/, "")
+  template_name = template_file[:filename].gsub(/\.json$/, "").gsub(/\.tabula-template/, "")
   template_id = Digest::SHA1.hexdigest(Time.now.to_s + template_name) # just SHA1 of time isn't unique with multiple uploads
   template_filename = template_id + ".tabula-template.json"
-  file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "..", "templates")
 
   # validate the uploaded template, since it really could be anything.
   template_json = open(template_file[:tempfile].path, 'r'){|f| f.read }
@@ -135,17 +123,13 @@ def upload_template(template_file)
   page_count = template_data.map{|sel| sel["page"]}.uniq.size
   selection_count = template_data.size
 
-  # write to file
-  FileUtils.mkdir_p(file_path)
-  begin
-    FileUtils.mv(template_file[:tempfile].path,
-                 File.join(file_path, template_filename))
-  rescue Errno::EACCES # move fails on windows sometimes
-    FileUtils.cp_r(template_file[:tempfile].path,
-                   File.join(file_path, template_filename))
-    FileUtils.rm_rf(template_file[:tempfile].path)
-  end
-  Tabula::Workspace.instance.add_template({id: template_id, template_name: template_name, page_count: page_count, time: Time.now.to_i,selection_count: selection_count})
+  # write to file and to workspace
+  Tabula::Workspace.instance.add_template({ "id" => template_id, 
+                                            "template" => template_data,
+                                            "name" => template_name, 
+                                            "page_count" => page_count, 
+                                            "time" => Time.now.to_i,
+                                            "selection_count" => selection_count})
   return template_id
 end
 
@@ -267,7 +251,7 @@ Cuba.define do
 
     on 'pdf/:file_id/metadata.json' do |file_id|
       res['Content-Type'] = 'application/json'
-      res.write Tabula::Workspace.instance.get_document_metadata(file_id)
+      res.write Tabula::Workspace.instance.get_document_metadata(file_id).to_json
     end
 
     [root, "about", "pdf/:file_id", "help", "mytemplates"].each do |paths_to_single_page_app|
