@@ -16,16 +16,13 @@ java_import 'java.util.zip.ZipOutputStream'
 
 require_relative './tabula_settings.rb'
 
-unless File.directory?(TabulaSettings::DOCUMENTS_BASEPATH)
-  raise "DOCUMENTS_BASEPATH does not exist or is not a directory."
-end
-
 begin
   require_relative './tabula_version.rb'
 rescue LoadError
   $TABULA_VERSION = "rev#{`git rev-list --max-count=1 HEAD`.strip}"
 end
 
+require_relative '../lib/tabula_workspace.rb'
 require_relative '../lib/tabula_job_executor/executor.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_document_data.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
@@ -55,31 +52,21 @@ def upload(file)
   original_filename = file[:filename]
   file_id = Digest::SHA1.hexdigest(Time.now.to_s + original_filename) # just SHA1 of time isn't unique with multiple uploads
   file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
-  FileUtils.mkdir(file_path)
-  begin
-    FileUtils.mv(file[:tempfile].path,
-                 File.join(file_path, 'document.pdf'))
-  rescue Errno::EACCES # move fails on windows sometimes
-    FileUtils.cp_r(file[:tempfile].path,
-                   File.join(file_path, 'document.pdf'))
-    FileUtils.rm_rf(file[:tempfile].path)
-  end
 
-  filepath = File.join(file_path, 'document.pdf')
+  Tabula::Workspace.instance.move_file(file[:tempfile].path, file_id, 'document.pdf')
 
+  filepath = Tabula::Workspace.instance.get_document_path(file_id)
   job_batch = SecureRandom.uuid
-
   thumbnail_sizes =  [800]
 
   GenerateDocumentDataJob.create(:filepath => filepath,
                                  :original_filename => original_filename,
                                  :id => file_id,
-                                 :output_dir => file_path,
                                  :thumbnail_sizes => thumbnail_sizes,
                                  :batch => job_batch)
 
   DetectTablesJob.create(:filepath => filepath,
-                         :output_dir => file_path,
+                         :id => file_id,
                          :batch => job_batch)
 
   GenerateThumbnailJob.create(:file_id => file_id,
@@ -90,48 +77,7 @@ def upload(file)
   return [job_batch, file_id]
 end
 
-def list_templates
-  workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
-  raise if !File.exists?(workspace_filepath)
-
-  workspace_file = File.open(workspace_filepath) { |f| JSON.load(f) }
-  workspace = if workspace_file.is_a? Array
-                {"pdfs" => workspace_file, "templates" => [], "version" => 2}
-              else
-                workspace_file
-              end
-  workspace["templates"]
-end
-def replace_template_metadata(template_id, template_metadata)
-  # write to workspace
-  workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
-  raise if !File.exists?(workspace_filepath)
-
-  workspace_file = File.open(workspace_filepath) { |f| JSON.load(f) }
-  workspace = if workspace_file.is_a? Array
-                {"pdfs" => workspace_file, "templates" => [], "version" => 2}
-              else
-                workspace_file
-              end
-  idx = workspace["templates"].index{|t| t["id"] == template_id}
-  workspace["templates"][idx] = template_metadata.select{|k,_| ["name", "selection_count", "page_count", "time", "id"].include?(k) }
-  tmp = Tempfile.new('workspace')
-  tmp.write(JSON.generate(workspace))
-  tmp.flush; tmp.close
-  FileUtils.cp(tmp.path, workspace_filepath)
-  tmp.unlink
-end
 def persist_template(template_metadata)
-  # write to workspace
-  workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
-  raise if !File.exists?(workspace_filepath)
-
-  workspace_file = File.open(workspace_filepath) { |f| JSON.load(f) }
-  workspace = if workspace_file.is_a? Array
-                {"pdfs" => workspace_file, "templates" => [], "version" => 2}
-              else
-                workspace_file
-              end
   workspace["templates"].insert(0,{
                     "name" => template_metadata[:template_name].gsub(".tabula-template.json", ""), 
                     "selection_count" => template_metadata[:selection_count],
@@ -139,54 +85,15 @@ def persist_template(template_metadata)
                     "time" => template_metadata[:time], 
                     "id" => template_metadata[:id]
                   })
-  tmp = Tempfile.new('workspace')
-  tmp.write(JSON.generate(workspace))
-  tmp.flush; tmp.close
-  FileUtils.cp(tmp.path, workspace_filepath)
-  tmp.unlink
 end
 
 def delete_template(template_id)
-  workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
-  raise if !File.exists?(workspace_filepath)
-
-  workspace_file = File.open(workspace_filepath) { |f| JSON.load(f) }
-  workspace = if workspace_file.is_a? Array
-                {"pdfs" => workspace_file, "templates" => [], "version" => 2}
-              else
-                workspace_file
-              end
   workspace["templates"].delete_if{|t| t["id"] == template_id}
-  tmp = Tempfile.new('workspace')
-  tmp.write(JSON.generate(workspace))
-  tmp.flush; tmp.close
-  FileUtils.cp(tmp.path, workspace_filepath)
-  tmp.unlink
 
   template_filename = template_id + ".tabula-template.json"
   file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "..", "templates", template_filename)
   File.delete(file_path)
 
-end
-
-def retrieve_template_metadata(template_id)
-  workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
-  raise if !File.exists?(workspace_filepath)
-
-  workspace_file = File.open(workspace_filepath) { |f| JSON.load(f) }
-  workspace = if workspace_file.is_a? Array
-                {"pdfs" => workspace_file, "templates" => [], "version" => 2}
-              else
-                workspace_file
-              end
-  workspace["templates"].find{|t| t["id"] == template_id}
-end
-
-def get_template_body(template_id)
-  template_filename = template_id + ".tabula-template.json"
-  file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "..", "templates", template_filename)
-  puts file_path
-  open(file_path, 'r'){|f| f.read }
 end
 
 def create_template(template_info)
@@ -200,9 +107,12 @@ def create_template(template_info)
   open(File.join(file_path, template_filename), 'w'){|f| f << JSON.dump(template_info["template"])}
   page_count = template_info.has_key?("page_count") ? template_info["page_count"] : template_info["template"].map{|f| f["page"]}.uniq.count
   selection_count = template_info.has_key?("selection_count") ? template_info["selection_count"] :  template_info["template"].count
-  persist_template({id: template_id, template_name: template_name, page_count: page_count, time: Time.now.to_i, selection_count: selection_count})
+  Tabula::Workspace.instance.add_template({id: template_id, template_name: template_name, page_count: page_count, time: Time.now.to_i, selection_count: selection_count})
   return template_id
 end
+
+
+
 class InvalidTemplateError < StandardError; end
 TEMPLATE_REQUIRED_KEYS = ["page", "extraction_method", "x1", "x2", "y1", "y2", "width", "height"]
 def upload_template(template_file)
@@ -235,7 +145,7 @@ def upload_template(template_file)
                    File.join(file_path, template_filename))
     FileUtils.rm_rf(template_file[:tempfile].path)
   end
-  persist_template({id: template_id, template_name: template_name, page_count: page_count, time: Time.now.to_i,selection_count: selection_count})
+  Tabula::Workspace.instance.add_template({id: template_id, template_name: template_name, page_count: page_count, time: Time.now.to_i,selection_count: selection_count})
   return template_id
 end
 
@@ -264,7 +174,7 @@ Cuba.define do
       # list them all
       on get do
         res.status = 200
-        res.write(JSON.dump(list_templates))
+        res.write(JSON.dump(Tabula::Workspace.instance.list_templates))
       end
 
       # create a template from the GUI
@@ -288,35 +198,34 @@ Cuba.define do
 
     on ":template_id.json" do |template_id|
       on get do
-        template_name = retrieve_template_metadata(template_id)["name"]
+        template_name = Tabula::Workspace.instance.get_template_metadata(template_id)["name"] # TODO
         res['Content-Type'] = 'application/json'
         res['Content-Disposition'] = "attachment; filename=\"#{template_name}.tabula-template.json\""
-        template_body = get_template_body(template_id)
-        puts template_body.size
+        template_body = Tabula::Workspace.instance.get_template_body(template_id)
         res.status = 200
         res.write template_body
       end
     end
     on ":template_id" do |template_id|
       on get do
-        template_metadata = retrieve_template_metadata(template_id)
+        template_metadata = Tabula::Workspace.instance.get_template_metadata(template_id) # TODO
         template_name = template_metadata["name"]
-        template_body = get_template_body(template_id)
+        template_body = Tabula::Workspace.instance.get_template_body(template_id)
         template_metadata["selections"] = JSON.parse template_body
         res.status = 200
         res.write JSON.dump(template_metadata)
       end
       on put do
-        old_metadata = retrieve_template_metadata(template_id)
+        old_metadata = Tabula::Workspace.instance.get_template_metadata(template_id) # TODO
         puts "template_id: #{template_id}"
         puts old_metadata.inspect
         new_metadata = old_metadata.merge(JSON.parse(req.params["model"]))
-        replace_template_metadata(template_id, new_metadata)
+        Tabula::Workspace.instance.replace_template_metadata(template_id, new_metadata)
         res.status = 200
         res.write(JSON.dump({template_id: template_id}))
       end
       on delete do
-        delete_template(template_id)
+        Tabula::Workspace.instance.delete_template(template_id)
         res.status = 200
         res.write ''
       end
@@ -326,10 +235,7 @@ Cuba.define do
   on delete do
 
     on 'pdf/:file_id/page/:page_number' do |file_id, page_number|
-      index_fname = File.join(TabulaSettings::DOCUMENTS_BASEPATH,
-                              file_id,
-                              'pages.json')
-      index = File.open(index_fname) { |f| JSON.load(f) }
+      index = Tabula::Workspace.instance.get_document_pages(file_id)
       index.find { |p| p['number'] == page_number.to_i }['deleted'] = true
       File.open(index_fname, 'w') { |f| f.write JSON.generate(index) }
       res.write '' # Firefox complains about an empty response without this.
@@ -337,26 +243,7 @@ Cuba.define do
 
     # delete an uploaded file
     on 'pdf/:file_id' do |file_id|
-      workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
-      raise if !File.exists?(workspace_filepath)
-
-      workspace_file = File.open(workspace_filepath) { |f| JSON.load(f) }
-      workspace = if workspace_file.is_a? Array
-                    {"pdfs" => workspace_file, "templates" => [], "version" => 2}
-                  else
-                    workspace_file
-                  end
-      f = workspace[:pdfs].find { |g| g['id'] == file_id }
-
-      FileUtils.rm_rf(File.join(TabulaSettings::DOCUMENTS_BASEPATH, f['id']))
-      workspace.delete(f)
-
-      # update safely
-      tmp = Tempfile.new('workspace')
-      tmp.write(JSON.generate(workspace))
-      tmp.flush; tmp.close
-      FileUtils.cp(tmp.path, workspace_filepath)
-      tmp.unlink
+      Tabula::Workspace.instance.delete_document(file_id)
       res.write '' # Firefox complains about an empty response without this.
     end
 
@@ -379,19 +266,8 @@ Cuba.define do
     end
 
     on 'pdf/:file_id/metadata.json' do |file_id|
-      workspace_filepath = File.join(TabulaSettings::DOCUMENTS_BASEPATH, 'workspace.json')
-      raise if !File.exists?(workspace_filepath)
-
-      workspace_file = File.open(workspace_filepath) { |f| JSON.load(f) }
-      workspace = if workspace_file.is_a? Array
-                    {"pdfs" => workspace_file, "templates" => [], "version" => 2}
-                  else
-                    workspace_file
-                  end
-
-      f = workspace["pdfs"].find { |g| g['id'] == file_id }
       res['Content-Type'] = 'application/json'
-      res.write f.to_json
+      res.write Tabula::Workspace.instance.get_document_metadata(file_id)
     end
 
     [root, "about", "pdf/:file_id", "help", "mytemplates"].each do |paths_to_single_page_app|
@@ -459,7 +335,7 @@ Cuba.define do
     end
 
     on "pdf/:file_id/data" do |file_id|
-      pdf_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id, 'document.pdf')
+      pdf_path = Tabula::Workspace.instance.get_document_path(file_id)
 
       coords = JSON.load(req.params['coords'])
       coords.sort_by! do |coord_set|
