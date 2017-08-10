@@ -79,7 +79,6 @@ end
 
 
 def create_template(template_info)
-  puts template_info.inspect
   template_name = template_info["name"] || "Unnamed Template #{Time.now.to_s}"
   template_id = Digest::SHA1.hexdigest(Time.now.to_s + template_name) # just SHA1 of time isn't unique with multiple uploads
   template_filename = template_id + ".tabula-template.json"
@@ -205,8 +204,6 @@ Cuba.define do
       end
       on put do
         old_metadata = Tabula::Workspace.instance.get_template_metadata(template_id) # TODO
-        puts "template_id: #{template_id}"
-        puts old_metadata.inspect
         new_metadata = old_metadata.merge(JSON.parse(req.params["model"]))
         Tabula::Workspace.instance.replace_template_metadata(template_id, new_metadata)
         res.status = 200
