@@ -55,6 +55,11 @@ module Tabula
       File.join(get_document_dir(document_id), 'document.pdf')
     end
 
+    def list_documents
+      read_workspace!
+      @workspace["pdfs"]
+    end
+
 
 
     def get_data_dir()
@@ -152,13 +157,14 @@ module Tabula
       File.open(@workspace_path) do |f|
         @workspace = JSON.parse(f.read)
       end
+      puts "workspace: #{@workspace} (#{@workspace.is_a? Array})"
       # what if the already-existing workspace is v1? i.e. if it's just an array?
       # then we'll make it the new kind, seamlessly.
       if @workspace.is_a? Array
         @workspace = {"pdfs" => @workspace, "templates" => [], "version" => 2}
-      else
-        @workspace
+        flush_workspace!
       end
+      @workspace
     end
 
     def flush_workspace!

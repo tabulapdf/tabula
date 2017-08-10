@@ -158,6 +158,7 @@ Cuba.define do
       # list them all
       on get do
         res.status = 200
+        res['Content-Type'] = 'application/json'
         res.write(JSON.dump(Tabula::Workspace.instance.list_templates))
       end
 
@@ -165,6 +166,7 @@ Cuba.define do
       on post do 
         template_id = create_template(JSON.parse(req.params["model"]))
         res.status = 200
+        res['Content-Type'] = 'application/json'
         res.write(JSON.dump({template_id: template_id}))
       end
     end
@@ -177,6 +179,7 @@ Cuba.define do
         template_ids = req.params['files'].map{|f| upload_template(f)}
       end
       res.status = 200
+      res['Content-Type'] = 'application/json'
       res.write(JSON.dump({template_ids: template_ids}))
     end
 
@@ -197,6 +200,7 @@ Cuba.define do
         template_body = Tabula::Workspace.instance.get_template_body(template_id)
         template_metadata["selections"] = JSON.parse template_body
         res.status = 200
+        res['Content-Type'] = 'application/json'
         res.write JSON.dump(template_metadata)
       end
       on put do
@@ -206,6 +210,7 @@ Cuba.define do
         new_metadata = old_metadata.merge(JSON.parse(req.params["model"]))
         Tabula::Workspace.instance.replace_template_metadata(template_id, new_metadata)
         res.status = 200
+        res['Content-Type'] = 'application/json'
         res.write(JSON.dump({template_id: template_id}))
       end
       on delete do
@@ -243,6 +248,12 @@ Cuba.define do
   on get do
     on 'pdfs' do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
+    end
+
+    on 'documents' do
+      res.status = 200
+      res['Content-Type'] = 'application/json'
+      res.write(JSON.dump(Tabula::Workspace.instance.list_documents))
     end
 
     on 'version' do
