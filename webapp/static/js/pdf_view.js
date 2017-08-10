@@ -818,7 +818,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   initialize: function(stuff){
     this.pdf_view = stuff.pdf_view;
     this.saved_template_collection = stuff.saved_template_collection;
-    _.bindAll(this, 'queryAllData', 'render', 'saveTemplate', 'loadTemplate');
+    _.bindAll(this, 'queryAllData', 'render', 'saveTemplate');
     this.listenTo(this.pdf_view.pdf_document, 'sync', this.render );
     console.log("stuff.saved_template_collection", this.saved_template_collection);
     this.saved_template_library_view = new Tabula.SavedTemplateLibraryView({collection: this.saved_template_collection})
@@ -843,9 +843,6 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   saveTemplate: function(e){
     $(e.currentTarget).attr("disabled", "disabled");
     this.pdf_view.saveTemplate(function(){ $(e.currentTarget).removeAttr("disabled") });
-  },
-  loadTemplate: function(){
-
   },
 
   restoreDetectedTables: function(){
@@ -1295,13 +1292,12 @@ Tabula.PDFView = Backbone.View.extend(
     },
 
     loadSavedTemplate: function(template_model){
+      _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
       template_model.fetch({success: _.bind(function(template_model){
         var selections_to_load = _(template_model.get('selections')).map(function(sel){
           return Tabula.pdf_view.renderSelection(sel);
         });
         this.pdf_document.selections.reset(selections_to_load);
-
-
       }, this)});
     },
 
