@@ -840,8 +840,19 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   saveTemplate: function(e){
-    $(e.currentTarget).attr("disabled", "disabled");
-    this.pdf_view.saveTemplate(function(){ $(e.currentTarget).removeAttr("disabled") });
+    $btn = $(e.currentTarget);
+    $btnText = $btn.find(".button-text");
+    var oldButtonText = $btnText.text();
+    $btn.attr("disabled", "disabled");
+    $btnText.text("Saving...");
+    this.pdf_view.saveTemplate(function(){ 
+      $btnText.text("Saved!");
+      window.setTimeout( function(){
+        $btn.removeAttr("disabled");
+        $btn.removeProp("disabled");
+        $btnText.text(oldButtonText);
+      }, 2000);
+    });
   },
 
   restoreDetectedTables: function(){

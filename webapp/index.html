@@ -120,11 +120,11 @@
         <span style="float: right;" class="template-menu">
 
           <div class="dropdown" <%= disable_load_template %> style="display: inline;">
-            <button type="button" class="dropdown-toggle btn btn-link" data-toggle="dropdown" href="#" <%= disabled_if_there_are_selections %>><span class="glyphicon glyphicon-import" title="You may only load a template if there are no selections active in your PDF."></span> Load Template</button>
+            <button type="button" class="dropdown-toggle btn btn-link" data-toggle="dropdown" href="#" <%= disabled_if_there_are_selections %>><span class="glyphicon glyphicon-import" title="You may only load a template if there are no selections active in your PDF."></span>Load Template</button>
             <div id="template-dropdown-container" class="dropdown-menu">
             </div>
           </div>
-          <a href="javascript:void(0)"><button type="button" id="save-template" class="btn btn-info" <%= disable_save_template %>><span class="glyphicon glyphicon-export"></span> Save as Template</button></a>
+          <a href="javascript:void(0)"><button type="button" id="save-template" class="btn btn-info" style="min-width: 155px;" <%= disable_save_template %>><span class="glyphicon glyphicon-export"></span> <span class="button-text">Save as Template</span></button></a>
 
         </span>
         <span style="clear: both;">
