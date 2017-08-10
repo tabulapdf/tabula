@@ -6,6 +6,9 @@ module Tabula
     include JRuby::Synchronized
     include Singleton
 
+    STARTING_VALUE = {"pdfs" => [], "templates" => [], "version" => 2}
+
+
     def initialize(data_dir=TabulaSettings.getDataDir)
       unless File.directory?(data_dir)
         raise "DOCUMENTS_BASEPATH does not exist or is not a directory."
@@ -13,13 +16,7 @@ module Tabula
 
       @data_dir = data_dir
       @workspace_path = File.join(@data_dir, "pdfs", "workspace.json")
-      # TODO: what if the already-existing workspace is v1?
-              # if workspace_file.is_a? Array
-              #   {"pdfs" => workspace_file, "templates" => [], "version" => 2}
-              # else
-              #   workspace_file
-              # end      
-      @workspace = {"pdfs" => [], "templates" => [], "version" => 2}
+      @workspace = STARTING_VALUE
       if !File.exists?(@workspace_path)
         FileUtils.mkdir_p(File.join(@data_dir, "pdfs"))
       end
@@ -151,8 +148,16 @@ module Tabula
 
 
     def read_workspace!
+      return STARTING_VALUE unless File.exists?(@workspace_path)
       File.open(@workspace_path) do |f|
         @workspace = JSON.parse(f.read)
+      end
+      # what if the already-existing workspace is v1? i.e. if it's just an array?
+      # then we'll make it the new kind, seamlessly.
+      if @workspace.is_a? Array
+        @workspace = {"pdfs" => @workspace, "templates" => [], "version" => 2}
+      else
+        @workspace
       end
     end
 
