@@ -820,7 +820,6 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     this.saved_template_collection = stuff.saved_template_collection;
     _.bindAll(this, 'queryAllData', 'render', 'saveTemplate');
     this.listenTo(this.pdf_view.pdf_document, 'sync', this.render );
-    console.log("stuff.saved_template_collection", this.saved_template_collection);
     this.saved_template_library_view = new Tabula.SavedTemplateLibraryView({collection: this.saved_template_collection})
   },
 
@@ -1087,7 +1086,7 @@ Tabula.PDFView = Backbone.View.extend(
       });
 
       this.pdf_document.fetch({
-        success: function(m){ console.log("success"); console.log(m.attributes);}, 
+        success: function(m){ }, 
         error: function(m, r, o){ console.log("error", m, r, o) }
       });
 
