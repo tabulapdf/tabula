@@ -23,11 +23,9 @@ class GenerateDocumentDataJob < Tabula::Background::Job
             'size' => File.size(filepath),
             'thumbnail_sizes' => options[:thumbnail_sizes]
           }
-
     at(5, 100, "analyzing PDF text...")
 
     extractor = Tabula::Extraction::PagesInfoExtractor.new(filepath)
-
     page_data = extractor.pages.to_a
     doc['page_count'] = page_data.size
     unless page_data.any? { |pd| pd[:hasText] }
@@ -36,7 +34,6 @@ class GenerateDocumentDataJob < Tabula::Background::Job
     end
 
     Tabula::Workspace.instance.add_document(doc, page_data)
-
     at(100, 100, "complete")
     extractor.close!
     return nil
