@@ -77,22 +77,23 @@ Tabula.UploadedFile = Backbone.Model.extend({
 
 Tabula.UploadedFilesCollection = Backbone.Collection.extend({
     model: Tabula.UploadedFile,
-    url: function(){ return 'pdfs/workspace.json'+ '?' + Number(new Date()).toString() },
+    url: function(){ return 'documents'+ '?' + Number(new Date()).toString() },
     comparator: function(i){ return -i.get('time')},
-    parse: function(items){
-      _(items).each(function(i){
+    parse: function(pdfs){
+      _(pdfs).each(function(i){
         if(!i.original_filename){
           i.original_filename = i.file;
         }
       });
       // if it's still being processed, don't enter it into the library.
-      items = _(items).reject(_.bind(function(uploaded_file){
+      pdfs = _(pdfs).reject(_.bind(function(uploaded_file){
         var in_progress = Tabula.library && Tabula.library.uploads_collection.findWhere({file_id: uploaded_file.id});
         return in_progress
       }, this));
-      return items;
+      return pdfs;
     }
 });
+
 
 Tabula.UploadedFileView = Backbone.View.extend({
   tagName: 'tr',
@@ -152,7 +153,8 @@ Tabula.Library = Backbone.View.extend({
     initialize: function(){
       _.bindAll(this, 'uploadPDF', 'render', 'renderFileLibrary');
       this.files_collection = new Tabula.UploadedFilesCollection([]);
-      this.files_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); this.renderFileLibrary(); }, this) });
+      this.files_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); }, this) });
+      
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
       this.uploads_collection = new Tabula.FileUploadsCollection([]);
 
@@ -223,12 +225,12 @@ Tabula.Library = Backbone.View.extend({
               }, this))
           }, this),
           error: _.bind(function(a,b,c){
+            $(e.currentTarget).find('button').removeAttr('disabled');
             this.uploads_collection.each(function(file_upload){
               file_upload.message = "Sorry, your file upload could not be processed. ("+a.statusText+")";
               file_upload.pct_complete = 100;
               file_upload.error = true;
             })
-            $(e.currentTarget).find('button').removeAttr('disabled');
           },this),
           data: formdata,
 
@@ -281,6 +283,7 @@ Tabula.Library = Backbone.View.extend({
         pct_complete: 0,
         importing: false
       }) );
+      this.renderFileLibrary();
       this.renderNotification();
       this.renderVersion();
       return this;

@@ -247,7 +247,7 @@ form {
 	position: fixed;
 	top: 50px;
 	left: $sidebarWidth;
-	width: 100%;
+	width: calc(100% - 200px);
 	z-index: 101; /* gotta be >100, which is the max z-index for selections */
 	background: #d9edf7;
 	padding: 1em;
@@ -266,6 +266,16 @@ form {
 	}
 	span.filename {
 		vertical-align: middle;
+	}
+
+	.template-menu #template-dropdown-container{
+		ul {
+			padding-left: 20px;
+		}
+		li {
+			cursor: pointer;
+			text-decoration: underline;
+		}
 	}
 }
 

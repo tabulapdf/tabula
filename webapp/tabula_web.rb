@@ -77,6 +77,37 @@ def upload(file)
   return [job_batch, file_id]
 end
 
+class InvalidTemplateError < StandardError; end
+TEMPLATE_REQUIRED_KEYS = ["page", "extraction_method", "x1", "x2", "y1", "y2", "width", "height"]
+def upload_template(template_file)
+  template_name = template_file[:filename].gsub(/\.json$/, "").gsub(/\.tabula-template/, "")
+  template_id = Digest::SHA1.hexdigest(Time.now.to_s + template_name) # just SHA1 of time isn't unique with multiple uploads
+  template_filename = template_id + ".tabula-template.json"
+
+  # validate the uploaded template, since it really could be anything.
+  template_json = open(template_file[:tempfile].path, 'r'){|f| f.read }
+  begin
+    template_data = JSON.parse(template_json)
+  rescue JSON::ParserError => e
+    raise InvalidTemplateError.new("template is invalid json: #{e}")
+  end
+
+  raise InvalidTemplateError.new("template is invalid, must be an array of selection objects") unless template_data.is_a?(Array)
+  raise InvalidTemplateError.new("template is invalid; a selection object is invalid") unless template_data.all?{|sel| TEMPLATE_REQUIRED_KEYS.all?{|k| sel.has_key?(k)} }
+
+  page_count = template_data.map{|sel| sel["page"]}.uniq.size
+  selection_count = template_data.size
+
+  # write to file and to workspace
+  Tabula::Workspace.instance.add_template({ "id" => template_id, 
+                                            "template" => template_data,
+                                            "name" => template_name, 
+                                            "page_count" => page_count, 
+                                            "time" => Time.now.to_i,
+                                            "selection_count" => selection_count})
+  return template_id
+end
+
 Cuba.define do
   if TabulaSettings::ENABLE_DEBUG_METHODS
     require_relative './tabula_debug.rb'
@@ -89,6 +120,95 @@ Cuba.define do
   on 'queue' do
     require_relative './tabula_job_progress.rb'
     run TabulaJobProgress
+  end
+
+  on "templates" do 
+    # GET  /books/ .... collection.fetch();
+    # POST /books/ .... collection.create();
+    # GET  /books/1 ... model.fetch();
+    # PUT  /books/1 ... model.save();
+    # DEL  /books/1 ... model.destroy();
+
+    on root do 
+      # list them all
+      on get do
+        res.status = 200
+        res['Content-Type'] = 'application/json'
+        res.write(JSON.dump(Tabula::Workspace.instance.list_templates))
+      end
+
+      # create a template from the GUI
+      on post do 
+        template_info = JSON.parse(req.params["model"])
+        template_name = template_info["name"] || "Unnamed Template #{Time.now.to_s}"
+        template_id = Digest::SHA1.hexdigest(Time.now.to_s + template_name) # just SHA1 of time isn't unique with multiple uploads
+        template_filename = template_id + ".tabula-template.json"
+        file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "..", "templates")
+        # write to file 
+        FileUtils.mkdir_p(file_path)
+        open(File.join(file_path, template_filename), 'w'){|f| f << JSON.dump(template_info["template"])}
+        page_count = template_info.has_key?("page_count") ? template_info["page_count"] : template_info["template"].map{|f| f["page"]}.uniq.count
+        selection_count = template_info.has_key?("selection_count") ? template_info["selection_count"] :  template_info["template"].count
+        Tabula::Workspace.instance.add_template({
+                                                  "id" => template_id, 
+                                                  "name" => template_name, 
+                                                  "page_count" => page_count, 
+                                                  "time" => Time.now.to_i, 
+                                                  "selection_count" => selection_count,
+                                                  "template" => template_info["template"]
+                                                })
+        res.status = 200
+        res['Content-Type'] = 'application/json'
+        res.write(JSON.dump({template_id: template_id}))
+      end
+    end
+
+    # upload a template from disk
+    on 'upload.json' do
+      if req.params['file']
+        template_ids = [upload_template(req.params['file'])]
+      elsif req.params['files']
+        template_ids = req.params['files'].map{|f| upload_template(f)}
+      end
+      res.status = 200
+      res['Content-Type'] = 'application/json'
+      res.write(JSON.dump({template_ids: template_ids}))
+    end
+
+    on ":template_id.json" do |template_id|
+      on get do
+        template_name = Tabula::Workspace.instance.get_template_metadata(template_id)["name"] # TODO
+        res['Content-Type'] = 'application/json'
+        res['Content-Disposition'] = "attachment; filename=\"#{template_name}.tabula-template.json\""
+        template_body = Tabula::Workspace.instance.get_template_body(template_id)
+        res.status = 200
+        res.write template_body
+      end
+    end
+    on ":template_id" do |template_id|
+      on get do
+        template_metadata = Tabula::Workspace.instance.get_template_metadata(template_id) # TODO
+        template_name = template_metadata["name"]
+        template_body = Tabula::Workspace.instance.get_template_body(template_id)
+        template_metadata["selections"] = JSON.parse template_body
+        res.status = 200
+        res['Content-Type'] = 'application/json'
+        res.write JSON.dump(template_metadata)
+      end
+      on put do
+        old_metadata = Tabula::Workspace.instance.get_template_metadata(template_id) # TODO
+        new_metadata = old_metadata.merge(JSON.parse(req.params["model"]))
+        Tabula::Workspace.instance.replace_template_metadata(template_id, new_metadata)
+        res.status = 200
+        res['Content-Type'] = 'application/json'
+        res.write(JSON.dump({template_id: template_id}))
+      end
+      on delete do
+        Tabula::Workspace.instance.delete_template(template_id)
+        res.status = 200
+        res.write ''
+      end
+    end
   end
 
   on delete do
@@ -114,9 +234,16 @@ Cuba.define do
     end
   end
 
+
   on get do
     on 'pdfs' do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
+    end
+
+    on 'documents' do
+      res.status = 200
+      res['Content-Type'] = 'application/json'
+      res.write(JSON.dump(Tabula::Workspace.instance.list_documents))
     end
 
     on 'version' do
@@ -125,10 +252,10 @@ Cuba.define do
 
     on 'pdf/:file_id/metadata.json' do |file_id|
       res['Content-Type'] = 'application/json'
-      res.write Tabula::Workspace.instance.get_document_metadata(file_id)
+      res.write Tabula::Workspace.instance.get_document_metadata(file_id).to_json
     end
 
-    [root, "about", "pdf/:file_id", "help"].each do |paths_to_single_page_app|
+    [root, "about", "pdf/:file_id", "help", "mytemplates"].each do |paths_to_single_page_app|
       on paths_to_single_page_app do
         index = File.read("webapp/index.html")
         if ROOT_URI != ''
