@@ -1,0 +1,21 @@
+---
+:runtime:
+- org.apache.commons:commons-csv:jar:1.4
+- commons-cli:commons-cli:jar:1.4
+- org.bouncycastle:bcprov-jdk15on:jar:1.56
+- technology.tabula:tabula:jar:1.0.1
+- jline:jline:jar:2.11
+- org.slf4j:slf4j-simple:jar:1.7.25
+- org.bouncycastle:bcmail-jdk15on:jar:1.56
+- org.apache.pdfbox:fontbox:jar:2.0.7
+- org.bouncycastle:bcpkix-jdk15on:jar:1.56
+- org.slf4j:slf4j-api:jar:1.7.25
+- commons-logging:commons-logging:jar:1.2
+- com.google.code.gson:gson:jar:2.8.0
+- com.github.jai-imageio:jai-imageio-core:jar:1.3.1
+- org.yaml:snakeyaml:jar:1.18
+- org.apache.pdfbox:pdfbox:jar:2.0.7
+- net.sf.jsi:jsi:jar:1.1.0-SNAPSHOT
+- net.sf.trove4j:trove4j:jar:3.0.3
+- com.github.jai-imageio:jai-imageio-jpeg2000:jar:1.3.0
+- com.levigo.jbig2:levigo-jbig2-imageio:jar:2.0

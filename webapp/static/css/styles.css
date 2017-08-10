@@ -7492,7 +7492,7 @@ form {
   position: fixed;
   top: 50px;
   left: 195px;
-  width: 100%;
+  width: calc(100% - 200px);
   z-index: 101;
   /* gotta be >100, which is the max z-index for selections */
   background: #d9edf7;
@@ -7513,6 +7513,13 @@ form {
 }
 #control-panel span.filename {
   vertical-align: middle;
+}
+#control-panel .template-menu #template-dropdown-container ul {
+  padding-left: 20px;
+}
+#control-panel .template-menu #template-dropdown-container li {
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 #main-pane {
