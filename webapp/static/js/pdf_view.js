@@ -1003,6 +1003,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     // on load, create an empty div with class 'selection-show' to be the selection thumbnail.
     'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
     'click i.delete-page': 'deletePage',
+    'click a': 'scrollToPage'
   },
   tagName: 'li',
   className: "page-thumbnail page",
@@ -1018,6 +1019,18 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     _.bindAll(this, 'render', 'createSelectionThumbnail', 'changeSelectionThumbnail', 'removeSelectionThumbnail');
     this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ this.render(); });
     this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ this.render(); });
+  },
+
+  // why do we have this?
+  // due to #586 / https://github.com/tabulapdf/tabula/commit/d3bdb4957ebc84ef2c2b0ceebb6f2ea5cca0faed,
+  // Tabula now works under a relative path, using the <base> tag.
+  // however, the base tag breaks anchor links, since <base> applies to them too.
+  // so we have to replicate the "normal" anchor-link click behavior here.
+  scrollToPage: function(e){
+    console.log("scrollToPage");
+    var hashToGoTo = $(e.currentTarget).attr('href').replace("#", "")
+    document.location.hash=hashToGoTo;
+    e.preventDefault();
   },
 
   deletePage: function(){
