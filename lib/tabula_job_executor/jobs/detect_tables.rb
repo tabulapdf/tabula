@@ -6,8 +6,7 @@ class DetectTablesJob < Tabula::Background::Job
   include Observable
   def perform
     filepath = options[:filepath]
-    output_dir = options[:output_dir]
-
+    document_id = options[:id]
 
     page_areas_by_page = []
 
@@ -32,11 +31,11 @@ class DetectTablesJob < Tabula::Background::Job
 
     rescue Java::JavaLang::Exception => e
       warn("Table auto-detect failed. You may need to select tables manually.")
+    ensure
+      extractor.close!
     end
 
-    File.open(output_dir + "/tables.json", 'w') do |f|
-      f.puts page_areas_by_page.to_json
-    end
+    Tabula::Workspace.instance.add_file(page_areas_by_page.to_json, document_id, 'tables.json')
 
     at(100, 100, "complete")
     return nil
