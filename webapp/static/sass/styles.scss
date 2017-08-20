@@ -268,14 +268,24 @@ form {
 		vertical-align: middle;
 	}
 
-	.template-menu #template-dropdown-container{
+  #template-dropdown-container{
 		ul {
 			padding-left: 20px;
 		}
-		li {
-			cursor: pointer;
-			text-decoration: underline;
+		button { // this is the autodetected tables button
+			padding-left: 0px;
 		}
+		ul:first-of-type {
+			margin-bottom: 0px; // we're trying to make the template library <ul> and the <ul> that contains only the autodetected tables one look as if they're one <ul>
+		}
+		li a{
+			cursor: pointer;
+			color: #333;
+		}
+	}
+	#template-dropdown-templates-list-container li a {
+		cursor: pointer;
+		color: #333;
 	}
 }
 
