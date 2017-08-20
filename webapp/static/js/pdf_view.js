@@ -122,6 +122,13 @@ Tabula.Selection = Backbone.Model.extend({
       }
     }, this));
   },
+  repeatLassoOnce: function() {
+    var current_page_number = this.get('page_number');
+    var next_page = Tabula.pdf_view.pdf_document.page_collection.at(Tabula.pdf_view.pdf_document.page_collection.indexOf(Tabula.pdf_view.pdf_document.page_collection.findWhere({number: current_page_number}))+1);
+    new_selection = this.clone();                            // and create a new Selection.
+    new_selection.set('page_number', next_page.get('number'));
+    this.collection.add(Tabula.pdf_view.renderSelection(new_selection.toCoords()));
+  },
 });
 
 // Not currently used at all.
@@ -776,11 +783,22 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       selection.remove();
     }
 
-    // if this is not the last page
+    // if this is not the last pager
     if(this.model != this.model.collection.last()) {
       var but_id = this.model.get('number') + '-' + selection.id;  //create a "Repeat this Selection" button
-      var button = $('<button class="btn btn-default repeat-lassos" id="'+but_id+'">Repeat this Selection</button>');
-      button.data("selectionId", selection.id);
+      var button = $('<div class="btn-group repeat-lassos-group" id="'+but_id+'"> \
+      <button type="button" class="btn btn-default repeat-lassos">Repeat this Selection</button>\
+      <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
+        <span class="caret"></span>\
+        <span class="sr-only">Toggle Dropdown</span>\
+      </button>\
+      <ul class="dropdown-menu">\
+        <li><a class="dropdown-item repeat-lassos" href="#">Repeat to All Pages</a></li>\
+        <li><a class="dropdown-item repeat-lasso-once" href="#">Repeat to Next Page</a></li>\
+      </ul>\
+    </div>');
+      button.find("button").data("selectionId", selection.id);
+      button.find("a").data("selectionId", selection.id);
       selection.$el.append(button);
     }
 
@@ -898,14 +916,33 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 
                   })));
     
-    this.$el.find("#template-dropdown-container").html(this.saved_template_library_view.render().el);
+    this.$el.find("#template-dropdown-templates-list-container").html(this.saved_template_library_view.render().el);
 
     return this;
   },
 });
 
+Tabula.SidebarView = Backbone.View.extend({
+  className: 'sidebar-view',
+  thumbnail_list_view: null, // defined on initialize
+  pdf_view: null,            // defined on initialize
+  template: _.template($('#templates #select-sidebar-template').html().replace(/nestedscript/g, 'script')),
+  initialize: function(stuff){
+    _.bindAll(this, 'render')
+    this.pdf_view = stuff.pdf_view;
+    this.thumbnail_list_view = new Tabula.ThumbnailListView(stuff);
+  },
+  render: function(){
+    this.$el.html(this.template({
+                    'original_filename': this.pdf_view.pdf_document.get('original_filename')
+                  }));
+    this.thumbnail_list_view.$el = this.$el.find("#thumbnail-list");
+    this.thumbnail_list_view.render();
+    return this;
+  }
+}),
 
-Tabula.SidebarView = Backbone.View.extend({ // only one
+Tabula.ThumbnailListView = Backbone.View.extend({ // only one
   tagName: 'ul',
   className: 'thumbnail-list',
   thumbnail_views: {},
@@ -1140,7 +1177,16 @@ Tabula.PDFView = Backbone.View.extend(
           var selectionId = $(e.currentTarget).data('selectionId');
           var selection = Tabula.pdf_view.pdf_document.selections.get(selectionId);
           selection.repeatLassos();
+          e.preventDefault();
         });
+      $('body').
+        on("click", ".repeat-lasso-once", function(e){
+          var selectionId = $(e.currentTarget).data('selectionId');
+          var selection = Tabula.pdf_view.pdf_document.selections.get(selectionId);
+          selection.repeatLassoOnce();
+          e.preventDefault();
+        });
+
 
       window.tabula_router.route("pdf/:file_id/extract", function(){
         Tabula.pdf_view.createDataView();
@@ -1162,7 +1208,7 @@ Tabula.PDFView = Backbone.View.extend(
         var el = pdf_pages[i];
         if(isElementPartiallyInContainer(el, this.components['document_view'].el)){
           $('.page-thumbnail.active').removeClass('active');
-          this.components['sidebar_view'].thumbnail_views[i+1].$el.addClass('active');
+          this.components['sidebar_view'].thumbnail_list_view.thumbnail_views[i+1].$el.addClass('active');
           new_cursor = Math.max(new_cursor, parseInt($(el).find('img').data('page')));
           break;
         }
@@ -1178,7 +1224,7 @@ Tabula.PDFView = Backbone.View.extend(
       Tabula.pdf_view.lazyLoadCursor = new_cursor;
 
       this.components['document_view'].render(); 
-      this.components['sidebar_view'].render();
+      this.components['sidebar_view'].thumbnail_list_view.render();
       // console.log("cursor", Tabula.pdf_view.lazyLoadCursor)
     },
 
@@ -1294,11 +1340,7 @@ Tabula.PDFView = Backbone.View.extend(
 
 
       this.components['document_view'].page_views[ page.get('number') ] =  page_view;
-      this.components['sidebar_view'].thumbnail_views[ page.get('number') ] = thumbnail_view;
-
-      // now handled by documentview and sidebarview's render method
-      // this.components['document_view'].$el.append(page_view.render().el);
-      // this.components['sidebar_view'].$el.append(thumbnail_view.render().el);
+      this.components['sidebar_view'].thumbnail_list_view.thumbnail_views[ page.get('number') ] = thumbnail_view;
     },
 
     addAll: function() {
@@ -1350,6 +1392,8 @@ Tabula.PDFView = Backbone.View.extend(
 
       $('#control-panel').append(this.components['control_panel'].render().el);
       $('#sidebar').append(this.components['sidebar_view'].render().el);
+      this.components['sidebar_view'].thumbnail_list_view.$el = this.components['sidebar_view'].$el.find("#thumbnail-list");
+      this.components['sidebar_view'].thumbnail_list_view.render();
 
       $('.has-tooltip').tooltip();
 
@@ -1371,9 +1415,9 @@ Tabula.SavedTemplateView = Backbone.View.extend({
   tagName: 'li',
   className: 'saved-template',
   events: {
-    'click': 'loadTemplate'
+    'click a': 'loadTemplate'
   },
-  template: _.template("<%= name %>"),
+  template: _.template("<a><%= name %></a>"),
   initialize: function(){
     _.bindAll(this, 'render', 'loadTemplate');
   },
@@ -1391,7 +1435,7 @@ Tabula.SavedTemplateLibraryView = Backbone.View.extend({
   tagName: 'ul',
   initialize: function(stuff){
     _.bindAll(this, 'render');
-    this.listenTo(this.collection, 'change', this.render); // TODO: make this not a reference to global Tabula.pdf_view
+    this.listenTo(this.collection, 'change', this.render);
   },
   render: function(){
     this.$el.empty();
