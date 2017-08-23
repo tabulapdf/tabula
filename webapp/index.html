@@ -111,20 +111,24 @@
       </script>
 
       <script type="text/template" id="select-control-panel-template" >
-        <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
+        <span class="filename"><%= original_filename %></span>
         <div class="dropdown" <%= disable_load_template %> style="display: inline;">
-          <button type="button" class="dropdown-toggle btn btn-link" data-toggle="dropdown" href="#" <%= disabled_if_there_are_selections %>><span class="glyphicon glyphicon-import" title="You may only load a template if there are no selections active in your PDF."></span>Load Template</button>
+          <button type="button" class="dropdown-toggle btn btn-info" data-toggle="dropdown" href="#" ><span class="glyphicon glyphicon-import" title="You may only load a template if there are no selections active in your PDF."></span>Templates</button>
           <div id="template-dropdown-container" class="dropdown-menu">
             <ul>
               <li>
-                <button id="restore-detected-tables" type="button" class="btn btn-link <%= restore_detected_tables %>" <%= disabled_if_there_are_selections %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button>
+                <a href="javascript:void(0)"><button type="button" id="save-template" class="btn btn-link" style="min-width: 155px;" <%= disable_save_template %>> <span class="button-text">Save Selections as Template</span> <span class="glyphicon glyphicon-export"></span></button></a>
               </li>
             </ul>
+            <p style="margin-left:5px;">Load templates:</p>
             <div id="template-dropdown-templates-list-container">
             </div>
           </div>
         </div>
-        <a href="javascript:void(0)"><button type="button" id="save-template" class="btn btn-info" style="min-width: 155px;" <%= disable_save_template %>><span class="glyphicon glyphicon-export"></span> <span class="button-text">Save as Template</span></button></a>
+
+
+        <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
+        <button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disabled_if_there_are_selections %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button>
 
 
 
@@ -139,7 +143,6 @@
       </script>
 
       <script type="text/template" id="select-sidebar-template">
-        <span class="filename"><%= original_filename %></span>
         <ul id="thumbnail-list" class="thumbnail-list">
         </ul>
       </script>
