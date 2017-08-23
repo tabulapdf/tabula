@@ -1424,10 +1424,17 @@ Tabula.SavedTemplateView = Backbone.View.extend({
   render: function(){
     this.$el.append(this.template(this.model.attributes));
     this.$el.addClass('file-id-' + this.model.get('id')); // more efficient lookups than data-attr
+    if(Tabula.pdf_view.totalSelections() > 0){
+      this.$el.find("a").attr("disabled", "disabled");
+      this.$el.find("a").css({"color": "gray", "cursor": "default"})
+    }
     this.$el.data('id', this.model.get('id')); //more cleanly accesse than a class
     return this;
   },
-  loadTemplate: function(){
+  loadTemplate: function(e){
+    if($(e.currentTarget).attr("disabled")){
+      return;
+    }
     Tabula.pdf_view.loadSavedTemplate(this.model); // TODO: make this not a reference to global Tabula.pdf_view
   }
 });
