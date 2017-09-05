@@ -442,6 +442,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
       return selection;
     });
     this.pdf_view.pdf_document.selections.reset(oldSelections);
+    _(this.pdf_view.components["sidebar_view"].thumbnail_list_view.thumbnail_views).each(function(v){ v.delegateEvents() });
   },
 
   setFormAction: function(e){
