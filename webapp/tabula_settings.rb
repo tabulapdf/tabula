@@ -46,7 +46,7 @@ module TabulaSettings
       home = java.lang.System.getenv('XDG_DATA_HOME')
       if !home.nil?
         # XDG
-        data_dir = File.join(data_home, '/tabula')
+        data_dir = File.join(home, '/tabula')
       else
         # other, normal *NIX systems
         home = java.lang.System.getProperty('user.home')
