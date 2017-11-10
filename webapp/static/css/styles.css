@@ -1703,7 +1703,6 @@ pre code {
     width: 1170px;
   }
 }
-
 .container-fluid {
   margin-right: auto;
   margin-left: auto;
@@ -7765,4 +7764,19 @@ div.spinner {
   position: relative;
   top: 6px;
   margin-right: 5px;
+}
+.social_media_nav {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  width: 70%;
+  padding-bottom: 5px;
+}
+.navbar_1 .navbar-nav_1 {
+    display: inline-block;
+    float: none;
+}
+
+.navbar_1 .navbar-collapse_1 {
+    text-align: center;
 }
