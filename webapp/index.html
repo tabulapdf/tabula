@@ -81,11 +81,11 @@
       </script>
       <script type="text/template" id="thumbnail-template" >
         <a href="#page-<%= number %>"><img src="<%= image_url %>"></a>
-        <div class="remove">
-          <span class="glyphicon glyphicon-remove delete-page"></span>
-          <!-- <span title="rotate this page right" class="icon-repeat rotate-left"></span>
-          <span title="rotate this page left" class="icon-repeat flip rotate-right"></span> -->
-        </div>
+  <!--      <div class="remove">
+          <span class="glyphicon glyphicon-remove delete-page"><button></button></span>
+          <span title="rotate this page right" class="icon-repeat rotate-left"></span>
+          <span title="rotate this page left" class="icon-repeat flip rotate-right"></span>
+        </div> -->
         <p><%= number %></p>
       </script>
 
@@ -139,6 +139,8 @@
 
         <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
         <button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disabled_if_there_are_selections %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button>
+        <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Regex Options</button>
+
 
 
 
@@ -231,6 +233,8 @@
           </div>
 
           <div id="pages-container">
+          </div>
+          <div id="regex-container"> <!--container for regex options -->
           </div>
         </div>
         <nestedscript type="text/javascript" src="js/vendor/spin.min.js"></nestedscript>
