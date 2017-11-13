@@ -121,6 +121,7 @@
       </script>
 
       <script type="text/template" id="select-control-panel-template" >
+
         <span class="filename"><%= original_filename %></span>
         <div class="dropdown" <%= disable_load_template %> style="display: inline;">
           <button type="button" class="dropdown-toggle btn btn-info" data-toggle="dropdown" href="#" ><span class="glyphicon glyphicon-import" title="You may only load a template if there are no selections active in your PDF."></span>Templates</button>
@@ -136,27 +137,30 @@
           </div>
         </div>
 
-
+        <button type="button" class="dropdown-toggle btn btn-default" onclick="PDF_Outline_btn()" data-toggle="dropdown" href="#" ><span class="glyphicon glyphicon-list-alt"></span> PDF Outline</button>
         <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
         <button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disabled_if_there_are_selections %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button>
-        <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Regex Options</button>
+        <button type="button" class="btn btn-default" onclick="Regex_Options_btn()"><span></span> Regex Options</button>
 
 
 
 
         <span style="float: right">
-          <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><span class="glyphicon glyphicon-list-alt"></span> Preview & Export Extracted Data</button></a>
+          <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><span class="glyphicon glyphicon-list-alt"></span> Preview & Export Data</button></a>
         </span>
 
 
 
 
         <span style="clear: both;">
+
       </script>
 
       <script type="text/template" id="select-sidebar-template">
+        <div id ="PDF_outline">
         <ul id="thumbnail-list" class="thumbnail-list">
         </ul>
+      </div>
       </script>
 
       <script type="text/template" id="export-page-sidebar-template">
@@ -224,7 +228,7 @@
         </div>
       </script>
 
-      <script type="text/template" id="pdf-view-template" >
+      <script type="text/template" id="pdf-view-template">
         <div id="sidebar">
           <!-- thumbnails get rendered here by JS -->
         </div>
