@@ -269,7 +269,7 @@ Tabula.Query = Backbone.Model.extend({
     var delimiter = typeof delimiter_maybe_undef == "undefined" ? ',' : delimiter_maybe_undef
     var csv = _(this.get('data')).chain().pluck('data').map(function(table){
       return _(table).chain().map(function(row){
-        return _.map(row, function(cell){ 
+        return _.map(row, function(cell){
           var text = cell.text;
           text = text.replace("\"", "\\\""); //escape quotes
           text = text.indexOf(delimiter) > -1 ? "\"" + text + "\"" : text; //enquote cells containing the delimiter.
@@ -327,7 +327,7 @@ Tabula.Query = Backbone.Model.extend({
             // var coord_set = stuff[0];
             // var resp_item = stuff[1];
             // if(!coord_set) return; // DIRTY HACK, see https://github.com/tabulapdf/tabula/issues/497
-            //                        // if one set of coords returns 2+ tables, 
+            //                        // if one set of coords returns 2+ tables,
             //                        // then this zip won't work.
             if (stashed_selections.get(coord_set.selection_id)){
               stashed_selections.get(coord_set.selection_id).
@@ -660,7 +660,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
         if(!already_on_page) this.$el.append(page_view.render().el);
       }, this));
     }else{
-      //useful in the console for debugging: 
+      //useful in the console for debugging:
       // $('.pdf-page:visible').map(function(i, el){ return $(el).find('img').data('page') }).get();
 
 
@@ -882,7 +882,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     var oldButtonText = $btnText.text();
     $btn.attr("disabled", "disabled");
     $btnText.text("Saving...");
-    this.pdf_view.saveTemplate(function(){ 
+    this.pdf_view.saveTemplate(function(){
       $btnText.text("Saved!");
       window.setTimeout( function(){
         $btn.removeAttr("disabled");
@@ -934,7 +934,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
                   'disable_load_template': numOfSelectionsOnPage > 0 ? 'disabled="disabled"' : ''
 
                   })));
-    
+
     this.$el.find("#template-dropdown-templates-list-container").html(this.saved_template_library_view.render().el);
 
     return this;
@@ -1058,7 +1058,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
   'events': {
     // on load, create an empty div with class 'selection-show' to be the selection thumbnail.
     'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
-    'click i.delete-page': 'deletePage',
+     //'click i.delete-page': 'deletePage',
     'click a': 'scrollToPage'
   },
   tagName: 'li',
@@ -1089,10 +1089,12 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     e.preventDefault();
   },
 
-  deletePage: function(){
+/*  deletePage: function(){
+  //  this.model('number');
+    confirm("hello");
     if (!confirm('Delete page ' + this.model.get('number') + '?')) return;
     Tabula.pdf_view.pdf_document.page_collection.remove( this.model );
-  },
+  }, */
 
   render: function(){
     this.$el.html(this.template({
@@ -1166,7 +1168,7 @@ Tabula.PDFView = Backbone.View.extend(
       });
 
       this.pdf_document.fetch({
-        success: function(m){ }, 
+        success: function(m){ },
         error: function(m, r, o){ console.log("error", m, r, o) }
       });
 
@@ -1242,7 +1244,7 @@ Tabula.PDFView = Backbone.View.extend(
       }
       Tabula.pdf_view.lazyLoadCursor = new_cursor;
 
-      this.components['document_view'].render(); 
+      this.components['document_view'].render();
       this.components['sidebar_view'].thumbnail_list_view.render();
       // console.log("cursor", Tabula.pdf_view.lazyLoadCursor)
     },
