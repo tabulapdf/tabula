@@ -2,6 +2,8 @@
 require 'cuba'
 require 'cuba/render'
 
+require 'rubygems'
+require 'json'
 require 'digest/sha1'
 require 'json'
 require 'csv'
@@ -238,6 +240,22 @@ Cuba.define do
   on get do
     on 'pdfs' do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
+    end
+
+    on 'regex' do
+      output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
+      patternBefore = req.params['before']
+      patternAfter = req.params['after']
+      regexSearch = Java::TechnologyTableDetectors::RegexSearch.new(patternBefore,patternAfter,File.join(output_dir,'document.pdf'))
+      matchingAreas = regexSearch.getMatchingAreas()
+
+      #Add regexSearch data to regex.json
+      File.open(output_dir + "/regex.json", 'a') do |f|
+        f.puts regexSearch.to_json
+      end
+
+      return regexSearch
+
     end
 
     on 'documents' do
