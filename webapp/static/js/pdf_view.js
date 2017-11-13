@@ -851,12 +851,13 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
   //Event handler called when the Set Regex button is pushed
   setRegex: function(event) {
-    var regexData = JSON.parse($("#regexQuery") );
+    var regexData = $("#regexQuery");
     $.ajax({
         type: 'GET',
         url: '/regex',
         data: regexData,
         dataType: 'json',
+        //TODO: Figure out what values should be returned from the server
         success: _.bind(function(data){
           console.log('Made it to success in setRegex function')
         },this),
