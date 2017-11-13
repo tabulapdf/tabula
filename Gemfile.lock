@@ -65,6 +65,7 @@ GEM
 
 PLATFORMS
   java
+  x86-mingw32
 
 DEPENDENCIES
   bootstrap-sass (~> 3.2.0)

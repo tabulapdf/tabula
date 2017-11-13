@@ -831,6 +831,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     'click #all-data': 'queryAllData',
     'click #repeat-lassos': 'repeatLassos',
     'click #save-template': 'saveTemplate',
+    'click #set-regex' : 'setRegex'
   },
 
   template: _.template($('#templates #select-control-panel-template').html().replace(/nestedscript/g, 'script')),
@@ -848,7 +849,23 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     return;
     /* TODO: write this */
   },
-
+  //Event handler called when the Set Regex button is pushed
+  setRegex: function(event) {
+    var regexData = JSON.parse($("#regexQuery") );
+    $.ajax({
+        type: 'GET',
+        url: '/regex',
+        data: regexData,
+        dataType: 'json',
+        success: _.bind(function(data){
+          console.log('Made it to success in setRegex function')
+        },this),
+        error: function(xhr,status,err){
+          console.log('Error in regex search: ' ,err);
+        }
+    });
+    return;
+  },
   clearAllSelections: function(){
     _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
     Tabula.pdf_view.pdf_document.selections.reset([]);
