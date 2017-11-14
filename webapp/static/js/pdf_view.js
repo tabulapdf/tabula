@@ -940,8 +940,8 @@ Tabula.RegexView = Backbone.View.extend({
     },
     //Event handler called when the Set Regex button is pushed
    setRegex: function() {
-        alert('Do I get here?');
-        var regexData = $("#regexcommand");
+        var regexData = $("#regexcommand").val(); //Gets the user-provided string <-- I'm assuming this is in the proper Java Regex form for now
+        alert(regexData);
         $.ajax({
             type: 'GET',
             url: '/regex',
