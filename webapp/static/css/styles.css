@@ -1144,7 +1144,6 @@ html {
 
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
   line-height: 1.428571429;
   color: #333333;
   background-color: #fff;
@@ -7539,6 +7538,9 @@ form {
   width: calc(100% - 200px);
   z-index: 1;
 }
+#pages-container {
+    position: absolute;
+}
 #main-pane .pdf-page {
   position: relative;
 }
@@ -7779,4 +7781,8 @@ div.spinner {
 
 .navbar_1 .navbar-collapse_1 {
     text-align: center;
+}
+#regex-container{
+  float: right;
+  width: 23%;
 }

@@ -122,7 +122,7 @@
 
       <script type="text/template" id="select-control-panel-template" >
 
-        <span class="filename"><%= original_filename %></span>
+        <span class="filename" style="font-size: 14px;"><%= original_filename %></span>
         <div class="dropdown" <%= disable_load_template %> style="display: inline;">
           <button type="button" class="dropdown-toggle btn btn-info" data-toggle="dropdown" href="#" ><span class="glyphicon glyphicon-import" title="You may only load a template if there are no selections active in your PDF."></span>Templates</button>
           <div id="template-dropdown-container" class="dropdown-menu">
@@ -225,6 +225,8 @@
               <span class="no-data">No data.</span>
             <% } %>
             </div>
+            <div id="regex-container">
+            </div>
         </div>
       </script>
 
@@ -235,10 +237,35 @@
         <div id="main-pane">
           <div id="control-panel">
           </div>
-
           <div id="pages-container">
           </div>
           <div id="regex-container"> <!--container for regex options -->
+            <div class="container" style="width: 100%;">
+  <h2>Regex Options</h2>
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+    <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+      <h3>Regex</h3>
+      <!-- Form for regex input-->
+      <form>
+        <div class="form-group">
+          <label class="col-form-label" for="formGroupExampleInput">Regex Command</label>
+          <input type="text" class="form-control" id="regexcommand" placeholder="{[Command]x}{[Command]i}">
+        </div>
+      </form>
+      <!-- -->
+    </div>
+    <div id="menu1" class="tab-pane fade">
+      <h3>Regex Guide</h3>
+      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </div>
+</div>
+
           </div>
         </div>
         <nestedscript type="text/javascript" src="js/vendor/spin.min.js"></nestedscript>
