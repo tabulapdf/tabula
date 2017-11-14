@@ -831,7 +831,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     'click #all-data': 'queryAllData',
     'click #repeat-lassos': 'repeatLassos',
     'click #save-template': 'saveTemplate',
-    'click #set-regex' : 'setRegex'
+
   },
 
   template: _.template($('#templates #select-control-panel-template').html().replace(/nestedscript/g, 'script')),
@@ -849,24 +849,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     return;
     /* TODO: write this */
   },
-  //Event handler called when the Set Regex button is pushed
-  setRegex: function(event) {
-    var regexData = $("#regexQuery");
-    $.ajax({
-        type: 'GET',
-        url: '/regex',
-        data: regexData,
-        dataType: 'json',
-        //TODO: Figure out what values should be returned from the server
-        success: _.bind(function(data){
-          console.log(data)
-        },this),
-        error: function(xhr,status,err){
-          console.log('Error in regex search: ' ,err);
-        }
-    });
-    return;
-  },
+
   clearAllSelections: function(){
     _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
     Tabula.pdf_view.pdf_document.selections.reset([]);
@@ -941,10 +924,46 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 });
 
+//Tabula.RegexView
+//   Backbone View extension for the detection of user-defined regex operations.
+//
+//   Handles user requests for regex searches of tables within a document; oversees the AJAX call to the server.
+//
+//   11/14/2017  REM; created
+//
+Tabula.RegexView = Backbone.View.extend({
+   el: "#regex-container",
+   events: {'click #regexSearch' : 'setRegex'},
+   className: 'regex-query',
+    initialize: function(){
+     //Nothing for now
+    },
+    //Event handler called when the Set Regex button is pushed
+   setRegex: function() {
+        alert('Do I get here?');
+        var regexData = $("#regexcommand");
+        $.ajax({
+            type: 'GET',
+            url: '/regex',
+            data: regexData,
+            dataType: 'json',
+            //TODO: Figure out what values should be returned from the server
+            success: _.bind(function(data){
+                console.log(data)
+            },this),
+            error: function(xhr,status,err){
+                console.log('Error in regex search: ' ,err);
+            }
+        });
+    }
+});
+
 Tabula.SidebarView = Backbone.View.extend({
   className: 'sidebar-view',
+  events:{ },
   thumbnail_list_view: null, // defined on initialize
   pdf_view: null,            // defined on initialize
+  regex_view: new Tabula.RegexView(),          // defined on initialize
   template: _.template($('#templates #select-sidebar-template').html().replace(/nestedscript/g, 'script')),
   initialize: function(stuff){
     _.bindAll(this, 'render')
@@ -958,8 +977,9 @@ Tabula.SidebarView = Backbone.View.extend({
     this.thumbnail_list_view.$el = this.$el.find("#thumbnail-list");
     this.thumbnail_list_view.render();
     return this;
-  }
-}),
+  },
+
+});
 
 Tabula.ThumbnailListView = Backbone.View.extend({ // only one
   tagName: 'ul',
@@ -1149,6 +1169,7 @@ Tabula.PDFView = Backbone.View.extend(
     el : '#tabula-app',
 
     events : {
+
     },
     lastQuery: [{}],
     pageCount: undefined,
