@@ -859,7 +859,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
         dataType: 'json',
         //TODO: Figure out what values should be returned from the server
         success: _.bind(function(data){
-          console.log('Made it to success in setRegex function')
+          console.log(data)
         },this),
         error: function(xhr,status,err){
           console.log('Error in regex search: ' ,err);

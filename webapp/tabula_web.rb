@@ -244,17 +244,15 @@ Cuba.define do
 
     on 'regex' do
       output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
-      patternBefore = req.params['before']
-      patternAfter = req.params['after']
-      regexSearch = Java::TechnologyTableDetectors::RegexSearch.new(patternBefore,patternAfter,File.join(output_dir,'document.pdf'))
-      matchingAreas = regexSearch.getMatchingAreas()
-
+      pattern_before = req.params['before']
+      pattern_after = req.params['after']
+      regex_search = Java::TechnologyTableDetectors::RegexSearch.new(pattern_before,pattern_after,File.join(output_dir,'document.pdf'))
       #Add regexSearch data to regex.json
       File.open(output_dir + "/regex.json", 'a') do |f|
-        f.puts regexSearch.to_json
+        f.puts regex_search.to_json
       end
 
-      return regexSearch
+      return String(regex_search)
 
     end
 
