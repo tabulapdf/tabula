@@ -924,6 +924,25 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 });
 
+//Tabula.RegexData
+//  Backbone Model extension for data storage resgarding user-defined regex operations.
+//
+//  Retains the parameters outlining regex-defined table searches within the PDF. Passed to the server via AJAX call
+//
+//  11/14/2017 REM; created
+//
+Tabula.RegexData = Backbone.Model.extend({
+   pattern_before:'',   //Set/updated by corresponding Backbone View
+   pattern_after:'',    //Set/update by corresponding Backbone View
+   file_path: null,    //Set on initialize
+
+   initialize: function(){
+     this.set({'file_path':PDF_ID})
+   }
+
+});
+
+
 //Tabula.RegexView
 //   Backbone View extension for the detection of user-defined regex operations.
 //
@@ -933,19 +952,21 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 //
 Tabula.RegexView = Backbone.View.extend({
    el: "#regex-container",
-   events: {'click #regexSearch' : 'setRegex'},
+   model: new Tabula.RegexData(),
+   events: {'click #regexSearch' : 'setRegex',
+            'change input#pattern_before': 'change_pattern_before',
+            'change input#pattern_after': 'change_pattern_after'},
    className: 'regex-query',
     initialize: function(){
      //Nothing for now
     },
     //Event handler called when the Set Regex button is pushed
    setRegex: function() {
-        var regexData = $("#regexcommand").val(); //Gets the user-provided string <-- I'm assuming this is in the proper Java Regex form for now
-        alert(regexData);
+        alert(JSON.stringify(this.model));
         $.ajax({
             type: 'GET',
             url: '/regex',
-            data: regexData,
+            data: this.model.toJSON(),
             dataType: 'json',
             //TODO: Figure out what values should be returned from the server
             success: _.bind(function(data){
@@ -955,7 +976,14 @@ Tabula.RegexView = Backbone.View.extend({
                 console.log('Error in regex search: ' ,err);
             }
         });
+    },
+    change_pattern_before: function(event) {
+      this.model.set({'pattern_before': $(event.currentTarget).val() });
+    },
+    change_pattern_after: function(event) {
+      this.model.set({'pattern_after': $(event.currentTarget).val() });
     }
+
 });
 
 Tabula.SidebarView = Backbone.View.extend({

@@ -243,16 +243,19 @@ Cuba.define do
     end
 
     on 'regex' do
+      puts 'Do I get here?'
+      puts req.params
       output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
-      pattern_before = req.params['before']
-      pattern_after = req.params['after']
-      regex_search = Java::TechnologyTableDetectors::RegexSearch.new(pattern_before,pattern_after,File.join(output_dir,'document.pdf'))
+      puts output_dir
+#      pattern_before = req.params['pattern_before']
+#      pattern_after = req.params['pattern_after']
+#      regex_search = Java::TechnologyTableDetectors::RegexSearch.new(pattern_before,pattern_after,File.join(output_dir,'document.pdf'))
       #Add regexSearch data to regex.json
-      File.open(output_dir + "/regex.json", 'a') do |f|
-        f.puts regex_search.to_json
-      end
+#      File.open(output_dir + "/regex.json", 'a') do |f|
+#        f.puts regex_search.to_json
+#      end
 
-      return String(regex_search)
+#      return String(regex_search)
 
     end
 
