@@ -979,11 +979,29 @@ Tabula.RegexView = Backbone.View.extend({
             url: '/regex',
             data: this.model.toJSON(),
             dataType: 'json',
-            //TODO: Figure out what values should be returned from the server
             success: _.bind(function(data){
-                alert(JSON.stringify(data));
-                console.log(JSON.stringify(data))
+                var search_results = data["_matching_areas"];
+                for(iter in search_results){
+                  for(page_number in search_results[iter]){
+                    for(matching_element in search_results[iter][page_number]) {
+                      render_data = search_results[iter][page_number][matching_element];
+                      console.log("X:"+render_data['x']);
+                      console.log("Y:"+render_data['y']);
+                      Tabula.pdf_view.renderSelection({
+                          x1: render_data['x'],
+                          y1: render_data['y'],
+                          width: render_data['width'],
+                          height: render_data['height'],
+                          page: parseInt(page_number),
+                          extraction_method: 'spreadsheet',
+                          selection_id: null
+                      });
+                    }
+                  }
+                }
+                //Tabula.pdf_view.renderSelection({});
             },this),
+          //TODO: Figure out a more graceful way to handle this
             error: function(xhr,status,err){
                 alert('Error in regex search: ',JSON.stringify(err));
                 console.log('Error in regex search: ' ,err);
@@ -1351,7 +1369,9 @@ Tabula.PDFView = Backbone.View.extend(
       // and causes it to get an 'id' attr.
       console.log("sel.page", sel);
       var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page];
+      console.log(pageView);
       var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page});
+      console.log(page);
       if(!page){
         // the page we're trying to render a selection on might have been deleted.
         // or, we may be trying to load a template with more pages on it than this PDF has.
