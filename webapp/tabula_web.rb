@@ -12,6 +12,7 @@ require 'fileutils'
 require 'securerandom'
 require 'java'
 
+
 require_relative '../lib/tabula_java_wrapper.rb'
 java_import 'java.io.ByteArrayOutputStream'
 java_import 'java.util.zip.ZipEntry'
@@ -238,7 +239,6 @@ Cuba.define do
     end
   end
 
-
   on get do
     on 'pdfs' do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
@@ -246,16 +246,20 @@ Cuba.define do
 
     on 'regex' do
       output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
-      pattern_before = req.params['pattern_before']
-      pattern_after = req.params['pattern_after']
-      regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(pattern_before,pattern_after,PDDocument.load(Java::JavaIO::File.new(File.join(output_dir,'document.pdf'))))
-      puts regex_search
-      #Add regexSearch data to regex.json
-#      File.open(output_dir + "/regex.json", 'a') do |f|
-#        f.puts regex_search.to_json
-#      end
+      doc_to_search = PDDocument.load(Java::JavaIO::File.new(File.join(output_dir,'document.pdf')))
 
-#      return String(regex_search)
+      regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(req.params['pattern_before'],
+                                                                      req.params['pattern_after'],
+                                                                      doc_to_search)
+      #Add regexSearch data to regex.json
+ #     File.open(output_dir + "/regex.json", 'a') do |f|
+ #       f.puts regex_search.to_json
+ #     end
+
+      doc_to_search.close()
+
+      gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+      res.write(gson.to_json(regex_search))
 
     end
 

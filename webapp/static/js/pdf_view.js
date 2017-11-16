@@ -972,8 +972,8 @@ Tabula.RegexView = Backbone.View.extend({
             dataType: 'json',
             //TODO: Figure out what values should be returned from the server
             success: _.bind(function(data){
-                alert('Do I get here?');
-                console.log(data)
+                alert(JSON.stringify(data));
+                console.log(JSON.stringify(data))
             },this),
             error: function(xhr,status,err){
                 alert('Error in regex search: ',JSON.stringify(err));
