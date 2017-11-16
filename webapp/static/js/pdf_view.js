@@ -932,16 +932,25 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 //  11/14/2017 REM; created
 //
 Tabula.RegexData = Backbone.Model.extend({
-   pattern_before:'',   //Set/updated by corresponding Backbone View
-   pattern_after:'',    //Set/update by corresponding Backbone View
-   file_path: null,    //Set on initialize
+//   pattern_before:'',   //Set/updated by corresponding Backbone View
+//   pattern_after:'',    //Set/update by corresponding Backbone View
+//   file_path: null,    //Set on initialize
 
    initialize: function(){
-     this.set({'file_path':PDF_ID})
+     this.set({'file_path':PDF_ID});
+     this.set({'pattern_before':null});
+     this.set({'pattern_after':null});
    },
-   //determines if user has provided all values necessary to perform regex search
+   //determines if user has provided all values necessary to perform regex search <--TODO:move error checking to back-end or strengthen disable
    isFilledOut: function(){
-     return this.get('pattern_before') && this.get('pattern_after');
+     key_array = this.keys();
+     key_array_length = key_array.length;
+     for(i=0; i<key_array_length;i++){
+       if(!this['attributes'][key_array[i]]){
+         return false;
+       }
+     }
+     return true;
    }
 });
 
@@ -980,14 +989,18 @@ Tabula.RegexView = Backbone.View.extend({
                 console.log('Error in regex search: ' ,err);
             }
         });
+        $('#regex_input_form').children('input').val('');
     },
     update_regex_inputs: function(event) {
       event_caller_id = event['handleObj']['selector'].split("#")[1];
       var input_map = {};
-      input_map[event_caller_id] = $('#'+event_caller_id).val();
+      input_map[event_caller_id] = $("#" + event_caller_id).val();
       this.model.set(input_map);
       if(this.model.isFilledOut()){
         $('#regexSearch').removeAttr('disabled');
+      }
+      else{
+        $('#regexSearch').attr('disabled','disabled');
       }
     }
 

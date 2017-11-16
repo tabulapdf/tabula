@@ -251,10 +251,6 @@ Cuba.define do
       regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(req.params['pattern_before'],
                                                                       req.params['pattern_after'],
                                                                       doc_to_search)
-      #Add regexSearch data to regex.json
- #     File.open(output_dir + "/regex.json", 'a') do |f|
- #       f.puts regex_search.to_json
- #     end
 
       doc_to_search.close()
 
