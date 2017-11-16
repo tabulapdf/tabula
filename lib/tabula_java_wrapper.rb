@@ -1,6 +1,10 @@
 java_import org.apache.pdfbox.pdmodel.PDDocument
 java_import org.apache.pdfbox.pdmodel.encryption.StandardDecryptionMaterial
 
+module JavaIO
+  include_package "java.io"
+end
+
 class Java::TechnologyTabula::Table
   attr_accessor :spec_index
   def to_csv
@@ -108,3 +112,4 @@ module Tabula
     end
   end
 end
+

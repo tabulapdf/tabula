@@ -938,8 +938,11 @@ Tabula.RegexData = Backbone.Model.extend({
 
    initialize: function(){
      this.set({'file_path':PDF_ID})
+   },
+   //determines if user has provided all values necessary to perform regex search
+   isFilledOut: function(){
+     return this.get('pattern_before') && this.get('pattern_after');
    }
-
 });
 
 
@@ -954,8 +957,8 @@ Tabula.RegexView = Backbone.View.extend({
    el: "#regex-container",
    model: new Tabula.RegexData(),
    events: {'click #regexSearch' : 'perform_regex_search',
-            'change input#pattern_before': 'change_pattern_before',
-            'change input#pattern_after': 'change_pattern_after'},
+            'change input#pattern_before': 'update_regex_inputs',
+            'change input#pattern_after': 'update_regex_inputs'},
    className: 'regex-query',
     initialize: function(){
      //Nothing for now
@@ -973,16 +976,19 @@ Tabula.RegexView = Backbone.View.extend({
                 console.log(data)
             },this),
             error: function(xhr,status,err){
-                alert('Error in regex search: ',err);
+                alert('Error in regex search: ',JSON.stringify(err));
                 console.log('Error in regex search: ' ,err);
             }
         });
     },
-    change_pattern_before: function(event) {
-      this.model.set({'pattern_before': $(event.currentTarget).val() });
-    },
-    change_pattern_after: function(event) {
-      this.model.set({'pattern_after': $(event.currentTarget).val() });
+    update_regex_inputs: function(event) {
+      event_caller_id = event['handleObj']['selector'].split("#")[1];
+      var input_map = {};
+      input_map[event_caller_id] = $('#'+event_caller_id).val();
+      this.model.set(input_map);
+      if(this.model.isFilledOut()){
+        $('#regexSearch').removeAttr('disabled');
+      }
     }
 
 });
