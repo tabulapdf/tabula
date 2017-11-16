@@ -16,6 +16,7 @@ require_relative '../lib/tabula_java_wrapper.rb'
 java_import 'java.io.ByteArrayOutputStream'
 java_import 'java.util.zip.ZipEntry'
 java_import 'java.util.zip.ZipOutputStream'
+java_import org.apache.pdfbox.pdmodel.PDDocument
 
 require_relative './tabula_settings.rb'
 
@@ -247,8 +248,7 @@ Cuba.define do
       output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
       pattern_before = req.params['pattern_before']
       pattern_after = req.params['pattern_after']
-#      regex_search = Java::TechnologyTabulaDetectors::DetectionAlgorithm.new
-      regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(pattern_before,pattern_after,File.join(output_dir,'document.pdf'))
+      regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(pattern_before,pattern_after,PDDocument.load(Java::JavaIO::File.new(File.join(output_dir,'document.pdf'))))
       puts regex_search
       #Add regexSearch data to regex.json
 #      File.open(output_dir + "/regex.json", 'a') do |f|
