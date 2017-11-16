@@ -953,7 +953,7 @@ Tabula.RegexData = Backbone.Model.extend({
 Tabula.RegexView = Backbone.View.extend({
    el: "#regex-container",
    model: new Tabula.RegexData(),
-   events: {'click #regexSearch' : 'setRegex',
+   events: {'click #regexSearch' : 'perform_regex_search',
             'change input#pattern_before': 'change_pattern_before',
             'change input#pattern_after': 'change_pattern_after'},
    className: 'regex-query',
@@ -961,8 +961,7 @@ Tabula.RegexView = Backbone.View.extend({
      //Nothing for now
     },
     //Event handler called when the Set Regex button is pushed
-   setRegex: function() {
-        alert(JSON.stringify(this.model));
+   perform_regex_search: function() {
         $.ajax({
             type: 'GET',
             url: '/regex',
@@ -970,9 +969,11 @@ Tabula.RegexView = Backbone.View.extend({
             dataType: 'json',
             //TODO: Figure out what values should be returned from the server
             success: _.bind(function(data){
+                alert('Do I get here?');
                 console.log(data)
             },this),
             error: function(xhr,status,err){
+                alert('Error in regex search: ',err);
                 console.log('Error in regex search: ' ,err);
             }
         });
