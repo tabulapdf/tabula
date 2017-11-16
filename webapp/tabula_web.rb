@@ -10,6 +10,7 @@ require 'csv'
 require 'tempfile'
 require 'fileutils'
 require 'securerandom'
+require 'java'
 
 require_relative '../lib/tabula_java_wrapper.rb'
 java_import 'java.io.ByteArrayOutputStream'
@@ -243,13 +244,12 @@ Cuba.define do
     end
 
     on 'regex' do
-      puts 'Do I get here?'
-      puts req.params
       output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
-      puts output_dir
-#      pattern_before = req.params['pattern_before']
-#      pattern_after = req.params['pattern_after']
-#      regex_search = Java::TechnologyTableDetectors::RegexSearch.new(pattern_before,pattern_after,File.join(output_dir,'document.pdf'))
+      pattern_before = req.params['pattern_before']
+      pattern_after = req.params['pattern_after']
+#      regex_search = Java::TechnologyTabulaDetectors::DetectionAlgorithm.new
+      regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(pattern_before,pattern_after,File.join(output_dir,'document.pdf'))
+      puts regex_search
       #Add regexSearch data to regex.json
 #      File.open(output_dir + "/regex.json", 'a') do |f|
 #        f.puts regex_search.to_json
