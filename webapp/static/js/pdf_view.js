@@ -965,7 +965,8 @@ Tabula.RegexView = Backbone.View.extend({
    el: "#regex-container",
    model: new Tabula.RegexData(),
    events: {'click #regexSearch' : 'perform_regex_search',
-            'click #include_pattern_before': 'update_regex_inputs',
+            'change #include_pattern_before': 'update_regex_inputs',
+            'change #include_pattern_after': 'update_regex_inputs',
             'change input#pattern_before': 'update_regex_inputs',
             'change input#pattern_after': 'update_regex_inputs'},
    className: 'regex-query',
@@ -1009,17 +1010,22 @@ Tabula.RegexView = Backbone.View.extend({
     },
     update_regex_inputs: function(event) {
       event_caller_id = event['handleObj']['selector'].split("#")[1];
-      console.log(event_caller_id);
+      jQ_event_caller = "#" + event_caller_id;
       var input_map = {};
-      input_map[event_caller_id] = $("#" + event_caller_id).val();
+      if($(jQ_event_caller).is(':checkbox')){
+        input_map[event_caller_id] = $(jQ_event_caller).is(':checked');
+      }
+      else {
+        input_map[event_caller_id] = $(jQ_event_caller).val();
+      }
       this.model.set(input_map);
-      console.log(JSON.stringify(this.model));
       if(this.model.isFilledOut()){
         $('#regexSearch').removeAttr('disabled');
       }
       else{
         $('#regexSearch').attr('disabled','disabled');
       }
+      console.log(JSON.stringify(this.model));
     }
 
 });
