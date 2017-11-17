@@ -831,6 +831,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     'click #all-data': 'queryAllData',
     'click #repeat-lassos': 'repeatLassos',
     'click #save-template': 'saveTemplate',
+
   },
 
   template: _.template($('#templates #select-control-panel-template').html().replace(/nestedscript/g, 'script')),
@@ -923,10 +924,112 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 });
 
+//Tabula.RegexData
+//  Backbone Model extension for data storage resgarding user-defined regex operations.
+//
+//  Retains the parameters outlining regex-defined table searches within the PDF. Passed to the server via AJAX call
+//
+//  11/14/2017 REM; created
+//
+Tabula.RegexData = Backbone.Model.extend({
+   initialize: function(){
+     this.set({'file_path':PDF_ID});
+     this.set({'pattern_before':null});
+     this.set({'include_pattern_before':false});
+     this.set({'pattern_after':null});
+     this.set({'include_pattern_after':false});
+   },
+   //determines if user has provided all values necessary to perform regex search <--TODO:move error checking to back-end or strengthen disable
+   isFilledOut: function(){
+     key_array = this.keys();
+     console.log(key_array);
+     key_array_length = key_array.length;
+     for(i=0; i<key_array_length;i++){
+       if(this['attributes'][key_array[i]]==null){
+         return false;
+       }
+     }
+     return true;
+   }
+});
+
+
+//Tabula.RegexView
+//   Backbone View extension for the detection of user-defined regex operations.
+//
+//   Handles user requests for regex searches of tables within a document; oversees the AJAX call to the server.
+//
+//   11/14/2017  REM; created
+//
+Tabula.RegexView = Backbone.View.extend({
+   el: "#regex-container",
+   model: new Tabula.RegexData(),
+   events: {'click #regexSearch' : 'perform_regex_search',
+            'click #include_pattern_before': 'update_regex_inputs',
+            'change input#pattern_before': 'update_regex_inputs',
+            'change input#pattern_after': 'update_regex_inputs'},
+   className: 'regex-query',
+    initialize: function(){
+     //Nothing for now
+    },
+    //Event handler called when the Set Regex button is pushed
+   perform_regex_search: function() {
+        $.ajax({
+            type: 'GET',
+            url: '/regex',
+            data: this.model.toJSON(),
+            dataType: 'json',
+            success: _.bind(function(data){
+                var search_results = data["_matching_areas"];
+                for(iter in search_results){
+                  for(page_number in search_results[iter]){
+                    for(matching_element in search_results[iter][page_number]) {
+                      render_data = search_results[iter][page_number][matching_element];
+                      Tabula.pdf_view.renderSelection({
+                          x1: render_data['x'],
+                          y1: render_data['y'],
+                          width: render_data['width'],
+                          height: render_data['height'],
+                          page: parseInt(page_number),
+                          extraction_method: 'spreadsheet',
+                          selection_id: null
+                      });
+                    }
+                  }
+                }
+                //Tabula.pdf_view.renderSelection({});
+            },this),
+          //TODO: Figure out a more graceful way to handle this
+            error: function(xhr,status,err){
+                alert('Error in regex search: ',JSON.stringify(err));
+                console.log('Error in regex search: ' ,err);
+            }
+        });
+        $('#regex_input_form').children('input').val('');
+    },
+    update_regex_inputs: function(event) {
+      event_caller_id = event['handleObj']['selector'].split("#")[1];
+      console.log(event_caller_id);
+      var input_map = {};
+      input_map[event_caller_id] = $("#" + event_caller_id).val();
+      this.model.set(input_map);
+      console.log(JSON.stringify(this.model));
+      if(this.model.isFilledOut()){
+        $('#regexSearch').removeAttr('disabled');
+      }
+      else{
+        $('#regexSearch').attr('disabled','disabled');
+      }
+    }
+
+});
+
 Tabula.SidebarView = Backbone.View.extend({
   className: 'sidebar-view',
+  events:{ },
   thumbnail_list_view: null, // defined on initialize
   pdf_view: null,            // defined on initialize
+  regex_view: new Tabula.RegexView(),          // defined on initialize
   template: _.template($('#templates #select-sidebar-template').html().replace(/nestedscript/g, 'script')),
   initialize: function(stuff){
     _.bindAll(this, 'render')
@@ -940,8 +1043,9 @@ Tabula.SidebarView = Backbone.View.extend({
     this.thumbnail_list_view.$el = this.$el.find("#thumbnail-list");
     this.thumbnail_list_view.render();
     return this;
-  }
-}),
+  },
+
+});
 
 Tabula.ThumbnailListView = Backbone.View.extend({ // only one
   tagName: 'ul',
@@ -1131,6 +1235,7 @@ Tabula.PDFView = Backbone.View.extend(
     el : '#tabula-app',
 
     events : {
+
     },
     lastQuery: [{}],
     pageCount: undefined,
@@ -1264,7 +1369,9 @@ Tabula.PDFView = Backbone.View.extend(
       // and causes it to get an 'id' attr.
       console.log("sel.page", sel);
       var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page];
+      console.log(pageView);
       var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page});
+      console.log(page);
       if(!page){
         // the page we're trying to render a selection on might have been deleted.
         // or, we may be trying to load a template with more pages on it than this PDF has.
