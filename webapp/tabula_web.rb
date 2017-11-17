@@ -245,6 +245,7 @@ Cuba.define do
     end
 
     on 'regex' do
+      puts req.params
       output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
       doc_to_search = PDDocument.load(Java::JavaIO::File.new(File.join(output_dir,'document.pdf')))
 
