@@ -934,23 +934,28 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 Tabula.RegexData = Backbone.Model.extend({
    initialize: function(){
      this.set({'file_path':PDF_ID});
-     this.set({'pattern_before':null});
+     this.set({'pattern_before':""});
      this.set({'include_pattern_before':false});
-     this.set({'pattern_after':null});
+     this.set({'pattern_after':""});
      this.set({'include_pattern_after':false});
    },
    //determines if user has provided all values necessary to perform regex search <--TODO:move error checking to back-end or strengthen disable
    isFilledOut: function(){
      key_array = this.keys();
-     console.log(key_array);
+ //    console.log(key_array);
      key_array_length = key_array.length;
      for(i=0; i<key_array_length;i++){
-       if(this['attributes'][key_array[i]]==null){
+       if(this['attributes'][key_array[i]]===""){
+ //        console.log(key_array[i]);
          return false;
        }
      }
      return true;
-   }
+   },
+  reset: function(){
+     this.initialize();
+//     console.log(JSON.stringify(this));
+  }
 });
 
 
@@ -965,10 +970,7 @@ Tabula.RegexView = Backbone.View.extend({
    el: "#regex-container",
    model: new Tabula.RegexData(),
    events: {'click #regexSearch' : 'perform_regex_search',
-            'change #include_pattern_before': 'update_regex_inputs',
-            'change #include_pattern_after': 'update_regex_inputs',
-            'change input#pattern_before': 'update_regex_inputs',
-            'change input#pattern_after': 'update_regex_inputs'},
+            'keyup' : 'update_regex_inputs'},
    className: 'regex-query',
     initialize: function(){
      //Nothing for now
@@ -998,7 +1000,10 @@ Tabula.RegexView = Backbone.View.extend({
                     }
                   }
                 }
-                //Tabula.pdf_view.renderSelection({});
+              $('#regex_input_form').find('input').val(null);
+              $('#regexSearch').attr('disabled','disabled');
+              this.model.reset();
+              console.log(JSON.stringify(this.model));
             },this),
           //TODO: Figure out a more graceful way to handle this
             error: function(xhr,status,err){
@@ -1006,19 +1011,21 @@ Tabula.RegexView = Backbone.View.extend({
                 console.log('Error in regex search: ' ,err);
             }
         });
-        $('#regex_input_form').children('input').val('');
+
     },
     update_regex_inputs: function(event) {
-      event_caller_id = event['handleObj']['selector'].split("#")[1];
-      jQ_event_caller = "#" + event_caller_id;
+ //     console.log(event['target']['id']);
+      target_id = event['target']['id'];
+      jQ_target_id = "#"+target_id;
       var input_map = {};
-      if($(jQ_event_caller).is(':checkbox')){
-        input_map[event_caller_id] = $(jQ_event_caller).is(':checked');
+      if($(jQ_target_id).is(':checkbox')){
+        input_map[target_id] = $(jQ_target_id).is(':checked');
       }
-      else {
-        input_map[event_caller_id] = $(jQ_event_caller).val();
+      else{
+        input_map[target_id] = $(jQ_target_id).val();
       }
       this.model.set(input_map);
+
       if(this.model.isFilledOut()){
         $('#regexSearch').removeAttr('disabled');
       }
