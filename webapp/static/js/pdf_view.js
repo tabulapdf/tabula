@@ -932,21 +932,20 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 //  11/14/2017 REM; created
 //
 Tabula.RegexData = Backbone.Model.extend({
-//   pattern_before:'',   //Set/updated by corresponding Backbone View
-//   pattern_after:'',    //Set/update by corresponding Backbone View
-//   file_path: null,    //Set on initialize
-
    initialize: function(){
      this.set({'file_path':PDF_ID});
      this.set({'pattern_before':null});
+     this.set({'include_pattern_before':false});
      this.set({'pattern_after':null});
+     this.set({'include_pattern_after':false});
    },
    //determines if user has provided all values necessary to perform regex search <--TODO:move error checking to back-end or strengthen disable
    isFilledOut: function(){
      key_array = this.keys();
+     console.log(key_array);
      key_array_length = key_array.length;
      for(i=0; i<key_array_length;i++){
-       if(!this['attributes'][key_array[i]]){
+       if(this['attributes'][key_array[i]]==null){
          return false;
        }
      }
@@ -966,6 +965,7 @@ Tabula.RegexView = Backbone.View.extend({
    el: "#regex-container",
    model: new Tabula.RegexData(),
    events: {'click #regexSearch' : 'perform_regex_search',
+            'click #include_pattern_before': 'update_regex_inputs',
             'change input#pattern_before': 'update_regex_inputs',
             'change input#pattern_after': 'update_regex_inputs'},
    className: 'regex-query',
@@ -985,8 +985,6 @@ Tabula.RegexView = Backbone.View.extend({
                   for(page_number in search_results[iter]){
                     for(matching_element in search_results[iter][page_number]) {
                       render_data = search_results[iter][page_number][matching_element];
-                      console.log("X:"+render_data['x']);
-                      console.log("Y:"+render_data['y']);
                       Tabula.pdf_view.renderSelection({
                           x1: render_data['x'],
                           y1: render_data['y'],
@@ -1011,9 +1009,11 @@ Tabula.RegexView = Backbone.View.extend({
     },
     update_regex_inputs: function(event) {
       event_caller_id = event['handleObj']['selector'].split("#")[1];
+      console.log(event_caller_id);
       var input_map = {};
       input_map[event_caller_id] = $("#" + event_caller_id).val();
       this.model.set(input_map);
+      console.log(JSON.stringify(this.model));
       if(this.model.isFilledOut()){
         $('#regexSearch').removeAttr('disabled');
       }
