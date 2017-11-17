@@ -252,9 +252,11 @@
       <h3>Regex</h3>
       <!-- Form for regex input-->
       <form>
-        <div class="form-group">
+        <div class="form-group" id="regex_input_form">
           <label class="col-form-label" for="formGroupExampleInput">Regex Command</label>
-          <input type="text" class="form-control" id="regexcommand" placeholder="{[Command]x}{[Command]i}">
+          <input type="text" class="form-control" id="pattern_before" placeholder="Pattern Before...">
+          <input type="text" class="form-control" id="pattern_after" placeholder="Pattern After...">
+         <button type="button" id="regexSearch" class="btn btn-default" disabled>Search</button>
         </div>
       </form>
       <!-- -->
