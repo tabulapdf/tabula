@@ -166,9 +166,9 @@ Cuba.define do
     # upload a template from disk
     on 'upload.json' do
       if req.params['file']
-       template_ids = [upload_template(req.params['file'])]
+        template_ids = [upload_template(req.params['file'])]
       elsif req.params['files']
-       template_ids = req.params['files'].map{|f| upload_template(f)}
+        template_ids = req.params['files'].map{|f| upload_template(f)}
       end
       res.status = 200
       res['Content-Type'] = 'application/json'
