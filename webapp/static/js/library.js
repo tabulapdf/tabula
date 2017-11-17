@@ -154,7 +154,7 @@ Tabula.Library = Backbone.View.extend({
       _.bindAll(this, 'uploadPDF', 'render', 'renderFileLibrary');
       this.files_collection = new Tabula.UploadedFilesCollection([]);
       this.files_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); }, this) });
-
+      
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
       this.uploads_collection = new Tabula.FileUploadsCollection([]);
 
@@ -271,8 +271,8 @@ Tabula.Library = Backbone.View.extend({
       }else{
         $('#library-container').hide();
         $('#library-container').
-//          after(_.template( $('#help-template').html().replace(/nestedscript/g, 'script') )({})).
-//        after('<h1>First time using Tabula? Welcome!</h1>');
+          after(_.template( $('#help-template').html().replace(/nestedscript/g, 'script') )({})).
+          after('<h1>First time using Tabula? Welcome!</h1>');
         $('.jumbotron.help').css('padding-top', '10px');
       }
     },

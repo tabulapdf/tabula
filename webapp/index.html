@@ -1,13 +1,3 @@
-<!--
-//   index.html
-//    Handles the front end portion of the GUI for Tabula.
-//
-//    Index.html holds the html and references to CSS, Bootstrap, and JS components from other files.
-//    Additionally, the file holds the content and format for the GUI's visual aspect (menu, nav bar, uploading files, etc.)
-//    to the project (multiple lines)
-//
-//    SLM; 11/9/2017; created
--->
 <!DOCTYPE html>
 <html lang="en">
 <!-- Tabula.api_version : ask for it on the console. -->
@@ -81,11 +71,11 @@
       </script>
       <script type="text/template" id="thumbnail-template" >
         <a href="#page-<%= number %>"><img src="<%= image_url %>"></a>
-  <!--      <div class="remove">
-          <span class="glyphicon glyphicon-remove delete-page"><button></button></span>
-          <span title="rotate this page right" class="icon-repeat rotate-left"></span>
-          <span title="rotate this page left" class="icon-repeat flip rotate-right"></span>
-        </div> -->
+        <div class="remove">
+          <span class="glyphicon glyphicon-remove delete-page"></span>
+          <!-- <span title="rotate this page right" class="icon-repeat rotate-left"></span>
+          <span title="rotate this page left" class="icon-repeat flip rotate-right"></span> -->
+        </div>
         <p><%= number %></p>
       </script>
 
@@ -121,8 +111,7 @@
       </script>
 
       <script type="text/template" id="select-control-panel-template" >
-
-        <span class="filename" style="font-size: 14px;"><%= original_filename %></span>
+        <span class="filename"><%= original_filename %></span>
         <div class="dropdown" <%= disable_load_template %> style="display: inline;">
           <button type="button" class="dropdown-toggle btn btn-info" data-toggle="dropdown" href="#" ><span class="glyphicon glyphicon-import" title="You may only load a template if there are no selections active in your PDF."></span>Templates</button>
           <div id="template-dropdown-container" class="dropdown-menu">
@@ -137,30 +126,25 @@
           </div>
         </div>
 
-        <button type="button" class="dropdown-toggle btn btn-default" onclick="PDF_Outline_btn()" data-toggle="dropdown" href="#" ><span class="glyphicon glyphicon-list-alt"></span> PDF Outline</button>
+
         <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
         <button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disabled_if_there_are_selections %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button>
-        <button type="button" class="btn btn-default" onclick="Regex_Options_btn()"><span></span> Regex Options</button>
-
 
 
 
         <span style="float: right">
-          <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><span class="glyphicon glyphicon-list-alt"></span> Preview & Export Data</button></a>
+          <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><span class="glyphicon glyphicon-list-alt"></span> Preview & Export Extracted Data</button></a>
         </span>
 
 
 
 
         <span style="clear: both;">
-
       </script>
 
       <script type="text/template" id="select-sidebar-template">
-        <div id ="PDF_outline">
         <ul id="thumbnail-list" class="thumbnail-list">
         </ul>
-      </div>
       </script>
 
       <script type="text/template" id="export-page-sidebar-template">
@@ -225,47 +209,18 @@
               <span class="no-data">No data.</span>
             <% } %>
             </div>
-            <div id="regex-container">
-            </div>
         </div>
       </script>
 
-      <script type="text/template" id="pdf-view-template">
+      <script type="text/template" id="pdf-view-template" >
         <div id="sidebar">
           <!-- thumbnails get rendered here by JS -->
         </div>
         <div id="main-pane">
           <div id="control-panel">
           </div>
+
           <div id="pages-container">
-          </div>
-          <div id="regex-container"> <!--container for regex options -->
-            <div class="container" style="width: 100%;">
-  <h2>Regex Options</h2>
-  <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
-    <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
-  </ul>
-
-  <div class="tab-content">
-    <div id="home" class="tab-pane fade in active">
-      <h3>Regex</h3>
-      <!-- Form for regex input-->
-      <form>
-        <div class="form-group">
-          <label class="col-form-label" for="formGroupExampleInput">Regex Command</label>
-          <input type="text" class="form-control" id="regexcommand" placeholder="{[Command]x}{[Command]i}">
-        </div>
-      </form>
-      <!-- -->
-    </div>
-    <div id="menu1" class="tab-pane fade">
-      <h3>Regex Guide</h3>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </div>
-  </div>
-</div>
-
           </div>
         </div>
         <nestedscript type="text/javascript" src="js/vendor/spin.min.js"></nestedscript>
@@ -352,7 +307,7 @@
             </div>
             <div id="progress-container">
             </div>
-        <!--      <hr> -->
+              <hr>
 
               <div id="library-container">
                 <h4>Imported PDFs</h4>
@@ -375,41 +330,11 @@
                 </div>
               </div>
 
-  <!--        <hr /> -->
-        <hr>
-          <h1>First time using Tabula? Welcome!</h1>
-        </hr>
-        <h3 name="howto">How to Use Tabula</h3>
-        <ol>
-          <li>Upload a PDF file containing a data table.</li>
-          <li>Select the table by clicking the top left corner of a table and dragging the mouse to the bottom right corner, until all of the data is included in the shaded selection area.</li>
-          <li>A window will then appear containing your data. Inspect the data to make sure it looks correct. If data is missing, you may have to slightly expand your selection.</li>
-          <li>Click the Download button.</li>
-          <li>Now you can work with your data as text file or a spreadsheet rather than a PDF! <br>
-          (You can open the downloaded file in Microsoft Excel or the free <a href="http://www.libreoffice.org/discover/calc/">LibreOffice Calc</a>)<p></p></li>
-          <li>For troubleshooting help, please visit the <a href="help">Help page </a>.  </li>
-        </ol>
-        <p>Note: Tabula only works on text-based PDFs, not scanned documents.</p>
-        <hr>
+          <hr />
           <p style="text-size: small;">If you have several PDFs with the same layout, you can select the appropriate regions once, then save the selections as a Tabula Template from the Select Tables page. If someone has shared a template with you, you can upload it to Tabula at the <a href="/mytemplates">My Templates page</a>.</p>
-        </hr>
-        <p></p>
-
 
           </div> <!-- /jumbotron -->
         </div> <!-- /container -->
-
-        <p></p>
-        <!-- social media navigation bar at the bottom of the page, has twitter, open collective, and Tabula.Technology listed.-->
-        <div class="container">
-          <div class="navbar">
-          <ul class="nav nav-justified nav-tabs-justified" id="myNav">
-            <li><a href="https://twitter.com/tabulapdf?lang=en"><img src="../img/Twitter_Logo_Blue.png" width="30" height="30">@TabulaPDF</a></li>
-            <li><a href="https://tabula.technology"><img src="/img/logo.png" width="30" height="30"> Tabula.Technology</a></li>
-            <li><a href="https://opencollective.com/tabulapdf"><img src="./img/open_collective.png" width="30" height="30"> Tabulapdf</a></li>
-          </ul>
-          </div>
-        </div>
 
         <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
         <nestedscript type="text/javascript" src="js/vendor/upload-group.js"></nestedscript>
@@ -477,21 +402,8 @@
 
             <h2>Credits</h2>
             <p>Tabula was created by <a href="http://jazzido.com/" target="_blank">Manuel Aristarán</a>, <a href="https://mike.tig.as/" target="_blank">Mike Tigas</a> and <a href="http://jeremybmerrill.com/" target="_blank">Jeremy B. Merrill</a> with the support of <a href="https://www.propublica.org">ProPublica</a>, <a href="http://blogs.lanacion.com.ar/data/">La Nación DATA</a>, <a href="https://opennews.org/">Knight-Mozilla OpenNews</a>, <a href="http://www.nytimes.com">The New York Times</a>, <a href="http://knightlab.northwestern.edu/">Northwestern University Knight Lab</a>, <a href="http://www.knightfoundation.org/">The Knight Foundation</a>, and <a href="https://shuttleworthfoundation.org/">The Shuttleworth Foundation</a>. Tabula was designed by <a href="http://jasondas.com">Jason Das.</a></p>
-            <!--Added !-->
           </div> <!-- /jumbotron -->
         </div> <!-- /container -->
-        <p></p>
-          <!-- social media navigation bar at the bottom of the page, has twitter, open collective, and Tabula.Technology listed.-->
-          <div class="container">
-            <div class="navbar">
-            <ul class="nav nav-justified nav-tabs-justified" id="myNav">
-              <li><a href="https://twitter.com/tabulapdf?lang=en"><img src="../img/Twitter_Logo_Blue.png" width="30" height="30">@TabulaPDF</a></li>
-              <li><a href="https://tabula.technology"><img src="/img/logo.png" width="30" height="30"> Tabula.Technology</a></li>
-              <li><a href="https://opencollective.com/tabulapdf"><img src="./img/open_collective.png" width="30" height="30"> Tabulapdf</a></li>
-            </ul>
-            </div>
-          </div>
-
        </script>
 
       <script type="text/templates" id="templates-template">
@@ -550,17 +462,8 @@
 
       <script type="text/template" id="help-template">
         <div class="container">
-          <!--navigation bar for subsections in the help page -->
-            <div class="navbar">
-            <ul class="nav nav-justified nav-tabs-justified" id="myNav">
-              <li><a href="help#tabulahelp">How To Use Tabula</a></li>
-              <li><a href="help#regexhelp">Regex Help</a></li>
-              <li><a href="help#troubleshooting">Troubleshooting</a></li>
-            </ul>
-            </div>
-        <p></p><p></p>
           <div class="jumbotron help">
-          <h1 id="tabulehelp" name="howto">How to Use Tabula</h1>
+          <h3 name="howto">How to Use Tabula</h3>
           <ol>
             <li>Upload a PDF file containing a data table.</li>
             <li>Select the table by clicking the top left corner of a table and dragging the mouse to the bottom right corner, until all of the data is included in the shaded selection area.</li>
@@ -570,16 +473,7 @@
             (You can open the downloaded file in Microsoft Excel or the free <a href="http://www.libreoffice.org/discover/calc/">LibreOffice Calc</a>)<p></p></li>
           </ol>
           <p>Note: Tabula only works on text-based PDFs, not scanned documents.</p>
-          <p></p>
-          <!--Regex Help section -->
-          <h1 id="regexhelp" name="regexhelp">Regex Help</h1>
-          <ol>
-            <li>Include here on regex trouble shooting</li>
-            <li>Include regex guide(?)</li>
-            <li>Include reference to learning regex(possibly)</li>
-          </ol>
-          <p></p>
-          <h1 id= "troubleshooting" name="trouble">Having trouble with Tabula?</h1>
+          <h3 name="trouble">Having trouble with Tabula?</h3>
           <ol>
           <li><strong>Tabula said "Sorry, your PDF file is image-based" -- what does that mean?</strong> Your PDF does not have any embedded text. It might have been scanned from paper. Tabula is not able to extract any data from image-based PDFs. You can try OCRing the PDF with a tool like Adobe Acrobat Pro (paid), Tesseract, <a href="http://www.tobias-elze.de/pdfsandwich/">PDFSandwich</a> (Mac/Linux, free) or <a href="https://code.google.com/p/lime-ocr/">Lime OCR</a> (Windows, free) and then trying Tabula again.</li>
           <li><strong>Some columns of my table are combined. What can I do?</strong> Tabula sometimes uses "streams" of whitespace to recreate your table's structure. If headers span multiple columns, they're probably causing a problem. Try excluding them from your selection (or selecting them separately). </li>
@@ -591,18 +485,8 @@
 
           </div> <!-- /jumbotron -->
         </div> <!-- /container -->
-
-        <!-- social media navigation bar at the bottom of the page, has twitter, open collective, and Tabula.Technology listed.-->
-        <div class="container">
-          <div class="navbar">
-          <ul class="nav nav-justified nav-tabs-justified" id="myNav">
-            <li><a href="https://twitter.com/tabulapdf?lang=en"><img src="../img/Twitter_Logo_Blue.png" width="30" height="30">@TabulaPDF</a></li>
-            <li><a href="https://tabula.technology"><img src="/img/logo.png" width="30" height="30"> Tabula.Technology</a></li>
-            <li><a href="https://opencollective.com/tabulapdf"><img src="./img/open_collective.png" width="30" height="30"> Tabulapdf</a></li>
-          </ul>
-          </div>
-        </div>
        </script>
+
 
     </div> <!-- /templates -->
 

@@ -75,7 +75,7 @@ module Tabula
     end
 
     def move_file(path, document_id, filename)
-      FileUtils.mv(path, File.join(get_document_dir(document_id), filename))
+      FileUtils.mv(path, File.join(get_document_dir(document_id), filename), :noop => false, :verbose => true, :force => true)
     end
 
 
