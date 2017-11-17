@@ -1,0 +1,145 @@
+.thumbnail-list li div.selection-show {
+  position: absolute;
+  border: 1px dashed red;
+  display: none;
+  pointer-events: none;
+}
+
+/* selections */
+.repeat-lassos-group {
+  position: absolute;
+  right: -185px;
+  bottom: -35px;
+}
+
+/* rectangularSelector.js classes */
+.selection-box, .table-region {
+  position: absolute;
+  border: 1px dashed rgba(255, 87, 0, 0.8);
+  background: rgba(255, 87, 0, 0.2);
+  box-sizing: border-box;
+}
+.selection-box:hover, .table-region:hover {
+  cursor: pointer;
+}
+
+.selection-box {
+  z-index: 42;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+.table-region {
+  top: 0;
+  left: 0;
+  z-index: 21;
+}
+
+div.table-region .resize-handle {
+  position: absolute;
+}
+
+div.table-region .n-border {
+  width: calc(100% - 10px);
+  top: -5px;
+  left: 5px;
+  height: 10px;
+}
+
+div.table-region .s-border {
+  width: calc(100% - 10px);
+  bottom: -5px;
+  left: 5px;
+  height: 10px;
+}
+
+div.table-region .w-border {
+  height: calc(100% - 10px);
+  left: -5px;
+  top: 5px;
+  width: 10px;
+}
+
+div.table-region .e-border {
+  height: calc(100% - 10px);
+  top: 5px;
+  right: -5px;
+  width: 10px;
+}
+
+div.table-region .nw-border {
+  width: 10px;
+  height: 10px;
+  top: -5px;
+  left: -5px;
+}
+
+div.table-region .ne-border {
+  width: 10px;
+  height: 10px;
+  top: -5px;
+  right: -5px;
+}
+
+div.table-region .sw-border {
+  width: 10px;
+  height: 10px;
+  bottom: -5px;
+  left: -5px;
+}
+
+div.table-region .se-border {
+  width: 10px;
+  height: 10px;
+  bottom: -5px;
+  right: -5px;
+}
+
+div.table-region .n-border:hover {
+  cursor: n-resize;
+}
+
+div.table-region .nw-border:hover {
+  cursor: nw-resize;
+}
+
+div.table-region .ne-border:hover {
+  cursor: ne-resize;
+}
+
+div.table-region .s-border:hover {
+  cursor: s-resize;
+}
+
+div.table-region .sw-border:hover {
+  cursor: sw-resize;
+}
+
+div.table-region .se-border:hover {
+  cursor: se-resize;
+}
+
+div.table-region .w-border:hover {
+  cursor: w-resize;
+}
+
+div.table-region .e-border:hover {
+  cursor: e-resize;
+}
+
+div.table-region button[name=close] {
+  font-weight: bold;
+  border: 0;
+  background-color: transparent;
+  padding: 0;
+  font-size: 20px;
+  position: relative;
+  top: -25px;
+  left: 100%;
+  margin-left: 5px;
+}
+
+div.table-region button[name=close]:hover {
+  color: red;
+}
