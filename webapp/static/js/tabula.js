@@ -20,7 +20,7 @@ var TabulaRouter = Backbone.Router.extend({
     "pdf/:file_id/extract":        "view", // you have to make selections first, so going directly to /extract doesn't work.
     "queue/:file_id":              'status',
     "error":                       'uploadError',
-    "help":                         'help',
+    "help":                        'help',
     "about":                       'about',
     "mytemplates":                 'templates'
   },
