@@ -248,9 +248,10 @@ Cuba.define do
       puts req.params
       output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
       doc_to_search = PDDocument.load(Java::JavaIO::File.new(File.join(output_dir,'document.pdf')))
-
       regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(req.params['pattern_before'],
+                                                                      req.params['include_pattern_before'],
                                                                       req.params['pattern_after'],
+                                                                      req.params['include_pattern_after'],
                                                                       doc_to_search)
 
       doc_to_search.close()
