@@ -28,7 +28,6 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     equalizer (0.0.11)
     ffi (1.9.18-java)
-    gson (0.6.1-java)
     ice_nine (0.11.2)
     jar-dependencies (0.3.10)
     jbundler (0.9.3)
@@ -72,7 +71,6 @@ DEPENDENCIES
   bootstrap-sass (~> 3.2.0)
   compass
   cuba (~> 3.8.1)
-  gson (~> 0.6.1)
   jar-dependencies (= 0.3.10)
   jbundler (~> 0.9.3)
   jruby-jars (= 9.1.12.0)
