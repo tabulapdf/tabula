@@ -250,9 +250,9 @@
   <div class="tab-content">
     <div id="home" class="tab-pane fade in active">
       <h3>Regex</h3>
-      <!-- Form for regex input-->
-      <form>
-          <label class="form-group" id="regex_input_form"></label>
+      <!-- Form for regex input turning off autocomplete for now-->
+      <form id="regex_input_form" autocomplete="off">
+          <label class="form-group"></label>
           <p><label class="col-form-label" for="formGroupExampleInput">Regex Command</label></p>
           <label><input type="checkbox" id="include_pattern_before" value="isSet"> Inclusive? </label>
           <input type="text" class="form-control" id="pattern_before" placeholder="Pattern Before...">
