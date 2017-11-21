@@ -261,9 +261,12 @@
           <button type="button" id="regexSearch" class="btn btn-default" disabled>Search</button>
       </form>
       <table class="regex-results-table">
+        <h2>Searches</h2>
         <thead>
           <tr>
             <th>Regex Before</th>
+            <th>Regex After</th>
+            <th>Matches</th>
           </tr>
         </thead>
         <tbody class="regex-results-list">
@@ -271,17 +274,7 @@
       </table>
     </div>
 
-    <script type="text/template" class="regex-query-result-template">
-         <td><span class="pattern_before"><%= pattern_before %></span></td>
-    </script>
-      <!-- Form for regex input-->
-      <form>
-        <div class="form-group">
-          <label class="col-form-label" for="formGroupExampleInput">Regex Command</label>
-          <input type="text" class="form-control" id="regexcommand" placeholder="{[Command]x}{[Command]i}">
-        </div>
-      </form>
-      <!-- -->
+
     </div>
     <div id="menu1" class="tab-pane fade">
       <h3>Regex Guide</h3>

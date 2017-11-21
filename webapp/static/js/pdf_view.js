@@ -924,14 +924,162 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   }
 });
 
-//Tabula.RegexData
+
+Tabula.RegexHandler = Backbone.View.extend({
+  el: "#regex-container",
+  className: 'regex-handler',
+  events: {'click #regex-search': 'perform_regex_search'},
+  regex_results_handler: null,
+  regex_query_handler: null,
+  initialize: function(){
+    this.regex_query_handler = new Tabula.RegexQueryHandler();
+    this.regex_results_handler= new Tabula.RegexResultsHandler();
+  },
+  //Event handler called when the Set Regex button is pushed
+  perform_regex_search: function() {
+    $.ajax({
+      type: 'GET',
+      url: '/regex',
+      data: this.model.toJSON(),
+      dataType: 'json',
+      success: _.bind(function (data) {
+        var search_results = data["_matching_areas"];
+        for (var iter in search_results) {
+          for (var page_number in search_results[iter]) {
+            for (var matching_element in search_results[iter][page_number]) {
+              var render_data = search_results[iter][page_number][matching_element];
+              Tabula.pdf_view.renderSelection({
+                x1: render_data['x'],
+                y1: render_data['y'],
+                width: render_data['width'],
+                height: render_data['height'],
+                page: parseInt(page_number),
+                extraction_method: 'spreadsheet',
+                selection_id: null
+              });
+            }
+          }
+        }
+        $('#regex_input_form').find('input').val(null);
+        $('#regexSearch').attr('disabled', 'disabled');
+        this.model.reset();
+        console.log(JSON.stringify(this.model));
+      }, this),
+      //TODO: Figure out a more graceful way to handle this
+      error: function (xhr, status, err) {
+        alert('Error in regex search: ' + JSON.stringify(err));
+        console.log('Error in regex search: ', err);
+      }
+    });
+  }
+});
+
+Tabula.RegexResultsHandler = function(){
+  this.regex_results = {};
+  this.regex_result_handler = new Tabula.RegexResultHandler();
+};
+
+Tabula.RegexResultModel = Backbone.Model.extend({});
+
+Tabula.RegexResultHandler = Backbone.View.extend({
+  el : "#regex-container",
+  model: new Tabula.RegexResultModel(),
+  events : {},
+  className: 'regex-results',
+  initialize: function(){
+    //Nothing for now
+  }
+});
+//Tabula.RegexQueryHandler
+//   Backbone View extension for the detection of user-defined regex operations.
+//
+//   Handles user requests for regex searches of tables within a document; oversees the AJAX call to the server and (for now)
+//   the rendering of the returned values
+//
+//   11/14/2017  REM; created
+//
+
+Tabula.RegexQueryHandler = Backbone.View.extend({
+  el: "#regex-container",
+  model: null,
+  events: {'keyup' : 'update_regex_inputs'},
+  className: 'regex-query',
+  initialize: function(){
+    this.model = new Tabula.RegexQueryModel();
+  },
+  //Event handler called when the Set Regex button is pushed
+  perform_regex_search: function() {
+    $.ajax({
+      type: 'GET',
+      url: '/regex',
+      data: this.model.toJSON(),
+      dataType: 'json',
+      success: _.bind(function(data){
+        var search_results = data["_matching_areas"];
+        for(var iter in search_results){
+          for(var page_number in search_results[iter]){
+            for( var matching_element in search_results[iter][page_number]) {
+              var render_data = search_results[iter][page_number][matching_element];
+              Tabula.pdf_view.renderSelection({
+                x1: render_data['x'],
+                y1: render_data['y'],
+                width: render_data['width'],
+                height: render_data['height'],
+                page: parseInt(page_number),
+                extraction_method: 'spreadsheet',
+                selection_id: null
+              });
+            }
+          }
+        }
+        $('#regex_input_form').find('input').val(null);
+        $('#regexSearch').attr('disabled','disabled');
+        this.model.reset();
+        console.log(JSON.stringify(this.model));
+      },this),
+      //TODO: Figure out a more graceful way to handle this
+      error: function(xhr,status,err){
+        alert('Error in regex search: ' + JSON.stringify(err));
+        console.log('Error in regex search: ' ,err);
+      }
+    });
+
+  },
+  update_regex_inputs: function(event) {
+    //     console.log(event['target']['id']);
+    var target_id = event['target']['id'];
+    var jQ_target_id = "#"+target_id;
+    var input_map = {};
+    if($(jQ_target_id).is(':checkbox')){
+      input_map[target_id] = $(jQ_target_id).is(':checked');
+    }
+    else{
+      input_map[target_id] = $(jQ_target_id).val();
+    }
+    this.model.set(input_map);
+
+    if(this.model.isFilledOut()){
+      $('#regexSearch').removeAttr('disabled');
+    }
+    else{
+      $('#regexSearch').attr('disabled','disabled');
+    }
+    console.log(JSON.stringify(this.model));
+  }
+
+});
+
+
+//Tabula.RegexQueryModel
 //  Backbone Model extension for data storage resgarding user-defined regex operations.
 //
-//  Retains the parameters outlining regex-defined table searches within the PDF. Passed to the server via AJAX call
+//  Retains the parameters outlining regex-defined table searches within the PDF. Passed to the server via AJAX call.
+//  Stores the values returned from the server that are used to define areas of detection and store regex history/stats.
 //
 //  11/14/2017 REM; created
 //
-Tabula.RegexData = Backbone.Model.extend({
+Tabula.RegexQueryModel = Backbone.Model.extend({ //Singleton
+   
    initialize: function(){
      this.set({'file_path':PDF_ID});
      this.set({'pattern_before':""});
@@ -958,91 +1106,12 @@ Tabula.RegexData = Backbone.Model.extend({
   }
 });
 
-
-//Tabula.RegexView
-//   Backbone View extension for the detection of user-defined regex operations.
-//
-//   Handles user requests for regex searches of tables within a document; oversees the AJAX call to the server.
-//
-//   11/14/2017  REM; created
-//
-Tabula.RegexView = Backbone.View.extend({
-   el: "#regex-container",
-   model: new Tabula.RegexData(),
-   events: {'click #regexSearch' : 'perform_regex_search',
-            'keyup' : 'update_regex_inputs'},
-   className: 'regex-query',
-    initialize: function(){
-     //Nothing for now
-    },
-    //Event handler called when the Set Regex button is pushed
-   perform_regex_search: function() {
-        $.ajax({
-            type: 'GET',
-            url: '/regex',
-            data: this.model.toJSON(),
-            dataType: 'json',
-            success: _.bind(function(data){
-                var search_results = data["_matching_areas"];
-                for(var iter in search_results){
-                  for(var page_number in search_results[iter]){
-                    for( var matching_element in search_results[iter][page_number]) {
-                      var render_data = search_results[iter][page_number][matching_element];
-                      Tabula.pdf_view.renderSelection({
-                          x1: render_data['x'],
-                          y1: render_data['y'],
-                          width: render_data['width'],
-                          height: render_data['height'],
-                          page: parseInt(page_number),
-                          extraction_method: 'spreadsheet',
-                          selection_id: null
-                      });
-                    }
-                  }
-                }
-              $('#regex_input_form').find('input').val(null);
-              $('#regexSearch').attr('disabled','disabled');
-              this.model.reset();
-              console.log(JSON.stringify(this.model));
-            },this),
-          //TODO: Figure out a more graceful way to handle this
-            error: function(xhr,status,err){
-                alert('Error in regex search: ' + JSON.stringify(err));
-                console.log('Error in regex search: ' ,err);
-            }
-        });
-
-    },
-    update_regex_inputs: function(event) {
- //     console.log(event['target']['id']);
-      var target_id = event['target']['id'];
-      var jQ_target_id = "#"+target_id;
-      var input_map = {};
-      if($(jQ_target_id).is(':checkbox')){
-        input_map[target_id] = $(jQ_target_id).is(':checked');
-      }
-      else{
-        input_map[target_id] = $(jQ_target_id).val();
-      }
-      this.model.set(input_map);
-
-      if(this.model.isFilledOut()){
-        $('#regexSearch').removeAttr('disabled');
-      }
-      else{
-        $('#regexSearch').attr('disabled','disabled');
-      }
-      console.log(JSON.stringify(this.model));
-    }
-
-});
-
 Tabula.SidebarView = Backbone.View.extend({
   className: 'sidebar-view',
   events:{ },
   thumbnail_list_view: null, // defined on initialize
   pdf_view: null,            // defined on initialize
-  regex_view: new Tabula.RegexView(),          // defined on initialize
+  regex_handler: new Tabula.RegexHandler(),
   template: _.template($('#templates #select-sidebar-template').html().replace(/nestedscript/g, 'script')),
   initialize: function(stuff){
     _.bindAll(this, 'render')
