@@ -23,7 +23,7 @@ Tabula.escapeHtml = function(string) {
   return String(string).replace(/[&<>"'`=\/]/g, function (s) {
     return Tabula.entityMap[s];
   });
-}
+};
 
 
 Tabula.Page = Backbone.Model.extend({
@@ -64,7 +64,7 @@ Tabula.Document = Backbone.Model.extend({
 
     this.set('original_filename', '');
     this.set('new_filename', false);
-  },
+  }
 });
 
 Tabula.Selection = Backbone.Model.extend({
@@ -921,7 +921,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     this.$el.find("#template-dropdown-templates-list-container").html(this.saved_template_library_view.render().el);
 
     return this;
-  },
+  }
 });
 
 //Tabula.RegexData
@@ -984,10 +984,10 @@ Tabula.RegexView = Backbone.View.extend({
             dataType: 'json',
             success: _.bind(function(data){
                 var search_results = data["_matching_areas"];
-                for(iter in search_results){
-                  for(page_number in search_results[iter]){
-                    for(matching_element in search_results[iter][page_number]) {
-                      render_data = search_results[iter][page_number][matching_element];
+                for(var iter in search_results){
+                  for(var page_number in search_results[iter]){
+                    for( var matching_element in search_results[iter][page_number]) {
+                      var render_data = search_results[iter][page_number][matching_element];
                       Tabula.pdf_view.renderSelection({
                           x1: render_data['x'],
                           y1: render_data['y'],
@@ -1007,7 +1007,7 @@ Tabula.RegexView = Backbone.View.extend({
             },this),
           //TODO: Figure out a more graceful way to handle this
             error: function(xhr,status,err){
-                alert('Error in regex search: ',JSON.stringify(err));
+                alert('Error in regex search: ' + JSON.stringify(err));
                 console.log('Error in regex search: ' ,err);
             }
         });
@@ -1015,8 +1015,8 @@ Tabula.RegexView = Backbone.View.extend({
     },
     update_regex_inputs: function(event) {
  //     console.log(event['target']['id']);
-      target_id = event['target']['id'];
-      jQ_target_id = "#"+target_id;
+      var target_id = event['target']['id'];
+      var jQ_target_id = "#"+target_id;
       var input_map = {};
       if($(jQ_target_id).is(':checkbox')){
         input_map[target_id] = $(jQ_target_id).is(':checked');
