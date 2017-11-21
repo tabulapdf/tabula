@@ -260,7 +260,20 @@
           <input type="text" class="form-control" id="pattern_after" placeholder="Pattern After...">
           <button type="button" id="regexSearch" class="btn btn-default" disabled>Search</button>
       </form>
+      <table class="regex-results-table">
+        <thead>
+          <tr>
+            <th>Regex Before</th>
+          </tr>
+        </thead>
+        <tbody class="regex-results-list">
+        </tbody>
+      </table>
     </div>
+
+    <script type="text/template" class="regex-query-result-template">
+         <td><span class="pattern_before"><%= pattern_before %></span></td>
+    </script>
       <!-- -->
     </div>
     <div id="menu1" class="tab-pane fade">
