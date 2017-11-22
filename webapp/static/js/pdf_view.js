@@ -940,29 +940,19 @@ Tabula.RegexHandler = Backbone.View.extend({
     $.ajax({
       type: 'GET',
       url: '/regex',
-      data: this.model.toJSON(),
+      data: this.regex_query_handler.model.toJSON(),
       dataType: 'json',
       success: _.bind(function (data) {
         var search_results = data["_matching_areas"];
         for (var iter in search_results) {
-          for (var page_number in search_results[iter]) {
-            for (var matching_element in search_results[iter][page_number]) {
-              var render_data = search_results[iter][page_number][matching_element];
-              Tabula.pdf_view.renderSelection({
-                x1: render_data['x'],
-                y1: render_data['y'],
-                width: render_data['width'],
-                height: render_data['height'],
-                page: parseInt(page_number),
-                extraction_method: 'spreadsheet',
-                selection_id: null
-              });
-            }
-          }
+          console.log("search_results[iter]:");
+          console.log(JSON.stringify(search_results[iter]));
+          this.regex_results_handler.add(search_results[iter]);
+
         }
         $('#regex_input_form').find('input').val(null);
         $('#regexSearch').attr('disabled', 'disabled');
-        this.model.reset();
+        this.regex_query_handler.model.reset();
         console.log(JSON.stringify(this.model));
       }, this),
       //TODO: Figure out a more graceful way to handle this
@@ -977,6 +967,29 @@ Tabula.RegexHandler = Backbone.View.extend({
 Tabula.RegexResultsHandler = function(){
   this.regex_results = {};
   this.regex_result_handler = new Tabula.RegexResultHandler();
+  this.add = function(search_result){
+ //   console.log("In function add of RegexResultsHandler");
+ //   console.log("search_result:");
+ //   console.log(JSON.stringify(search_result));
+ //   console.log(JSON.stringify(Object.keys(search_result)))
+    for (var page_number in search_result){
+ //     console.log(page_number);
+      for (var matching_element in search_result[page_number] ) {
+ //       console.log(JSON.stringify(search_result[page_number]));
+ //       console.log(JSON.stringify(matching_element));
+        var render_data = search_result[page_number][matching_element];
+        Tabula.pdf_view.renderSelection({
+          x1: render_data['x'],
+          y1: render_data['y'],
+          width: render_data['width'],
+          height: render_data['height'],
+          page: parseInt(page_number),
+          extraction_method: 'spreadsheet',
+          selection_id: null
+        });
+      }
+    }
+  }
 };
 
 Tabula.RegexResultModel = Backbone.Model.extend({});
@@ -1007,44 +1020,7 @@ Tabula.RegexQueryHandler = Backbone.View.extend({
   initialize: function(){
     this.model = new Tabula.RegexQueryModel();
   },
-  //Event handler called when the Set Regex button is pushed
-  perform_regex_search: function() {
-    $.ajax({
-      type: 'GET',
-      url: '/regex',
-      data: this.model.toJSON(),
-      dataType: 'json',
-      success: _.bind(function(data){
-        var search_results = data["_matching_areas"];
-        for(var iter in search_results){
-          for(var page_number in search_results[iter]){
-            for( var matching_element in search_results[iter][page_number]) {
-              var render_data = search_results[iter][page_number][matching_element];
-              Tabula.pdf_view.renderSelection({
-                x1: render_data['x'],
-                y1: render_data['y'],
-                width: render_data['width'],
-                height: render_data['height'],
-                page: parseInt(page_number),
-                extraction_method: 'spreadsheet',
-                selection_id: null
-              });
-            }
-          }
-        }
-        $('#regex_input_form').find('input').val(null);
-        $('#regexSearch').attr('disabled','disabled');
-        this.model.reset();
-        console.log(JSON.stringify(this.model));
-      },this),
-      //TODO: Figure out a more graceful way to handle this
-      error: function(xhr,status,err){
-        alert('Error in regex search: ' + JSON.stringify(err));
-        console.log('Error in regex search: ' ,err);
-      }
-    });
 
-  },
   update_regex_inputs: function(event) {
     //     console.log(event['target']['id']);
     var target_id = event['target']['id'];
@@ -1059,10 +1035,10 @@ Tabula.RegexQueryHandler = Backbone.View.extend({
     this.model.set(input_map);
 
     if(this.model.isFilledOut()){
-      $('#regexSearch').removeAttr('disabled');
+      $('#regex-search').removeAttr('disabled');
     }
     else{
-      $('#regexSearch').attr('disabled','disabled');
+      $('#regex-search').attr('disabled','disabled');
     }
     console.log(JSON.stringify(this.model));
   }
