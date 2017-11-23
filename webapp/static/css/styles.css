@@ -7428,7 +7428,7 @@ form {
   overflow-x: hidden;
   position: fixed;
   left: 0;
-  top: 51px;
+  top: 44%;
   z-index: 2;
   -webkit-box-shadow: inset -0.25em 0 0.5em -0.25em rgba(0, 0, 0, 0.1);
   box-shadow: inset -0.25em 0 0.5em -0.25em rgba(0, 0, 0, 0.1);
@@ -7489,8 +7489,8 @@ form {
 #control-panel {
   position: fixed;
   top: 50px;
-  left: 195px;
-  width: calc(100% - 200px);
+  left: 0px;
+  width: 100%;
   z-index: 101;
   /* gotta be >100, which is the max z-index for selections */
   background: #d9edf7;
