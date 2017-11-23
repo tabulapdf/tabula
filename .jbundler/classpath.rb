@@ -6,6 +6,7 @@ JBUNDLER_TEST_CLASSPATH = []
 JBUNDLER_TEST_CLASSPATH.freeze
 JBUNDLER_CLASSPATH = []
 <<<<<<< HEAD
+<<<<<<< HEAD
 JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\org\apache\commons\commons-csv\1.4\commons-csv-1.4.jar'
 JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\commons-cli\commons-cli\1.4\commons-cli-1.4.jar'
 JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\org\bouncycastle\bcprov-jdk15on\1.56\bcprov-jdk15on-1.56.jar'
@@ -26,6 +27,8 @@ JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\technology\tabula\tabula
 JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\com\github\jai-imageio\jai-imageio-jpeg2000\1.3.0\jai-imageio-jpeg2000-1.3.0.jar'
 JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\com\levigo\jbig2\levigo-jbig2-imageio\2.0\levigo-jbig2-imageio-2.0.jar'
 =======
+=======
+>>>>>>> 691b35eff97c474261bbd8624f1c4a35068a6733
 JBUNDLER_CLASSPATH << (JBUNDLER_LOCAL_REPO + '/org/apache/commons/commons-csv/1.4/commons-csv-1.4.jar')
 JBUNDLER_CLASSPATH << (JBUNDLER_LOCAL_REPO + '/commons-cli/commons-cli/1.4/commons-cli-1.4.jar')
 JBUNDLER_CLASSPATH << (JBUNDLER_LOCAL_REPO + '/org/bouncycastle/bcprov-jdk15on/1.56/bcprov-jdk15on-1.56.jar')
@@ -45,5 +48,8 @@ JBUNDLER_CLASSPATH << (JBUNDLER_LOCAL_REPO + '/net/sf/jsi/jsi/1.1.0-SNAPSHOT/jsi
 JBUNDLER_CLASSPATH << (JBUNDLER_LOCAL_REPO + '/net/sf/trove4j/trove4j/3.0.3/trove4j-3.0.3.jar')
 JBUNDLER_CLASSPATH << (JBUNDLER_LOCAL_REPO + '/com/github/jai-imageio/jai-imageio-jpeg2000/1.3.0/jai-imageio-jpeg2000-1.3.0.jar')
 JBUNDLER_CLASSPATH << (JBUNDLER_LOCAL_REPO + '/com/levigo/jbig2/levigo-jbig2-imageio/2.0/levigo-jbig2-imageio-2.0.jar')
+<<<<<<< HEAD
+>>>>>>> 691b35eff97c474261bbd8624f1c4a35068a6733
+=======
 >>>>>>> 691b35eff97c474261bbd8624f1c4a35068a6733
 JBUNDLER_CLASSPATH.freeze
