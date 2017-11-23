@@ -7421,17 +7421,18 @@ form {
 #sidebar {
   background: #eeeeee;
   width: 195px;
-  padding: 1em 0 0;
+  padding: 0em 0 0;
   height: calc(100% - 51px);
   text-align: center;
   overflow-y: scroll;
   overflow-x: hidden;
   position: fixed;
   left: 0;
-  top: 44%;
+  top: 104px;
   z-index: 2;
   -webkit-box-shadow: inset -0.25em 0 0.5em -0.25em rgba(0, 0, 0, 0.1);
   box-shadow: inset -0.25em 0 0.5em -0.25em rgba(0, 0, 0, 0.1);
+  height: 87%;
 }
 #sidebar h5 {
   border-top: 1px solid #777777;
@@ -7497,6 +7498,8 @@ form {
   padding: 1em;
   -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.075);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.075);
+  padding-left: 5%;
+  padding-right: 5%;
 }
 #control-panel button {
   margin-right: 1.25em;
@@ -7550,7 +7553,7 @@ form {
 #main-pane .page {
   width: 100%;
   max-width: 800px;
-  min-width: 560px;
+  min-width: 179px;
   -webkit-box-shadow: 0 0 2em rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 2em rgba(0, 0, 0, 0.4);
   position: relative;
@@ -7561,7 +7564,7 @@ form {
   display: block;
   width: 100%;
   max-width: 800px;
-  min-width: 560px;
+  min-width: 0px;
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
