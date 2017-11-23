@@ -6,7 +6,7 @@
 //    Additionally, the file holds the content and format for the GUI's visual aspect (menu, nav bar, uploading files, etc.)
 //    to the project (multiple lines)
 //
-//    SLM; 11/9/2017; created
+//    SLM; 11/9/2017; updated
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -193,9 +193,6 @@
 
       <!-- TODO: abstract out commonalities of select/export page templates -->
       <script type="text/template" id="export-page-template">
-        <div id="sidebar">
-        </div>
-
         <div id="main-pane">
             <div id="control-panel">
             </div>
@@ -225,17 +222,20 @@
               <span class="no-data">No data.</span>
             <% } %>
             </div>
+            <div id="sidebar">
+            </div>
             <div id="regex-container">
             </div>
         </div>
       </script>
 
       <script type="text/template" id="pdf-view-template">
-        <div id="sidebar">
-          <!-- thumbnails get rendered here by JS -->
-        </div>
+
         <div id="main-pane">
           <div id="control-panel">
+          </div>
+          <div id="sidebar">
+            <!-- thumbnails get rendered here by JS -->
           </div>
           <div id="pages-container">
           </div>
@@ -252,13 +252,15 @@
       <h3>Regex</h3>
       <!-- Form for regex input-->
       <form>
-        <div class="form-group" id="regex_input_form">
-          <label class="col-form-label" for="formGroupExampleInput">Regex Command</label>
+          <label class="form-group" id="regex_input_form"></label>
+          <p><label class="col-form-label" for="formGroupExampleInput">Regex Command</label></p>
+          <label><input type="checkbox" id="include_pattern_before" value=true> Inclusive? </label>
           <input type="text" class="form-control" id="pattern_before" placeholder="Pattern Before...">
+          <label><input type="checkbox" id="include_pattern_after" value=true> Inclusive? </label>
           <input type="text" class="form-control" id="pattern_after" placeholder="Pattern After...">
-         <button type="button" id="regexSearch" class="btn btn-default" disabled>Search</button>
-        </div>
+          <button type="button" id="regexSearch" class="btn btn-default" disabled>Search</button>
       </form>
+    </div>
       <!-- -->
     </div>
     <div id="menu1" class="tab-pane fade">
