@@ -7785,7 +7785,11 @@ div.spinner {
 .navbar_1 .navbar-collapse_1 {
     text-align: center;
 }
-#regex-container{
+#regex-container {
+  background: #eeeeee;
   float: right;
-  width: 23%;
+  right: 0px;
+  position: fixed;
+  top: 104px;
+  height:90%;
 }
