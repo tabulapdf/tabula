@@ -6,7 +6,7 @@
 //    Additionally, the file holds the content and format for the GUI's visual aspect (menu, nav bar, uploading files, etc.)
 //    to the project (multiple lines)
 //
-//    SLM; 11/9/2017; created
+//    SLM; 11/9/2017; updated
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -193,9 +193,6 @@
 
       <!-- TODO: abstract out commonalities of select/export page templates -->
       <script type="text/template" id="export-page-template">
-        <div id="sidebar">
-        </div>
-
         <div id="main-pane">
             <div id="control-panel">
             </div>
@@ -225,17 +222,20 @@
               <span class="no-data">No data.</span>
             <% } %>
             </div>
+            <div id="sidebar">
+            </div>
             <div id="regex-container">
             </div>
         </div>
       </script>
 
       <script type="text/template" id="pdf-view-template">
-        <div id="sidebar">
-          <!-- thumbnails get rendered here by JS -->
-        </div>
+
         <div id="main-pane">
           <div id="control-panel">
+          </div>
+          <div id="sidebar">
+            <!-- thumbnails get rendered here by JS -->
           </div>
           <div id="pages-container">
           </div>
@@ -273,16 +273,11 @@
         </tbody>
       </table>
     </div>
-    </div>
     <div id="menu1" class="tab-pane fade">
       <h3>Regex Guide</h3>
       <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
     </div>
   </div>
-</div>
-
-          </div>
-        </div>
         <nestedscript type="text/javascript" src="js/vendor/spin.min.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/resizableSelection.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/rectangularSelector.js"></nestedscript>
