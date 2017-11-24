@@ -924,7 +924,15 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   }
 });
 
-
+//Tabula.RegexHandler
+//   Backbone View extension for handling the UI regarding regex searches.
+//
+//   Serves as the Controller in the Model-View-Controller pattern enforced by Backbone. Creates the ReqgexQueryHandler
+//   and RegexCollectionView objects resposible for displaying the regex search information. Controls the AJAX request
+//   and the processing of information returned from the server.
+//
+//   11/23/2017  REM; created
+//
 Tabula.RegexHandler = Backbone.View.extend({
   el: "#regex-container",
   className: 'regex-handler',
@@ -969,13 +977,24 @@ Tabula.RegexHandler = Backbone.View.extend({
   }
 });
 
+//Tabula.RegexCollectionView
+//   Backbone Collection extension for storing all created Tabula.RegexResultModel
+//
+//   11/23/2017  REM; created
+//
 Tabula.RegexResultCollection= Backbone.Collection.extend({
-  model : Tabula.RegexResultsModel,
-  initialize: function(){
-    //Do nothing for now
-  }
+  model : Tabula.RegexResultModel,
+  initialize: function(){}
 });
 
+//Tabula.RegexCollectionView
+//   Backbone View extension for all generated Tabula.RegexResultView objects.
+//
+//   Processes the regex result information returning from the server and oversees the rendering of all the
+//   Tabula.RegexResultView objects.
+//
+//   11/23/2017  REM; created
+//
 Tabula.RegexCollectionView = Backbone.View.extend({
   el : $('.regex-results-list'),
   collection : Tabula.RegexResultCollection,
@@ -1040,31 +1059,46 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     }));
   }});
 
+//Tabula.RegexResultView
+//   Backbone View extension for displaying the results of the regex search sent back from the server.
+//
+//   Creates the model storing the data returned from the server and renders the summarized info in the side pane.
+//
+//   11/23/2017  REM; created
+//
 Tabula.RegexResultView = Backbone.View.extend({
   events : {},
   className: 'regex-result',
   tagName: 'tr',
   initialize: function(data){
-    console.log('In Tabula.RegexResultView.initialize:');
-    console.log(data);
+//    console.log('In Tabula.RegexResultView.initialize:');
+//    console.log(data);
     this.model = new Tabula.RegexResultModel(data);
-    console.log(JSON.stringify($('#regex-result').html()));
+//    console.log(JSON.stringify($('#regex-result').html()));
     this.template = _.template($('#regex-result').html());
   },
   render: function(){
-    console.log('In Tabula.RegexResultView.render');
-    console.log(this.$el);
-    console.log("this.model['model']:");
-    console.log((this.model.toJSON()['model']['attributes']));
+//    console.log('In Tabula.RegexResultView.render');
+//    console.log(this.$el);
+//    console.log("this.model['model']:");
+//    console.log((this.model.toJSON()['model']['attributes']));
     this.$el.html(this.template(this.model.toJSON()['model']['attributes']));
     return this;
   }
 });
 
+//Tabula.RegexResultModel
+//   Backbone Model extension for retaining the information sent back from the server for a given regex search.
+//
+//   Stores the patterns used in the regex search and the number of matching tables, along with the coordinates
+//   of the matching areas.
+//
+//   11/23/2017  REM; created
+//
 Tabula.RegexResultModel = Backbone.Model.extend({
   initialize: function(data) {
-    console.log('In Tabula.RegexResultModel:');
-    console.log(data);
+//    console.log('In Tabula.RegexResultModel:');
+//    console.log(data);
     this.set({
       pattern_before: data["pattern_before"],
       pattern_after: data["pattern_after"],
@@ -1077,12 +1111,13 @@ Tabula.RegexResultModel = Backbone.Model.extend({
 
 
 //Tabula.RegexQueryHandler
-//   Backbone View extension for the detection of user-defined regex operations.
+//   Backbone View extension for the detection of UI regex searches.
 //
-//   Handles user requests for regex searches of tables within a document; oversees the AJAX call to the server and (for now)
-//   the rendering of the returned values
+//   Handles user requests for regex searches of tables within a document; oversees the AJAX call to the server. Updates
+//   the regex input form to facilitate correct user interaction (search button is enabled only when all data provided).
 //
 //   11/14/2017  REM; created
+//   11/23/2017  ReM; refactored to accommodate new design.
 //
 
 Tabula.RegexQueryHandler = Backbone.View.extend({
@@ -1120,10 +1155,9 @@ Tabula.RegexQueryHandler = Backbone.View.extend({
 
 
 //Tabula.RegexQueryModel
-//  Backbone Model extension for data storage resgarding user-defined regex operations.
+//  Backbone Model extension for data storage regarding user-defined regex searches (queries).
 //
-//  Retains the parameters outlining regex-defined table searches within the PDF. Passed to the server via AJAX call.
-//  Stores the values returned from the server that are used to define areas of detection and store regex history/stats.
+//  Form that retains the parameters outlining regex table searches within the PDF. Passed to the server via AJAX call.
 //
 //  11/14/2017 REM; created
 //
