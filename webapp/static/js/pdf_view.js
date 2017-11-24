@@ -943,41 +943,51 @@ Tabula.RegexHandler = Backbone.View.extend({
     this.regex_query_handler = new Tabula.RegexQueryHandler();
     this.regex_results_handler= new Tabula.RegexCollectionView();
   },
+  reset_ui: function(){
+    $('#regex_input_form').find('input').val(null);
+    $('#regexSearch').attr('disabled', 'disabled');
+    this.regex_query_handler.model.reset();
+  },
   //Event handler called when the Set Regex button is pushed
   perform_regex_search: function() {
-    $.ajax({
-      type: 'GET',
-      url: '/regex',
-      data: this.regex_query_handler.model.toJSON(),
-      dataType: 'json',
-      success: _.bind(function (data) {
+    /*
+    *Determine if regex pattern has already been previously searched for
+     */
+    if (this.regex_results_handler.has_same_query(this.regex_query_handler.model.toJSON()) == false) {
 
-        this.regex_results_handler.process_result(data);
+      $.ajax({
+        type: 'GET',
+        url: '/regex',
+        data: this.regex_query_handler.model.toJSON(),
+        dataType: 'json',
+        success: _.bind(function (data) {
 
-  //      for (var iter in search_results) {
-  //        console.log("search_results[iter]:");
-  //        console.log(JSON.stringify(search_results[iter]));
-  //        this.regex_results_handler.add({search_result:search_results[iter]);
-  //      }
-        /*
-        * Reset UI for next regex search
-        */
-        $('#regex_input_form').find('input').val(null);
-        $('#regexSearch').attr('disabled', 'disabled');
-        this.regex_query_handler.model.reset();
+          this.regex_results_handler.process_result(data);
 
-        //console.log(JSON.stringify(this.model));
-      }, this),
-      //TODO: Figure out a more graceful way to handle this
-      error: function (xhr, status, err) {
-        alert('Error in regex search: ' + JSON.stringify(err));
-        console.log('Error in regex search: ', err);
-      }
-    });
+          //      for (var iter in search_results) {
+          //        console.log("search_results[iter]:");
+          //        console.log(JSON.stringify(search_results[iter]));
+          //        this.regex_results_handler.add({search_result:search_results[iter]);
+          //      }
+          this.reset_ui();
+
+          //console.log(JSON.stringify(this.model));
+        }, this),
+        //TODO: Figure out a more graceful way to handle this
+        error: function (xhr, status, err) {
+          alert('Error in regex search: ' + JSON.stringify(err));
+          console.log('Error in regex search: ', err);
+        }
+      });
+    }
+    else {
+      this.reset_ui();
+      alert('The requested search has already been performed. Please try a different search pattern.')
+    }
   }
 });
 
-//Tabula.RegexCollectionView
+//Tabula.RegexResultCollection
 //   Backbone Collection extension for storing all created Tabula.RegexResultModel
 //
 //   11/23/2017  REM; created
@@ -1014,6 +1024,18 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     });
 
     return this;
+  },
+  has_same_query: function(current_query){
+    console.log('In has_same_query:');
+    console.log('current_query:');
+    console.log(current_query);
+    console.log(this.collection.toArray());
+
+    return !this.collection.toArray().every(function(prev_query){
+      return ( (prev_query['attributes']['pattern_before']!=current_query['pattern_before']) &&
+                (prev_query['attributes']['pattern_after']!=current_query['pattern_after']) );
+    });
+
   },
   process_result : function (search_results) {
     console.log('In function process_result:');
