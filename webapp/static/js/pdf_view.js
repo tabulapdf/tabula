@@ -933,7 +933,7 @@ Tabula.RegexHandler = Backbone.View.extend({
   regex_query_handler: null,
   initialize: function(){
     this.regex_query_handler = new Tabula.RegexQueryHandler();
-    this.regex_results_handler= new Tabula.RegexResultsView();
+    this.regex_results_handler= new Tabula.RegexCollectionView();
   },
   //Event handler called when the Set Regex button is pushed
   perform_regex_search: function() {
@@ -976,12 +976,12 @@ Tabula.RegexResultCollection= Backbone.Collection.extend({
   }
 });
 
-Tabula.RegexResultsView = Backbone.View.extend({
+Tabula.RegexCollectionView = Backbone.View.extend({
   el : $('.regex-results-list'),
   collection : Tabula.RegexResultCollection,
   initialize: function(){
    //Make the render function get called any time a model is added
-    console.log('In initialize function of Tabula.RegexResultsView:');
+    console.log('In initialize function of Tabula.RegexCollectionView:');
     console.log(this.el);
     this.collection = new Tabula.RegexResultCollection();
     this.collection.on('add',this.render,this);
@@ -1054,7 +1054,9 @@ Tabula.RegexResultView = Backbone.View.extend({
   render: function(){
     console.log('In Tabula.RegexResultView.render');
     console.log(this.$el);
-    this.$el.html(this.template(this.model.toJSON()));
+    console.log("this.model['model']:");
+    console.log((this.model.toJSON()['model']['attributes']));
+    this.$el.html(this.template(this.model.toJSON()['model']['attributes']));
     return this;
   }
 });
