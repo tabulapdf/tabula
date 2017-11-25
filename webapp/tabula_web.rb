@@ -2,17 +2,22 @@
 require 'cuba'
 require 'cuba/render'
 
+require 'rubygems'
+require 'json'
 require 'digest/sha1'
 require 'json'
 require 'csv'
 require 'tempfile'
 require 'fileutils'
 require 'securerandom'
+require 'java'
+
 
 require_relative '../lib/tabula_java_wrapper.rb'
 java_import 'java.io.ByteArrayOutputStream'
 java_import 'java.util.zip.ZipEntry'
 java_import 'java.util.zip.ZipOutputStream'
+java_import org.apache.pdfbox.pdmodel.PDDocument
 
 require_relative './tabula_settings.rb'
 
@@ -99,10 +104,10 @@ def upload_template(template_file)
   selection_count = template_data.size
 
   # write to file and to workspace
-  Tabula::Workspace.instance.add_template({ "id" => template_id, 
+  Tabula::Workspace.instance.add_template({ "id" => template_id,
                                             "template" => template_data,
-                                            "name" => template_name, 
-                                            "page_count" => page_count, 
+                                            "name" => template_name,
+                                            "page_count" => page_count,
                                             "time" => Time.now.to_i,
                                             "selection_count" => selection_count})
   return template_id
@@ -122,14 +127,14 @@ Cuba.define do
     run TabulaJobProgress
   end
 
-  on "templates" do 
+  on "templates" do
     # GET  /books/ .... collection.fetch();
     # POST /books/ .... collection.create();
     # GET  /books/1 ... model.fetch();
     # PUT  /books/1 ... model.save();
     # DEL  /books/1 ... model.destroy();
 
-    on root do 
+    on root do
       # list them all
       on get do
         res.status = 200
@@ -138,22 +143,22 @@ Cuba.define do
       end
 
       # create a template from the GUI
-      on post do 
+      on post do
         template_info = JSON.parse(req.params["model"])
         template_name = template_info["name"] || "Unnamed Template #{Time.now.to_s}"
         template_id = Digest::SHA1.hexdigest(Time.now.to_s + template_name) # just SHA1 of time isn't unique with multiple uploads
         template_filename = template_id + ".tabula-template.json"
         file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "..", "templates")
-        # write to file 
+        # write to file
         FileUtils.mkdir_p(file_path)
         open(File.join(file_path, template_filename), 'w'){|f| f << JSON.dump(template_info["template"])}
         page_count = template_info.has_key?("page_count") ? template_info["page_count"] : template_info["template"].map{|f| f["page"]}.uniq.count
         selection_count = template_info.has_key?("selection_count") ? template_info["selection_count"] :  template_info["template"].count
         Tabula::Workspace.instance.add_template({
-                                                  "id" => template_id, 
-                                                  "name" => template_name, 
-                                                  "page_count" => page_count, 
-                                                  "time" => Time.now.to_i, 
+                                                  "id" => template_id,
+                                                  "name" => template_name,
+                                                  "page_count" => page_count,
+                                                  "time" => Time.now.to_i,
                                                   "selection_count" => selection_count,
                                                   "template" => template_info["template"]
                                                 })
@@ -234,10 +239,26 @@ Cuba.define do
     end
   end
 
-
   on get do
     on 'pdfs' do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
+    end
+
+    on 'regex' do
+      puts req.params
+      output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
+      doc_to_search = PDDocument.load(Java::JavaIO::File.new(File.join(output_dir,'document.pdf')))
+      regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(req.params['pattern_before'],
+                                                                      req.params['include_pattern_before'],
+                                                                      req.params['pattern_after'],
+                                                                      req.params['include_pattern_after'],
+                                                                      doc_to_search)
+
+      doc_to_search.close()
+
+      gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+      res.write(gson.to_json(regex_search))
+
     end
 
     on 'documents' do
