@@ -23,7 +23,7 @@ Tabula.escapeHtml = function(string) {
   return String(string).replace(/[&<>"'`=\/]/g, function (s) {
     return Tabula.entityMap[s];
   });
-}
+};
 
 
 Tabula.Page = Backbone.Model.extend({
@@ -64,7 +64,7 @@ Tabula.Document = Backbone.Model.extend({
 
     this.set('original_filename', '');
     this.set('new_filename', false);
-  },
+  }
 });
 
 Tabula.Selection = Backbone.Model.extend({
@@ -921,107 +921,237 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     this.$el.find("#template-dropdown-templates-list-container").html(this.saved_template_library_view.render().el);
 
     return this;
-  },
+  }
 });
 
-//Tabula.RegexData
+
+Tabula.RegexHandler = Backbone.View.extend({
+  el: "#regex-container",
+  className: 'regex-handler',
+  events: {'click #regex-search': 'perform_regex_search'},
+  regex_results_handler: null,
+  regex_query_handler: null,
+  initialize: function(){
+    this.regex_query_handler = new Tabula.RegexQueryHandler();
+    this.regex_results_handler= new Tabula.RegexResultsView();
+  },
+  //Event handler called when the Set Regex button is pushed
+  perform_regex_search: function() {
+    $.ajax({
+      type: 'GET',
+      url: '/regex',
+      data: this.regex_query_handler.model.toJSON(),
+      dataType: 'json',
+      success: _.bind(function (data) {
+
+        this.regex_results_handler.process_result(data);
+
+  //      for (var iter in search_results) {
+  //        console.log("search_results[iter]:");
+  //        console.log(JSON.stringify(search_results[iter]));
+  //        this.regex_results_handler.add({search_result:search_results[iter]);
+  //      }
+        /*
+        * Reset UI for next regex search
+        */
+        $('#regex_input_form').find('input').val(null);
+        $('#regexSearch').attr('disabled', 'disabled');
+        this.regex_query_handler.model.reset();
+
+        //console.log(JSON.stringify(this.model));
+      }, this),
+      //TODO: Figure out a more graceful way to handle this
+      error: function (xhr, status, err) {
+        alert('Error in regex search: ' + JSON.stringify(err));
+        console.log('Error in regex search: ', err);
+      }
+    });
+  }
+});
+
+Tabula.RegexResultCollection= Backbone.Collection.extend({
+  model : Tabula.RegexResultsModel,
+  initialize: function(){
+    //Do nothing for now
+  }
+});
+
+Tabula.RegexResultsView = Backbone.View.extend({
+  el : $('.regex-results-list'),
+  collection : Tabula.RegexResultCollection,
+  initialize: function(){
+   //Make the render function get called any time a model is added
+    console.log('In initialize function of Tabula.RegexResultsView:');
+    console.log(this.el);
+    this.collection = new Tabula.RegexResultCollection();
+    this.collection.on('add',this.render,this);
+  },
+  render: function(){
+    console.log("In render function of Tabula.RegexResultSHandler:");
+    var self = this;
+    this.$el.html('');
+    _.each(this.collection.toArray(),function(regex_result){
+      self.$el.append((new Tabula.RegexResultView({model:regex_result})).render().$el);
+    });
+
+    return this;
+  },
+  process_result : function (search_results) {
+    console.log('In function process_result:');
+    console.log('Search results:');
+    console.log(JSON.stringify(search_results));
+    var pattern_before = search_results["_regex_before_table"]["pattern"];
+    var pattern_after = search_results["_regex_after_table"]["pattern"];
+    var num_matches = 0;
+    Object.keys(search_results["_matching_areas"]).forEach(function (iter) {
+//      console.log("In function add of RegexResultsHandler");
+//      console.log("matching_areas:");
+//      console.log(JSON.stringify(iter));
+      num_matches++;
+      for (var page_number in search_results["_matching_areas"][iter]) {
+//        console.log("Page Number:" + page_number);
+        for (var matching_element_index in search_results["_matching_areas"][iter][page_number]) {
+//          console.log("Matching Element:");
+//          console.log(JSON.stringify(search_results["_matching_areas"][iter][page_number][matching_element_index]));
+
+          var render_data = search_results["_matching_areas"][iter][page_number][matching_element_index];
+
+          Tabula.pdf_view.renderSelection({
+            x1: render_data['x'],
+            y1: render_data['y'],
+            width: render_data['width'],
+            height: render_data['height'],
+            page: parseInt(page_number),
+            extraction_method: 'spreadsheet',
+            selection_id: null              //TODO: figure out what selection_id is used for
+          });
+        }
+      }
+    });
+    console.log("Counted Matches:" + num_matches);
+
+    console.log(search_results["_matching_areas"]);
+
+    this.collection.add( new Tabula.RegexResultModel({
+      pattern_before: pattern_before,
+      pattern_after: pattern_after,
+      num_matches: num_matches,
+      matching_areas: search_results["_matching_areas"]
+    }));
+  }});
+
+Tabula.RegexResultView = Backbone.View.extend({
+  events : {},
+  className: 'regex-result',
+  tagName: 'tr',
+  initialize: function(data){
+    console.log('In Tabula.RegexResultView.initialize:');
+    console.log(data);
+    this.model = new Tabula.RegexResultModel(data);
+    console.log(JSON.stringify($('#regex-result').html()));
+    this.template = _.template($('#regex-result').html());
+  },
+  render: function(){
+    console.log('In Tabula.RegexResultView.render');
+    console.log(this.$el);
+    this.$el.html(this.template(this.model.toJSON()));
+    return this;
+  }
+});
+
+Tabula.RegexResultModel = Backbone.Model.extend({
+  initialize: function(data) {
+    console.log('In Tabula.RegexResultModel:');
+    console.log(data);
+    this.set({
+      pattern_before: data["pattern_before"],
+      pattern_after: data["pattern_after"],
+      num_matches: data["num_matches"],
+      matching_areas: data["matching_areas"]
+    });
+
+  }
+});
+
+
+//Tabula.RegexQueryHandler
+//   Backbone View extension for the detection of user-defined regex operations.
+//
+//   Handles user requests for regex searches of tables within a document; oversees the AJAX call to the server and (for now)
+//   the rendering of the returned values
+//
+//   11/14/2017  REM; created
+//
+
+Tabula.RegexQueryHandler = Backbone.View.extend({
+  el: "#regex-container",
+  model: null,
+  events: {'keyup' : 'update_regex_inputs'},
+  className: 'regex-query',
+  initialize: function(){
+    this.model = new Tabula.RegexQueryModel();
+  },
+
+  update_regex_inputs: function(event) {
+    //     console.log(event['target']['id']);
+    var target_id = event['target']['id'];
+    var jQ_target_id = "#"+target_id;
+    var input_map = {};
+    if($(jQ_target_id).is(':checkbox')){
+      input_map[target_id] = $(jQ_target_id).is(':checked');
+    }
+    else{
+      input_map[target_id] = $(jQ_target_id).val();
+    }
+    this.model.set(input_map);
+
+    if(this.model.isFilledOut()){
+      $('#regex-search').removeAttr('disabled');
+    }
+    else{
+      $('#regex-search').attr('disabled','disabled');
+    }
+    console.log(JSON.stringify(this.model));
+  }
+
+});
+
+
+//Tabula.RegexQueryModel
 //  Backbone Model extension for data storage resgarding user-defined regex operations.
 //
-//  Retains the parameters outlining regex-defined table searches within the PDF. Passed to the server via AJAX call
+//  Retains the parameters outlining regex-defined table searches within the PDF. Passed to the server via AJAX call.
+//  Stores the values returned from the server that are used to define areas of detection and store regex history/stats.
 //
 //  11/14/2017 REM; created
 //
-Tabula.RegexData = Backbone.Model.extend({
+Tabula.RegexQueryModel = Backbone.Model.extend({ //Singleton
+
    initialize: function(){
-     this.set({'file_path':PDF_ID});
-     this.set({'pattern_before':null});
-     this.set({'include_pattern_before':false});
-     this.set({'pattern_after':null});
-     this.set({'include_pattern_after':false});
+     this.set({
+       'file_path':PDF_ID,
+       'pattern_before':"",
+       'include_pattern_before':false,
+       'pattern_after':"",
+       'include_pattern_after':false});
    },
    //determines if user has provided all values necessary to perform regex search <--TODO:move error checking to back-end or strengthen disable
    isFilledOut: function(){
      key_array = this.keys();
-     console.log(key_array);
+ //    console.log(key_array);
      key_array_length = key_array.length;
      for(i=0; i<key_array_length;i++){
-       if(this['attributes'][key_array[i]]==null){
+       if(this['attributes'][key_array[i]]===""){
+ //        console.log(key_array[i]);
          return false;
        }
      }
      return true;
-   }
-});
-
-
-//Tabula.RegexView
-//   Backbone View extension for the detection of user-defined regex operations.
-//
-//   Handles user requests for regex searches of tables within a document; oversees the AJAX call to the server.
-//
-//   11/14/2017  REM; created
-//
-Tabula.RegexView = Backbone.View.extend({
-   el: "#regex-container",
-   model: new Tabula.RegexData(),
-   events: {'click #regexSearch' : 'perform_regex_search',
-            'click #include_pattern_before': 'update_regex_inputs',
-            'change input#pattern_before': 'update_regex_inputs',
-            'change input#pattern_after': 'update_regex_inputs'},
-   className: 'regex-query',
-    initialize: function(){
-     //Nothing for now
-    },
-    //Event handler called when the Set Regex button is pushed
-   perform_regex_search: function() {
-        $.ajax({
-            type: 'GET',
-            url: '/regex',
-            data: this.model.toJSON(),
-            dataType: 'json',
-            success: _.bind(function(data){
-                var search_results = data["_matching_areas"];
-                for(iter in search_results){
-                  for(page_number in search_results[iter]){
-                    for(matching_element in search_results[iter][page_number]) {
-                      render_data = search_results[iter][page_number][matching_element];
-                      Tabula.pdf_view.renderSelection({
-                          x1: render_data['x'],
-                          y1: render_data['y'],
-                          width: render_data['width'],
-                          height: render_data['height'],
-                          page: parseInt(page_number),
-                          extraction_method: 'spreadsheet',
-                          selection_id: null
-                      });
-                    }
-                  }
-                }
-                //Tabula.pdf_view.renderSelection({});
-            },this),
-          //TODO: Figure out a more graceful way to handle this
-            error: function(xhr,status,err){
-                alert('Error in regex search: ',JSON.stringify(err));
-                console.log('Error in regex search: ' ,err);
-            }
-        });
-        $('#regex_input_form').children('input').val('');
-    },
-    update_regex_inputs: function(event) {
-      event_caller_id = event['handleObj']['selector'].split("#")[1];
-      console.log(event_caller_id);
-      var input_map = {};
-      input_map[event_caller_id] = $("#" + event_caller_id).val();
-      this.model.set(input_map);
-      console.log(JSON.stringify(this.model));
-      if(this.model.isFilledOut()){
-        $('#regexSearch').removeAttr('disabled');
-      }
-      else{
-        $('#regexSearch').attr('disabled','disabled');
-      }
-    }
-
+   },
+  reset: function(){
+     this.initialize();
+//     console.log(JSON.stringify(this));
+  }
 });
 
 Tabula.SidebarView = Backbone.View.extend({
@@ -1029,7 +1159,7 @@ Tabula.SidebarView = Backbone.View.extend({
   events:{ },
   thumbnail_list_view: null, // defined on initialize
   pdf_view: null,            // defined on initialize
-  regex_view: new Tabula.RegexView(),          // defined on initialize
+  regex_handler: new Tabula.RegexHandler(),
   template: _.template($('#templates #select-sidebar-template').html().replace(/nestedscript/g, 'script')),
   initialize: function(stuff){
     _.bindAll(this, 'render')
@@ -1043,7 +1173,7 @@ Tabula.SidebarView = Backbone.View.extend({
     this.thumbnail_list_view.$el = this.$el.find("#thumbnail-list");
     this.thumbnail_list_view.render();
     return this;
-  },
+  }
 
 });
 
