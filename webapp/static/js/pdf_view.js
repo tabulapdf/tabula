@@ -945,7 +945,7 @@ Tabula.RegexHandler = Backbone.View.extend({
   },
   reset_ui: function(){
     $('#regex_input_form').find('input').val(null);
-    $('#regexSearch').attr('disabled', 'disabled');
+    $('#regex-search').attr('disabled', 'disabled');
     this.regex_query_handler.model.reset();
   },
   //Event handler called when the Set Regex button is pushed
@@ -1171,7 +1171,8 @@ Tabula.RegexQueryHandler = Backbone.View.extend({
   },
 
   update_regex_inputs: function(event) {
-    //     console.log(event['target']['id']);
+    console.log("In update_regex_inputs:");
+    console.log(event['target']['id']);
     var target_id = event['target']['id'];
     var jQ_target_id = "#"+target_id;
     var input_map = {};
