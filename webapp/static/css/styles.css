@@ -7793,3 +7793,8 @@ div.spinner {
   top: 104px;
   height:90%;
 }
+
+.regex-result:hover {
+  background: red;
+}
+

@@ -1006,8 +1006,9 @@ Tabula.RegexResultCollection= Backbone.Collection.extend({
 //   11/23/2017  REM; created
 //
 Tabula.RegexCollectionView = Backbone.View.extend({
-  el : $('.regex-results-list'),
+  el : '.regex-results-list',
   collection : Tabula.RegexResultCollection,
+  events: {'remove_element':'remove_regex_search'},
   initialize: function(){
    //Make the render function get called any time a model is added
     console.log('In initialize function of Tabula.RegexCollectionView:');
@@ -1015,8 +1016,22 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     this.collection = new Tabula.RegexResultCollection();
     this.collection.on('add',this.render,this);
   },
+  remove_regex_search: function(event_data,search_to_remove){
+    console.log("In remove_regex_search of Tabula.RegexCollectionView");
+    var temp = search_to_remove['caller'];
+    console.log(JSON.stringify(temp));
+    console.log("Collection as JSON:");
+    console.log(this.collection.toArray());
+    this.collection.remove(search_to_remove['caller']['model']);
+    console.log("Collection as JSON AFTER removal:");
+    console.log(this.collection.toJSON());
+    /*
+    TODO: Need to remove all rectangles associated with the regex search being removed
+     */
+    this.render();
+  },
   render: function(){
-    console.log("In render function of Tabula.RegexResultSHandler:");
+    console.log("In render function of Tabula.RegexCollectionView:");
     var self = this;
     this.$el.html('');
     _.each(this.collection.toArray(),function(regex_result){
@@ -1089,9 +1104,9 @@ Tabula.RegexCollectionView = Backbone.View.extend({
 //   11/23/2017  REM; created
 //
 Tabula.RegexResultView = Backbone.View.extend({
-  events : {},
   className: 'regex-result',
   tagName: 'tr',
+  events: {'click':'remove_element_request'},
   initialize: function(data){
 //    console.log('In Tabula.RegexResultView.initialize:');
 //    console.log(data);
@@ -1106,6 +1121,10 @@ Tabula.RegexResultView = Backbone.View.extend({
 //    console.log((this.model.toJSON()['model']['attributes']));
     this.$el.html(this.template(this.model.toJSON()['model']['attributes']));
     return this;
+  },
+  remove_element_request: function(event){
+    console.log('In Tabula.RegexResultView.remove_element_request');
+    this.$el.trigger('remove_element',{caller:this.model.toJSON()});
   }
 });
 
