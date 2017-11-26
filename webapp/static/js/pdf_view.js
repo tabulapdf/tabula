@@ -926,7 +926,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 
 
 Tabula.RegexHandler = Backbone.View.extend({
-  el: "#regex-container",
+  el: "#regex",
   className: 'regex-handler',
   events: {'click #regex-search': 'perform_regex_search'},
   regex_results_handler: null,
@@ -1084,7 +1084,7 @@ Tabula.RegexResultModel = Backbone.Model.extend({
 //
 
 Tabula.RegexQueryHandler = Backbone.View.extend({
-  el: "#regex-container",
+  el: "#regexcontainer",
   model: null,
   events: {'keyup' : 'update_regex_inputs'},
   className: 'regex-query',
@@ -1734,8 +1734,6 @@ function isElementPartiallyInContainer (el, container) {
   );
 }
 
-
-
 function isElementInViewport (el) {
   if (el instanceof jQuery) {
       el = el[0];
@@ -1755,24 +1753,23 @@ function roundTo(num, fancymathwordforthenumberofdigitsafterthedecimal){
   return Math.round(num * Math.pow(10, fancymathwordforthenumberofdigitsafterthedecimal)) / Math.pow(10, fancymathwordforthenumberofdigitsafterthedecimal);
 }
 
+
 function PDF_Outline_btn(){
-  var x = document.getElementById("PDF_outline");
   var y = document.getElementById("sidebar");
-  if(x.style.display == "none" && y.style.display == "none"){
-    x.style.display = "block";
+  if(y.style.display == "none"){
     y.style.display = "block";
   }
   else{
-    x.style.display= "none";
     y.style.display = "none";
  }
 }
+
 function Regex_Options_btn(){
-  var x = document.getElementById("");
-  if(x.style.display == "none"){
-    x.style.display = "block";
+  var x = document.getElementById("regexcontainer");
+  if(x.style.display == "block"){
+    x.style.display = "none";
   }
   else{
-    x.style.display =="none";
+    x.style.display = "block";
   }
 }

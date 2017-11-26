@@ -7785,12 +7785,14 @@ div.spinner {
 .navbar_1 .navbar-collapse_1 {
     text-align: center;
 }
-#regex-container {
+#regexcontainer {
   background: #eeeeee;
   float: right;
   right: 0px;
   position: fixed;
   top: 104px;
-  height:90%;
+  height:83%;
   width: 230px;
+  display: block;
+  overflow-y: scroll;
 }
