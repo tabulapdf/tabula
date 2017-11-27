@@ -247,7 +247,7 @@
             <div class="container" style="width: 100%;">
             <h4>Regex Options</h4>
             <ul class="nav nav-tabs">
-              <li class="active regex-commands"><a data-toggle="tab" href="#home"><h7>Commands</h7></a></li>
+              <li class="active regex-commands"><a data-toggle="tab" href="#home"><h7>Regex Input</h7></a></li>
               <li><a data-toggle="tab" class="regex-guide" href="#menu1"><h7>Guide</h7></a></li>
             </ul>
 
@@ -300,7 +300,7 @@
               </ul>
               <p>Once you've inputted your command(s), you can click the <b>Search button</b>! You should see the result highlighted based on what Tabula believes
                  it understood on the pdf, located in the middle of the screen. If not, then it is suggested you try a similar regex command. </p>
-              <p>Additionally, below the <b>Search button</b> is an option to view previous Regex commands inputted in. This serves as a quick history of your previous regex commands.</p>
+              <p>Additionally, below the <b>Search button</b> is an option to view the. This serves as a view to see how many results the regex comman(s) generates.</p>
               <p>For more information on Regex syntax for Java visit
                 <a href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Tutorial's Point Regex Syntax</a>
                 or visit the <a href="help">Help page!</a></p>
@@ -624,20 +624,33 @@
           <!--Regex Help section -->
 
           <h1 id="regexhelp" name="regexhelp">Regex Help</h1>
-            <li>Include here on regex trouble shooting</li>
-            <li>Providing a regex command can improve how Tabula is able to detect where the data lies within the pdf!
-
-          <p>  On the first tab, Commands you can click if the first command is inclusive or not.<p>
-            <ol>
-              <li>  Inclusive: The command is also included</li>
-              <li>  Exclusive: Not including the command</li>
+          <div style="padding-left: 25px;">
+              <ul style="padding-left: 15px;">
+              <li>Providing a regex command can improve how Tabula is able to detect where the data lies within the pdf! </li>
+              <li>Currently, the type of accepted regex commands follow the syntax for Java. </li>
+            </ul>
+              <h2>How to use Regex with Tabula</h2>
+              <ol style="padding-left: 15px;">
+              <li>Located in the Extraction page's Regex Options tab, you can click if the first command is inclusive or not.</li>
+              <ul>
+                <li>Inclusive: The command is included</li>
+                <li>Exclusive: Not including the command</li>
+            </ul>
+              <li>Once you've inputted your command(s), you can click the <b>Search button</b> located in the Extraction page's Regex Options tab.
+                 You should see the result highlighted based on what Tabula believesit understood on the pdf, located in the middle of the screen.</li>
+              <li>Additionally, below the <b>Search button</b> is an option to view the amount of results found from the command(s) and you have the option
+                to delete the rectangle Tabula drew based of your input.</li>
             </ol>
-            <p style="font-size: 10px;">Once you've inputted your command(s), you can click the Search button! You should see the result highlighted based
-              on what Tabula believes it understood on the pdf, located in the middle of the screen. If not, then it is suggested you try a similar regex command.</p>
-            <p style="font-size: 10px;">Additionally, below the Search button is an option to view previous Regex commands inputted in. This serves as a quick history of your previous regex commands.</p>
-            <p>Include reference to learning regex(possibly)</p>
+              <h2>Don't know regex?</h2>
+              <ul style="padding-left: 15px;">
+                <li>For more information on regex syntax for Java visit <a href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Tutorial's
+                Point Regex Syntax</a> </li>
+                <li>For help on how to use regex (not necessarily regex syntax for Java) you can visit <a href="https://regexr.com/">here</a>.</li>
+              </ul>
+          </div>
           <p></p>
           <h1 id= "troubleshooting" name="trouble">Having trouble with Tabula?</h1>
+          <div>
           <ol>
           <li><strong>Tabula said "Sorry, your PDF file is image-based" -- what does that mean?</strong> Your PDF does not have any embedded text. It might have been scanned from paper. Tabula is not able to extract any data from image-based PDFs. You can try OCRing the PDF with a tool like Adobe Acrobat Pro (paid), Tesseract, <a href="http://www.tobias-elze.de/pdfsandwich/">PDFSandwich</a> (Mac/Linux, free) or <a href="https://code.google.com/p/lime-ocr/">Lime OCR</a> (Windows, free) and then trying Tabula again.</li>
           <li><strong>Some columns of my table are combined. What can I do?</strong> Tabula sometimes uses "streams" of whitespace to recreate your table's structure. If headers span multiple columns, they're probably causing a problem. Try excluding them from your selection (or selecting them separately). </li>
@@ -646,7 +659,7 @@
           <li><strong>Tabula's taking too long!</strong> Sorry! Tabula has to do a lot of weird math to reconstruct your table. Tabula's command-line counterpart, <a href="https://www.github.com/tabulapdf/tabula-extractor">tabula-extractor</a> is faster, but a little harder to use. You might give it a try.</li>
           <li><strong>I had some other problem!</strong> Sorry! You can <a href="https://www.github.com/tabulapdf/tabula/issues/new">report it to us here</a>. Be sure to include your PDF, either as a link or attached to the issue -- or email it to <a href="about">one of the Tabula creators.</a> </li>
           </ol>
-
+        </div>
           </div> <!-- /jumbotron -->
         </div> <!-- /container -->
 
