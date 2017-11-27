@@ -1654,15 +1654,15 @@ Tabula.PDFView = Backbone.View.extend(
       var offset = $img.offset();
       console.log("Offset");
       console.log(JSON.stringify(offset));
-      var absolutePos = _.extend({}, offset,
+      var relativePos = _.extend({}, offset,
         {
-          'top':  offset.top  + (sel.y1 * scale),
-          'left': offset.left + (sel.x1 * scale),
+          'top':  (sel.y1 * scale),
+          'left': (sel.x1 * scale),
           'width': (sel.width * scale),
           'height': (sel.height * scale)
         });
       var regexSelection = new RegexSelection({
-        position: absolutePos,
+        position: relativePos,
         target: pageView.$el.find('img'),
         areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
       });
