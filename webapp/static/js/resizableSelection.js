@@ -34,6 +34,11 @@
       "<button name='close'>×</button>",
 
     initialize: function(options) {
+
+      console.log("In initialize of resizableSelection:");
+      console.log("Argument passed to initialize:");
+      console.log(JSON.stringify(options));
+
       this.bounds = options.bounds;
       this.pageView = options.target;
       this.areas = options.areas;
@@ -41,7 +46,15 @@
       this.id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now();
 
       this.render();
+      console.log("Options.position");
+      console.log(options.position);
+      console.log("This:");
+      console.log(this);
+      console.log("This.el");
+      console.log(this.$el);
       this.$el.css(options.position);
+      console.log("this.$el.css('top')");
+      console.log(this.$el.css('top'));
 
       $(options.target).on({
         mousemove: _.bind(this.mouseMoveResize, this),
@@ -70,9 +83,17 @@
       if((!$(this.pageView).is(':visible') || !this.$el.is(':visible')) && this.cachedDims){
         return this.cachedDims;
       }
+
+
       var o = { top: parseFloat(this.$el.css('top')),
                 left: parseFloat(this.$el.css('left')) };
+
+
+      console.log("In getDims printing pageView");
+      console.log(JSON.stringify($(this.pageView)));
       var targetPos = $(this.pageView).offset();
+      console.log("In getDims printing targetPos:");
+      console.log(targetPos);
       // console.log($(this.pageView).is(':visible'), this.$el.is(':visible'));
       this.cachedDims = {
         id: this.id,

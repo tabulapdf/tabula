@@ -173,7 +173,10 @@ Tabula.Selections = Backbone.Collection.extend({
                                     'hidden': false,
                                     'pdf_document': this.pdf_document},
                                     vendorSelection);
+      console.log('In updateOrCreateByVendorSelectorId:');
       selection = new Tabula.Selection(new_selection_args);
+      console.log('Selection:');
+      console.log(selection.toJSON());
       this.add(selection);
     }
     return selection;
@@ -628,6 +631,9 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   },
 
   addSelection: function (d) {
+    console.log("In addSelection of Tabula.Document_View:");
+    console.log("Parameter passed:");
+    console.log(JSON.stringify(d));
     var page_number = $(d.pageView).data('page') || d.pageNumber;
     var pv = this.page_views[page_number];
     var rs = new ResizableSelection({
@@ -646,6 +652,9 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
 
   // listens to mouseup of RectangularSelector
   _onRectangularSelectorEnd: function(d) {
+    console.log("In _onRectangularSelectorEnd:");
+    console.log("Parameter passed:");
+    console.log(JSON.stringify(d));
     this.addSelection(d);
   },
 
@@ -783,7 +792,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
     var selections = Tabula.pdf_view.pdf_document.selections;
 
-    var sel = selections.updateOrCreateByVendorSelectorId(selection,this.model.get('number'),this.$image.width());;
+    var sel = selections.updateOrCreateByVendorSelectorId(selection,this.model.get('number'),this.$image.width());
 
 
     // deal with invalid/too-small selections somehow (including thumbnails)
@@ -1636,10 +1645,18 @@ Tabula.PDFView = Backbone.View.extend(
         return this.pdf_document.selections.createHiddenSelection(sel);
       }
       var scale = image_width / original_pdf_width;
+      console.log('PageView.el');
+      console.log(pageView.$el);
+      console.log('Offset');
+      console.log(pageView.$el.offset);
+      console.log("Image:");
+      console.log($img);
       var offset = $img.offset();
+      console.log("Offset");
+      console.log(JSON.stringify(offset));
       var absolutePos = _.extend({}, offset,
         {
-          'top':  offset.top + (sel.y1 * scale),
+          'top':  offset.top  + (sel.y1 * scale),
           'left': offset.left + (sel.x1 * scale),
           'width': (sel.width * scale),
           'height': (sel.height * scale)
@@ -1699,8 +1716,8 @@ Tabula.PDFView = Backbone.View.extend(
       var offset = $img.offset();
       var absolutePos = _.extend({}, offset,
                                 {
-                                  'top':  offset.top + (sel.y1 * scale),
-                                  'left': offset.left + (sel.x1 * scale),
+                                  'top':  (sel.y1 * scale),
+                                  'left': (sel.x1 * scale),
                                   'width': (sel.width * scale),
                                   'height': (sel.height * scale)
                                 });
