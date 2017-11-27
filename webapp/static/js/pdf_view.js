@@ -162,9 +162,16 @@ Tabula.Selections = Backbone.Collection.extend({
   //model: Tabula.Selection,
   comparator: 'page_number',
   updateOrCreateByVendorSelectorId: function(vendorSelection, pageNumber, imageWidth){
+    console.log('In updateOrCreateByVendorSelectorId:');
+    console.log("Vendor Selection:");
+    console.log(vendorSelection);
+    console.log("Selections to Array:");
+    console.log(this.toArray());
     var selection = this.get(vendorSelection.id);
-
     if (selection) { // if it already exists
+      console.log("If selection exists:");
+      console.log(selection);
+
       selection.set(_.omit(vendorSelection, 'id'));
     }
     else {
@@ -174,7 +181,7 @@ Tabula.Selections = Backbone.Collection.extend({
                                     'hidden': false,
                                     'pdf_document': this.pdf_document},
                                     vendorSelection);
-      console.log('In updateOrCreateByVendorSelectorId:');
+
       selection = new Tabula.Selection(new_selection_args);
       console.log('Selection:');
       console.log(selection.toJSON());
@@ -432,6 +439,9 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   },
   closeAndRenderSelectionView: function(){
     window.tabula_router.navigate('pdf/' + PDF_ID);
+    console.log("In closeAndRenderSelectionView:");
+    console.log("This.el");
+    console.log(this.$el);
     this.$el.empty();
     this.undelegateEvents();
     this.pdf_view.$el.show();
@@ -441,14 +451,15 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     $('body').addClass('page-selections');
 
     var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
-      console.log("In closeAndRenderSelectionView");
       console.log(sel);
      console.log(sel.toJSON().className);
      var selection = sel;
      if(sel.toJSON().className!=="regex-table-region"){
-       selection = Tabula.pdf_view.renderSelection(sel.toCoords())
+       selection = Tabula.pdf_view.renderSelection(sel.toCoords());
      }
-
+     else{
+     //  selection = Tabula.pdf_view.renderRegexSelection(sel.toCoords());
+     }
       return selection;
     });
     this.pdf_view.pdf_document.selections.reset(oldSelections);
@@ -1661,22 +1672,27 @@ Tabula.PDFView = Backbone.View.extend(
           'width': (sel.width * scale),
           'height': (sel.height * scale)
         });
-      var regexSelection = new RegexSelection({
+
+
+      console.log("Current sel attributes:");
+      console.log(sel);
+
+      this.regexSelection = new RegexSelection({
         position: relativePos,
         target: pageView.$el.find('img'),
         areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
       });
-      regexSelection.on({
+      this.regexSelection.on({
         remove: pageView._onSelectCancel
       });
 
-      Tabula.pdf_view.components['document_view'].$el.append(regexSelection.el);
+      Tabula.pdf_view.components['document_view'].$el.append(this.regexSelection.el);
 
-      pageView._onSelectEnd(regexSelection); // draws the thumbnail
+      pageView._onSelectEnd(this.regexSelection); // draws the thumbnail
 
       // put the selection into the selections collection
-      this.pdf_document.selections.updateOrCreateByVendorSelectorId(regexSelection, sel.page, image_width);
-      return regexSelection;
+      this.pdf_document.selections.updateOrCreateByVendorSelectorId(this.regexSelection, sel.page, image_width);
+      return this.regexSelection;
 
 
 
