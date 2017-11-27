@@ -99,10 +99,10 @@ module Tabula
 
       # write template metadata to workspace
       @workspace["templates"].insert(0,{
-                                      "name" => template_metadata["name"].gsub(".tabula-template.json", ""), 
+                                      "name" => template_metadata["name"].gsub(".tabula-template.json", ""),
                                       "selection_count" => template_metadata["selection_count"],
-                                      "page_count" => template_metadata["page_count"], 
-                                      "time" => template_metadata["time"], 
+                                      "page_count" => template_metadata["page_count"],
+                                      "time" => template_metadata["time"],
                                       "id" => template_metadata["id"]
                                     })
       # write template file to disk

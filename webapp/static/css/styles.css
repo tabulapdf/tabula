@@ -1483,7 +1483,7 @@ a.bg-danger:hover {
 ul,
 ol {
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 ul ul,
 ul ol,
@@ -4977,7 +4977,7 @@ a.badge:hover, a.badge:focus {
   color: inherit;
 }
 .jumbotron p {
-  margin-bottom: 15px;
+  margin-bottom: 0px;
   font-size: 21px;
   font-weight: 200;
 }
@@ -7542,7 +7542,12 @@ form {
   z-index: 1;
 }
 #pages-container {
-    position: absolute;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  padding: 3px;
+  position: relative;
+  padding-right: 20%;
 }
 #main-pane .pdf-page {
   position: relative;
@@ -7785,11 +7790,14 @@ div.spinner {
 .navbar_1 .navbar-collapse_1 {
     text-align: center;
 }
-#regex-container {
+#regexcontainer {
   background: #eeeeee;
   float: right;
   right: 0px;
   position: fixed;
   top: 104px;
-  height:90%;
+  height:84%;
+  width: 230px;
+  display: inline;
+  overflow-y: scroll;
 }
