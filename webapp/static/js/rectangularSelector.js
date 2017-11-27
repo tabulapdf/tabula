@@ -54,7 +54,6 @@
         'visibility': 'visible'
       });
       console.log('In _mousedown');
-      console.log(self.box.css('left'));
       options.start(event);
       return false;
     };
@@ -104,8 +103,8 @@
         var d = {
           'absolutePos': _.extend(cOffset,
                                   {
-                                    'top': top - 92.5, //hard-coded for now, will fix later
-                                    'left': left - 215,//hard-coded for now, will fix later
+                                    'top': top - Tabula.pdf_view.components.document_view.$el.offset().top,  // 92.5, //hard-coded for now, will fix later
+                                    'left': left - Tabula.pdf_view.components.document_view.$el.offset().left, //215,//hard-coded for now, will fix later
                                     'width': width,
                                     'height': height
                                   }),
