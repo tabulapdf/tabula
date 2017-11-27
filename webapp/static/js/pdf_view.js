@@ -83,7 +83,8 @@ Tabula.Selection = Backbone.Model.extend({
     // var pdf_rotation = page.get('rotation');
 
     var scale = original_pdf_width / imageWidth;
-    var rp = this.attributes.getDims().relativePos;
+//    var rp = this.attributes.getDims().relativePos;
+    var rp = this.attributes.getDims().absolutePos;
     this.set({
       x1: rp.left * scale,
       x2: (rp.left + rp.width) * scale,
@@ -631,9 +632,8 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   },
 
   addSelection: function (d) {
+
     console.log("In addSelection of Tabula.Document_View:");
-    console.log("Parameter passed:");
-    console.log(JSON.stringify(d));
     var page_number = $(d.pageView).data('page') || d.pageNumber;
     var pv = this.page_views[page_number];
     var rs = new ResizableSelection({
@@ -1464,8 +1464,8 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     // if thumbnail doesn't exist (probably because this selection is hidden in an unshown page)
     if(!selection.attributes.getDims) return;
 
-    var s = selection.attributes.getDims().relativePos;
-
+ //   var s = selection.attributes.getDims().relativePos;
+    var s = selection.attributes.getDims().absolutePos;
     $sshow.css('top', (top + (s.top * thumbScale)) + 'px')
       .css('left', (left + (s.left * thumbScale)) + 'px')
       .css('width', (s.width * thumbScale) + 'px')
@@ -1499,7 +1499,7 @@ Tabula.PDFView = Backbone.View.extend(
         'loadSavedTemplate', 'saveTemplate', 'saveTemplateAs');
 
       this.pdf_document = new Tabula.Document({
-        pdf_id: PDF_ID,
+        pdf_id: PDF_ID
       });
 
       this.pdf_document.fetch({
@@ -1714,7 +1714,9 @@ Tabula.PDFView = Backbone.View.extend(
       }
       var scale = image_width / original_pdf_width;
       var offset = $img.offset();
-      var absolutePos = _.extend({}, offset,
+      console.log("Offset in renderSelection:");
+      console.log(offset);
+      var relativePos = _.extend({}, offset,
                                 {
                                   'top':  (sel.y1 * scale),
                                   'left': (sel.x1 * scale),
@@ -1723,7 +1725,7 @@ Tabula.PDFView = Backbone.View.extend(
                                 });
       // TODO: refactor to only have this ResizableSelection logic in one place.
       var vendorSelection = new ResizableSelection({
-        position: absolutePos,
+        position: relativePos,
         target: pageView.$el.find('img'),
         areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
       });

@@ -45,16 +45,10 @@
 
       this.id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now();
 
-      this.render();
-      console.log("Options.position");
-      console.log(options.position);
-      console.log("This:");
-      console.log(this);
-      console.log("This.el");
-      console.log(this.$el);
       this.$el.css(options.position);
-      console.log("this.$el.css('top')");
-      console.log(this.$el.css('top'));
+      this.render();
+
+
 
       $(options.target).on({
         mousemove: _.bind(this.mouseMoveResize, this),
@@ -81,6 +75,8 @@
 
     getDims: function() {
       if((!$(this.pageView).is(':visible') || !this.$el.is(':visible')) && this.cachedDims){
+        console.log('cachedDims:');
+        console.log(this.cachedDims);
         return this.cachedDims;
       }
 
@@ -111,6 +107,8 @@
           height: this.$el.css('box-sizing') == "border-box" ? this.$el.outerHeight() : this.$el.height()
         }
       };
+      console.log('cachedDims:');
+      console.log(this.cachedDims);
       return this.cachedDims;
     },
 

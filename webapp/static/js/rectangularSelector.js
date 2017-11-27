@@ -54,10 +54,6 @@
         'visibility': 'visible'
       });
       console.log('In _mousedown');
-      console.log("self.box.css");
-      console.log('top:');
-      console.log(self.box.css('top'));
-      console.log('left:');
       console.log(self.box.css('left'));
       options.start(event);
       return false;
@@ -99,46 +95,30 @@
         }
 
         console.log('in _mouseup of rectangularSelector:');
-        console.log('Self');
-        console.log(self);
-        console.log('Self.box');
-        console.log(self.box);
-        console.log('Target:');
-        console.log(target);
-        console.log('Target Offset:');
-        console.log($(target).offset());
         var cOffset = $(target).offset(),
             top = parseFloat(self.box.css('top')),
             left = parseFloat(self.box.css('left')),
             width = parseFloat(self.box.css('width')),
             height = parseFloat(self.box.css('height'));
-        console.log("top:");
-        console.log(top);
-        console.log('left:');
-        console.log(left);
-        console.log('width:');
-        console.log(width);
-        console.log('height:');
-        console.log(height);
 
         var d = {
           'absolutePos': _.extend(cOffset,
                                   {
-                                    'top': top,
-                                    'left': left,
+                                    'top': top - 92.5, //hard-coded for now, will fix later
+                                    'left': left - 215,//hard-coded for now, will fix later
                                     'width': width,
                                     'height': height
                                   }),
           'relativePos': {
             'width': width,
             'height': height,
-            'top': top - cOffset.top,
-            'left': left - cOffset.left
+            'top': top - 92.5,   //- cOffset.top,
+            'left': left - 215, // - cOffset.left
           },
           'pageView': targetPageView
         };
-        console.log("cOffset:");
-        console.log(cOffset);
+
+       console.log(targetPageView.toString());
         if (options.validSelection(d)) {
           console.log("Right before call to _on..");
           console.log("Parameter being passed:");
