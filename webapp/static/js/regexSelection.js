@@ -39,7 +39,7 @@
     },
 
     remove: function(){
-      //this.trigger('remove', this);
+      this.trigger('remove', this);
       Backbone.View.prototype.remove.call(this);
     },
 

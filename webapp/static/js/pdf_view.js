@@ -53,14 +53,12 @@ Tabula.Pages = Backbone.Collection.extend({
 Tabula.Document = Backbone.Model.extend({
   page_collection: null, //set on initialize
   selections: null, //set on initialize
-  regex_selections:null, //set on initialize
   pdf_id: PDF_ID, //set on initialize
   url: null, //set on initialize
 
   initialize: function(options){
     this.page_collection = new Tabula.Pages([], {pdf_document: this});
     this.selections = new Tabula.Selections([], {pdf_document: this});
-    this.regex_selections = new Tabula.Selections([], {pdf_document: this});
     this.autodetected_selections = new Tabula.AutodetectedSelections([], {pdf_document: this});
     this.url = (base_uri || '/') + 'pdf/' + this.pdf_id + '/metadata.json';
 
@@ -439,8 +437,14 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     $('body').addClass('page-selections');
 
     var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
-      var selection = Tabula.pdf_view.renderSelection(sel.toCoords());
-      // selection.attributes.rebind(); // o. m. g.
+      console.log("In closeAndRenderSelectionView");
+      console.log(sel);
+     console.log(sel.toJSON().className);
+     var selection = sel;
+     if(sel.toJSON().className!=="regex-table-region"){
+       selection = Tabula.pdf_view.renderSelection(sel.toCoords())
+     }
+
       return selection;
     });
     this.pdf_view.pdf_document.selections.reset(oldSelections);
@@ -775,19 +779,12 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
                                                                   this.$image.width());
   },
 
-  _onSelectEnd: function(selection,selection_data) {
+  _onSelectEnd: function(selection) {
 
-    var regex_selections = Tabula.pdf_view.pdf_document.regex_selections;
-    var resizable_selections = Tabula.pdf_view.pdf_document.selections;
+    var selections = Tabula.pdf_view.pdf_document.selections;
 
-    var sel;
+    var sel = selections.updateOrCreateByVendorSelectorId(selection,this.model.get('number'),this.$image.width());;
 
-    if(selection_data.type!=='regex') {
-      sel = regex_selections.updateOrCreateByVendorSelectorId(selection,this.model.get('number'),this.$image.width());
-    }
-    else{
-      sel = resizable_selections.updateOrCreateByVendorSelectorId(selection,this.model.get('number'),this.$image.width());
-    }
 
     // deal with invalid/too-small selections somehow (including thumbnails)
     if (selection.width === 0 && selection.height === 0) {
@@ -796,12 +793,12 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     }
 
     console.log("in _onSelectEnd of Tabula.PageView");
-    console.log("Selection ID:");
+    console.log(selection.el.className);
 
 
     // if this is not the last pager
 
-    if((selection_data.type!=='regex') && (this.model != this.model.collection.last())) {
+    if((this.model != this.model.collection.last()) && (selection.el.className!=="regex-table-region")) {
       var but_id = this.model.get('number') + '-' + selection.id;  //create a "Repeat this Selection" button
       var button = $('<div class="btn-group repeat-lassos-group" id="'+but_id+'"> \
       <button type="button" class="btn btn-default repeat-lassos">Repeat this Selection</button>\
@@ -900,7 +897,6 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 
   queryAllData : function(){
     var list_of_all_coords = Tabula.pdf_view.pdf_document.selections.invoke("toCoords");
-
     //TODO: figure out how to handle extraction methods when there are multiple selections
     // should it be set globally, or per selection?
     // actually, how to handle extraction method is a bit of an open question.
@@ -1045,12 +1041,16 @@ Tabula.RegexCollectionView = Backbone.View.extend({
       rectangles_to_remove[iter].remove();
     }
 
-    console.log(JSON.stringify(temp));
+    console.log(temp);
     console.log("Event_data:");
     console.log(event_data);
     this.collection.remove(search_to_remove['caller']['model']);
     console.log("Collection as JSON AFTER removal:");
     console.log(this.collection.toJSON());
+
+    console.log("Tabula selections object:");
+    console.log(JSON.stringify(Tabula.pdf_view.pdf_document.selections.toArray()));
+
 
     this.render();
 
@@ -1105,7 +1105,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
             height: render_data['height'],
             page: parseInt(page_number),
             extraction_method: 'spreadsheet',
-            selection_id: null
+            selection_id: null,
           }));
 
 
@@ -1633,7 +1633,7 @@ Tabula.PDFView = Backbone.View.extend(
       var $img = pageView.$el.find('img');
       var image_width = $img.width();
       if (!$img.length || $img.data('loaded') !== 'loaded' || !$img.height() ){ // if this page isn't shown currently or the image hasn't been rendered yet, then create a hidden selectionx
-        return this.pdf_document.regex_selections.createHiddenSelection(sel);
+        return this.pdf_document.selections.createHiddenSelection(sel);
       }
       var scale = image_width / original_pdf_width;
       var offset = $img.offset();
@@ -1649,13 +1649,16 @@ Tabula.PDFView = Backbone.View.extend(
         target: pageView.$el.find('img'),
         areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
       });
+      regexSelection.on({
+        remove: pageView._onSelectCancel
+      });
 
       Tabula.pdf_view.components['document_view'].$el.append(regexSelection.el);
 
-      pageView._onSelectEnd(regexSelection, {'type':'regex'}); // draws the thumbnail
+      pageView._onSelectEnd(regexSelection); // draws the thumbnail
 
       // put the selection into the selections collection
-      this.pdf_document.regex_selections.updateOrCreateByVendorSelectorId(regexSelection, sel.page, image_width);
+      this.pdf_document.selections.updateOrCreateByVendorSelectorId(regexSelection, sel.page, image_width);
       return regexSelection;
 
 
@@ -1762,6 +1765,7 @@ Tabula.PDFView = Backbone.View.extend(
     },
 
     totalSelections: function() {
+      console.log("In totalSelections");
       return this.pdf_document.selections.size();
     },
 
