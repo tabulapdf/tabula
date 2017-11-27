@@ -1757,7 +1757,7 @@ function roundTo(num, fancymathwordforthenumberofdigitsafterthedecimal){
 function PDF_Outline_btn(){
   var y = document.getElementById("sidebar");
   if(y.style.display == "none"){
-    y.style.display = "block";
+    y.style.display = "inline";
   }
   else{
     y.style.display = "none";
@@ -1766,10 +1766,10 @@ function PDF_Outline_btn(){
 
 function Regex_Options_btn(){
   var x = document.getElementById("regexcontainer");
-  if(x.style.display == "block"){
+  if(x.style.display == "inline"){
     x.style.display = "none";
   }
   else{
-    x.style.display = "block";
+    x.style.display = "inline";
   }
 }

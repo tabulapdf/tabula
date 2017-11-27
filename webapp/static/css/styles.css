@@ -7793,6 +7793,6 @@ div.spinner {
   top: 104px;
   height:83%;
   width: 230px;
-  display: block;
+  display: inline;
   overflow-y: scroll;
 }
