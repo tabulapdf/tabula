@@ -38,6 +38,11 @@
 
     },
 
+    remove: function(){
+      //this.trigger('remove', this);
+      Backbone.View.prototype.remove.call(this);
+    },
+
     render: function() {
       this.$el.append(this.template);
       return this;
