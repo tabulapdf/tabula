@@ -160,7 +160,7 @@ Tabula.Options = Backbone.Model.extend({
 */
 
 Tabula.Selections = Backbone.Collection.extend({
-  // model: Tabula.Selection,
+  //model: Tabula.Selection,
   comparator: 'page_number',
   updateOrCreateByVendorSelectorId: function(vendorSelection, pageNumber, imageWidth){
     var selection = this.get(vendorSelection.id);
@@ -1035,17 +1035,25 @@ Tabula.RegexCollectionView = Backbone.View.extend({
   remove_regex_search: function(event_data,search_to_remove){
     console.log("In remove_regex_search of Tabula.RegexCollectionView");
     var temp = search_to_remove['caller'];
+    console.log(temp);
+    var rectangles_to_remove = search_to_remove['caller']['model']['attributes']['rendered_results'];
+    console.log(rectangles_to_remove);
+    console.log(rectangles_to_remove);
+    for(var iter in rectangles_to_remove){
+      console.log("In for loop in remove_regex_search");
+      console.log(iter);
+      rectangles_to_remove[iter].remove();
+    }
+
     console.log(JSON.stringify(temp));
-    console.log("Collection as JSON:");
-    console.log(this.collection.toArray());
+    console.log("Event_data:");
+    console.log(event_data);
     this.collection.remove(search_to_remove['caller']['model']);
     console.log("Collection as JSON AFTER removal:");
     console.log(this.collection.toJSON());
-    /*
-    TODO: Need to remove all rectangles associated with the regex search being removed
-     */
+
     this.render();
-    this.$el.trigger('remove_regex_rectangles',{caller:search_to_remove['caller']['model']});
+
   },
   render: function(){
     console.log("In render function of Tabula.RegexCollectionView:");
@@ -1076,6 +1084,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     var pattern_before = search_results["_regex_before_table"]["pattern"];
     var pattern_after = search_results["_regex_after_table"]["pattern"];
     var num_matches = 0;
+    var rendered_results=[];
     Object.keys(search_results["_matching_areas"]).forEach(function (iter) {
 //      console.log("In function add of RegexResultsHandler");
 //      console.log("matching_areas:");
@@ -1089,15 +1098,18 @@ Tabula.RegexCollectionView = Backbone.View.extend({
 
           var render_data = search_results["_matching_areas"][iter][page_number][matching_element_index];
 
-          Tabula.pdf_view.renderRegexSelection({
+          rendered_results.push(Tabula.pdf_view.renderRegexSelection({
             x1: render_data['x'],
             y1: render_data['y'],
             width: render_data['width'],
             height: render_data['height'],
             page: parseInt(page_number),
             extraction_method: 'spreadsheet',
-            selection_id: null              //TODO: figure out what selection_id is used for
-          });
+            selection_id: null
+          }));
+
+
+
         }
       }
     });
@@ -1109,7 +1121,8 @@ Tabula.RegexCollectionView = Backbone.View.extend({
       pattern_before: pattern_before,
       pattern_after: pattern_after,
       num_matches: num_matches,
-      matching_areas: search_results["_matching_areas"]
+      matching_areas: search_results["_matching_areas"],
+      rendered_results: rendered_results
     }));
   }});
 
@@ -1161,7 +1174,8 @@ Tabula.RegexResultModel = Backbone.Model.extend({
       pattern_before: data["pattern_before"],
       pattern_after: data["pattern_after"],
       num_matches: data["num_matches"],
-      matching_areas: data["matching_areas"]
+      matching_areas: data["matching_areas"],
+      rendered_results: data["rendered_results"]
     });
 
   }
@@ -1491,6 +1505,7 @@ Tabula.PDFView = Backbone.View.extend(
       this.listenTo(this.pdf_document.page_collection, 'sync', this.addAll);
       this.listenTo(this.pdf_document.page_collection, 'reset', this.addAll);
       this.listenTo(this.pdf_document.page_collection, 'remove', this.removePage);
+
       // this caused page ordering issues. Makes me wonder if pdf_view rendering is not idempotent.
       // anyways, I don't remember why I had this. probably you shouldn't reenable it.
       // this.listenTo(this.pdf_document.page_collection, 'all', _.bind(function(){ console.log('pdfview render page all'); this.render()}, this));
@@ -1500,6 +1515,7 @@ Tabula.PDFView = Backbone.View.extend(
       this.components['document_view'] = new Tabula.DocumentView({el: '#pages-container' , pdf_view: this, collection: this.pdf_document.page_collection}); //creates page_views
       this.components['control_panel'] = new Tabula.ControlPanelView({pdf_view: this, saved_template_collection: this.saved_template_collection});
       this.components['sidebar_view'] = new Tabula.SidebarView({pdf_view: this, collection: this.pdf_document.page_collection});
+
 
       $(document).on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
       $('#sidebar').on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
@@ -1639,8 +1655,10 @@ Tabula.PDFView = Backbone.View.extend(
       pageView._onSelectEnd(regexSelection, {'type':'regex'}); // draws the thumbnail
 
       // put the selection into the selections collection
-      selection = this.pdf_document.regex_selections.updateOrCreateByVendorSelectorId(regexSelection, sel.page, image_width);
-      return selection;
+      this.pdf_document.regex_selections.updateOrCreateByVendorSelectorId(regexSelection, sel.page, image_width);
+      return regexSelection;
+
+
 
     },
 
