@@ -7555,9 +7555,11 @@ form {
   width: calc(100% - 200px);
   z-index: 1;
 }
+/*
 #pages-container {
     position: absolute;
 }
+*/
 #main-pane .pdf-page {
   position: relative;
 }

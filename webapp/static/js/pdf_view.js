@@ -83,8 +83,8 @@ Tabula.Selection = Backbone.Model.extend({
     // var pdf_rotation = page.get('rotation');
 
     var scale = original_pdf_width / imageWidth;
-//    var rp = this.attributes.getDims().relativePos;
-    var rp = this.attributes.getDims().absolutePos;
+    var rp = this.attributes.getDims().relativePos;
+//    var rp = this.attributes.getDims().absolutePos;
     this.set({
       x1: rp.left * scale,
       x2: (rp.left + rp.width) * scale,
@@ -606,7 +606,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   pdf_view: null, //added on create
   page_views: {},
   rectangular_selector: null,
-
   _selectionsGetter: function(target) {
     return _(Tabula.pdf_view.pdf_document.selections.where({page_number: $(target).data('page')})).map(function(i){ return i.attributes; });
   },
@@ -630,7 +629,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
       }
     );
   },
-
   addSelection: function (d) {
 
     console.log("In addSelection of Tabula.Document_View:");
@@ -648,6 +646,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     pv._onSelectEnd(rs);
     this.$el.append(rs.el);
     rs.$el.css('z-index', 100 - this._selectionsGetter($(d.pageView)).length);
+
   },
 
   // listens to mouseup of RectangularSelector
@@ -1204,7 +1203,8 @@ Tabula.RegexResultModel = Backbone.Model.extend({
 Tabula.RegexQueryHandler = Backbone.View.extend({
   el: "#regex-container",
   model: null,
-  events: {'keyup' : 'update_regex_inputs'},
+  events: {'keyup' : 'update_regex_inputs',
+           'click [type="checkbox"]':'update_regex_inputs'},
   className: 'regex-query',
   initialize: function(){
     this.model = new Tabula.RegexQueryModel();
@@ -1216,7 +1216,7 @@ Tabula.RegexQueryHandler = Backbone.View.extend({
     var target_id = event['target']['id'];
     var jQ_target_id = "#"+target_id;
     var input_map = {};
-    if($(jQ_target_id).is(':checkbox')){
+    if($(jQ_target_id).is(':checkbox')===true){
       input_map[target_id] = $(jQ_target_id).is(':checked');
     }
     else{
@@ -1464,8 +1464,8 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     // if thumbnail doesn't exist (probably because this selection is hidden in an unshown page)
     if(!selection.attributes.getDims) return;
 
- //   var s = selection.attributes.getDims().relativePos;
-    var s = selection.attributes.getDims().absolutePos;
+    var s = selection.attributes.getDims().relativePos;
+ //   var s = selection.attributes.getDims().absolutePos;
     $sshow.css('top', (top + (s.top * thumbScale)) + 'px')
       .css('left', (left + (s.left * thumbScale)) + 'px')
       .css('width', (s.width * thumbScale) + 'px')
@@ -1528,6 +1528,7 @@ Tabula.PDFView = Backbone.View.extend(
 
       $(document).on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
       $('#sidebar').on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
+
 
 
       $('body').
@@ -1645,24 +1646,18 @@ Tabula.PDFView = Backbone.View.extend(
         return this.pdf_document.selections.createHiddenSelection(sel);
       }
       var scale = image_width / original_pdf_width;
-      console.log('PageView.el');
-      console.log(pageView.$el);
-      console.log('Offset');
-      console.log(pageView.$el.offset);
-      console.log("Image:");
-      console.log($img);
       var offset = $img.offset();
-      console.log("Offset");
-      console.log(JSON.stringify(offset));
-      var relativePos = _.extend({}, offset,
+      var absolutePos = _.extend({}, offset,
         {
-          'top':  (sel.y1 * scale),
-          'left': (sel.x1 * scale),
+          'top':  offset.top + (sel.y1 * scale),
+          'left': offset.left + (sel.x1 * scale),
           'width': (sel.width * scale),
           'height': (sel.height * scale)
         });
+      console.log("Absolute Position:");
+      console.log(absolutePos);
       var regexSelection = new RegexSelection({
-        position: relativePos,
+        position: absolutePos,
         target: pageView.$el.find('img'),
         areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
       });
@@ -1718,8 +1713,8 @@ Tabula.PDFView = Backbone.View.extend(
       console.log(offset);
       var relativePos = _.extend({}, offset,
                                 {
-                                  'top':  (sel.y1 * scale),
-                                  'left': (sel.x1 * scale),
+                                  'top':  offset.top + (sel.y1 * scale),
+                                  'left': offset.left + (sel.x1 * scale),
                                   'width': (sel.width * scale),
                                   'height': (sel.height * scale)
                                 });
