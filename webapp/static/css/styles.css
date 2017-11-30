@@ -7467,7 +7467,9 @@ form {
   margin: 0 auto 1.25em;
   display: block;
   width: 90%;
-  padding: 1em .5em .5em 1em;
+  padding-left: .5em;
+  padding-right: .5em;
+/*  padding: 1em .5em .5em 1em; */
   position: relative;
 }
 #sidebar .thumbnail-list .page img {
