@@ -966,7 +966,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 //   11/23/2017  REM; created
 //
 Tabula.RegexHandler = Backbone.View.extend({
-  el: "#regex-container",
+  el: "#regexcontainer",
   className: 'regex-handler',
   events: {'click #regex-search': 'perform_regex_search'},
   regex_results_handler: null,
@@ -1213,7 +1213,7 @@ Tabula.RegexResultModel = Backbone.Model.extend({
 //
 
 Tabula.RegexQueryHandler = Backbone.View.extend({
-  el: "#regex-container",
+  el: "#regexcontainer",
   model: null,
   events: {'keyup' : 'update_regex_inputs'},
   className: 'regex-query',
@@ -1255,7 +1255,7 @@ Tabula.RegexQueryHandler = Backbone.View.extend({
 //  11/14/2017 REM; created
 //
 Tabula.RegexQueryModel = Backbone.Model.extend({ //Singleton
-   
+
    initialize: function(){
      this.set({
        'file_path':PDF_ID,
@@ -1964,23 +1964,20 @@ function roundTo(num, fancymathwordforthenumberofdigitsafterthedecimal){
 }
 
 function PDF_Outline_btn(){
-  var x = document.getElementById("PDF_outline");
   var y = document.getElementById("sidebar");
-  if(x.style.display == "none" && y.style.display == "none"){
-    x.style.display = "block";
-    y.style.display = "block";
+  if(y.style.display == "none"){
+    y.style.display = "inline";
   }
   else{
-    x.style.display= "none";
     y.style.display = "none";
  }
 }
 function Regex_Options_btn(){
-  var x = document.getElementById("");
-  if(x.style.display == "none"){
-    x.style.display = "block";
+  var x = document.getElementById("regexcontainer");
+  if(x.style.display == "inline"){
+    x.style.display = "none";
   }
   else{
-    x.style.display =="none";
+    x.style.display = "inline";
   }
 }
