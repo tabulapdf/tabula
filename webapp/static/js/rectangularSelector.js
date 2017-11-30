@@ -92,7 +92,6 @@
           }
         }
 
-        console.log('in _mouseup of rectangularSelector:');
         var cOffset = $(target).offset(),
             top = parseFloat(self.box.css('top')),
             left = parseFloat(self.box.css('left')),
@@ -116,14 +115,7 @@
           'pageView': targetPageView
         };
 
-
-
-
-       console.log(targetPageView.toString());
         if (options.validSelection(d)) {
-          console.log("Right before call to _on..");
-          console.log("Parameter being passed:");
-          console.log(d);
           options.end(d);
         }
 
