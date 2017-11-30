@@ -39,6 +39,8 @@
     var self = this;
     this.box = $('<div></div>').addClass('selection-box').appendTo($('body'));
 
+
+
     var _mousedown = function(event) {
       if (event.which !== 1) return false;
       target = this;
@@ -51,6 +53,7 @@
         'height': 0,
         'visibility': 'visible'
       });
+      console.log('In _mousedown');
       options.start(event);
       return false;
     };
@@ -59,6 +62,8 @@
       if (!isDragging || ($(event.target).is(options.selector) && event.target !== target)) {
         return;
       }
+      var top_offset = Tabula.pdf_view.components.document_view.$el.offset().top;
+      var left_offset = Tabula.pdf_view.components.document_view.$el.offset().left;
       var ds = {
         'left': Math.min(start.x, event.pageX),
         'top': Math.min(start.y, event.pageY),
@@ -88,6 +93,7 @@
           }
         }
 
+        console.log('in _mouseup of rectangularSelector:');
         var cOffset = $(target).offset(),
             top = parseFloat(self.box.css('top')),
             left = parseFloat(self.box.css('left')),
@@ -97,20 +103,25 @@
         var d = {
           'absolutePos': _.extend(cOffset,
                                   {
-                                    'top': top,
-                                    'left': left,
+                                    'top': top - Tabula.pdf_view.components.document_view.$el.offset().top,  // 92.5, //hard-coded for now, will fix later
+                                    'left': left - Tabula.pdf_view.components.document_view.$el.offset().left, //215,//hard-coded for now, will fix later
                                     'width': width,
                                     'height': height
                                   }),
           'relativePos': {
             'width': width,
             'height': height,
-            'top': top - cOffset.top,
-            'left': left - cOffset.left
+            'top': top - 92.5,   //- cOffset.top,
+            'left': left - 215, // - cOffset.left
           },
           'pageView': targetPageView
         };
+
+       console.log(targetPageView.toString());
         if (options.validSelection(d)) {
+          console.log("Right before call to _on..");
+          console.log("Parameter being passed:");
+          console.log(d);
           options.end(d);
         }
 

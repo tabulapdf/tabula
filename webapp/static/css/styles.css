@@ -1483,7 +1483,7 @@ a.bg-danger:hover {
 ul,
 ol {
   margin-top: 0;
-  margin-bottom: 0px;
+  margin-bottom: 10px;
 }
 ul ul,
 ul ol,
@@ -3428,9 +3428,11 @@ select[multiple].input-lg,
 .btn-success:active, .btn-success.active, .open > .btn-success.dropdown-toggle {
   background-image: none;
 }
+
+
 .btn-success.disabled, .btn-success.disabled:hover, .btn-success.disabled:focus, .btn-success.disabled:active, .btn-success.disabled.active, .btn-success[disabled], .btn-success[disabled]:hover, .btn-success[disabled]:focus, .btn-success[disabled]:active, .btn-success[disabled].active, fieldset[disabled] .btn-success, fieldset[disabled] .btn-success:hover, fieldset[disabled] .btn-success:focus, fieldset[disabled] .btn-success:active, fieldset[disabled] .btn-success.active {
-  background-color: #5cb85c;
-  border-color: #4cae4c;
+  background-color: #b82a4f;
+  border-color: #ae5437;
 }
 .btn-success .badge {
   color: #5cb85c;
@@ -4977,7 +4979,7 @@ a.badge:hover, a.badge:focus {
   color: inherit;
 }
 .jumbotron p {
-  margin-bottom: 0px;
+  margin-bottom: 15px;
   font-size: 21px;
   font-weight: 200;
 }
@@ -7138,6 +7140,14 @@ button.close {
   background: rgba(255, 87, 0, 0.2);
   box-sizing: border-box;
 }
+
+.regex-table-region {
+  position: absolute;
+  border: 1px dashed rgba(255, 172, 23, 0.8);
+  background: rgba(255, 150, 11, 0.2);
+  box-sizing: border-box;
+}
+
 .selection-box:hover, .table-region:hover {
   cursor: pointer;
 }
@@ -7149,66 +7159,70 @@ button.close {
   visibility: hidden;
 }
 
-.table-region {
+.table-region, .regex-table-region {
   top: 0;
   left: 0;
   z-index: 21;
 }
 
-div.table-region .resize-handle {
+div.table-region .fixed-handle, div.regex-table-region.fixed-handle {
   position: absolute;
 }
 
-div.table-region .n-border {
+div.table-region .resize-handle, div.regex-table-region.resize-handle {
+  position: absolute;
+}
+
+div.table-region .n-border, div.regex-table-region.n-border {
   width: calc(100% - 10px);
   top: -5px;
   left: 5px;
   height: 10px;
 }
 
-div.table-region .s-border {
+div.table-region .s-border, div.regex-table-region.s-border {
   width: calc(100% - 10px);
   bottom: -5px;
   left: 5px;
   height: 10px;
 }
 
-div.table-region .w-border {
+div.table-region .w-border, div.regex-table-region.w-border {
   height: calc(100% - 10px);
   left: -5px;
   top: 5px;
   width: 10px;
 }
 
-div.table-region .e-border {
+div.table-region .e-border, div.regex-table-region.e-border {
   height: calc(100% - 10px);
   top: 5px;
   right: -5px;
   width: 10px;
 }
 
-div.table-region .nw-border {
+div.table-region .nw-border, div.regex-table-region.nw-border {
   width: 10px;
   height: 10px;
   top: -5px;
   left: -5px;
 }
 
-div.table-region .ne-border {
+div.table-region .ne-border, div.regex-table-region.ne-border {
   width: 10px;
   height: 10px;
   top: -5px;
   right: -5px;
 }
 
-div.table-region .sw-border {
+div.table-region .sw-border, div.regex-table-region.sw-border {
   width: 10px;
   height: 10px;
   bottom: -5px;
   left: -5px;
 }
 
-div.table-region .se-border {
+div.table-region .se-border, div.regex-table-region.se-border {
   width: 10px;
   height: 10px;
   bottom: -5px;
@@ -7542,12 +7556,7 @@ form {
   z-index: 1;
 }
 #pages-container {
-  width: 100%;
-  height: auto;
-  margin: 0 auto;
-  padding: 3px;
-  position: relative;
-  padding-right: 20%;
+    position: absolute;
 }
 #main-pane .pdf-page {
   position: relative;
@@ -7790,14 +7799,16 @@ div.spinner {
 .navbar_1 .navbar-collapse_1 {
     text-align: center;
 }
-#regexcontainer {
+#regex-container {
   background: #eeeeee;
   float: right;
   right: 0px;
   position: fixed;
   top: 104px;
-  height:84%;
-  width: 230px;
-  display: inline;
-  overflow-y: scroll;
+  height:90%;
 }
+
+.regex-result:hover {
+  background: red;
+}
+

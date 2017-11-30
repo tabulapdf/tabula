@@ -96,7 +96,7 @@
             <input type='hidden' class='data-query' name='coords' value='<%=list_of_coords%>' >
           </div>
           <!-- <input class="filename" name="new_filename" value="<%= new_filename || original_filename %>"></input> -->
-          <span class="filename" style="font-size:14px;"><%= original_filename %></span>
+          <span class="filename"><%= original_filename %></span>
           <label for="format">Export Format:</label>
           <select name="format" <%=disableIfNoData%> class="form-control format">
             <option value="csv">CSV</option>
@@ -112,10 +112,6 @@
             <span class="glyphicon glyphicon-refresh"></span>
             <span class="glyphicon glyphicon-download"></span>
             Export
-          </button>
-          <button type="button" id="log-file" class="btn btn-default">
-            <span class="glyphicon glyphicon-download"> </span>
-            <span class="">Log File</span>
           </button>
           <button type="button" id="copy-csv-to-clipboard" class="btn btn-default" <%=disableIfNoData%> <%=copyDisabled%> >
             <span class="glyphicon glyphicon-paperclip"></span>
@@ -141,16 +137,16 @@
           </div>
         </div>
 
-        <button type="button" class="btn btn-default" onclick="PDF_Outline_btn()" ><span class="glyphicon glyphicon-list-alt"></span> PDF Outline</button>
+        <button type="button" class="dropdown-toggle btn btn-default" onclick="PDF_Outline_btn()" data-toggle="dropdown" href="#" ><span class="glyphicon glyphicon-list-alt"></span> PDF Outline</button>
         <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
         <button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disabled_if_there_are_selections %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button>
-        <button type="button" class="btn btn-default" onclick="Regex_Options_btn()"><span class="glyphicon glyphicon-list"></span> Regex Options</button>
+        <button type="button" class="btn btn-default" onclick="Regex_Options_btn()"><span></span> Regex Options</button>
 
 
 
 
         <span style="float: right">
-          <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><span class="glyphicon glyphicon-list-alt"></span> Preview & Export Data</button></a>
+          <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success"<%= disable_download_all %>><span class="glyphicon glyphicon-list-alt"></span> Preview & Export Data</button></a>
         </span>
 
 
@@ -228,7 +224,7 @@
             </div>
             <div id="sidebar">
             </div>
-            <div id="regexcontainer">
+            <div id="regex-container">
             </div>
         </div>
       </script>
@@ -243,75 +239,48 @@
           </div>
           <div id="pages-container">
           </div>
-          <div id="regexcontainer"> <!--container for regex options -->
+          <div id="regex-container"> <!--container for regex options -->
             <div class="container" style="width: 100%;">
-            <h4>Regex Options</h4>
-            <ul class="nav nav-tabs">
-              <li class="active regex-commands"><a data-toggle="tab" href="#home"><h7>Regex Input</h7></a></li>
-              <li><a data-toggle="tab" class="regex-guide" href="#menu1"><h7>Guide</h7></a></li>
-            </ul>
+  <h2>Regex Options</h2>
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#home">Commands</a></li>
+    <li><a data-toggle="tab" href="#menu1">Guide</a></li>
+  </ul>
 
-            <div class="tab-content">
-              <div id="home" class="tab-pane fade in active">
-                <p style="padding-left:10px;">
-                  <p></p>
-                <h8> Here are some quick pointers for using </h8>
-                <h8 >Tabula's regex feature:</h8>
-                <ul style="padding-left:15px;">
-                  <li>Accepted regex commands follow the syntax for Java. For more information on Regex syntax for Java visit
-                    <a href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Tutorial's Point Regex Syntax</a>
-                    or visit the <a href="help">Help page!</a></li>
-                    <li>Can specify case sensitivity by providing the upper and lowercase letter within a bracket.</li>
-                    <li>Only need to provide one backslash as an input character instead of two backslashes.</li>
-                </ul>
-                <!-- Form for regex input-->
-              </p>
-                <form>
-                  <label class="form-group" id="regex_input_form"></label>
-                  <h5><label class="col-form-label" for="formGroupExampleInput">Regex Command</label></h5>
-                  <label><input type="checkbox" id="include_pattern_before" value=true> Inclusive? </label>
-                  <input type="text" class="form-control" id="pattern_before" placeholder="Pattern Before...">
-                  <label><input type="checkbox" id="include_pattern_after" value=true> Inclusive? </label>
-                  <input type="text" class="form-control" id="pattern_after" placeholder="Pattern After...">
-                  <button type="button" id="regex-search" class="btn btn-default" disabled>Search</button>
-              </form>
-              <table class="regex-results-table">
-                 <h5><b>Searches</b></h5>
-                <thead>
-                  <tr>
-                    <th>Regex Before</th>
-                     <th>Regex After</th>
-                      <th>Matches</th>
-
-                  </tr>
-                </thead>
-                <tbody class="regex-results-list">
-                </tbody>
-              </table>
-              <p></p>
-            </div>
-              <div id="menu1" class="tab-pane fade">
-                <h5><b>Regex Guide</b></h5>
-                <p>Providing a regex command can improve how Tabula is able to detect where the data lies within the pdf! </p>
-                <p>On the first tab, <b>Commands</b> you can click if the first command is inclusive or not.</p>
-                <ul style="padding-left: 15px;">
-                <li>Inclusive: The command is included</li>
-                <li>Exclusive: Not including the command</li>
-              </ul>
-              <p>Once you've inputted your command(s), you can click the <b>Search button</b>! You should see the result highlighted based on what Tabula believes
-                 it understood on the pdf, located in the middle of the screen. If not, then it is suggested you try a similar regex command. </p>
-              <p>Additionally, below the <b>Search button</b> is an option to view the. This serves as a view to see how many results the regex comman(s) generates.</p>
-              <p>For more information on Regex syntax for Java visit
-                <a href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Tutorial's Point Regex Syntax</a>
-                or visit the <a href="help">Help page!</a></p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-          </div>
+  <div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+      <h3>Regex</h3>
+      <!-- Form for regex input turning off autocomplete for now-->
+      <form id="regex_input_form" autocomplete="off">
+          <label class="form-group"></label>
+          <p><label class="col-form-label" for="formGroupExampleInput">Regex Command</label></p>
+          <label><input type="checkbox" id="include_pattern_before" value="isSet"> Inclusive? </label>
+          <input type="text" class="form-control" id="pattern_before" placeholder="Pattern Before...">
+          <label><input type="checkbox" id="include_pattern_after" value="isSet"> Inclusive? </label>
+          <input type="text" class="form-control" id="pattern_after" placeholder="Pattern After...">
+          <button type="button" id="regex-search" class="btn btn-default" disabled>Search</button>
+      </form>
+      <table class="regex-results-table">
+        <h2>Searches</h2>
+        <thead>
+          <tr>
+            <th>Regex Before</th>
+            <th>Regex After</th>
+            <th>Matches</th>
+          </tr>
+        </thead>
+        <tbody class="regex-results-list">
+        </tbody>
+      </table>
+    </div>
+    <div id="menu1" class="tab-pane fade">
+      <h3>Regex Guide</h3>
+      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </div>
         <nestedscript type="text/javascript" src="js/vendor/spin.min.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/resizableSelection.js"></nestedscript>
+        <nestedscript type="text/javascript" src="js/regexSelection.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/rectangularSelector.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/vendor/ZeroClipboard.min.js"></nestedscript>
         <!-- <nestedscript type="text/javascript" src="js/debug_pdf_view.js"></nestedscript>  -->
@@ -319,11 +288,10 @@
 
 
       <script id="regex-result" type="text/template">
-        <tr>
-           <td><%= pattern_before %></td>
-         </tr>
-
-       </script>
+          <td><%= pattern_before %></td>
+          <td><%= pattern_after  %></td>
+          <td><%= num_matches    %></td>
+      </script>
 
 
       <script type="text/template" id="failed-uploads-template">
@@ -622,35 +590,14 @@
           <p>Note: Tabula only works on text-based PDFs, not scanned documents.</p>
           <p></p>
           <!--Regex Help section -->
-
           <h1 id="regexhelp" name="regexhelp">Regex Help</h1>
-          <div style="padding-left: 25px;">
-              <ul style="padding-left: 15px;">
-              <li>Providing a regex command can improve how Tabula is able to detect where the data lies within the pdf! </li>
-              <li>Currently, the type of accepted regex commands follow the syntax for Java. </li>
-            </ul>
-              <h2>How to use Regex with Tabula</h2>
-              <ol style="padding-left: 15px;">
-              <li>Located in the Extraction page's Regex Options tab, you can click if the first command is inclusive or not.</li>
-              <ul>
-                <li>Inclusive: The command is included</li>
-                <li>Exclusive: Not including the command</li>
-            </ul>
-              <li>Once you've inputted your command(s), you can click the <b>Search button</b> located in the Extraction page's Regex Options tab.
-                 You should see the result highlighted based on what Tabula believesit understood on the pdf, located in the middle of the screen.</li>
-              <li>Additionally, below the <b>Search button</b> is an option to view the amount of results found from the command(s) and you have the option
-                to delete the rectangle Tabula drew based of your input.</li>
-            </ol>
-              <h2>Don't know regex?</h2>
-              <ul style="padding-left: 15px;">
-                <li>For more information on regex syntax for Java visit <a href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Tutorial's
-                Point Regex Syntax</a> </li>
-                <li>For help on how to use regex (not necessarily regex syntax for Java) you can visit <a href="https://regexr.com/">here</a>.</li>
-              </ul>
-          </div>
+          <ol>
+            <li>Include here on regex trouble shooting</li>
+            <li>Include regex guide(?)</li>
+            <li>Include reference to learning regex(possibly)</li>
+          </ol>
           <p></p>
           <h1 id= "troubleshooting" name="trouble">Having trouble with Tabula?</h1>
-          <div>
           <ol>
           <li><strong>Tabula said "Sorry, your PDF file is image-based" -- what does that mean?</strong> Your PDF does not have any embedded text. It might have been scanned from paper. Tabula is not able to extract any data from image-based PDFs. You can try OCRing the PDF with a tool like Adobe Acrobat Pro (paid), Tesseract, <a href="http://www.tobias-elze.de/pdfsandwich/">PDFSandwich</a> (Mac/Linux, free) or <a href="https://code.google.com/p/lime-ocr/">Lime OCR</a> (Windows, free) and then trying Tabula again.</li>
           <li><strong>Some columns of my table are combined. What can I do?</strong> Tabula sometimes uses "streams" of whitespace to recreate your table's structure. If headers span multiple columns, they're probably causing a problem. Try excluding them from your selection (or selecting them separately). </li>
@@ -659,7 +606,7 @@
           <li><strong>Tabula's taking too long!</strong> Sorry! Tabula has to do a lot of weird math to reconstruct your table. Tabula's command-line counterpart, <a href="https://www.github.com/tabulapdf/tabula-extractor">tabula-extractor</a> is faster, but a little harder to use. You might give it a try.</li>
           <li><strong>I had some other problem!</strong> Sorry! You can <a href="https://www.github.com/tabulapdf/tabula/issues/new">report it to us here</a>. Be sure to include your PDF, either as a link or attached to the issue -- or email it to <a href="about">one of the Tabula creators.</a> </li>
           </ol>
-        </div>
+
           </div> <!-- /jumbotron -->
         </div> <!-- /container -->
 
