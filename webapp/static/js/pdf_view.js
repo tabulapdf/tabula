@@ -1702,11 +1702,10 @@ Tabula.PDFView = Backbone.View.extend(
       // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
       // cause it to be rendered onto the page, and as a thumbnail
       // and causes it to get an 'id' attr.
-      console.log("sel.page", sel);
+
       var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page];
-      console.log(pageView);
       var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page});
-      console.log(page);
+
       if(!page){
         // the page we're trying to render a selection on might have been deleted.
         // or, we may be trying to load a template with more pages on it than this PDF has.
@@ -1714,7 +1713,7 @@ Tabula.PDFView = Backbone.View.extend(
         return;
       }
       var original_pdf_width = page.get('width');
-      var original_pdf_height = page.get('height');
+      //var original_pdf_height = page.get('height');
       // var pdf_rotation = page.get('rotation');
 
       // TODO: create selection models for pages that aren't lazyloaded, but obviously don't display them.
