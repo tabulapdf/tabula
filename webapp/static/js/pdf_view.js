@@ -1955,11 +1955,11 @@ function PDF_Outline_btn(){
  }
 }
 function Regex_Options_btn(){
-  var x = document.getElementById("");
+  var x = document.getElementById("regex-container");
   if(x.style.display == "none"){
     x.style.display = "block";
   }
   else{
-    x.style.display =="none";
+    x.style.display = "none";
   }
 }
