@@ -161,7 +161,7 @@ Tabula.Options = Backbone.Model.extend({
 Tabula.Selections = Backbone.Collection.extend({
   //model: Tabula.Selection,
   comparator: 'page_number',
-  updateOrCreateByVendorSelectorId: function(vendorSelection, pageNumber, imageWidth){
+  updateOrCreateByVendorSelectorId: function(vendorSelection, pageNumber, imageDims){
     var selection = this.get(vendorSelection.id);
 
     if (selection) { // if it already exists
@@ -169,14 +169,13 @@ Tabula.Selections = Backbone.Collection.extend({
     }
     else {
       new_selection_args = _.extend({'page_number': pageNumber,
-                                    'imageWidth': imageWidth,
+                                    'imageWidth': imageDims.width,
+                                    'imageHeight': imageDims.height,
                                     'extraction_method': Tabula.pdf_view.options.extraction_method,
                                     'hidden': false,
                                     'pdf_document': this.pdf_document},
                                     vendorSelection);
-      console.log('In updateOrCreateByVendorSelectorId:');
       selection = new Tabula.Selection(new_selection_args);
-      console.log('Selection:');
       console.log(selection.toJSON());
       this.add(selection);
     }
@@ -201,7 +200,7 @@ Tabula.AutodetectedSelections = Tabula.Selections.extend({
   url: null, //set on init
   initialize: function(){
     this.url = (base_uri || '/') + 'pdfs/' + PDF_ID + '/tables.json?_=' + Math.round(+new Date()).toString();
-    _.bindAll(this, 'updateOrCreateByVendorSelectorId');
+  //  _.bindAll(this, 'updateOrCreateByVendorSelectorId'); What is this line doing??
   },
 
   parse: function(response){
@@ -778,20 +777,24 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   _onSelectStart: function(selection) {
     Tabula.pdf_view.pdf_document.selections.updateOrCreateByVendorSelectorId(selection,
                                                                   this.model.get('number'),
-                                                                  this.$image.width());
+                                                                  {'width': this.$image.width(),
+                                                                   'height': this.$image.height});
   },
 
   _onSelectChange: function(selection) {
     Tabula.pdf_view.pdf_document.selections.updateOrCreateByVendorSelectorId(selection,
                                                                   this.model.get('number'),
-                                                                  this.$image.width());
+                                                                  {'width': this.$image.width(),
+                                                                   'height': this.$image.height()});
   },
 
   _onSelectEnd: function(selection) {
 
     var selections = Tabula.pdf_view.pdf_document.selections;
 
-    var sel = selections.updateOrCreateByVendorSelectorId(selection,this.model.get('number'),this.$image.width());
+    var sel = selections.updateOrCreateByVendorSelectorId(selection,this.model.get('number'),
+                                                          {'width':this.$image.width(),
+                                                           'height':this.$image.height()});
 
 
     // deal with invalid/too-small selections somehow (including thumbnails)
@@ -800,8 +803,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       selection.remove();
     }
 
-    console.log("in _onSelectEnd of Tabula.PageView");
-    console.log(selection.el.className);
 
 
     // if this is not the last pager
@@ -1453,10 +1454,31 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
   changeSelectionThumbnail: function(selection){
     var $sshow = this.$el.find('#selection-show-' + selection.cid);
 
+    console.log("In changeSelectionThumbnail:");
+    console.log(selection);
+    console.log("Page width:",selection.get('imageWidth'));
+    console.log("Page height:",selection.get('imageHeight'));
+    console.log("Image width:",this.$img.width());
+    console.log("Image height:",this.$img.height());
+
+
     // don't break everything if the sidebar happens to be broken.
-    var thumbScale = this.$img ? this.$img.width() / selection.get('imageWidth') : 0;
+    var thumbScaleWidth = this.$img ? this.$img.width() / selection.get('imageWidth') : 0;
+    var thumbScaleHeight = this.$img? this.$img.height()/ selection.get('imageHeight') : 0;
+
+
+    console.log("ThumbScaleWidth:",thumbScaleWidth);
+    console.log("ThumbScaleHeight:",thumbScaleHeight);
+
+
+
     var left = parseFloat(this.$el.css('padding-left'));
-    var top = parseFloat(this.$el.css('padding-top'));
+    var top = parseFloat(this.$el.css('padding-top')); //the padding-top of this element is acting strange...
+
+
+    console.log("This $el:");
+    console.log(this.$el);
+
 
     // if data has gotten messed up somewhere
     if(!selection.attributes) return;
@@ -1465,11 +1487,12 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     if(!selection.attributes.getDims) return;
 
     var s = selection.attributes.getDims().relativePos;
- //   var s = selection.attributes.getDims().absolutePos;
-    $sshow.css('top', (top + (s.top * thumbScale)) + 'px')
-      .css('left', (left + (s.left * thumbScale)) + 'px')
-      .css('width', (s.width * thumbScale) + 'px')
-      .css('height', (s.height * thumbScale) + 'px');
+    $sshow.css('top', (top + (s.top * thumbScaleHeight)) + 'px')
+ //   $sshow.css('top', (top) + 'px')
+ //     .css('left', (left + (s.left * thumbScaleWidth)) + 'px')
+      .css('left', (left + (s.left * thumbScaleWidth)) + 'px')
+      .css('width', (s.width * thumbScaleWidth) + 'px')
+      .css('height', (s.height * thumbScaleHeight) + 'px')
   },
 
   removeSelectionThumbnail: function(selection){
@@ -1642,6 +1665,7 @@ Tabula.PDFView = Backbone.View.extend(
       // mimics drawing the selection onto the page
       var $img = pageView.$el.find('img');
       var image_width = $img.width();
+      var image_height = $img.height();
       if (!$img.length || $img.data('loaded') !== 'loaded' || !$img.height() ){ // if this page isn't shown currently or the image hasn't been rendered yet, then create a hidden selectionx
         return this.pdf_document.selections.createHiddenSelection(sel);
       }
@@ -1654,8 +1678,7 @@ Tabula.PDFView = Backbone.View.extend(
           'width': (sel.width * scale),
           'height': (sel.height * scale)
         });
-      console.log("Absolute Position:");
-      console.log(absolutePos);
+
       var regexSelection = new RegexSelection({
         position: absolutePos,
         target: pageView.$el.find('img'),
@@ -1670,7 +1693,8 @@ Tabula.PDFView = Backbone.View.extend(
       pageView._onSelectEnd(regexSelection); // draws the thumbnail
 
       // put the selection into the selections collection
-      this.pdf_document.selections.updateOrCreateByVendorSelectorId(regexSelection, sel.page, image_width);
+      this.pdf_document.selections.updateOrCreateByVendorSelectorId(regexSelection, sel.page, {'width':image_width,
+                                                                                               'height':image_height});
       return regexSelection;
 
 
@@ -1704,6 +1728,7 @@ Tabula.PDFView = Backbone.View.extend(
       // mimics drawing the selection onto the page
       var $img = pageView.$el.find('img');
       var image_width = $img.width();
+      var image_height = $img.height();
       if (!$img.length || $img.data('loaded') !== 'loaded' || !$img.height() ){ // if this page isn't shown currently or the image hasn't been rendered yet, then create a hidden selectionx
         return this.pdf_document.selections.createHiddenSelection(sel);
       }
@@ -1734,7 +1759,9 @@ Tabula.PDFView = Backbone.View.extend(
       pageView._onSelectEnd(vendorSelection); // draws the thumbnail
 
       // put the selection into the selections collection
-      selection = this.pdf_document.selections.updateOrCreateByVendorSelectorId(vendorSelection, sel.page, image_width);
+      selection = this.pdf_document.selections.updateOrCreateByVendorSelectorId(vendorSelection, sel.page,
+                                                                                {'width':image_width,
+                                                                                 'height':image_height});
       return selection;
 
     },
