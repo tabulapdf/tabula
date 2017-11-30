@@ -266,25 +266,28 @@
                   <form>
                     <label class="form-group" id="regex_input_form"></label>
                       <h5><label class="col-form-label" for="formGroupExampleInput">Regex Command</label></h5>
+                      <label><input type="checkbox" id="include_pattern_before" value="isSet"> Inclusive? </label>
                    <input type="text" class="form-control" id="pattern_before" placeholder="Pattern Before...">
                    <label><input type="checkbox" id="include_pattern_after" value=true> Inclusive? </label>
                    <input type="text" class="form-control" id="pattern_after" placeholder="Pattern After...">
+
                    <button type="button" id="regex-search" class="btn btn-default" disabled>Search</button>
                   </form>
-             <table class="regex-results-table">
+             <table class="regex-results-table table">
                <h5><b>Searches</b></h5>
-                     <thead>
+                     <thead class="thead-inverse">
                        <tr>
-                         <th>Regex Before</th>
-                         <th>Regex After</th>
-                         <th>Matches</th>
+                         <td >Regex Before</td>
+                         <td >Regex After</td>
+                         <td >Matches</td>
                        </tr>
                      </thead>
                       <tbody class="regex-results-list">
                       </tbody>
                        </table>
-                     <p></p>
+                       <div style="padding-bottom:50px;">
                    </div>
+                 </div>
     <div id="menu1" class="tab-pane fade">
         <h5><b>Regex Guide</b></h5>
         <p>Providing a regex command can improve how Tabula is able to detect where the data lies within the pdf! </p>
@@ -640,7 +643,7 @@
             Point Regex Syntax</a> </li>
             <li>For help on how to use regex (not necessarily regex syntax for Java) you can visit <a href="https://regexr.com/">here</a>.</li>
          </ul>
-    </div>         
+    </div>
           <p></p>
           <h1 id= "troubleshooting" name="trouble">Having trouble with Tabula?</h1>
           <ol>
