@@ -75,8 +75,6 @@
 
     getDims: function() {
       if((!$(this.pageView).is(':visible') || !this.$el.is(':visible')) && this.cachedDims){
-        console.log('cachedDims:');
-        console.log(this.cachedDims);
         return this.cachedDims;
       }
 
@@ -85,11 +83,8 @@
                 left: parseFloat(this.$el.css('left')) };
 
 
-      console.log("In getDims printing pageView");
-      console.log(JSON.stringify($(this.pageView)));
       var targetPos = $(this.pageView).offset();
-      console.log("In getDims printing targetPos:");
-      console.log(targetPos);
+
       // console.log($(this.pageView).is(':visible'), this.$el.is(':visible'));
       this.cachedDims = {
         id: this.id,
@@ -107,8 +102,7 @@
           height: this.$el.css('box-sizing') == "border-box" ? this.$el.outerHeight() : this.$el.height()
         }
       };
-      console.log('cachedDims:');
-      console.log(this.cachedDims);
+
       return this.cachedDims;
     },
 
