@@ -633,7 +633,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   },
   addSelection: function (d) {
 
-    console.log("In addSelection of Tabula.Document_View:");
     var page_number = $(d.pageView).data('page') || d.pageNumber;
     var pv = this.page_views[page_number];
     var rs = new ResizableSelection({
@@ -873,8 +872,16 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   clearAllSelections: function(){
-    _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
+    console.log("Regex Collection Before:");
+    console.log(Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection);
+    Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.reset();
+    console.log("Regex Collection After:");
+    console.log(Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection);
+    Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.render();
+    _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){
+      if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
     Tabula.pdf_view.pdf_document.selections.reset([]);
+
     Tabula.pdf_view.components['control_panel'].render(); // deal with buttons that need blurred out if there's zero selections, etc.
     // reset doesn't trigger the right events because we have to remove from the collection and from the page (with selection.remove())
     // we can't use _.each because we're mutating the collection that we're iterating over
@@ -1037,33 +1044,39 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     this.collection = new Tabula.RegexResultCollection();
     this.collection.on('add',this.render,this);
   },
+
   remove_regex_search: function(event_data,search_to_remove){
-    console.log("In remove_regex_search of Tabula.RegexCollectionView");
     var temp = search_to_remove['caller'];
-    console.log(temp);
     var rectangles_to_remove = search_to_remove['caller']['model']['attributes']['rendered_results'];
-    console.log(rectangles_to_remove);
-    console.log(rectangles_to_remove);
+
     for(var iter in rectangles_to_remove){
-      console.log("In for loop in remove_regex_search");
-      console.log(iter);
-      rectangles_to_remove[iter].remove();
+      rectangles_to_remove[iter].toJSON().remove();
     }
 
-    console.log(temp);
-    console.log("Event_data:");
-    console.log(event_data);
     this.collection.remove(search_to_remove['caller']['model']);
-    console.log("Collection as JSON AFTER removal:");
-    console.log(this.collection.toJSON());
 
     console.log("Tabula selections object:");
     console.log(JSON.stringify(Tabula.pdf_view.pdf_document.selections.toArray()));
 
-
     this.render();
 
   },
+
+  reset : function(){
+    console.log("Collection:");
+    console.log(this.collection);
+
+    _.each(this.collection.toArray(),function(regex_search){
+      console.log(regex_search.toJSON());
+      //Removing all the drawn regex rectangles:
+      _.each(regex_search.toJSON()['rendered_results'],function(regex_rectangle){
+        regex_rectangle.toJSON().remove();
+      })
+    });
+    //Remove all the entries in regex table in the side bar
+    this.collection.reset();
+  },
+
   render: function(){
     console.log("In render function of Tabula.RegexCollectionView:");
     var self = this;
@@ -1095,19 +1108,15 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     var num_matches = 0;
     var rendered_results=[];
     Object.keys(search_results["_matching_areas"]).forEach(function (iter) {
-//      console.log("In function add of RegexResultsHandler");
-//      console.log("matching_areas:");
-//      console.log(JSON.stringify(iter));
+
       num_matches++;
       for (var page_number in search_results["_matching_areas"][iter]) {
-//        console.log("Page Number:" + page_number);
+
         for (var matching_element_index in search_results["_matching_areas"][iter][page_number]) {
-//          console.log("Matching Element:");
-//          console.log(JSON.stringify(search_results["_matching_areas"][iter][page_number][matching_element_index]));
 
           var render_data = search_results["_matching_areas"][iter][page_number][matching_element_index];
 
-          rendered_results.push(Tabula.pdf_view.renderRegexSelection({
+          rendered_results.push(Tabula.pdf_view.renderSelection({
             x1: render_data['x'],
             y1: render_data['y'],
             width: render_data['width'],
@@ -1115,7 +1124,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
             page: parseInt(page_number),
             extraction_method: 'spreadsheet',
             selection_id: null,
-          }));
+          },{type:'regex'}));
 
 
 
@@ -1451,30 +1460,14 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
   changeSelectionThumbnail: function(selection){
     var $sshow = this.$el.find('#selection-show-' + selection.cid);
 
-    console.log("In changeSelectionThumbnail:");
-    console.log(selection);
-    console.log("Page width:",selection.get('imageWidth'));
-    console.log("Page height:",selection.get('imageHeight'));
-    console.log("Image width:",this.$img.width());
-    console.log("Image height:",this.$img.height());
-
-
     // don't break everything if the sidebar happens to be broken.
     var thumbScaleWidth = this.$img ? this.$img.width() / selection.get('imageWidth') : 0;
     var thumbScaleHeight = this.$img? this.$img.height()/ selection.get('imageHeight') : 0;
 
 
-    console.log("ThumbScaleWidth:",thumbScaleWidth);
-    console.log("ThumbScaleHeight:",thumbScaleHeight);
-
-
-
     var left = parseFloat(this.$el.css('padding-left'));
     var top = parseFloat(this.$el.css('padding-top')); //the padding-top of this element is acting strange...
 
-
-    console.log("This $el:");
-    console.log(this.$el);
 
 
     // if data has gotten messed up somewhere
@@ -1485,8 +1478,6 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
 
     var s = selection.attributes.getDims().relativePos;
     $sshow.css('top', (top + (s.top * thumbScaleHeight)) + 'px')
- //   $sshow.css('top', (top) + 'px')
- //     .css('left', (left + (s.left * thumbScaleWidth)) + 'px')
       .css('left', (left + (s.left * thumbScaleWidth)) + 'px')
       .css('width', (s.width * thumbScaleWidth) + 'px')
       .css('height', (s.height * thumbScaleHeight) + 'px')
@@ -1514,7 +1505,7 @@ Tabula.PDFView = Backbone.View.extend(
     global_options: null,
 
     initialize: function(){
-      _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections', 'renderSelection','renderRegexSelection',
+      _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections', 'renderSelection',
         'createDataView', 'checkForAutodetectedTables', 'getData', 'handleScroll',
         'loadSavedTemplate', 'saveTemplate', 'saveTemplateAs');
 
@@ -1634,11 +1625,10 @@ Tabula.PDFView = Backbone.View.extend(
       });
     },
 
-    renderRegexSelection: function(sel){
+    renderSelection: function(sel, meta_data_sel){
       // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
       // cause it to be rendered onto the page, and as a thumbnail
       // and causes it to get an 'id' attr.
-      console.log("In renderRegexSelection:");
       console.log("sel.page", sel);
       var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page];
       console.log(pageView);
@@ -1668,70 +1658,7 @@ Tabula.PDFView = Backbone.View.extend(
       }
       var scale = image_width / original_pdf_width;
       var offset = $img.offset();
-      var absolutePos = _.extend({}, offset,
-        {
-          'top':  offset.top + (sel.y1 * scale),
-          'left': offset.left + (sel.x1 * scale),
-          'width': (sel.width * scale),
-          'height': (sel.height * scale)
-        });
 
-      var regexSelection = new RegexSelection({
-        position: absolutePos,
-        target: pageView.$el.find('img'),
-        areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
-      });
-      regexSelection.on({
-        remove: pageView._onSelectCancel
-      });
-
-      Tabula.pdf_view.components['document_view'].$el.append(regexSelection.el);
-
-      pageView._onSelectEnd(regexSelection); // draws the thumbnail
-
-      // put the selection into the selections collection
-      this.pdf_document.selections.updateOrCreateByVendorSelectorId(regexSelection, sel.page, {'width':image_width,
-                                                                                               'height':image_height});
-      return regexSelection;
-
-
-
-    },
-
-    renderSelection: function(sel){
-      // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
-      // cause it to be rendered onto the page, and as a thumbnail
-      // and causes it to get an 'id' attr.
-
-      var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page];
-      var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page});
-
-      if(!page){
-        // the page we're trying to render a selection on might have been deleted.
-        // or, we may be trying to load a template with more pages on it than this PDF has.
-        console.log("can't render selection on page " + sel.page + " because that page can't be found", sel)
-        return;
-      }
-      var original_pdf_width = page.get('width');
-      //var original_pdf_height = page.get('height');
-      // var pdf_rotation = page.get('rotation');
-
-      // TODO: create selection models for pages that aren't lazyloaded, but obviously don't display them.
-      if(Tabula.LazyLoad && !pageView){
-        return [];
-      }
-
-      // mimics drawing the selection onto the page
-      var $img = pageView.$el.find('img');
-      var image_width = $img.width();
-      var image_height = $img.height();
-      if (!$img.length || $img.data('loaded') !== 'loaded' || !$img.height() ){ // if this page isn't shown currently or the image hasn't been rendered yet, then create a hidden selectionx
-        return this.pdf_document.selections.createHiddenSelection(sel);
-      }
-      var scale = image_width / original_pdf_width;
-      var offset = $img.offset();
-      console.log("Offset in renderSelection:");
-      console.log(offset);
       var relativePos = _.extend({}, offset,
                                 {
                                   'top':  offset.top + (sel.y1 * scale),
@@ -1740,15 +1667,31 @@ Tabula.PDFView = Backbone.View.extend(
                                   'height': (sel.height * scale)
                                 });
       // TODO: refactor to only have this ResizableSelection logic in one place.
-      var vendorSelection = new ResizableSelection({
-        position: relativePos,
-        target: pageView.$el.find('img'),
-        areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
-      });
-      vendorSelection.on({
-        resize: _.debounce(pageView._onSelectChange, 100),
-        remove: pageView._onSelectCancel
-      });
+
+      var vendorSelection;
+
+      if(meta_data_sel.type==='regex'){
+        vendorSelection = new RegexSelection({
+          position: relativePos,
+          target: pageView.$el.find('img'),
+          areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
+        });
+        vendorSelection.on({
+          remove: pageView._onSelectCancel
+        });
+      }
+      else{
+        vendorSelection = new ResizableSelection({
+          position: relativePos,
+          target: pageView.$el.find('img'),
+          areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
+        });
+        vendorSelection.on({
+          resize: _.debounce(pageView._onSelectChange, 100),
+          remove: pageView._onSelectCancel
+        });
+      }
+
 
       Tabula.pdf_view.components['document_view'].$el.append(vendorSelection.el);
 
