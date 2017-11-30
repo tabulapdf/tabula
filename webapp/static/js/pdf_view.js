@@ -83,7 +83,8 @@ Tabula.Selection = Backbone.Model.extend({
     // var pdf_rotation = page.get('rotation');
 
     var scale = original_pdf_width / imageWidth;
-    var rp = this.attributes.getDims().relativePos;
+//    var rp = this.attributes.getDims().relativePos;
+    var rp = this.attributes.getDims().absolutePos;
     this.set({
       x1: rp.left * scale,
       x2: (rp.left + rp.width) * scale,
@@ -158,12 +159,19 @@ Tabula.Options = Backbone.Model.extend({
 */
 
 Tabula.Selections = Backbone.Collection.extend({
-  // model: Tabula.Selection,
+  //model: Tabula.Selection,
   comparator: 'page_number',
   updateOrCreateByVendorSelectorId: function(vendorSelection, pageNumber, imageWidth){
+    console.log('In updateOrCreateByVendorSelectorId:');
+    console.log("Vendor Selection:");
+    console.log(vendorSelection);
+    console.log("Selections to Array:");
+    console.log(this.toArray());
     var selection = this.get(vendorSelection.id);
-
     if (selection) { // if it already exists
+      console.log("If selection exists:");
+      console.log(selection);
+
       selection.set(_.omit(vendorSelection, 'id'));
     }
     else {
@@ -173,7 +181,10 @@ Tabula.Selections = Backbone.Collection.extend({
                                     'hidden': false,
                                     'pdf_document': this.pdf_document},
                                     vendorSelection);
+
       selection = new Tabula.Selection(new_selection_args);
+      console.log('Selection:');
+      console.log(selection.toJSON());
       this.add(selection);
     }
     return selection;
@@ -428,6 +439,9 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   },
   closeAndRenderSelectionView: function(){
     window.tabula_router.navigate('pdf/' + PDF_ID);
+    console.log("In closeAndRenderSelectionView:");
+    console.log("This.el");
+    console.log(this.$el);
     this.$el.empty();
     this.undelegateEvents();
     this.pdf_view.$el.show();
@@ -437,8 +451,15 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     $('body').addClass('page-selections');
 
     var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
-      var selection = Tabula.pdf_view.renderSelection(sel.toCoords());
-      // selection.attributes.rebind(); // o. m. g.
+      console.log(sel);
+     console.log(sel.toJSON().className);
+     var selection = sel;
+     if(sel.toJSON().className!=="regex-table-region"){
+       selection = Tabula.pdf_view.renderSelection(sel.toCoords());
+     }
+     else{
+     //  selection = Tabula.pdf_view.renderRegexSelection(sel.toCoords());
+     }
       return selection;
     });
     this.pdf_view.pdf_document.selections.reset(oldSelections);
@@ -622,6 +643,8 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   },
 
   addSelection: function (d) {
+
+    console.log("In addSelection of Tabula.Document_View:");
     var page_number = $(d.pageView).data('page') || d.pageNumber;
     var pv = this.page_views[page_number];
     var rs = new ResizableSelection({
@@ -640,6 +663,9 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
 
   // listens to mouseup of RectangularSelector
   _onRectangularSelectorEnd: function(d) {
+    console.log("In _onRectangularSelectorEnd:");
+    console.log("Parameter passed:");
+    console.log(JSON.stringify(d));
     this.addSelection(d);
   },
 
@@ -774,9 +800,11 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   },
 
   _onSelectEnd: function(selection) {
-    var sel = Tabula.pdf_view.pdf_document.selections.updateOrCreateByVendorSelectorId(selection,
-                                                                            this.model.get('number'),
-                                                                            this.$image.width());
+
+    var selections = Tabula.pdf_view.pdf_document.selections;
+
+    var sel = selections.updateOrCreateByVendorSelectorId(selection,this.model.get('number'),this.$image.width());
+
 
     // deal with invalid/too-small selections somehow (including thumbnails)
     if (selection.width === 0 && selection.height === 0) {
@@ -784,8 +812,13 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       selection.remove();
     }
 
+    console.log("in _onSelectEnd of Tabula.PageView");
+    console.log(selection.el.className);
+
+
     // if this is not the last pager
-    if(this.model != this.model.collection.last()) {
+
+    if((this.model != this.model.collection.last()) && (selection.el.className!=="regex-table-region")) {
       var but_id = this.model.get('number') + '-' + selection.id;  //create a "Repeat this Selection" button
       var button = $('<div class="btn-group repeat-lassos-group" id="'+but_id+'"> \
       <button type="button" class="btn btn-default repeat-lassos">Repeat this Selection</button>\
@@ -884,7 +917,6 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 
   queryAllData : function(){
     var list_of_all_coords = Tabula.pdf_view.pdf_document.selections.invoke("toCoords");
-
     //TODO: figure out how to handle extraction methods when there are multiple selections
     // should it be set globally, or per selection?
     // actually, how to handle extraction method is a bit of an open question.
@@ -924,70 +956,127 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   }
 });
 
-
+//Tabula.RegexHandler
+//   Backbone View extension for handling the UI regarding regex searches.
+//
+//   Serves as the Controller in the Model-View-Controller pattern enforced by Backbone. Creates the ReqgexQueryHandler
+//   and RegexCollectionView objects resposible for displaying the regex search information. Controls the AJAX request
+//   and the processing of information returned from the server.
+//
+//   11/23/2017  REM; created
+//
 Tabula.RegexHandler = Backbone.View.extend({
-  el: "#regex",
+  el: "#regex-container",
   className: 'regex-handler',
   events: {'click #regex-search': 'perform_regex_search'},
   regex_results_handler: null,
   regex_query_handler: null,
   initialize: function(){
     this.regex_query_handler = new Tabula.RegexQueryHandler();
-    this.regex_results_handler= new Tabula.RegexResultsView();
+    this.regex_results_handler= new Tabula.RegexCollectionView();
+  },
+  reset_ui: function(){
+    $('#regex_input_form').find('input').val(null);
+    $('#regex-search').attr('disabled', 'disabled');
+    this.regex_query_handler.model.reset();
   },
   //Event handler called when the Set Regex button is pushed
   perform_regex_search: function() {
-    $.ajax({
-      type: 'GET',
-      url: '/regex',
-      data: this.regex_query_handler.model.toJSON(),
-      dataType: 'json',
-      success: _.bind(function (data) {
+    /*
+    *Determine if regex pattern has already been previously searched for
+     */
+    if (this.regex_results_handler.has_same_query(this.regex_query_handler.model.toJSON()) == false) {
 
-        this.regex_results_handler.process_result(data);
+      $.ajax({
+        type: 'GET',
+        url: '/regex',
+        data: this.regex_query_handler.model.toJSON(),
+        dataType: 'json',
+        success: _.bind(function (data) {
 
-  //      for (var iter in search_results) {
-  //        console.log("search_results[iter]:");
-  //        console.log(JSON.stringify(search_results[iter]));
-  //        this.regex_results_handler.add({search_result:search_results[iter]);
-  //      }
-        /*
-        * Reset UI for next regex search
-        */
-        $('#regex_input_form').find('input').val(null);
-        $('#regexSearch').attr('disabled', 'disabled');
-        this.regex_query_handler.model.reset();
+          this.regex_results_handler.process_result(data);
 
-        //console.log(JSON.stringify(this.model));
-      }, this),
-      //TODO: Figure out a more graceful way to handle this
-      error: function (xhr, status, err) {
-        alert('Error in regex search: ' + JSON.stringify(err));
-        console.log('Error in regex search: ', err);
-      }
-    });
+          //      for (var iter in search_results) {
+          //        console.log("search_results[iter]:");
+          //        console.log(JSON.stringify(search_results[iter]));
+          //        this.regex_results_handler.add({search_result:search_results[iter]);
+          //      }
+          this.reset_ui();
+
+          //console.log(JSON.stringify(this.model));
+        }, this),
+        //TODO: Figure out a more graceful way to handle this
+        error: function (xhr, status, err) {
+          alert('Error in regex search: ' + JSON.stringify(err));
+          console.log('Error in regex search: ', err);
+        }
+      });
+    }
+    else {
+      this.reset_ui();
+      alert('The requested search has already been performed. Please try a different search pattern.')
+    }
   }
 });
 
+//Tabula.RegexResultCollection
+//   Backbone Collection extension for storing all created Tabula.RegexResultModel
+//
+//   11/23/2017  REM; created
+//
 Tabula.RegexResultCollection= Backbone.Collection.extend({
-  model : Tabula.RegexResultsModel,
-  initialize: function(){
-    //Do nothing for now
-  }
+  model : Tabula.RegexResultModel,
+  initialize: function(){}
 });
 
-Tabula.RegexResultsView = Backbone.View.extend({
-  el : $('.regex-results-list'),
+//Tabula.RegexCollectionView
+//   Backbone View extension for all generated Tabula.RegexResultView objects.
+//
+//   Processes the regex result information returning from the server and oversees the rendering of all the
+//   Tabula.RegexResultView objects.
+//
+//   11/23/2017  REM; created
+//
+Tabula.RegexCollectionView = Backbone.View.extend({
+  el : '.regex-results-list',
   collection : Tabula.RegexResultCollection,
+  events: {'remove_element':'remove_regex_search'},
   initialize: function(){
    //Make the render function get called any time a model is added
-    console.log('In initialize function of Tabula.RegexResultsView:');
+    console.log('In initialize function of Tabula.RegexCollectionView:');
     console.log(this.el);
     this.collection = new Tabula.RegexResultCollection();
     this.collection.on('add',this.render,this);
   },
+  remove_regex_search: function(event_data,search_to_remove){
+    console.log("In remove_regex_search of Tabula.RegexCollectionView");
+    var temp = search_to_remove['caller'];
+    console.log(temp);
+    var rectangles_to_remove = search_to_remove['caller']['model']['attributes']['rendered_results'];
+    console.log(rectangles_to_remove);
+    console.log(rectangles_to_remove);
+    for(var iter in rectangles_to_remove){
+      console.log("In for loop in remove_regex_search");
+      console.log(iter);
+      rectangles_to_remove[iter].remove();
+    }
+
+    console.log(temp);
+    console.log("Event_data:");
+    console.log(event_data);
+    this.collection.remove(search_to_remove['caller']['model']);
+    console.log("Collection as JSON AFTER removal:");
+    console.log(this.collection.toJSON());
+
+    console.log("Tabula selections object:");
+    console.log(JSON.stringify(Tabula.pdf_view.pdf_document.selections.toArray()));
+
+
+    this.render();
+
+  },
   render: function(){
-    console.log("In render function of Tabula.RegexResultSHandler:");
+    console.log("In render function of Tabula.RegexCollectionView:");
     var self = this;
     this.$el.html('');
     _.each(this.collection.toArray(),function(regex_result){
@@ -996,6 +1085,18 @@ Tabula.RegexResultsView = Backbone.View.extend({
 
     return this;
   },
+  has_same_query: function(current_query){
+    console.log('In has_same_query:');
+    console.log('current_query:');
+    console.log(current_query);
+    console.log(this.collection.toArray());
+
+    return !this.collection.toArray().every(function(prev_query){
+      return ( (prev_query['attributes']['pattern_before']!=current_query['pattern_before']) &&
+                (prev_query['attributes']['pattern_after']!=current_query['pattern_after']) );
+    });
+
+  },
   process_result : function (search_results) {
     console.log('In function process_result:');
     console.log('Search results:');
@@ -1003,6 +1104,7 @@ Tabula.RegexResultsView = Backbone.View.extend({
     var pattern_before = search_results["_regex_before_table"]["pattern"];
     var pattern_after = search_results["_regex_after_table"]["pattern"];
     var num_matches = 0;
+    var rendered_results=[];
     Object.keys(search_results["_matching_areas"]).forEach(function (iter) {
 //      console.log("In function add of RegexResultsHandler");
 //      console.log("matching_areas:");
@@ -1016,15 +1118,18 @@ Tabula.RegexResultsView = Backbone.View.extend({
 
           var render_data = search_results["_matching_areas"][iter][page_number][matching_element_index];
 
-          Tabula.pdf_view.renderSelection({
+          rendered_results.push(Tabula.pdf_view.renderRegexSelection({
             x1: render_data['x'],
             y1: render_data['y'],
             width: render_data['width'],
             height: render_data['height'],
             page: parseInt(page_number),
             extraction_method: 'spreadsheet',
-            selection_id: null              //TODO: figure out what selection_id is used for
-          });
+            selection_id: null,
+          }));
+
+
+
         }
       }
     });
@@ -1036,38 +1141,61 @@ Tabula.RegexResultsView = Backbone.View.extend({
       pattern_before: pattern_before,
       pattern_after: pattern_after,
       num_matches: num_matches,
-      matching_areas: search_results["_matching_areas"]
+      matching_areas: search_results["_matching_areas"],
+      rendered_results: rendered_results
     }));
   }});
 
+//Tabula.RegexResultView
+//   Backbone View extension for displaying the results of the regex search sent back from the server.
+//
+//   Creates the model storing the data returned from the server and renders the summarized info in the side pane.
+//
+//   11/23/2017  REM; created
+//
 Tabula.RegexResultView = Backbone.View.extend({
-  events : {},
   className: 'regex-result',
   tagName: 'tr',
+  events: {'click':'remove_element_request'},
   initialize: function(data){
-    console.log('In Tabula.RegexResultView.initialize:');
-    console.log(data);
+//    console.log('In Tabula.RegexResultView.initialize:');
+//    console.log(data);
     this.model = new Tabula.RegexResultModel(data);
-    console.log(JSON.stringify($('#regex-result').html()));
+//    console.log(JSON.stringify($('#regex-result').html()));
     this.template = _.template($('#regex-result').html());
   },
   render: function(){
-    console.log('In Tabula.RegexResultView.render');
-    console.log(this.$el);
-    this.$el.html(this.template(this.model.toJSON()));
+//    console.log('In Tabula.RegexResultView.render');
+//    console.log(this.$el);
+//    console.log("this.model['model']:");
+//    console.log((this.model.toJSON()['model']['attributes']));
+    this.$el.html(this.template(this.model.toJSON()['model']['attributes']));
     return this;
+  },
+  remove_element_request: function(event){
+    console.log('In Tabula.RegexResultView.remove_element_request');
+    this.$el.trigger('remove_element',{caller:this.model.toJSON()});
   }
 });
 
+//Tabula.RegexResultModel
+//   Backbone Model extension for retaining the information sent back from the server for a given regex search.
+//
+//   Stores the patterns used in the regex search and the number of matching tables, along with the coordinates
+//   of the matching areas.
+//
+//   11/23/2017  REM; created
+//
 Tabula.RegexResultModel = Backbone.Model.extend({
   initialize: function(data) {
-    console.log('In Tabula.RegexResultModel:');
-    console.log(data);
+//    console.log('In Tabula.RegexResultModel:');
+//    console.log(data);
     this.set({
       pattern_before: data["pattern_before"],
       pattern_after: data["pattern_after"],
       num_matches: data["num_matches"],
-      matching_areas: data["matching_areas"]
+      matching_areas: data["matching_areas"],
+      rendered_results: data["rendered_results"]
     });
 
   }
@@ -1075,16 +1203,17 @@ Tabula.RegexResultModel = Backbone.Model.extend({
 
 
 //Tabula.RegexQueryHandler
-//   Backbone View extension for the detection of user-defined regex operations.
+//   Backbone View extension for the detection of UI regex searches.
 //
-//   Handles user requests for regex searches of tables within a document; oversees the AJAX call to the server and (for now)
-//   the rendering of the returned values
+//   Handles user requests for regex searches of tables within a document; oversees the AJAX call to the server. Updates
+//   the regex input form to facilitate correct user interaction (search button is enabled only when all data provided).
 //
 //   11/14/2017  REM; created
+//   11/23/2017  ReM; refactored to accommodate new design.
 //
 
 Tabula.RegexQueryHandler = Backbone.View.extend({
-  el: "#regexcontainer",
+  el: "#regex-container",
   model: null,
   events: {'keyup' : 'update_regex_inputs'},
   className: 'regex-query',
@@ -1093,7 +1222,8 @@ Tabula.RegexQueryHandler = Backbone.View.extend({
   },
 
   update_regex_inputs: function(event) {
-    //     console.log(event['target']['id']);
+    console.log("In update_regex_inputs:");
+    console.log(event['target']['id']);
     var target_id = event['target']['id'];
     var jQ_target_id = "#"+target_id;
     var input_map = {};
@@ -1118,15 +1248,14 @@ Tabula.RegexQueryHandler = Backbone.View.extend({
 
 
 //Tabula.RegexQueryModel
-//  Backbone Model extension for data storage resgarding user-defined regex operations.
+//  Backbone Model extension for data storage regarding user-defined regex searches (queries).
 //
-//  Retains the parameters outlining regex-defined table searches within the PDF. Passed to the server via AJAX call.
-//  Stores the values returned from the server that are used to define areas of detection and store regex history/stats.
+//  Form that retains the parameters outlining regex table searches within the PDF. Passed to the server via AJAX call.
 //
 //  11/14/2017 REM; created
 //
 Tabula.RegexQueryModel = Backbone.Model.extend({ //Singleton
-
+   
    initialize: function(){
      this.set({
        'file_path':PDF_ID,
@@ -1346,8 +1475,8 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
     // if thumbnail doesn't exist (probably because this selection is hidden in an unshown page)
     if(!selection.attributes.getDims) return;
 
-    var s = selection.attributes.getDims().relativePos;
-
+ //   var s = selection.attributes.getDims().relativePos;
+    var s = selection.attributes.getDims().absolutePos;
     $sshow.css('top', (top + (s.top * thumbScale)) + 'px')
       .css('left', (left + (s.left * thumbScale)) + 'px')
       .css('width', (s.width * thumbScale) + 'px')
@@ -1376,12 +1505,12 @@ Tabula.PDFView = Backbone.View.extend(
     global_options: null,
 
     initialize: function(){
-      _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections', 'renderSelection',
+      _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections', 'renderSelection','renderRegexSelection',
         'createDataView', 'checkForAutodetectedTables', 'getData', 'handleScroll',
         'loadSavedTemplate', 'saveTemplate', 'saveTemplateAs');
 
       this.pdf_document = new Tabula.Document({
-        pdf_id: PDF_ID,
+        pdf_id: PDF_ID
       });
 
       this.pdf_document.fetch({
@@ -1396,6 +1525,7 @@ Tabula.PDFView = Backbone.View.extend(
       this.listenTo(this.pdf_document.page_collection, 'sync', this.addAll);
       this.listenTo(this.pdf_document.page_collection, 'reset', this.addAll);
       this.listenTo(this.pdf_document.page_collection, 'remove', this.removePage);
+
       // this caused page ordering issues. Makes me wonder if pdf_view rendering is not idempotent.
       // anyways, I don't remember why I had this. probably you shouldn't reenable it.
       // this.listenTo(this.pdf_document.page_collection, 'all', _.bind(function(){ console.log('pdfview render page all'); this.render()}, this));
@@ -1405,6 +1535,7 @@ Tabula.PDFView = Backbone.View.extend(
       this.components['document_view'] = new Tabula.DocumentView({el: '#pages-container' , pdf_view: this, collection: this.pdf_document.page_collection}); //creates page_views
       this.components['control_panel'] = new Tabula.ControlPanelView({pdf_view: this, saved_template_collection: this.saved_template_collection});
       this.components['sidebar_view'] = new Tabula.SidebarView({pdf_view: this, collection: this.pdf_document.page_collection});
+
 
       $(document).on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
       $('#sidebar').on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
@@ -1493,6 +1624,80 @@ Tabula.PDFView = Backbone.View.extend(
       });
     },
 
+    renderRegexSelection: function(sel){
+      // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
+      // cause it to be rendered onto the page, and as a thumbnail
+      // and causes it to get an 'id' attr.
+      console.log("In renderRegexSelection:");
+      console.log("sel.page", sel);
+      var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page];
+      console.log(pageView);
+      var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page});
+      console.log(page);
+      if(!page){
+        // the page we're trying to render a selection on might have been deleted.
+        // or, we may be trying to load a template with more pages on it than this PDF has.
+        console.log("can't render selection on page " + sel.page + " because that page can't be found", sel)
+        return;
+      }
+      var original_pdf_width = page.get('width');
+      var original_pdf_height = page.get('height');
+      // var pdf_rotation = page.get('rotation');
+
+      // TODO: create selection models for pages that aren't lazyloaded, but obviously don't display them.
+      if(Tabula.LazyLoad && !pageView){
+        return [];
+      }
+
+      // mimics drawing the selection onto the page
+      var $img = pageView.$el.find('img');
+      var image_width = $img.width();
+      if (!$img.length || $img.data('loaded') !== 'loaded' || !$img.height() ){ // if this page isn't shown currently or the image hasn't been rendered yet, then create a hidden selectionx
+        return this.pdf_document.selections.createHiddenSelection(sel);
+      }
+      var scale = image_width / original_pdf_width;
+      console.log('PageView.el');
+      console.log(pageView.$el);
+      console.log('Offset');
+      console.log(pageView.$el.offset);
+      console.log("Image:");
+      console.log($img);
+      var offset = $img.offset();
+      console.log("Offset");
+      console.log(JSON.stringify(offset));
+      var relativePos = _.extend({}, offset,
+        {
+          'top':  (sel.y1 * scale),
+          'left': (sel.x1 * scale),
+          'width': (sel.width * scale),
+          'height': (sel.height * scale)
+        });
+
+
+      console.log("Current sel attributes:");
+      console.log(sel);
+
+      this.regexSelection = new RegexSelection({
+        position: relativePos,
+        target: pageView.$el.find('img'),
+        areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
+      });
+      this.regexSelection.on({
+        remove: pageView._onSelectCancel
+      });
+
+      Tabula.pdf_view.components['document_view'].$el.append(this.regexSelection.el);
+
+      pageView._onSelectEnd(this.regexSelection); // draws the thumbnail
+
+      // put the selection into the selections collection
+      this.pdf_document.selections.updateOrCreateByVendorSelectorId(this.regexSelection, sel.page, image_width);
+      return this.regexSelection;
+
+
+
+    },
+
     renderSelection: function(sel){
       // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
       // cause it to be rendered onto the page, and as a thumbnail
@@ -1525,16 +1730,18 @@ Tabula.PDFView = Backbone.View.extend(
       }
       var scale = image_width / original_pdf_width;
       var offset = $img.offset();
-      var absolutePos = _.extend({}, offset,
+      console.log("Offset in renderSelection:");
+      console.log(offset);
+      var relativePos = _.extend({}, offset,
                                 {
-                                  'top':  offset.top + (sel.y1 * scale),
-                                  'left': offset.left + (sel.x1 * scale),
+                                  'top':  (sel.y1 * scale),
+                                  'left': (sel.x1 * scale),
                                   'width': (sel.width * scale),
                                   'height': (sel.height * scale)
                                 });
       // TODO: refactor to only have this ResizableSelection logic in one place.
       var vendorSelection = new ResizableSelection({
-        position: absolutePos,
+        position: relativePos,
         target: pageView.$el.find('img'),
         areas: function(){ return Tabula.pdf_view.components['document_view']._selectionsGetter($img) }
       });
@@ -1593,6 +1800,7 @@ Tabula.PDFView = Backbone.View.extend(
     },
 
     totalSelections: function() {
+      console.log("In totalSelections");
       return this.pdf_document.selections.size();
     },
 
@@ -1734,6 +1942,8 @@ function isElementPartiallyInContainer (el, container) {
   );
 }
 
+
+
 function isElementInViewport (el) {
   if (el instanceof jQuery) {
       el = el[0];
@@ -1753,23 +1963,24 @@ function roundTo(num, fancymathwordforthenumberofdigitsafterthedecimal){
   return Math.round(num * Math.pow(10, fancymathwordforthenumberofdigitsafterthedecimal)) / Math.pow(10, fancymathwordforthenumberofdigitsafterthedecimal);
 }
 
-
 function PDF_Outline_btn(){
+  var x = document.getElementById("PDF_outline");
   var y = document.getElementById("sidebar");
-  if(y.style.display == "none"){
-    y.style.display = "inline";
+  if(x.style.display == "none" && y.style.display == "none"){
+    x.style.display = "block";
+    y.style.display = "block";
   }
   else{
+    x.style.display= "none";
     y.style.display = "none";
  }
 }
-
 function Regex_Options_btn(){
-  var x = document.getElementById("regexcontainer");
-  if(x.style.display == "inline"){
-    x.style.display = "none";
+  var x = document.getElementById("");
+  if(x.style.display == "none"){
+    x.style.display = "block";
   }
   else{
-    x.style.display = "inline";
+    x.style.display =="none";
   }
 }
