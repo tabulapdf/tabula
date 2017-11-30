@@ -1,5 +1,5 @@
 Tabula = Tabula || {};
-
+"use strict";
 var clip = null;
 var base_uri = $('base').attr("href");
 
@@ -75,6 +75,7 @@ Tabula.Selection = Backbone.Model.extend({
   },
 
   updateCoords: function(){
+
     var page = Tabula.pdf_view.pdf_document.page_collection.at(this.get('page_number') - 1);
     var imageWidth = this.get('imageWidth');
 
@@ -84,7 +85,7 @@ Tabula.Selection = Backbone.Model.extend({
 
     var scale = original_pdf_width / imageWidth;
     var rp = this.attributes.getDims().relativePos;
-//    var rp = this.attributes.getDims().absolutePos;
+
     this.set({
       x1: rp.left * scale,
       x2: (rp.left + rp.width) * scale,
@@ -162,6 +163,7 @@ Tabula.Selections = Backbone.Collection.extend({
   //model: Tabula.Selection,
   comparator: 'page_number',
   updateOrCreateByVendorSelectorId: function(vendorSelection, pageNumber, imageWidth){
+    console.log("In updateOrCreateByVendorSelectorId:");
     var selection = this.get(vendorSelection.id);
 
     if (selection) { // if it already exists
@@ -174,7 +176,6 @@ Tabula.Selections = Backbone.Collection.extend({
                                     'hidden': false,
                                     'pdf_document': this.pdf_document},
                                     vendorSelection);
-      console.log('In updateOrCreateByVendorSelectorId:');
       selection = new Tabula.Selection(new_selection_args);
       console.log('Selection:');
       console.log(selection.toJSON());
@@ -201,7 +202,7 @@ Tabula.AutodetectedSelections = Tabula.Selections.extend({
   url: null, //set on init
   initialize: function(){
     this.url = (base_uri || '/') + 'pdfs/' + PDF_ID + '/tables.json?_=' + Math.round(+new Date()).toString();
-    _.bindAll(this, 'updateOrCreateByVendorSelectorId');
+    _.bindAll(this, 'updateOrCreateByVendorSelectorId'); //What was this line doing??
   },
 
   parse: function(response){
@@ -651,9 +652,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
 
   // listens to mouseup of RectangularSelector
   _onRectangularSelectorEnd: function(d) {
-    console.log("In _onRectangularSelectorEnd:");
-    console.log("Parameter passed:");
-    console.log(JSON.stringify(d));
     this.addSelection(d);
   },
 
@@ -1211,8 +1209,6 @@ Tabula.RegexQueryHandler = Backbone.View.extend({
   },
 
   update_regex_inputs: function(event) {
-    console.log("In update_regex_inputs:");
-    console.log(event['target']['id']);
     var target_id = event['target']['id'];
     var jQ_target_id = "#"+target_id;
     var input_map = {};
@@ -1230,7 +1226,6 @@ Tabula.RegexQueryHandler = Backbone.View.extend({
     else{
       $('#regex-search').attr('disabled','disabled');
     }
-    console.log(JSON.stringify(this.model));
   }
 
 });
