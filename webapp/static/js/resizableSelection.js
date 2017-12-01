@@ -75,6 +75,8 @@
 
     getDims: function() {
       if((!$(this.pageView).is(':visible') || !this.$el.is(':visible')) && this.cachedDims){
+        console.log('cachedDims:');
+        console.log(this.cachedDims);
         return this.cachedDims;
       }
 
