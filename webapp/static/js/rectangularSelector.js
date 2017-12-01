@@ -39,6 +39,8 @@
     var self = this;
     this.box = $('<div></div>').addClass('selection-box').appendTo($('body'));
 
+
+
     var _mousedown = function(event) {
       if (event.which !== 1) return false;
       target = this;
@@ -51,14 +53,16 @@
         'height': 0,
         'visibility': 'visible'
       });
-      options.start(event);
-      return false;
+      options.start(event); // Right now this line doesn't do anything
+      return false; //??Why return false?? to prevent bubbling up??
     };
 
     var _mousemove = function(event) {
       if (!isDragging || ($(event.target).is(options.selector) && event.target !== target)) {
         return;
       }
+      var top_offset = Tabula.pdf_view.components.document_view.$el.offset().top;
+      var left_offset = Tabula.pdf_view.components.document_view.$el.offset().left;
       var ds = {
         'left': Math.min(start.x, event.pageX),
         'top': Math.min(start.y, event.pageY),
@@ -97,8 +101,8 @@
         var d = {
           'absolutePos': _.extend(cOffset,
                                   {
-                                    'top': top,
-                                    'left': left,
+                                    'top': top, //- 92.5, //hard-coded for now, will fix later
+                                    'left': left,// - 215,//hard-coded for now, will fix later
                                     'width': width,
                                     'height': height
                                   }),
@@ -106,10 +110,11 @@
             'width': width,
             'height': height,
             'top': top - cOffset.top,
-            'left': left - cOffset.left
+            'left': left -cOffset.left
           },
           'pageView': targetPageView
         };
+
         if (options.validSelection(d)) {
           options.end(d);
         }
