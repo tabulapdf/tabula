@@ -10,7 +10,7 @@
 
 
   var RegexSelection = Backbone.View.extend({
-
+    selection_type: 'regex',
     tagName: 'div',
     className: 'regex-table-region',
 
@@ -27,6 +27,7 @@
 
     initialize: function(options) {
       console.log('In initialize of regexSelection');
+      console.log("selection_type: ", this.selection_type);
       this.bounds = options.bounds;
       this.pageView = options.target;
       this.areas = options.areas;
