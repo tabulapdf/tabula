@@ -162,6 +162,7 @@ Tabula.Selections = Backbone.Collection.extend({
   //model: Tabula.Selection,
   comparator: 'page_number',
   updateOrCreateByVendorSelectorId: function(vendorSelection, pageNumber, imageDims){
+    console.log("In updateOrCreateByVendorSelectorId:");
     var selection = this.get(vendorSelection.id);
 
     if (selection) { // if it already exists
@@ -175,8 +176,10 @@ Tabula.Selections = Backbone.Collection.extend({
                                     'hidden': false,
                                     'pdf_document': this.pdf_document},
                                     vendorSelection);
+      console.log("vendorSelection");
+      console.log(vendorSelection);
       selection = new Tabula.Selection(new_selection_args);
-      console.log(selection.toJSON());
+
       this.add(selection);
     }
     return selection;
@@ -440,18 +443,16 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     $('body').addClass('page-selections');
 
     var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
-      console.log("In closeAndRenderSelectionView");
+      //  return Tabula.pdf_view.renderSelection(sel.toCoords());
+      console.log("What's getting passed to renderSelection:");
       console.log(sel);
-     console.log(sel.toJSON().className);
-     var selection = sel;
-     if(sel.toJSON().className!=="regex-table-region"){
-       selection = Tabula.pdf_view.renderSelection(sel.toCoords())
-     }
-
-      return selection;
+      return Tabula.pdf_view.renderSelection(sel['attributes']);
     });
     this.pdf_view.pdf_document.selections.reset(oldSelections);
-    _(this.pdf_view.components["sidebar_view"].thumbnail_list_view.thumbnail_views).each(function(v){ v.delegateEvents() });
+    _(this.pdf_view.components["sidebar_view"].thumbnail_list_view.thumbnail_views).each(function(v){
+      console.log("V:");
+      console.log(v);
+      v.delegateEvents() });
   },
 
   setFormAction: function(e){
@@ -763,6 +764,10 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
                         .attr('data-original-height', this.model.get('height'));
                         // .attr('data-rotation', this.model.get('rotation'));
     this.$image = this.$el.find('img');
+
+    console.log("In render of pageView:");
+    console.log("this.$image:");
+    console.log(this.$image);
     return this;
   },
 
@@ -1121,7 +1126,8 @@ Tabula.RegexCollectionView = Backbone.View.extend({
             page: parseInt(page_number),
             extraction_method: 'spreadsheet',
             selection_id: null,
-          },{type:'regex'}));
+            selection_type: 'regex'
+          }));
 
 
 
@@ -1218,8 +1224,7 @@ Tabula.RegexQueryHandler = Backbone.View.extend({
   },
 
   update_regex_inputs: function(event) {
-    console.log("In update_regex_inputs:");
-    console.log(event['target']['id']);
+
     var target_id = event['target']['id'];
     var jQ_target_id = "#"+target_id;
     var input_map = {};
@@ -1237,7 +1242,6 @@ Tabula.RegexQueryHandler = Backbone.View.extend({
     else{
       $('#regex-search').attr('disabled','disabled');
     }
-    console.log(JSON.stringify(this.model));
   }
 
 });
@@ -1263,11 +1267,9 @@ Tabula.RegexQueryModel = Backbone.Model.extend({ //Singleton
    //determines if user has provided all values necessary to perform regex search <--TODO:move error checking to back-end or strengthen disable
    isFilledOut: function(){
      key_array = this.keys();
- //    console.log(key_array);
      key_array_length = key_array.length;
      for(i=0; i<key_array_length;i++){
        if(this['attributes'][key_array[i]]===""){
- //        console.log(key_array[i]);
          return false;
        }
      }
@@ -1275,7 +1277,6 @@ Tabula.RegexQueryModel = Backbone.Model.extend({ //Singleton
    },
   reset: function(){
      this.initialize();
-//     console.log(JSON.stringify(this));
   }
 });
 
@@ -1625,10 +1626,11 @@ Tabula.PDFView = Backbone.View.extend(
       });
     },
 
-    renderSelection: function(sel, meta_data_sel){
+    renderSelection: function(sel){
       // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
       // cause it to be rendered onto the page, and as a thumbnail
       // and causes it to get an 'id' attr.
+      console.log("In renderSelection");
       console.log("sel.page", sel);
       var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page];
       console.log(pageView);
@@ -1670,7 +1672,10 @@ Tabula.PDFView = Backbone.View.extend(
 
       var vendorSelection;
 
-      if(meta_data_sel.type==='regex'){
+      console.log("In renderSelection:");
+      console.log(sel);
+
+      if( sel.selection_type==="regex"){
         vendorSelection = new RegexSelection({
           position: relativePos,
           target: pageView.$el.find('img'),
@@ -1698,6 +1703,8 @@ Tabula.PDFView = Backbone.View.extend(
       pageView._onSelectEnd(vendorSelection); // draws the thumbnail
 
       // put the selection into the selections collection
+
+
       selection = this.pdf_document.selections.updateOrCreateByVendorSelectorId(vendorSelection, sel.page,
                                                                                 {'width':image_width,
                                                                                  'height':image_height});
