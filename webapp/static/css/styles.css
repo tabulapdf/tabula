@@ -1284,7 +1284,7 @@ h3 .small, .h3 small,
 h4, .h4,
 h5, .h5,
 h6, .h6 {
-  margin-top: 10px;
+  margin-top: 0px;
   margin-bottom: 10px;
 }
 h4 small,
@@ -1483,7 +1483,7 @@ a.bg-danger:hover {
 ul,
 ol {
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 ul ul,
 ul ol,
@@ -4979,7 +4979,7 @@ a.badge:hover, a.badge:focus {
   color: inherit;
 }
 .jumbotron p {
-  margin-bottom: 15px;
+  margin-bottom: 0px;
   font-size: 21px;
   font-weight: 200;
 }
@@ -7351,7 +7351,7 @@ body {
 }
 
 form {
-  margin-bottom: 3em;
+  margin-bottom: 1em;
 }
 
 #file-list-container {
@@ -7557,11 +7557,18 @@ form {
   width: calc(100% - 200px);
   z-index: 1;
 }
+
 /*
 #pages-container {
-    position: absolute;
+  width: 100%;
+  height: auto;
+   margin: 0 auto;
+   padding: 3px;
+   position: relative;
+   padding-right: 20%;
 }
 */
+
 #main-pane .pdf-page {
   position: relative;
 }
@@ -7810,6 +7817,14 @@ div.spinner {
   position: fixed;
   top: 104px;
   height:90%;
+  width: 230px;
+  display: inline;
+  overflow-y: scroll;
+  padding-bottom: 40px;
+}
+
+.regex-result:hover {
+  background: #ffc314;
 }
 
 .regex-result:hover {
