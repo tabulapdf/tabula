@@ -70,8 +70,11 @@ Tabula.Document = Backbone.Model.extend({
 Tabula.Selection = Backbone.Model.extend({
   pdf_id: PDF_ID,
 
-  initialize: function(){
+  initialize: function(data){
     _.bindAll(this, 'repeatLassos', 'toCoords');
+
+
+
   },
 
   updateCoords: function(){
@@ -164,6 +167,7 @@ Tabula.Selections = Backbone.Collection.extend({
   comparator: 'page_number',
 
   updateOrCreateByVendorSelectorId: function(vendorSelection, pageNumber, imageDims){
+    console.log("In updateOrCreateByVendorSelectorId:");
     var selection = this.get(vendorSelection.id);
 
     if (selection) { // if it already exists
@@ -433,9 +437,13 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     }
   },
   closeAndRenderSelectionView: function(){
+
+    console.log("In closeAndRenderSelectionView:");
     window.tabula_router.navigate('pdf/' + PDF_ID);
     this.$el.empty();
+
     this.undelegateEvents();
+
     this.pdf_view.$el.show();
     this.pdf_view.render();
 
@@ -443,18 +451,14 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     $('body').addClass('page-selections');
 
     var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
-      console.log("In closeAndRenderSelectionView");
-      console.log(sel);
-     console.log(sel.toJSON().className);
-     var selection = sel;
-     if(sel.toJSON().className!=="regex-table-region"){
-       selection = Tabula.pdf_view.renderSelection(sel.toCoords())
-     }
-
-      return selection;
+      return Tabula.pdf_view.renderSelection(sel['attributes']);
     });
+
     this.pdf_view.pdf_document.selections.reset(oldSelections);
-    _(this.pdf_view.components["sidebar_view"].thumbnail_list_view.thumbnail_views).each(function(v){ v.delegateEvents() });
+
+    _(this.pdf_view.components["sidebar_view"].thumbnail_list_view.thumbnail_views).each(function(v){
+      console.log("V:",v);
+      v.delegateEvents() });
   },
 
   setFormAction: function(e){
@@ -872,11 +876,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   clearAllSelections: function(){
-    console.log("Regex Collection Before:");
-    console.log(Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection);
     Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.reset();
-    console.log("Regex Collection After:");
-    console.log(Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection);
     Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.render();
     _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){
       if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
@@ -1063,11 +1063,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
   },
 
   reset : function(){
-    console.log("Collection:");
-    console.log(this.collection);
-
     _.each(this.collection.toArray(),function(regex_search){
-      console.log(regex_search.toJSON());
       //Removing all the drawn regex rectangles:
       _.each(regex_search.toJSON()['rendered_results'],function(regex_rectangle){
         regex_rectangle.toJSON().remove();
@@ -1088,20 +1084,12 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     return this;
   },
   has_same_query: function(current_query){
-    console.log('In has_same_query:');
-    console.log('current_query:');
-    console.log(current_query);
-    console.log(this.collection.toArray());
-
     return !this.collection.toArray().every(function(prev_query){
       return ( (prev_query['attributes']['pattern_before']!=current_query['pattern_before']) &&
                 (prev_query['attributes']['pattern_after']!=current_query['pattern_after']) );
     });
   },
   process_result : function (search_results) {
-    console.log('In function process_result:');
-    console.log('Search results:');
-    console.log(JSON.stringify(search_results));
     var pattern_before = search_results["_regex_before_table"]["pattern"];
     var pattern_after = search_results["_regex_after_table"]["pattern"];
     var num_matches = 0;
@@ -1120,10 +1108,11 @@ Tabula.RegexCollectionView = Backbone.View.extend({
             y1: render_data['y'],
             width: render_data['width'],
             height: render_data['height'],
-            page: parseInt(page_number),
+            page_number: parseInt(page_number),
             extraction_method: 'spreadsheet',
             selection_id: null,
-          },{type:'regex'}));
+            selection_type: 'regex'
+          }));
 
 
 
@@ -1624,19 +1613,18 @@ Tabula.PDFView = Backbone.View.extend(
       });
     },
 
-    renderSelection: function(sel, meta_data_sel){
+    renderSelection: function(sel){
       // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
       // cause it to be rendered onto the page, and as a thumbnail
       // and causes it to get an 'id' attr.
+      console.log("In renderSelection:");
       console.log("sel.page", sel);
-      var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page];
-      console.log(pageView);
-      var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page});
-      console.log(page);
+      var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page_number];
+      var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page_number});
       if(!page){
         // the page we're trying to render a selection on might have been deleted.
         // or, we may be trying to load a template with more pages on it than this PDF has.
-        console.log("can't render selection on page " + sel.page + " because that page can't be found", sel)
+        console.log("can't render selection on page " + sel.page + " because that page can't be found", sel);
         return;
       }
       var original_pdf_width = page.get('width');
@@ -1669,7 +1657,7 @@ Tabula.PDFView = Backbone.View.extend(
 
       var vendorSelection;
 
-      if(meta_data_sel.type==='regex'){
+      if(sel.selection_type==='regex'){
         vendorSelection = new RegexSelection({
           position: relativePos,
           target: pageView.$el.find('img'),
