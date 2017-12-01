@@ -1097,7 +1097,6 @@ Tabula.RegexCollectionView = Backbone.View.extend({
       return ( (prev_query['attributes']['pattern_before']!=current_query['pattern_before']) &&
                 (prev_query['attributes']['pattern_after']!=current_query['pattern_after']) );
     });
-
   },
   process_result : function (search_results) {
     console.log('In function process_result:');
@@ -1251,7 +1250,7 @@ Tabula.RegexQueryHandler = Backbone.View.extend({
 //  11/14/2017 REM; created
 //
 Tabula.RegexQueryModel = Backbone.Model.extend({ //Singleton
-   
+
    initialize: function(){
      this.set({
        'file_path':PDF_ID,
@@ -1909,21 +1908,18 @@ function roundTo(num, fancymathwordforthenumberofdigitsafterthedecimal){
 }
 
 function PDF_Outline_btn(){
-  var x = document.getElementById("PDF_outline");
   var y = document.getElementById("sidebar");
-  if(x.style.display == "none" && y.style.display == "none"){
-    x.style.display = "block";
-    y.style.display = "block";
+  if(y.style.display == "none"){
+    y.style.display = "inline";
   }
   else{
-    x.style.display= "none";
     y.style.display = "none";
  }
 }
 function Regex_Options_btn(){
   var x = document.getElementById("regex-container");
   if(x.style.display == "none"){
-    x.style.display = "block";
+    x.style.display = "inline";
   }
   else{
     x.style.display = "none";
