@@ -447,7 +447,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
       console.log(sel);
      console.log(sel.toJSON().className);
      var selection = sel;
-     if(sel.toJSON().className!=="regex-table-region"){
+     if( sel.toJSON().className!=="regex-table-region"){
        selection = Tabula.pdf_view.renderSelection(sel.toCoords())
      }
 
@@ -1624,7 +1624,7 @@ Tabula.PDFView = Backbone.View.extend(
       });
     },
 
-    renderSelection: function(sel, meta_data_sel){
+    renderSelection: function(sel){
       // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
       // cause it to be rendered onto the page, and as a thumbnail
       // and causes it to get an 'id' attr.
@@ -1669,7 +1669,7 @@ Tabula.PDFView = Backbone.View.extend(
 
       var vendorSelection;
 
-      if(meta_data_sel.type==='regex'){
+      if(sel['selection_type']==='regex'){
         vendorSelection = new RegexSelection({
           position: relativePos,
           target: pageView.$el.find('img'),
