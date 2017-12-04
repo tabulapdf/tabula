@@ -1670,6 +1670,7 @@ Tabula.PDFView = Backbone.View.extend(
       var vendorSelection;
 
       if(sel['selection_type']==='regex'){
+        alert('Do I get here?');
         vendorSelection = new RegexSelection({
           position: relativePos,
           target: pageView.$el.find('img'),
