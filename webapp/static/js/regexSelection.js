@@ -37,6 +37,7 @@
       this.render();
       this.$el.css(options.position);
 
+      _.bindAll(this, 'remove');
     },
 
     remove: function(){
