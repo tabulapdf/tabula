@@ -26,18 +26,32 @@
 
 
     initialize: function(options) {
-      console.log('In initialize of regexSelection');
-      console.log("selection_type: ", this.selection_type);
       this.bounds = options.bounds;
       this.pageView = options.target;
+
       this.areas = options.areas;
 
       this.id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now();
 
-      this.render();
-      this.$el.css(options.position);
-
       _.bindAll(this, 'remove');
+        this.render();
+        this.$el.css(options.position);
+    },
+    // returns true if this tableView does not overlap
+    // with any other on the same page
+    checkOverlaps: function() {
+      var thisDims = this.getDims().absolutePos;
+      return _.every(
+        _.reject(this.areas(this.pageView), function(s) {
+          return s.id === this.id;
+        }, this),
+        function(s) {
+          var sDims = s.getDims().absolutePos;
+          return thisDims.left + thisDims.width < sDims.left ||
+            sDims.left + sDims.width < thisDims.left ||
+            thisDims.top + thisDims.height < sDims.top ||
+            sDims.top + sDims.height < thisDims.top;
+        }, this);
     },
 
     remove: function(){
