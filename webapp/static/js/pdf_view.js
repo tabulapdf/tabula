@@ -1141,14 +1141,13 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     var num_matches = 0;
     var rendered_results= new Tabula.Selections();
 
-
-    
-
     search_results["_matching_areas"].forEach(function(matching_area){
-      num_matches++; //TODO: need to make the # of matches more sophisticated--this is going to involve some back-end work as well
+      num_matches++; //TODO: need to make the # of matches handle multi-page matches (not sure if it does that right now)
       Object.keys(matching_area).forEach(function(page_with_match){
         matching_area[page_with_match].forEach(function(regex_rect){
           console.log(regex_rect);
+
+
           rendered_results.add(Tabula.pdf_view.renderSelection({
             x1: regex_rect['x'],
             y1: regex_rect['y'],
@@ -1163,19 +1162,33 @@ Tabula.RegexCollectionView = Backbone.View.extend({
       });
     });
 
+    //Check for overlapping queries
+    if((rendered_results.every(function(result){
+      return result.attributes.checkOverlaps();
+      }))) {
+      this.collection.add(new Tabula.RegexResultModel({
+        pattern_before: pattern_before,
+        pattern_after: pattern_after,
+        num_matches: num_matches,
+        matching_areas: search_results["_matching_areas"],
+        rendered_results: rendered_results
+      }));
+    }
+    else{
+      //TODO: figure out perhaps a cleaner way to do this??
+      alert('TODO: Figure out what the user should see here about overlaps');
+      rendered_results.forEach(function(result){
+        result.attributes.remove();
+      })
+    }
+
    // console.log("Counted Matches:" + num_matches);
    // console.log(search_results["_matching_areas"]);
    // console.log("Rendered results:");
    // console.log(rendered_results);
 
 
-    this.collection.add(new Tabula.RegexResultModel({
-      pattern_before: pattern_before,
-      pattern_after: pattern_after,
-      num_matches: num_matches,
-      matching_areas: search_results["_matching_areas"],
-      rendered_results: rendered_results
-    }));
+
 
   }});
 
@@ -1669,7 +1682,6 @@ Tabula.PDFView = Backbone.View.extend(
       // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
       // cause it to be rendered onto the page, and as a thumbnail
       // and causes it to get an 'id' attr.
-      console.log("In renderSelection:");
       var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page_number];
       var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page_number});
       if(!page){
