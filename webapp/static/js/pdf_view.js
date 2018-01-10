@@ -1141,48 +1141,41 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     var num_matches = 0;
     var rendered_results= new Tabula.Selections();
 
-    Object.keys(search_results["_matching_areas"]).forEach(function (iter) {
-      num_matches++;
-      for (var page_number in search_results["_matching_areas"][iter]) {
 
-        for (var matching_element_index in search_results["_matching_areas"][iter][page_number]) {
+    
 
-          var render_data = search_results["_matching_areas"][iter][page_number][matching_element_index];
-
-
+    search_results["_matching_areas"].forEach(function(matching_area){
+      num_matches++; //TODO: need to make the # of matches more sophisticated--this is going to involve some back-end work as well
+      Object.keys(matching_area).forEach(function(page_with_match){
+        matching_area[page_with_match].forEach(function(regex_rect){
+          console.log(regex_rect);
           rendered_results.add(Tabula.pdf_view.renderSelection({
-            x1: render_data['x'],
-            y1: render_data['y'],
-            width: render_data['width'],
-            height: render_data['height'],
-            page_number: parseInt(page_number),
+            x1: regex_rect['x'],
+            y1: regex_rect['y'],
+            width: regex_rect['width'],
+            height: regex_rect['height'],
+            page_number: parseInt(page_with_match),
             extraction_method: 'spreadsheet',
             selection_id: null,
             selection_type: 'regex'
           }));
-        }
-      }
+        });
+      });
     });
 
+   // console.log("Counted Matches:" + num_matches);
+   // console.log(search_results["_matching_areas"]);
+   // console.log("Rendered results:");
+   // console.log(rendered_results);
 
-    console.log("Counted Matches:" + num_matches);
-    console.log(search_results["_matching_areas"]);
-    console.log("Rendered results:");
-    console.log(rendered_results);
 
-
-    var temp = new Tabula.RegexResultModel({
+    this.collection.add(new Tabula.RegexResultModel({
       pattern_before: pattern_before,
       pattern_after: pattern_after,
       num_matches: num_matches,
       matching_areas: search_results["_matching_areas"],
       rendered_results: rendered_results
-    });
-
-    this.collection.add(temp);
-
-    console.log("Rendered results of temp:");
-    console.log(temp.rendered_results);
+    }));
 
   }});
 
