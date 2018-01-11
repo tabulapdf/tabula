@@ -1050,15 +1050,8 @@ Tabula.RegexHandler = Backbone.View.extend({
         success: _.bind(function (data) {
 
           this.regex_results_handler.process_result(data);
-
-          //      for (var iter in search_results) {
-          //        console.log("search_results[iter]:");
-          //        console.log(JSON.stringify(search_results[iter]));
-          //        this.regex_results_handler.add({search_result:search_results[iter]);
-          //      }
           this.reset_ui();
 
-          //console.log(JSON.stringify(this.model));
         }, this),
         //TODO: Figure out a more graceful way to handle this
         error: function (xhr, status, err) {
@@ -1142,12 +1135,9 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     var rendered_results= new Tabula.Selections();
 
     search_results["_matching_areas"].forEach(function(matching_area){
-      num_matches++; //TODO: need to make the # of matches handle multi-page matches (not sure if it does that right now)
+      num_matches++;
       Object.keys(matching_area).forEach(function(page_with_match){
         matching_area[page_with_match].forEach(function(regex_rect){
-          console.log(regex_rect);
-
-
           rendered_results.add(Tabula.pdf_view.renderSelection({
             x1: regex_rect['x'],
             y1: regex_rect['y'],
@@ -1175,7 +1165,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
       }));
     }
     else{
-      //TODO: figure out perhaps a cleaner way to do this??
+      //TODO: figure out perhaps a cleaner way to do this?? Shirley's going to look into this
       alert('TODO: Figure out what the user should see here about overlaps');
       rendered_results.forEach(function(result){
         result.attributes.remove();
