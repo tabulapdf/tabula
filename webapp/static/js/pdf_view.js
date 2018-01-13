@@ -1029,12 +1029,6 @@ Tabula.RegexHandler = Backbone.View.extend({
     this.regex_query_handler = new Tabula.RegexQueryHandler();
     this.regex_results_handler= new Tabula.RegexCollectionView();
   },
-  reset_ui: function(){
-    $('#regex_input_form').find('input').val(null);
-    $('#regex-search').attr('disabled', 'disabled');
-    this.regex_query_handler.model.reset();
-  },
-
   //Event handler called when the Set Regex button is pushed
   perform_regex_search: function() {
     /*
@@ -1050,7 +1044,6 @@ Tabula.RegexHandler = Backbone.View.extend({
         success: _.bind(function (data) {
 
           this.regex_results_handler.process_result(data);
-          this.reset_ui();
 
         }, this),
         //TODO: Figure out a more graceful way to handle this
@@ -1061,9 +1054,9 @@ Tabula.RegexHandler = Backbone.View.extend({
       });
     }
     else {
-      this.reset_ui();
       alert('The requested search has already been performed. Please try a different search pattern.')
     }
+    this.regex_query_handler.reset_inputs();
   }
 });
 
@@ -1129,13 +1122,10 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     });
   },
   process_result: function (search_results) {
-    var pattern_before = search_results["_regex_before_table"]["pattern"];
-    var pattern_after = search_results["_regex_after_table"]["pattern"];
-    var num_matches = 0;
+
     var rendered_results= new Tabula.Selections();
 
     search_results["_matching_areas"].forEach(function(matching_area){
-      num_matches++;
       Object.keys(matching_area).forEach(function(page_with_match){
         matching_area[page_with_match].forEach(function(regex_rect){
           rendered_results.add(Tabula.pdf_view.renderSelection({
@@ -1157,9 +1147,9 @@ Tabula.RegexCollectionView = Backbone.View.extend({
       return result.attributes.checkOverlaps();
       }))) {
       this.collection.add(new Tabula.RegexResultModel({
-        pattern_before: pattern_before,
-        pattern_after: pattern_after,
-        num_matches: num_matches,
+        pattern_before: search_results["_regex_before_table"]["pattern"],
+        pattern_after: search_results["_regex_after_table"]["pattern"],
+        num_matches: search_results["_matching_areas"].length,
         matching_areas: search_results["_matching_areas"],
         rendered_results: rendered_results
       }));
@@ -1254,7 +1244,8 @@ Tabula.RegexResultModel = Backbone.Model.extend({
 //
 
 Tabula.RegexQueryHandler = Backbone.View.extend({
-  el: "#regex-container",
+//  el: "#regex-container",
+  el: "#regex_input_form",
   model: null,
   events: {'keyup' : 'update_regex_inputs',
            'click [type="checkbox"]':'update_regex_inputs'},
@@ -1281,6 +1272,12 @@ Tabula.RegexQueryHandler = Backbone.View.extend({
     else{
       $('#regex-search').attr('disabled','disabled');
     }
+  },
+
+  reset_inputs: function(){
+    this.el.reset();
+    $('#regex-search').attr('disabled', 'disabled');
+    this.model.reset();
   }
 
 });
