@@ -970,6 +970,8 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   queryAllData: function(){
+    console.log("In queryAllData:");
+    console.log(Tabula.pdf_view.pdf_document.selections);
     var list_of_all_coords = Tabula.pdf_view.pdf_document.selections.invoke("toCoords");
     //TODO: figure out how to handle extraction methods when there are multiple selections
     // should it be set globally, or per selection?
