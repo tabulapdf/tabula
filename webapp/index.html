@@ -266,9 +266,9 @@
                   <form id="regex_input_form" autocomplete="off">
                     <label class="form-group" ></label>
                       <h5><label class="col-form-label" for="formGroupExampleInput">Regex Command</label></h5>
-                      <label><input type="checkbox" id="include_pattern_before" value="isSet"> Inclusive? </label>
+                      <label><input type="checkbox" id="include_pattern_before" value=false> Inclusive? </label>
                    <input type="text" class="form-control" id="pattern_before" placeholder="Pattern Before...">
-                   <label><input type="checkbox" id="include_pattern_after" value=true> Inclusive? </label>
+                   <label><input type="checkbox" id="include_pattern_after" value=false> Inclusive? </label>
                    <input type="text" class="form-control" id="pattern_after" placeholder="Pattern After...">
 
                    <button type="button" id="regex-search" class="btn btn-default" disabled>Search</button>
@@ -307,8 +307,8 @@
 </div>
 </div>
 </div>
-        <nestedscript type="text/javascript" src="js/SelectionPrototypes.js"</nestedscript>
         <nestedscript type="text/javascript" src="js/vendor/spin.min.js"></nestedscript>
+        <nestedscript type="text/javascript" src="js/SelectionPrototypes.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/resizableSelection.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/regexSelection.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/rectangularSelector.js"></nestedscript>
@@ -680,7 +680,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
 
-    </script> <!-- TODO: move this to tabula.js, only run it if we're in upload page viewer -->
+    <!-- TODO: move this to tabula.js, only run it if we're in upload page viewer -->
 
     <script type="text/javascript" src="js/tabula.js?_cachebuster=201510300905"></script> <!-- actually starts Tabula -->
     <script type="text/javascript" src="js/template_library.js?_cachebuster=201510300905"></script> <!-- needed on almost all pages -->
