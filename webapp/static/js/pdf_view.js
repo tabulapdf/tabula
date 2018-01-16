@@ -310,6 +310,8 @@ Tabula.Query = Backbone.Model.extend({
   },
 
   doQuery: function(options) {
+    console.log("In doQuery:");
+
     this.query_data = {
       'coords': JSON.stringify(this.get('list_of_coords')),
       'new_filename': null,
@@ -317,6 +319,7 @@ Tabula.Query = Backbone.Model.extend({
 
     // print selection coordinates to the console
     // way easier FOR NOW than downloading the script/JSON
+    console.log("List of coordinates:");
     console.log(_.map(this.get('list_of_coords'), function(l){ return [l.y1, l.x1, l.y2, l.x2].join(', '); }).join("\n") );
 
     // shallow copy the selections collection
@@ -326,12 +329,21 @@ Tabula.Query = Backbone.Model.extend({
 
     this.trigger("tabula:query-start");
     window.tabula_router.navigate('pdf/' + PDF_ID + '/extract'); // TODO: this should probably go in a view!! -JBM
+
+    console.log("Query Data:");
+    console.log(this.query_data);
+
     $.ajax({
         type: 'POST',
         url: (base_uri || '/') + 'pdf/' + PDF_ID + '/data',
         data: this.query_data,
         success: _.bind(function(resp) {
+          console.log("Response on success:");
+          console.log(resp);
           this.set('data', resp);
+
+          console.log("Get data:");
+          console.log(this.get('data'));
 
           // this only needs to happen on the first select, when we don't know what the extraction method is yet
           // (because it's set by the heuristic on the server-side).
@@ -423,6 +435,8 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   initialize: function(stuff){
     _.bindAll(this, 'render', 'renderFlashClipboardNonsense', 'updateFilename', 'queryWithToggledExtractionMethod', 'closeAndRenderSelectionView', 'setFormAction');
     this.pdf_view = stuff.pdf_view;
+    console.log("Model to Tabula.DataView:");
+    console.log(this.model);
     this.listenTo(this.model, 'tabula:query-start', this.render);
     this.listenTo(this.model, 'tabula:query-success', this.render);
     this.listenTo(this.model, 'tabula:query-error', this.render);
@@ -1052,6 +1066,8 @@ Tabula.RegexHandler = Backbone.View.extend({
         error: function (xhr, status, err) {
           alert('Error in regex search: ' + JSON.stringify(err));
           console.log('Error in regex search: ', err);
+          console.log(xhr);
+          console.log(status);
         }
       });
     }
