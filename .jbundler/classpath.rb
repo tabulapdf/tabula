@@ -5,6 +5,7 @@ JBUNDLER_JRUBY_CLASSPATH.freeze
 JBUNDLER_TEST_CLASSPATH = []
 JBUNDLER_TEST_CLASSPATH.freeze
 JBUNDLER_CLASSPATH = []
+JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\technology\tabula\tabula\1.0.2-SNAPSHOT\tabula-1.0.2-SNAPSHOT.jar'
 JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\org\apache\commons\commons-csv\1.4\commons-csv-1.4.jar'
 JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\commons-cli\commons-cli\1.4\commons-cli-1.4.jar'
 JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\org\bouncycastle\bcprov-jdk15on\1.56\bcprov-jdk15on-1.56.jar'
@@ -21,7 +22,6 @@ JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\com\github\jai-imageio\j
 JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\org\yaml\snakeyaml\1.18\snakeyaml-1.18.jar'
 JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\net\sf\jsi\jsi\1.1.0-SNAPSHOT\jsi-1.1.0-SNAPSHOT.jar'
 JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\net\sf\trove4j\trove4j\3.0.3\trove4j-3.0.3.jar'
-JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\technology\tabula\tabula\1.0.2\tabula-1.0.2.jar'
 JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\com\github\jai-imageio\jai-imageio-jpeg2000\1.3.0\jai-imageio-jpeg2000-1.3.0.jar'
 JBUNDLER_CLASSPATH << 'C:\Users\redmyers\.m2\repository\com\levigo\jbig2\levigo-jbig2-imageio\2.0\levigo-jbig2-imageio-2.0.jar'
 JBUNDLER_CLASSPATH.freeze
