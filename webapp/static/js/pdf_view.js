@@ -1113,8 +1113,9 @@ Tabula.RegexCollectionView = Backbone.View.extend({
   reset : function(){
     _.each(this.collection.toArray(),function(regex_search){
       //Removing all the drawn regex rectangles:
-      _.each(regex_search.toJSON()['rendered_results'],function(regex_rectangle){
-        regex_rectangle.toJSON().remove();
+      _.each(regex_search.toJSON()['rendered_results']['models'],function(regex_rectangle){
+        regex_rectangle.attributes.remove();
+      //  regex_rectangle.toJSON().remove();
       })
     });
     //Remove all the entries in regex table in the side bar
