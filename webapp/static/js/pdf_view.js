@@ -737,7 +737,9 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     if(!Tabula.LazyLoad){ // old-style, non-lazyload behavior
       _(this.page_views).each(_.bind(function(page_view, index){
         var already_on_page = $('#page-' + parseInt(index)+1).length;
-        if(!already_on_page) this.$el.append(page_view.render().el);
+        if(!already_on_page){
+          this.$el.append(page_view.render().el);
+        }
       }, this));
     }else{
       //useful in the console for debugging:
@@ -763,6 +765,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
               // console.log('show ' + number);
             }else{
               this.$el.prepend(page_view.render().el);
+
             }
           }
         }
@@ -789,6 +792,14 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
         }
       }
     }
+
+    //TODO: Figure out how to get the header to render as part of the page_view.render function
+
+    _(this.page_views).each(function(page_view){
+      console.log("Page View:");
+      console.log(page_view);
+      page_view.renderHeader();
+    });
               // should remove the "hidden" selections
               // then should render the selections for this page from autodetectedSelections the "normal" way.
               Tabula.pdf_view.pdf_document.selections.filter(function(sel){ return sel.get('hidden') && sel.get('page') <= number}).map(function(hidden_selection){
@@ -802,10 +813,10 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
 
 Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   document_view: null, //added on create
+  header_view: null,   //added on create
   className: 'pdf-page',
   iasAlreadyInited: false,
   selections: null,
-
   id: function(){
     return 'page-' + this.model.get('number');
   },
@@ -819,9 +830,16 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   initialize: function(stuff){
     this.pdf_view = stuff.pdf_view;
     _.bindAll(this, 'rotate_page', 'createTables',
-      '_onSelectStart', '_onSelectChange', '_onSelectEnd', '_onSelectCancel', 'render');
+      '_onSelectStart', '_onSelectChange', '_onSelectEnd', '_onSelectCancel', 'render','renderHeader');
     this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ this.render(); });
-    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ this.render(); });
+  },
+
+  renderHeader: function(){
+    console.log("One of these nights...");
+    console.log("this.$image offset");
+    console.log(this.$image.offset());
+  //  console.log(this.$image);
+   // this.$el.append(new HeaderView(this.$image.offset()).el);
   },
 
   render: function(){
@@ -834,6 +852,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
                         .attr('data-original-height', this.model.get('height'));
                         // .attr('data-rotation', this.model.get('rotation'));
     this.$image = this.$el.find('img');
+    
     return this;
   },
 
@@ -860,6 +879,9 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     console.log("In _onSelectEnd:");
     console.log("selection:");
     console.log(selection);
+
+
+
     var selections = Tabula.pdf_view.pdf_document.selections;
 
     var sel = selections.updateOrCreateByVendorSelectorId(selection,this.model.get('number'),
@@ -1551,10 +1573,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
 Tabula.PDFView = Backbone.View.extend(
   _.extend({
     el : '#tabula-app',
-
-    events : {
-
-    },
+    events : {},
     lastQuery: [{}],
     pageCount: undefined,
     lazyLoadCursor:  parseInt(window.location.hash.replace("#page-", '')) || 1, // 0 is invalid, because pages are one-indexed
@@ -1708,6 +1727,7 @@ Tabula.PDFView = Backbone.View.extend(
       // mimics drawing the selection onto the page
       var $img = pageView.$el.find('img');
       var image_width = $img.width();
+
       var image_height = $img.height();
       if (!$img.length || $img.data('loaded') !== 'loaded' || !$img.height() ){ // if this page isn't shown currently or the image hasn't been rendered yet, then create a hidden selectionx
         return this.pdf_document.selections.createHiddenSelection(sel);

@@ -76,7 +76,7 @@
       <script type="text/template" id="page-template" >
         <span class="page-number"><%= number %>. </span>
         <div class="page" id="page-div-<%= number %>">
-          <img onload="$(this).data('loaded', 'loaded');" src="<%= image_url %>" draggable="false" unselectable="on" > <!-- unselectable is for IE/Opera -->
+        <img onload="$(this).data('loaded', 'loaded');console.log(JSON.stringify($(this)))" src="<%= image_url %>" draggable="false" unselectable="on" /> <!-- unselectable is for IE/Opera -->
         </div>
       </script>
       <script type="text/template" id="thumbnail-template" >
