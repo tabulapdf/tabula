@@ -667,8 +667,9 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     this.pdf_view.options.set('extraction_method', extractionMethod);
     Tabula.pdf_view.query.setExtractionMethod(extractionMethod);
     Tabula.pdf_view.query.doQuery();
-  },
+  }
 });
+
 
 Tabula.DocumentView = Backbone.View.extend({ // Singleton
   events: {
@@ -679,12 +680,38 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   _selectionsGetter: function(target) {
     return _(Tabula.pdf_view.pdf_document.selections.where({page_number: $(target).data('page')})).map(function(i){ return i.attributes; });
   },
+  filterOnSrc: function(imageData){
+    console.log("Source Sh..tuff");
+    console.log(imageData);
+    console.log("What I'm working with...");
+    console.log(this);
+
+    console.log("page views");
+    console.log(this.page_views);
+
+    var page_views = this.page_views;
+    for (var key in page_views) {
+      // key: the name of the object key
+      // index: the ordinal position of the key within the object
+      console.log("Key:");
+      console.log(key);
+      console.log("page_views:");
+      console.log(page_views);
+      console.log("Page_view image src:");
+      console.log(page_views[key].$image['0'].src);
+
+
+      if(page_views[key].$image['0'].src==imageData.src) {
+            page_views[key].renderHeader();
+           }
+      }},
 
   initialize: function(stuff){
-    _.bindAll(this, 'render', 'removePage', 'addSelection', '_onRectangularSelectorEnd', '_selectionsGetter');
+    console.log("page_views");
+    console.log(this.page_views);
+     _.bindAll(this, 'render', 'removePage', 'addSelection', '_onRectangularSelectorEnd', '_selectionsGetter');
     this.pdf_view = stuff.pdf_view;
     this.listenTo(this.collection, 'remove', this.removePage);
-
     // attach rectangularSelector to main page container
     this.rectangular_selector = new RectangularSelector(
       this.$el,
@@ -793,13 +820,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
       }
     }
 
-    //TODO: Figure out how to get the header to render as part of the page_view.render function
-
-    _(this.page_views).each(function(page_view){
-      console.log("Page View:");
-      console.log(page_view);
-      page_view.renderHeader();
-    });
               // should remove the "hidden" selections
               // then should render the selections for this page from autodetectedSelections the "normal" way.
               Tabula.pdf_view.pdf_document.selections.filter(function(sel){ return sel.get('hidden') && sel.get('page') <= number}).map(function(hidden_selection){
@@ -811,9 +831,17 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   }
 });
 
+//Tabula.PageView
+//   Backbone View extension responsible for rendering each page of a document
+//
+//   Serves as the Controller in the Model-View-Controller pattern enforced by Backbone. Creates the ReqgexQueryHandler
+//   and RegexCollectionView objects resposible for displaying the regex search information. Controls the AJAX request
+//   and the processing of information returned from the server.
+//
+//   1/19/2018  REM; added header_view and renderHeader to support user-defined header operations
 Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   document_view: null, //added on create
-  header_view: null,   //added on create
+  header_view: null,
   className: 'pdf-page',
   iasAlreadyInited: false,
   selections: null,
@@ -830,17 +858,10 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   initialize: function(stuff){
     this.pdf_view = stuff.pdf_view;
     _.bindAll(this, 'rotate_page', 'createTables',
-      '_onSelectStart', '_onSelectChange', '_onSelectEnd', '_onSelectCancel', 'render','renderHeader');
+      '_onSelectStart', '_onSelectChange', '_onSelectEnd', '_onSelectCancel', 'render');
     this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ this.render(); });
   },
 
-  renderHeader: function(){
-    console.log("One of these nights...");
-    console.log("this.$image offset");
-    console.log(this.$image.offset());
-  //  console.log(this.$image);
-   // this.$el.append(new HeaderView(this.$image.offset()).el);
-  },
 
   render: function(){
     this.$el.html(this.template({
@@ -852,8 +873,18 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
                         .attr('data-original-height', this.model.get('height'));
                         // .attr('data-rotation', this.model.get('rotation'));
     this.$image = this.$el.find('img');
-    
+
     return this;
+  },
+  renderHeader: function(){
+    console.log("This.$image:");
+    console.log(this.$image);
+    this.header_view = new HeaderView({top: 0,
+                                       left: this.$image['0'].parentElement.offsetLeft,
+                                       width: this.$image.width()});
+    console.log("This.header_view.el");
+    console.log(this.header_view.el);
+    this.$el.append(this.header_view.el);
   },
 
   createTables: function(asfd){
@@ -1812,6 +1843,8 @@ Tabula.PDFView = Backbone.View.extend(
       var thumbnail_view = new Tabula.ThumbnailView({model: page, collection: this.pdf_document.page_collection});
 
 
+      //voila
+
       this.components['document_view'].page_views[ page.get('number') ] =  page_view;
       this.components['sidebar_view'].thumbnail_list_view.thumbnail_views[ page.get('number') ] = thumbnail_view;
     },
@@ -1821,6 +1854,10 @@ Tabula.PDFView = Backbone.View.extend(
       // if(Tabula.LazyLoad){
       //   _(this.pdf_document.page_collection.slice(0, Tabula.LazyLoad)).each(this.addOne, this);
       // }else{
+
+        console.log("In addAll:");
+        console.log(this.pdf_document);
+
         this.pdf_document.page_collection.each(this.addOne, this);
       // }
     },

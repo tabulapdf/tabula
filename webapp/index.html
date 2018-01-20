@@ -76,7 +76,7 @@
       <script type="text/template" id="page-template" >
         <span class="page-number"><%= number %>. </span>
         <div class="page" id="page-div-<%= number %>">
-        <img onload="$(this).data('loaded', 'loaded');console.log(JSON.stringify($(this)))" src="<%= image_url %>" draggable="false" unselectable="on" /> <!-- unselectable is for IE/Opera -->
+        <img onload="$(this).data('loaded', 'loaded');var image= $(this)['0'];Tabula.pdf_view.components['document_view'].filterOnSrc({'src':image.src})" src="<%= image_url %>" draggable="false" unselectable="on" /> <!-- unselectable is for IE/Opera -->
         </div>
       </script>
       <script type="text/template" id="thumbnail-template" >
@@ -309,6 +309,7 @@
 </div>
         <nestedscript type="text/javascript" src="js/vendor/spin.min.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/SelectionPrototypes.js"></nestedscript>
+        <nestedscript type="text/javascript" src="js/HeaderView.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/resizableSelection.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/regexSelection.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/rectangularSelector.js"></nestedscript>
