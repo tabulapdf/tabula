@@ -7133,6 +7133,13 @@ button.close {
   bottom: -35px;
 }
 
+.header-region{
+  position: absolute;
+  border: 1px dashed rgba(41, 255, 52, 0.8);
+  background: rgba(31, 255, 32, 0.2);
+  box-sizing: border-box;
+}
+
 /* rectangularSelector.js classes */
 .selection-box, .table-region {
   position: absolute;
