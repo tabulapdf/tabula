@@ -76,3 +76,4 @@ var resizable_select_proto = {checkOverlaps: checkOverlaps,
                               render: render,
                               getDims: getDims
 };
+

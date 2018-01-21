@@ -26,7 +26,8 @@
     },
     resizeDirectionMatch : /(n|s|w|e|ne|nw|se|sw)-border/,
     mouseDownResize : function(event) {
-      var d = resizeDirectionMatch.exec($(event.target).attr('class'));
+      console.log("In mouseDownResize:");
+      var d = this.resizeDirectionMatch.exec($(event.target).attr('class'));
       if (!d || d.length < 2) {
         this.resizing = false;
       }
@@ -35,6 +36,7 @@
         this.trigger('start', this);
       }},
     mouseMoveResize : function(event) {
+      console.log("In mouseMoveResize:");
       if (!this.resizing) return;
       var ev = event;
       var css = {};
@@ -44,6 +46,10 @@
         css.top = ev.pageY;
       }
       else if (this.resizing.indexOf('s') !== -1) {
+        console.log("ev.pageY:");
+        console.log(ev.pageY);
+        console.log("oldDims.top");
+        console.log(oldDims.top);
         css.height = ev.pageY - oldDims.top;
       }
       if (this.resizing.indexOf('w') !== -1) {
@@ -59,6 +65,7 @@
         this.$el.css(oldDims);
       }},
     mouseUpResize : function(event) {
+      console.log("In mouseUpResize:");
       if (this.resizing) {
         this.trigger('resize', this.getDims());
       }
