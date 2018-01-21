@@ -681,26 +681,10 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     return _(Tabula.pdf_view.pdf_document.selections.where({page_number: $(target).data('page')})).map(function(i){ return i.attributes; });
   },
   filterOnSrc: function(imageData){
-    console.log("Source Sh..tuff");
-    console.log(imageData);
-    console.log("What I'm working with...");
-    console.log(this);
-
-    console.log("page views");
-    console.log(this.page_views);
 
     var page_views = this.page_views;
     for (var key in page_views) {
       // key: the name of the object key
-      // index: the ordinal position of the key within the object
-      console.log("Key:");
-      console.log(key);
-      console.log("page_views:");
-      console.log(page_views);
-      console.log("Page_view image src:");
-      console.log(page_views[key].$image['0'].src);
-
-
       if(page_views[key].$image['0'].src==imageData.src) {
             page_views[key].renderHeader();
            }
@@ -877,12 +861,9 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     return this;
   },
   renderHeader: function(){
-    console.log("This.$image:");
-    console.log(this.$image);
     this.header_view = new HeaderView({top: 0,
                                        left: this.$image['0'].parentElement.offsetLeft,
                                        width: this.$image.width()});
-    console.log("This.header_view.el");
     console.log(this.header_view.el);
     this.$el.append(this.header_view.el);
   },

@@ -16,23 +16,47 @@
   return Backbone.View.extend({
     tagName: 'div',
     className:'header-region',
-    template:"<div class='resize-handle n-border'></div>" +
-    "<div class='resize-handle s-border'></div>" +
-    "<div class='resize-handle w-border'></div>" +
-    "<div class='resize-handle e-border'></div>" +
-    "<div class='resize-handle nw-border'></div>" +
-    "<div class='resize-handle sw-border'></div>" +
-    "<div class='resize-handle se-border'></div>" +
-    "<div class='resize-handle ne-border'></div>",
+    template:"",
+    events:{'mousedown': 'enableHeaderResize',
+            'mouseup': 'endHeaderResize',
+            'mousemove': 'resizeHeader'},
+
+    enableHeaderResize: function(event){
+      this.resizing = true;
+    },
+
+    endHeaderResize: function(event){
+      console.log("Mouse Up Triggered:");
+      if(this.resizing===true){
+        this.resizing = false;
+      }
+    },
+
+    resizeHeader: function(event){
+      if(this.resizing===true){
+        this.$el.css({'height': event.pageY - this.$el['0'].parentElement.offsetTop })
+      }
+
+    },
+
     initialize: function(data){
       console.log("Data");
       console.log(data);
-      this.position = {"top":    data.top,
-                       "left":   data.left,
-                       "width":  data.width,
-                       "height": 0};
       this.id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now();
-      this.$el.css(this.position);
-      console.log(this.$el);
+      this.$el.css({
+        "top": data.top,
+        "left": data.left,
+        "width": data.width,
+        "height":20 //A small height amount so it is noticed...need to experiment with this
+      });
+
+      this.$el.attr('title','Drag down to define header area');
+      this.resizing = false;
+
+      //Detect when user moves mouse/release mouse outside of the area
+      $(document).on({
+        mousemove: _.bind(this.resizeHeader,this),
+        mouseup: _.bind(this.endHeaderResize, this)
+      });
       }});
     });
