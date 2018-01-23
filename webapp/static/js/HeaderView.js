@@ -34,7 +34,9 @@
 
     resizeHeader: function(event){
       if(this.resizing===true){
-        this.$el.css({'height': event.pageY - this.$el['0'].parentElement.offsetTop })
+        this.$el.css({'height': event.pageY - this.$el['0'].parentElement.offsetTop + 10 })
+        //Note: the 10 acts as a buffer zone, so that resizing the Header does not 'flicker' the mouse between
+        //cross-hair and row-resize...there's probably a better way to handle this...
       }
 
     },
