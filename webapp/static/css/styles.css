@@ -7140,6 +7140,9 @@ button.close {
   box-sizing: border-box;
 }
 
+.header-region:hover{
+  cursor: row-resize;
+}
 
 /* rectangularSelector.js classes */
 .selection-box, .table-region {
