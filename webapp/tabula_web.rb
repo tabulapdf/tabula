@@ -34,16 +34,23 @@ require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
 require_relative '../lib/tabula_job_executor/jobs/detect_tables.rb'
 
 
+
+
+
 def is_valid_pdf?(path)
   File.open(path, 'r') { |f| f.read(4) } == '%PDF'
 end
 
+
+foo = []
+docName = ""
 
 STATIC_ROOT = if defined?($servlet_context)
                 File.join($servlet_context.getRealPath('/'), 'WEB-INF/webapp/static')
               else
                 File.join(File.dirname(__FILE__), 'static')
               end
+
 
 Cuba.plugin Cuba::Render
 Cuba.settings[:render].store(:views, File.expand_path("views", File.dirname(__FILE__)))
@@ -255,6 +262,14 @@ Cuba.define do
                                                                       doc_to_search)
 
       doc_to_search.close()
+
+      if(docName!=req.params['file_path'])
+        foo=[]
+        docName = req.params['file_path']
+        puts docName
+      end
+
+      foo.push(regex_search)
 
       gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
       res.write(gson.to_json(regex_search))
