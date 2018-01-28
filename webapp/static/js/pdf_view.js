@@ -861,6 +861,11 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     return this;
   },
   renderHeader: function(){
+
+    console.log("In renderHeader:");
+    console.log("this.image:");
+    console.log(this.$image);
+
     this.header_view = new HeaderView({top: 0,
                                        left: this.$image['0'].parentElement.offsetLeft,
                                        width: this.$image.width()});

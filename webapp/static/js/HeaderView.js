@@ -26,7 +26,8 @@
     },
 
     endHeaderResize: function(event){
-      console.log("Mouse Up Triggered:");
+      console.log("In endHeaderResize:");
+      console.log(this.$el);
       if(this.resizing===true){
         this.resizing = false;
       }
@@ -34,6 +35,8 @@
 
     resizeHeader: function(event){
       if(this.resizing===true){
+        var old_height = this.$el.css('height');
+        var new_height = event.pageY - this.$el['0'].parentElement.offsetTop;
         this.$el.css({'height': event.pageY - this.$el['0'].parentElement.offsetTop + 10 })
         //Note: the 10 acts as a buffer zone, so that resizing the Header does not 'flicker' the mouse between
         //cross-hair and row-resize...there's probably a better way to handle this...
@@ -42,8 +45,7 @@
     },
 
     initialize: function(data){
-      console.log("Data");
-      console.log(data);
+
       this.id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now();
       this.$el.css({
         "top": data.top,
@@ -53,6 +55,7 @@
       });
 
       this.$el.attr('title','Drag down to define header area');
+
       this.resizing = false;
 
       //Detect when user moves mouse/release mouse outside of the area
