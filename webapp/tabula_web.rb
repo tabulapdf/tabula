@@ -11,6 +11,7 @@ require 'tempfile'
 require 'fileutils'
 require 'securerandom'
 require 'java'
+require 'singleton'
 
 
 require_relative '../lib/tabula_java_wrapper.rb'
@@ -33,7 +34,10 @@ require_relative '../lib/tabula_job_executor/jobs/generate_document_data.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
 require_relative '../lib/tabula_job_executor/jobs/detect_tables.rb'
 
-
+class RegexQueryMetaData
+  include Singleton
+  attr_accessor :fileName,:searches
+end
 
 
 
@@ -42,8 +46,7 @@ def is_valid_pdf?(path)
 end
 
 
-foo = []
-docName = ""
+regex_query_meta_data = RegexQueryMetaData.instance()
 
 STATIC_ROOT = if defined?($servlet_context)
                 File.join($servlet_context.getRealPath('/'), 'WEB-INF/webapp/static')
@@ -263,13 +266,15 @@ Cuba.define do
 
       doc_to_search.close()
 
-      if(docName!=req.params['file_path'])
-        foo=[]
-        docName = req.params['file_path']
-        puts docName
+      if regex_query_meta_data.fileName !=req.params['file_path']
+        puts 'Do I get here?'
+        regex_query_meta_data.searches=[]
+        regex_query_meta_data.fileName = req.params['file_path']
       end
 
-      foo.push(regex_search)
+      regex_query_meta_data.searches.push(regex_search)
+
+      p regex_query_meta_data
 
       gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
       res.write(gson.to_json(regex_search))
