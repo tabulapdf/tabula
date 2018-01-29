@@ -35,8 +35,33 @@ require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
 require_relative '../lib/tabula_job_executor/jobs/detect_tables.rb'
 
 class RegexQueryMetaData
+
+  attr_accessor :regex_searches
+  attr_reader   :file
+
   include Singleton
-  attr_accessor :fileName,:searches
+
+  def initialize
+    @doc_name=""
+    @regex_searches=[]
+    @file = nil
+  end
+
+  def is_new_doc(docName)
+    return @doc_name==docName
+  end
+  def reset_for_new_doc(docName)
+
+    @doc_name=docName
+    @regex_searches=[]
+
+    if @file.nil?==false
+      @file.close()
+    end
+
+    output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
+    @file = PDDocument.load(Java::JavaIO::File.new(File.join(output_dir,'document.pdf')))
+  end
 end
 
 
@@ -256,24 +281,17 @@ Cuba.define do
 
     on 'regex' do
       puts req.params
-      output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
-      doc_to_search = PDDocument.load(Java::JavaIO::File.new(File.join(output_dir,'document.pdf')))
+      if regex_query_meta_data.is_new_doc(req.params['file_path'])
+        regex_query_meta_data.reset_for_new_doc(req.params['file_path'])
+      end
+
       regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(req.params['pattern_before'],
                                                                       req.params['include_pattern_before'],
                                                                       req.params['pattern_after'],
                                                                       req.params['include_pattern_after'],
-                                                                      doc_to_search)
+                                                                      regex_query_meta_data.file)
 
-      doc_to_search.close()
-
-      if regex_query_meta_data.fileName !=req.params['file_path']
-        puts 'Do I get here?'
-        regex_query_meta_data.searches=[]
-        regex_query_meta_data.fileName = req.params['file_path']
-      end
-
-      regex_query_meta_data.searches.push(regex_search)
-
+      regex_query_meta_data.regex_searches.push(regex_search)
       p regex_query_meta_data
 
       gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
