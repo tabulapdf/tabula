@@ -42,24 +42,26 @@ class RegexQueryMetaData
   include Singleton
 
   def initialize
-    @doc_name=""
+    @doc_name=String.new()
     @regex_searches=[]
     @file = nil
   end
 
   def is_new_doc(docName)
-    return @doc_name==docName
+    puts "In is_new_doc:"
+    puts !(@doc_name == docName)
+    return !(@doc_name == docName)
   end
   def reset_for_new_doc(docName)
 
     @doc_name=docName
     @regex_searches=[]
 
-    if @file.nil?==false
+    unless @file.nil?
       @file.close()
     end
 
-    output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, req.params['file_path'])
+    output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, @doc_name)
     @file = PDDocument.load(Java::JavaIO::File.new(File.join(output_dir,'document.pdf')))
   end
 end
