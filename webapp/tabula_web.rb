@@ -48,10 +48,10 @@ class RegexQueryMetaData
   end
 
   def is_new_doc(docName)
-    puts "In is_new_doc:"
     puts !(@doc_name == docName)
     return !(@doc_name == docName)
   end
+
   def reset_for_new_doc(docName)
 
     @doc_name=docName
@@ -294,7 +294,6 @@ Cuba.define do
                                                                       regex_query_meta_data.file)
 
       regex_query_meta_data.regex_searches.push(regex_search)
-      p regex_query_meta_data
 
       gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
       res.write(gson.to_json(regex_search))
