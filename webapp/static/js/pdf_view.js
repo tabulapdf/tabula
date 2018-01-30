@@ -473,38 +473,37 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     $('body').addClass('page-selections');
 
 
+    var regex_search_collection = Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.models;
 
-    console.log("Regex_results_handler collection:");
-    console.log(Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.models);
+    /*
+     * The rectangular coordinate areas associated with regex searches are stored in 2 areas (as of 1/30/2018):
+     *  1) this.pdf_view.pdf_document.selections.models
+     *  2) Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.models
+     *
+     *  Therefore, when destroying one of these coordinate areas, its reference must be removed from both collections
+     *  Also: When creating one of these coordinate areas, renderSelection must be called only once
+     *    Note: In a perfect world, this complexity would be better baked into the design. Given the time constraints
+     *    of the project at hand as well as the largely ambiguous project scope, such a refactoring is not possible.
+     */
+    var already_rendered_selections = [];
 
-
-
-  //  Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.models.forEach(function(regex_result){
-  //    console.log("Regex_Result:");
-  //    console.log(regex_result.attributes);
-  //    tutu.push(Tabula.pdf_view.renderSelection(regex_result.attributes));
-  //  });
-
-    var syntax_sugar = Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.models;
-
-    syntax_sugar.forEach(function(regex_result){
+    regex_search_collection.forEach(function(regex_result){
       var refreshed_sels = new Tabula.Selections();
       regex_result.attributes.rendered_results.forEach(function(regex_sel){
-        refreshed_sels.add(Tabula.pdf_view.renderSelection(regex_sel.attributes))
+        var refreshed_sel = Tabula.pdf_view.renderSelection(regex_sel.attributes);
+        refreshed_sels.add(refreshed_sel);
         regex_sel.attributes.remove();
+        already_rendered_selections.push(refreshed_sel);
       });
       regex_result.attributes.rendered_results = refreshed_sels;
-      console.log(regex_result.attributes.rendered_results);
     });
-
-
 
     var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
          console.log("Selection:");
          console.log(sel.attributes);
 
-         if(sel.attributes.selection_type==='regex') {
-          return sel;
+         if($.inArray(sel.attributes,already_rendered_selections)){
+           return sel;
          }
          else{
            return Tabula.pdf_view.renderSelection(sel['attributes']);
