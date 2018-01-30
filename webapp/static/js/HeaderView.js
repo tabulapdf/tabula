@@ -34,14 +34,20 @@
     },
 
     resizeHeader: function(event){
+      console.log("In resizeHeader:");
+      console.log("Event:");
+      console.log(event);
       if(this.resizing===true){
         var old_height = this.$el.css('height');
-        var new_height = event.pageY - this.$el['0'].parentElement.offsetTop;
-        this.$el.css({'height': event.pageY - this.$el['0'].parentElement.offsetTop + 10 })
-        //Note: the 10 acts as a buffer zone, so that resizing the Header does not 'flicker' the mouse between
-        //cross-hair and row-resize...there's probably a better way to handle this...
-      }
+        var pot_new_height = event.pageY - this.$el['0'].parentElement.offsetTop;
+        console.log("Old Height: "+ old_height);
 
+        var new_height = (pot_new_height<=0) ? 0 : pot_new_height;
+
+        console.log("New Height: "+ new_height);
+
+        this.$el.css({'height': new_height })
+      }
     },
 
     initialize: function(data){
@@ -51,7 +57,7 @@
         "top": data.top,
         "left": data.left,
         "width": data.width,
-        "height":20 //A small height amount so it is noticed...need to experiment with this
+        "height": 0 //A small height amount so it is noticed...need to experiment with this
       });
 
       this.$el.attr('title','Drag down to define header area');
