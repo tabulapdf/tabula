@@ -26,26 +26,15 @@
     },
 
     endHeaderResize: function(event){
-      console.log("In endHeaderResize:");
-      console.log(this.$el);
       if(this.resizing===true){
         this.resizing = false;
       }
     },
 
     resizeHeader: function(event){
-      console.log("In resizeHeader:");
-      console.log("Event:");
-      console.log(event);
       if(this.resizing===true){
-        var old_height = this.$el.css('height');
         var pot_new_height = event.pageY - this.$el['0'].parentElement.offsetTop;
-        console.log("Old Height: "+ old_height);
-
         var new_height = (pot_new_height<=0) ? 0 : pot_new_height;
-
-        console.log("New Height: "+ new_height);
-
         this.$el.css({'height': new_height })
       }
     },
