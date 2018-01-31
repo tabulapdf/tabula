@@ -65,7 +65,6 @@
         this.$el.css(oldDims);
       }},
     mouseUpResize : function(event) {
-      console.log("In mouseUpResize:");
       if (this.resizing) {
         this.trigger('resize', this.getDims());
       }

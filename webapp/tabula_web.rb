@@ -282,6 +282,8 @@ Cuba.define do
     end
 
     on 'regex' do
+
+      on 'search' do
       puts req.params
       if regex_query_meta_data.is_new_doc(req.params['file_path'])
         regex_query_meta_data.reset_for_new_doc(req.params['file_path'])
@@ -297,7 +299,17 @@ Cuba.define do
 
       gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
       res.write(gson.to_json(regex_search))
+      end
 
+      on 'check-on-resize' do
+        puts req.params
+        changedQueries = Java::TechnologyTabulaDetectors::
+                         RegexSearch.queryCheckOnContentResize(regex_query_meta_data.regex_searches,
+                                                               req.params['page_number'],
+                                                               req.params['header_height'],
+                                                               req.params['page_height'])
+        res.write(changedQueries)
+      end
     end
 
     on 'documents' do

@@ -20,22 +20,47 @@
     events:{'mousedown': 'enableHeaderResize',
             'mouseup': 'endHeaderResize',
             'mousemove': 'resizeHeader'},
-
+    previous_y: 0,
+    BUFFER:10, //TODO: make a prototype include buffer as a const
     enableHeaderResize: function(event){
+      console.log("In enableHeaderResize:");
       this.resizing = true;
+      this.previous_y = (event.pageY - this.$el['0'].parentElement.offsetTop);
+      var new_height = parseInt(this.$el.css('height'));
+
+      //So that the user can more easily drag the header area when its up at the top of the page
+      if(this.BUFFER>=this.previous_y){
+        new_height = this.BUFFER;
+      }
+
+      this.$el.css({'height': new_height})
+
     },
 
     endHeaderResize: function(event){
       if(this.resizing===true){
         this.resizing = false;
+        console.log("In endHeaderResize:");
+        console.log(this.$el)
+        this.trigger('header_resized',{'header_height':parseInt(this.$el.css('height'))});
       }
     },
 
     resizeHeader: function(event){
       if(this.resizing===true){
-        var pot_new_height = event.pageY - this.$el['0'].parentElement.offsetTop;
-        var new_height = (pot_new_height<=0) ? 0 : pot_new_height;
+        var mouseLocation = event.pageY - this.$el['0'].parentElement.offsetTop;
+        var new_height = mouseLocation;
+        if((this.previous_y>new_height) && (new_height<=this.BUFFER)){ //When the user is shrinking the size of the header
+          new_height=0;
+        }
+        else{
+          new_height+=this.BUFFER; //buffer added to reduce cursor flicker
+        }
         this.$el.css({'height': new_height })
+        if(new_height==0){
+          this.endHeaderResize(event);
+        }
+        this.previous_y = mouseLocation; //Updating status variables for next event...
       }
     },
 
@@ -46,7 +71,7 @@
         "top": data.top,
         "left": data.left,
         "width": data.width,
-        "height": 0 //A small height amount so it is noticed...need to experiment with this
+        "height": this.BUFFER //A small height so that the user can easily drag the header to its intended size
       });
 
       this.$el.attr('title','Drag down to define header area');

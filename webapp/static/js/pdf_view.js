@@ -685,7 +685,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     for (var key in page_views) {
       // key: the name of the object key
       if(page_views[key].$image['0'].src==imageData.src) {
-            page_views[key].renderHeader();
+            page_views[key].renderHeaderFilter();
            }
       }},
 
@@ -822,6 +822,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
 //   and the processing of information returned from the server.
 //
 //   1/19/2018  REM; added header_view and renderHeader to support user-defined header operations
+//   1/30/2018  REM; renamed renderHeader to renderHeaderFilter to avoid confusion and added comments to the method
 Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   document_view: null, //added on create
   header_view: null,
@@ -859,17 +860,24 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
     return this;
   },
-  renderHeader: function(){
-
-    console.log("In renderHeader:");
-    console.log("this.image:");
-    console.log(this.$image);
+  /*
+  * Note: The dimensions of HeaderView rely on the dimensions of the Tabula.Page object. Therefore, until the
+  * page is loaded, the HeaderView should not be constructed. Since the initialize method completes before the
+  * onLoad method is fired for a given Tabula.Page object, the renderHeaderFilter method must be used.
+   */
+  renderHeaderFilter: function(){
 
     this.header_view = new HeaderView({top: 0,
                                        left: this.$image['0'].parentElement.offsetLeft,
                                        width: this.$image.width()});
     console.log(this.header_view.el);
     this.$el.append(this.header_view.el);
+    this.listenTo(this.header_view, 'header_resized', function(data){
+      console.log("In header_resized...");
+      console.log(this.model.attributes);
+      data.page_number = this.model.attributes.number;
+      data.page_height = this.model.attributes.height;
+      Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.check_regex_searches_on_resize(data)});
   },
 
   createTables: function(asfd){
@@ -1092,7 +1100,7 @@ Tabula.RegexHandler = Backbone.View.extend({
 
       $.ajax({
         type: 'GET',
-        url: '/regex',
+        url: '/regex/search',
         data: this.regex_query_handler.model.toJSON(),
         dataType: 'json',
         success: _.bind(function (data) {
@@ -1100,7 +1108,6 @@ Tabula.RegexHandler = Backbone.View.extend({
           this.regex_results_handler.process_result(data);
 
         }, this),
-        //TODO: Figure out a more graceful way to handle this
         error: function (xhr, status, err) {
           alert('Error in regex search: ' + JSON.stringify(err));
           console.log('Error in regex search: ', err);
@@ -1123,7 +1130,29 @@ Tabula.RegexHandler = Backbone.View.extend({
 //
 Tabula.RegexResultCollection= Backbone.Collection.extend({
   model : Tabula.RegexResultModel,
-  initialize: function(){}
+  initialize: function(){},
+  check_regex_searches_on_resize: function(data){
+    console.log("In check_regex_searches_on_resize:");
+    console.log(data);
+    $.ajax({
+      type: 'GET',
+      url: '/regex/check-on-resize',
+      data: data,
+      success: _.bind(function (data) {
+        console.log("Successful check:")
+        console.log("Returned data:");
+        console.log(data);
+      }, this),
+      //TODO: Figure out a more graceful way to handle this
+      error: function (xhr, status, err) {
+        alert('Error in regex check: ' + JSON.stringify(err));
+        console.log('Error in regex check: ', err);
+        console.log(xhr);
+        console.log(status);
+      }
+    });
+     return "Try to see it my way, only time will tell if I am right or if I'm wrong";
+  }
 });
 
 //Tabula.RegexCollectionView
