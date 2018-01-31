@@ -7135,7 +7135,7 @@ button.close {
 
 .header-region{
   position: absolute;
-  border: 2px solid rgba(41, 255, 52, 0.8);
+  border: 3px solid rgba(41, 255, 52, 0.8);
   background: rgba(31, 255, 32, 0.2);
   box-sizing: border-box;
 }
