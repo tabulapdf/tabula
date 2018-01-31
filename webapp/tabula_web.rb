@@ -304,10 +304,10 @@ Cuba.define do
       on 'check-on-resize' do
         puts req.params
         changedQueries = Java::TechnologyTabulaDetectors::
-                         RegexSearch.queryCheckOnContentResize(regex_query_meta_data.regex_searches,
-                                                               req.params['page_number'],
-                                                               req.params['header_height'],
-                                                               req.params['page_height'])
+                         RegexSearch.queryCheckContentOnResize(regex_query_meta_data.regex_searches,
+                                                               req.params['page_number'].to_i,
+                                                               req.params['page_height'].to_i,
+                                                               req.params['header_height'].to_i)
         res.write(changedQueries)
       end
     end
