@@ -181,7 +181,7 @@ Tabula.Selections = Backbone.Collection.extend({
   createHiddenSelection: function(sel){
       new_selection_args = _.extend({'page_number': sel.page,
                                     'extraction_method': 'spreadsheet',
-                                    'id': String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now(),
+                                    'id': Math.random().toString(),
                                     'hidden': true,
                                     'pdf_document': this.pdf_document},
                                     sel);
