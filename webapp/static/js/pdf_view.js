@@ -457,10 +457,6 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
   },
   closeAndRenderSelectionView: function(){
 
-    console.log("Selection Array before:");
-    console.log(this.pdf_view.pdf_document.selections.toArray());
-
-    console.log("In closeAndRenderSelectionView:");
     window.tabula_router.navigate('pdf/' + PDF_ID);
     this.$el.empty();
 
@@ -1175,14 +1171,35 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     this.collection.on('add',this.render,this);
   },
   remove_regex_search: function(event_data,search_to_remove){
+    console.log("Search to remove:");
+    console.log(search_to_remove.attributes);
+    $.ajax({
+      type: 'GET',
+      url: '/regex/remove-search-data',
+      data: {'pattern_before': search_to_remove.attributes.pattern_before,
+             'pattern_after':  search_to_remove.attributes.pattern_after },
+      dataType: 'json',
+      success: _.bind(function (data) {
+        console.log("Back end removal successful:")
+        console.log(data)
+
+      }, this),
+      error: function (xhr, status, err) {
+        alert('Error removing back-end data for: ' +search_to_remove + 'Error message: ' + JSON.stringify(err));
+        console.log('Error message: ' + JSON.stringify(err));
+        console.log(xhr);
+        console.log(status);
+      }
+    });
     this.collection.remove(search_to_remove);
+
+
   },
   reset : function(){
     _.each(this.collection.toArray(),function(regex_search){
       //Removing all the drawn regex rectangles:
       _.each(regex_search.toJSON()['rendered_results']['models'],function(regex_rectangle){
         regex_rectangle.attributes.remove();
-      //  regex_rectangle.toJSON().remove();
       })
     });
     //Remove all the entries in regex table in the side bar
@@ -1190,12 +1207,9 @@ Tabula.RegexCollectionView = Backbone.View.extend({
   },
 
   render: function(){
-    console.log("In render function of Tabula.RegexCollectionView:");
     var self = this;
     this.$el.html('');
     _.each(this.collection.toArray(),function(regex_result){
-      console.log("Regex_result");
-      console.log(regex_result.toJSON());
       self.$el.append((new Tabula.RegexResultView({model:regex_result})).render().$el);
     });
 
@@ -1288,6 +1302,7 @@ Tabula.RegexResultView = Backbone.View.extend({
     //Removing the RegexSelection objects associated with the RegexResult
     this.model.attributes.rendered_results.forEach(function(result){
       result.attributes.remove();
+
     });
     //Removing the reference to the corresponding RegexResultModel
     this.$el.trigger('remove_element',this.model);

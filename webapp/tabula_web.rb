@@ -310,6 +310,27 @@ Cuba.define do
                                                                req.params['header_height'].to_i)
         res.write(changedQueries)
       end
+
+      on 'remove-search-data' do
+        puts req.params
+        puts regex_query_meta_data.regex_searches
+        puts 'In remove-search-data'
+        removed_searches, regex_query_meta_data.regex_searches = regex_query_meta_data.regex_searches.partition {
+         |search| search.getRegexBeforeTable() == req.params['pattern_before'] &&
+         search.getRegexAfterTable() == req.params['pattern_after']
+        }
+        if removed_searches.length > 1 || removed_searches.length==0
+          res.status =500
+        end
+
+        puts 'Removed Regex search:'
+        puts removed_searches[0]
+
+        puts 'Remaining Regex searches:'
+
+        gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+        res.write(gson.to_json(removed_searches))
+      end
     end
 
     on 'documents' do
