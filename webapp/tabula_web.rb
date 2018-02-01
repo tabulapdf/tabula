@@ -304,11 +304,14 @@ Cuba.define do
       on 'check-on-resize' do
         puts req.params
         changedQueries = Java::TechnologyTabulaDetectors::
-                         RegexSearch.queryCheckContentOnResize(regex_query_meta_data.regex_searches,
+                         RegexSearch.queryCheckContentOnResize(regex_query_meta_data.file,
+                                                               regex_query_meta_data.regex_searches,
                                                                req.params['page_number'].to_i,
                                                                req.params['page_height'].to_i,
-                                                               req.params['header_height'].to_i)
-        res.write(changedQueries)
+                                                               req.params['new_header_height'].to_i,
+                                                               req.params['previous_header_height'].to_i)
+        gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+        res.write(gson.to_json(changedQueries))
       end
 
       on 'remove-search-data' do
@@ -321,15 +324,16 @@ Cuba.define do
         }
         if removed_searches.length > 1 || removed_searches.length==0
           res.status =500
+          res.write('Incorrect number of searches removed:',removed_searches.length)
+        else
+          puts 'Removed Regex search:'
+          puts removed_searches[0]
+
+          puts 'Remaining Regex searches:'
+
+          gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+          res.write(gson.to_json(removed_searches))
         end
-
-        puts 'Removed Regex search:'
-        puts removed_searches[0]
-
-        puts 'Remaining Regex searches:'
-
-        gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
-        res.write(gson.to_json(removed_searches))
       end
     end
 

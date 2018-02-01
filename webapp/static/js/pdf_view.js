@@ -869,8 +869,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     console.log(this.header_view.el);
     this.$el.append(this.header_view.el);
     this.listenTo(this.header_view, 'header_resized', function(data){
-      console.log("In header_resized...");
-      console.log(this.model.attributes);
       data.page_number = this.model.attributes.number;
       data.page_height = this.model.attributes.height;
       Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.check_regex_searches_on_resize(data)});
@@ -1130,7 +1128,8 @@ Tabula.RegexResultCollection= Backbone.Collection.extend({
   check_regex_searches_on_resize: function(data){
     console.log("In check_regex_searches_on_resize:");
     console.log(data);
-    $.ajax({
+    if(this.length>0){
+      $.ajax({
       type: 'GET',
       url: '/regex/check-on-resize',
       data: data,
@@ -1139,14 +1138,14 @@ Tabula.RegexResultCollection= Backbone.Collection.extend({
         console.log("Returned data:");
         console.log(data);
       }, this),
-      //TODO: Figure out a more graceful way to handle this
       error: function (xhr, status, err) {
         alert('Error in regex check: ' + JSON.stringify(err));
         console.log('Error in regex check: ', err);
         console.log(xhr);
         console.log(status);
       }
-    });
+
+    })};
      return "Try to see it my way, only time will tell if I am right or if I'm wrong";
   }
 });
