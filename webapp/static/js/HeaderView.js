@@ -2,10 +2,13 @@
 //HeaderView
 //   Backbone View extension for managing user-defined headers.
 //
-//   TODO: Insert larger blurb here
+//   Allows user to define an area at the top of a page that should not be considered content when performing a regex
+//   search
 //
 //
 //   1/18/2018  REM; created
+//   1/30/2018  REM; updated UI to reduce mouse flicker, increase intuitiveness
+//   2/1/2018   REM; adding state so that it can be determined if header is being enlarged or shrunk on a resize event
 //
 /* global $, paper, Backbone, _, console */
 (function (name, context, definition) {
@@ -21,19 +24,20 @@
             'mouseup': 'endHeaderResize',
             'mousemove': 'resizeHeader'},
     previous_y: 0,
-    BUFFER:10, //TODO: make a prototype include buffer as a const
+    BUFFER:10, //TODO: make a prototype include buffer as a const to reduce object overhead...
+    height_on_start_of_resize: null, //Header height before the user begins resize operation
+    previous_y:null, //Record of mouse height (relative to page) updated in between resize operations
+
     enableHeaderResize: function(event){
-      console.log("In enableHeaderResize:");
+
       this.resizing = true;
+      this.height_on_start_of_resize = parseInt(this.$el.css('height'));
       this.previous_y = (event.pageY - this.$el['0'].parentElement.offsetTop);
-      var new_height = parseInt(this.$el.css('height'));
 
-      //So that the user can more easily drag the header area when its up at the top of the page
+      //So that the user can more easily drag the header area when it is up at the top of the page
       if(this.BUFFER>=this.previous_y){
-        new_height = this.BUFFER;
+        this.$el.css({'height': this.BUFFER});
       }
-
-      this.$el.css({'height': new_height})
 
     },
 
@@ -41,8 +45,9 @@
       if(this.resizing===true){
         this.resizing = false;
         console.log("In endHeaderResize:");
-        console.log(this.$el)
-        this.trigger('header_resized',{'header_height':parseInt(this.$el.css('height'))});
+        console.log(this.$el);
+        this.trigger('header_resized',{'new_header_height':parseInt(this.$el.css('height')),
+                                       'previous_header_height':this.height_on_start_of_resize});
       }
     },
 
@@ -60,7 +65,7 @@
         if(new_height==0){
           this.endHeaderResize(event);
         }
-        this.previous_y = mouseLocation; //Updating status variables for next event...
+        this.previous_y = mouseLocation; //Updating status variables for next mousemove...
       }
     },
 
@@ -71,7 +76,7 @@
         "top": data.top,
         "left": data.left,
         "width": data.width,
-        "height": this.BUFFER //A small height so that the user can easily drag the header to its intended size
+        "height": 0
       });
 
       this.$el.attr('title','Drag down to define header area');
