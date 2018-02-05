@@ -47,7 +47,7 @@
         console.log("In endHeaderResize:");
         console.log(this.$el);
         sendback={};
-        sendback.previousHeaderFilter = {'header_height':this.height_on_start_of_resize};
+        sendback.previous_header_filter = {'header_height':this.height_on_start_of_resize};
         this.trigger('header_resized',sendback);
       }
     },
