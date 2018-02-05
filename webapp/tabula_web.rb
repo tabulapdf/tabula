@@ -303,13 +303,21 @@ Cuba.define do
 
       on 'check-on-resize' do
         puts req.params
+
+        previous_filter_area = Java::TechnologyTabulaDetectors::RegexSearch.FilteredArea(req.params['previous_header_height'].to_i,
+                                                                                         0, #Height of footer filter 0 for now...
+                                                                                         req.params['page_height'].to_i)
+
+        areas_to_filter = []
+
+
+
         changedQueries = Java::TechnologyTabulaDetectors::
-                         RegexSearch.queryCheckContentOnResize(regex_query_meta_data.file,
-                                                               regex_query_meta_data.regex_searches,
-                                                               req.params['page_number'].to_i,
-                                                               req.params['page_height'].to_i,
-                                                               req.params['new_header_height'].to_i,
-                                                               req.params['previous_header_height'].to_i)
+                         RegexSearch.checkSearchesOnFilterResize(regex_query_meta_data.file,
+                                                                 req.params['page_number'].to_i,
+                                                                 regex_query_meta_data.regex_searches,
+                                                                 areas_to_filter,
+                                                                 regex_query_meta_data.previous_filter_area)
         gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
         res.write(gson.to_json(changedQueries))
       end
