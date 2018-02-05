@@ -869,10 +869,9 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     console.log(this.header_view.el);
     this.$el.append(this.header_view.el);
     this.listenTo(this.header_view, 'header_resized', function(data){
-      data.previousHeaderFilter.page_number = this.model.attributes.number;
-      data.previousHeaderFilter.page_height = this.model.attributes.height;
+      data.previous_header_filter.page_number = this.model.attributes.number;
+      data.previous_header_filter.page_height = this.model.attributes.height;
       console.log("In listening to header_resized:");
-      console.log(Tabula.pdf_view.components['document_view'].page_views);
 
       data.headerFilterAreas = {};
 
@@ -881,8 +880,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
         data.headerFilterAreas[pageView.model.attributes.number]={'header_height':parseInt(pageView.header_view.$el.css('height')),
                                                                   'page_height':parseInt(pageView.model.attributes.height)};
       });
-
-      console.log(data);
 
       Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.check_regex_searches_on_resize(data)});
   },
