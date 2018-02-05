@@ -23,10 +23,10 @@
     events:{'mousedown': 'enableHeaderResize',
             'mouseup': 'endHeaderResize',
             'mousemove': 'resizeHeader'},
-    previous_y: 0,
+    previous_y: 0, //Record of mouse height (relative to page) updated in between resize operations
     BUFFER:10, //TODO: make a prototype include buffer as a const to reduce object overhead...
-    height_on_start_of_resize: null, //Header height before the user begins resize operation
-    previous_y:null, //Record of mouse height (relative to page) updated in between resize operations
+    height_on_start_of_resize: 0, //Header height before the user begins resize operation
+    resizing: false,
 
     enableHeaderResize: function(event){
 
@@ -46,8 +46,9 @@
         this.resizing = false;
         console.log("In endHeaderResize:");
         console.log(this.$el);
-        this.trigger('header_resized',{'new_header_height':parseInt(this.$el.css('height')),
-                                       'previous_header_height':this.height_on_start_of_resize});
+        sendback={};
+        sendback.previousHeaderFilter = {'header_height':this.height_on_start_of_resize};
+        this.trigger('header_resized',sendback);
       }
     },
 
@@ -80,8 +81,6 @@
       });
 
       this.$el.attr('title','Drag down to define header area');
-
-      this.resizing = false;
 
       //Detect when user moves mouse/release mouse outside of the area
       $(document).on({
