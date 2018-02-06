@@ -303,14 +303,20 @@ Cuba.define do
 
       on 'check-on-resize' do
         puts req.params
-
+        #TODO: restructure how filtered_areas are stored/sent to be more efficient...could do a much better job with this...
         previous_filter_area = Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['previous_header_filter']['header_height'].to_i,
                                                                                           0, #Height of footer filter 0 for now...
                                                                                           req.params['previous_header_filter']['page_height'].to_i)
 
+        areas_to_filter =  Java::JavaUtil::HashMap.new #This needs to be based off of the req.params for header_filter_areas...
 
-        areas_to_filter = {} #This needs to be based off of the req.params for header_filter_areas...
+        req.params['header_filter_areas'].each do |pageNumber, valueMap|
+         areas_to_filter.put(pageNumber.to_i.to_java(:int),Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(valueMap['header_height'].to_i,
+                                                                                                            0,
+                                                                                                            valueMap['page_height'].to_i))
+        end
 
+        puts areas_to_filter
 
         changedQueries = Java::TechnologyTabulaDetectors::
                          RegexSearch.checkSearchesOnFilterResize(regex_query_meta_data.file,

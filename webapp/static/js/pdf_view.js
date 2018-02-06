@@ -873,12 +873,12 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       data.previous_header_filter.page_height = this.model.attributes.height;
       console.log("In listening to header_resized:");
 
-      data.headerFilterAreas = {};
+      data.header_filter_areas = {};
 
       _.each(Tabula.pdf_view.components['document_view'].page_views,function(pageView){
         console.log(pageView);
-        data.headerFilterAreas[pageView.model.attributes.number]={'header_height':parseInt(pageView.header_view.$el.css('height')),
-                                                                  'page_height':parseInt(pageView.model.attributes.height)};
+        data.header_filter_areas[pageView.model.attributes.number]={'header_height':parseInt(pageView.header_view.$el.css('height')),
+                                                                    'page_height':parseInt(pageView.model.attributes.height)};
       });
 
       Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.check_regex_searches_on_resize(data)});
