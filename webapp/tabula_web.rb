@@ -311,12 +311,8 @@ Cuba.define do
         areas_to_filter =  Java::JavaUtil::HashMap.new #This needs to be based off of the req.params for header_filter_areas...
 
         req.params['header_filter_areas'].each do |pageNumber, valueMap|
-         areas_to_filter.put(pageNumber.to_i.to_java(:int),Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(valueMap['header_height'].to_i,
-                                                                                                            0,
-                                                                                                            valueMap['page_height'].to_i))
+        areas_to_filter.put(pageNumber.to_i.to_java(:int),Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(valueMap['header_height'].to_i, 0, valueMap['page_height'].to_i))
         end
-
-        puts areas_to_filter
 
         changedQueries = Java::TechnologyTabulaDetectors::
                          RegexSearch.checkSearchesOnFilterResize(regex_query_meta_data.file,
@@ -324,7 +320,9 @@ Cuba.define do
                                                                  previous_filter_area,
                                                                  areas_to_filter,
                                                                  regex_query_meta_data.regex_searches)
+        puts changedQueries.length
         gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+
         res.write(gson.to_json(changedQueries))
       end
 

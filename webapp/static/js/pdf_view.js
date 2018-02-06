@@ -870,15 +870,17 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     this.$el.append(this.header_view.el);
     this.listenTo(this.header_view, 'header_resized', function(data){
       data.previous_header_filter.page_number = this.model.attributes.number;
-      data.previous_header_filter.page_height = this.model.attributes.height;
+      data.previous_header_filter.page_height = parseInt(this.$el.css('height'));
+
       console.log("In listening to header_resized:");
+      console.log(this.$el.css('height'));
 
       data.header_filter_areas = {};
 
       _.each(Tabula.pdf_view.components['document_view'].page_views,function(pageView){
         console.log(pageView);
         data.header_filter_areas[pageView.model.attributes.number]={'header_height':parseInt(pageView.header_view.$el.css('height')),
-                                                                    'page_height':parseInt(pageView.model.attributes.height)};
+                                                                    'page_height':parseInt(pageView.$el.css('height'))};
       });
 
       Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.check_regex_searches_on_resize(data)});
@@ -1146,7 +1148,9 @@ Tabula.RegexResultCollection= Backbone.Collection.extend({
       success: _.bind(function (data) {
         console.log("Successful check:");
         console.log("Returned data:");
-        console.log(data);
+        console.log(JSON.parse(data));
+        console.log("What I've got to work with:");
+        console.log(this);
       }, this),
       error: function (xhr, status, err) {
         alert('Error in regex-check-on-resize event: ' + JSON.stringify(err));
@@ -1230,6 +1234,9 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     });
   },
   process_result: function (search_results) {
+
+    console.log("In process_result:");
+    console.log(search_results);
 
     var rendered_results= new Tabula.Selections();
 
