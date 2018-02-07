@@ -485,13 +485,13 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
     regex_search_collection.forEach(function(regex_result){
       var refreshed_sels = new Tabula.Selections();
-      regex_result.attributes.rendered_results.forEach(function(regex_sel){
+      regex_result.attributes.selections_rendered.forEach(function(regex_sel){
         var refreshed_sel = Tabula.pdf_view.renderSelection(regex_sel.attributes);
         refreshed_sels.add(refreshed_sel);
         regex_sel.attributes.remove();
         already_rendered_selections.push(refreshed_sel);
       });
-      regex_result.attributes.rendered_results = refreshed_sels;
+      regex_result.attributes.selections_rendered = refreshed_sels;
     });
 
     var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
@@ -880,10 +880,14 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       _.each(Tabula.pdf_view.components['document_view'].page_views,function(pageView){
         console.log(pageView);
         data.header_filter_areas[pageView.model.attributes.number]={'header_height':parseInt(pageView.header_view.$el.css('height')),
-                                                                    'page_height':parseInt(pageView.$el.css('height'))};
+                                                                    'gui_page_height':parseInt(pageView.$el.css('height')),
+                                                                    'absolute_page_height':pageView.model.attributes.height};
       });
 
-      Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.check_regex_searches_on_resize(data)});
+      console.log("What is in the data?:");
+      console.log(data);
+
+      Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.check_regex_searches_on_resize(data)});
   },
 
   createTables: function(asfd){
@@ -1135,33 +1139,10 @@ Tabula.RegexHandler = Backbone.View.extend({
 //   11/23/2017  REM; created
 //
 Tabula.RegexResultCollection= Backbone.Collection.extend({
-  model : Tabula.RegexResultModel,
-  initialize: function(){},
-  check_regex_searches_on_resize: function(data){
-    console.log("In check_regex_searches_on_resize:");
-    console.log(data);
-    if(this.length>0){
-      $.ajax({
-      type: 'GET',
-      url: '/regex/check-on-resize',
-      data: data,
-      success: _.bind(function (data) {
-        console.log("Successful check:");
-        console.log("Returned data:");
-        console.log(JSON.parse(data));
-        console.log("What I've got to work with:");
-        console.log(this);
-      }, this),
-      error: function (xhr, status, err) {
-        alert('Error in regex-check-on-resize event: ' + JSON.stringify(err));
-        console.log('Error in regex check: ', err);
-        console.log(xhr);
-        console.log(status);
-      }
-    })}
-     return "Try to see it my way, only time will tell if I am right or if I'm wrong";
-  }
+  model: Tabula.RegexResultModel,
+  initialize: function () {}
 });
+
 
 //Tabula.RegexCollectionView
 //   Backbone View extension for all generated Tabula.RegexResultView objects.
@@ -1182,6 +1163,56 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     this.collection = new Tabula.RegexResultCollection();
     this.collection.on('add',this.render,this);
   },
+  check_regex_searches_on_resize: function(data){
+    console.log("In check_regex_searches_on_resize:");
+    console.log(data);
+    if(this.collection.length>0){
+
+      $.ajax({
+        type: 'GET',
+        url: '/regex/check-on-resize',
+        data: data,
+        success: _.bind(function (data) {
+          console.log("Successful check:");
+          console.log("Returned data:");
+          console.log(JSON.parse(data));
+          console.log("What I've got to work with:");
+          console.log(this.collection.models);
+
+          var query_models = this.collection.models;
+
+          console.log("this.collection:");
+          console.log(this.collection);
+
+          JSON.parse(data).forEach(function(element){
+            var query_to_update = _.find(query_models,function(model){
+              return (model.attributes.pattern_before == element.updated_regex_search._regex_before_table.pattern) &&
+                (model.attributes.pattern_after == element.updated_regex_search._regex_after_table.pattern)
+            });
+
+            element.areas_removed.forEach(function(matching_area_to_remove){
+              console.log("What is to be removed:");
+
+              var matching_key = _.find(Array.from(query_to_update.attributes.selections_rendered.keys()), function(key_match){
+                return _.isEqual(key_match,matching_area_to_remove);
+              });
+
+              console.log("Matching Key:");
+              console.log(matching_key);
+              console.log(query_to_update);
+              
+            });
+          });
+        }, this),
+        error: function (xhr, status, err) {
+          alert('Error in regex-check-on-resize event: ' + JSON.stringify(err));
+          console.log('Error in regex check: ', err);
+          console.log(xhr);
+          console.log(status);
+        }
+      })}
+    return "Try to see it my way, only time will tell if I am right or if I'm wrong";
+  },
   remove_regex_search: function(event_data,search_to_remove){
     console.log("Search to remove:");
     console.log(search_to_remove.attributes);
@@ -1192,7 +1223,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
              'pattern_after':  search_to_remove.attributes.pattern_after },
       dataType: 'json',
       success: _.bind(function (data) {
-        console.log("Back end removal successful:")
+        console.log("Back end removal successful:");
         console.log(data)
 
       }, this),
@@ -1204,8 +1235,6 @@ Tabula.RegexCollectionView = Backbone.View.extend({
       }
     });
     this.collection.remove(search_to_remove);
-
-
   },
   reset : function(){
     _.each(this.collection.toArray(),function(regex_search){
@@ -1238,12 +1267,13 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     console.log("In process_result:");
     console.log(search_results);
 
-    var rendered_results= new Tabula.Selections();
+  //  var rendered_results= new Tabula.Selections();
+    var selections_rendered = new Map();
 
     search_results["_matching_areas"].forEach(function(matching_area){
       Object.keys(matching_area).forEach(function(page_with_match){
         matching_area[page_with_match].forEach(function(regex_rect){
-          rendered_results.add(Tabula.pdf_view.renderSelection({
+          selections_rendered.set(matching_area, Tabula.pdf_view.renderSelection({
             x1: regex_rect['x'],
             y1: regex_rect['y'],
             width: regex_rect['width'],
@@ -1258,22 +1288,29 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     });
 
     //Check for overlapping queries
-    if((rendered_results.every(function(result){
-      return result.attributes.checkOverlaps();
-      }))) {
+
+    console.log("What's going on?");
+    console.log(selections_rendered);
+
+    console.log(selections_rendered.values());
+
+    if(Array.from(selections_rendered.values()).every(function(rendered_area){
+      return rendered_area.attributes.checkOverlaps();
+      }))
+      {
       this.collection.add(new Tabula.RegexResultModel({
         pattern_before: search_results["_regex_before_table"]["pattern"],
         pattern_after: search_results["_regex_after_table"]["pattern"],
         num_matches: search_results["_matching_areas"].length,
         matching_areas: search_results["_matching_areas"],
-        rendered_results: rendered_results
+        selections_rendered: selections_rendered
       }));
     }
     else{
       //TODO: figure out perhaps a cleaner way to do this?? Shirley's going to look into this
       alert('TODO: Figure out what the user should see here about overlaps');
-      rendered_results.forEach(function(result){
-        result.attributes.remove();
+      selections_rendered.forEach(function(sel){
+        sel.attributes.remove();
       })
     }
 
@@ -1315,7 +1352,7 @@ Tabula.RegexResultView = Backbone.View.extend({
   },
   remove_element_request: function(event){
     //Removing the RegexSelection objects associated with the RegexResult
-    this.model.attributes.rendered_results.forEach(function(result){
+    this.model.attributes.selections_rendered.forEach(function(result){
       result.attributes.remove();
 
     });
@@ -1324,6 +1361,7 @@ Tabula.RegexResultView = Backbone.View.extend({
     //Removing the table entry
     this.remove();
   }
+
 });
 
 //Tabula.RegexResultModel
@@ -1337,7 +1375,7 @@ Tabula.RegexResultView = Backbone.View.extend({
 Tabula.RegexResultModel = Backbone.Model.extend({
 
   initialize: function(data) {
-    this.rendered_results = new Tabula.Selections(data["rendered_results"]);
+    console.log("In initialize of RegexResultModel:");
 
     this.set({
       pattern_before: data["pattern_before"],
