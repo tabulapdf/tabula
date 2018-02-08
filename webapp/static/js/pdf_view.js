@@ -1199,8 +1199,20 @@ Tabula.RegexCollectionView = Backbone.View.extend({
 
               console.log("Matching Key:");
               console.log(matching_key);
+              console.log("Query to update before changes:");
               console.log(query_to_update);
-              
+
+              query_to_update.attributes.selections_rendered.get(matching_key).attributes.remove();
+
+              console.log(query_to_update.attributes.num_matches);
+
+              query_to_update.set({matching_areas:query_to_update.attributes.matching_areas.filter(function(element){
+                return (_.isEqual(matching_key,element)===false)}),
+                num_matches: (query_to_update.attributes.num_matches-1)});
+
+              console.log("Query to update after changes:");
+              console.log(query_to_update);
+
             });
           });
         }, this),
@@ -1342,6 +1354,8 @@ Tabula.RegexResultView = Backbone.View.extend({
     this.model = data.model;
 //    console.log(JSON.stringify($('#regex-result').html()));
     this.template = _.template($('#regex-result').html());
+
+    this.listenTo(this.model,'change',this.render());
   },
   render: function(){
     console.log("In render of Tabula.RegexResultView:");
@@ -1374,8 +1388,15 @@ Tabula.RegexResultView = Backbone.View.extend({
 //
 Tabula.RegexResultModel = Backbone.Model.extend({
 
+  pattern_before: null, //set on initialize
+  pattern_after: null,  //set on initialize
+  num_matches: null,    //set on initialize
+  matching_areas: null,  //set on initialize
+
   initialize: function(data) {
     console.log("In initialize of RegexResultModel:");
+
+    console.log(data["matching_areas"].length);
 
     this.set({
       pattern_before: data["pattern_before"],
@@ -1383,6 +1404,8 @@ Tabula.RegexResultModel = Backbone.Model.extend({
       num_matches: data["num_matches"],
       matching_areas: data["matching_areas"]
     });
+
+
   }
 });
 
