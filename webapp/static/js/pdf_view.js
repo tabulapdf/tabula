@@ -179,7 +179,7 @@ Tabula.Selections = Backbone.Collection.extend({
     }
     else {
       console.log("Selection was not already in the collection");
-      new_selection_args = _.extend({'page_number': pageNumber,
+      var new_selection_args = _.extend({'page_number': pageNumber,
                                     'imageWidth': imageDims.width,
                                     'imageHeight': imageDims.height,
                                     'extraction_method': Tabula.pdf_view.options.extraction_method,
@@ -193,13 +193,13 @@ Tabula.Selections = Backbone.Collection.extend({
     return selection;
   },
   createHiddenSelection: function(sel){
-      new_selection_args = _.extend({'page_number': sel.page,
+      var new_selection_args = _.extend({'page_number': sel.page,
                                     'extraction_method': 'spreadsheet',
                                     'id': String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now(),
                                     'hidden': true,
                                     'pdf_document': this.pdf_document},
                                     sel);
-      selection = new Tabula.Selection(new_selection_args);
+      var selection = new Tabula.Selection(new_selection_args);
       this.add(selection);
       return selection;
   }
@@ -870,7 +870,10 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     this.$el.append(this.header_view.el);
     this.listenTo(this.header_view, 'header_resized', function(data){
       data.previous_header_filter.page_number = this.model.attributes.number;
-      data.previous_header_filter.page_height = parseInt(this.$el.css('height'));
+      data.previous_header_filter.gui_page_height = parseInt(this.$el.css('height'));
+      data.previous_header_filter.absolute_page_height =
+        Tabula.pdf_view.components['document_view'].page_views[this.model.attributes.number].model.attributes.height;
+
 
       console.log("In listening to header_resized:");
       console.log(this.$el.css('height'));
@@ -967,7 +970,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
     // find and remove the canceled selection from the collection of selections. (triggering remove events).
     var sel = Tabula.pdf_view.pdf_document.selections.get(selection.id);
-    removed_selection = Tabula.pdf_view.pdf_document.selections.remove(sel);
+    var removed_selection = Tabula.pdf_view.pdf_document.selections.remove(sel);
 
     Tabula.pdf_view.components['control_panel'].render(); // deal with buttons that need blurred out if there's zero selections, etc.
   },
@@ -1181,40 +1184,66 @@ Tabula.RegexCollectionView = Backbone.View.extend({
 
           var query_models = this.collection.models;
 
-          console.log("this.collection:");
-          console.log(this.collection);
-
           JSON.parse(data).forEach(function(element){
+
+            console.log("Element:");
+            console.log(element);
+
             var query_to_update = _.find(query_models,function(model){
               return (model.attributes.pattern_before == element.updated_regex_search._regex_before_table.pattern) &&
                 (model.attributes.pattern_after == element.updated_regex_search._regex_after_table.pattern)
             });
 
+
+            console.log("Query_To_Update:");
+            console.log(query_to_update);
+
+            var match_count_change = 0;
+
+            //TODO: Refactor below to remove code redundancies...
+
             element.areas_removed.forEach(function(matching_area_to_remove){
-              console.log("What is to be removed:");
-
-              var matching_key = _.find(Array.from(query_to_update.attributes.selections_rendered.keys()), function(key_match){
-                return _.isEqual(key_match,matching_area_to_remove);
+              console.log("Matching Area To Remove:");
+              console.log(matching_area_to_remove);
+              var front_end_match =_.find(Array.from(query_to_update.attributes.selections_rendered.keys()), function (key_match) {
+                return _.isEqual(key_match, matching_area_to_remove);
               });
-
-              console.log("Matching Key:");
-              console.log(matching_key);
-              console.log("Query to update before changes:");
-              console.log(query_to_update);
-
-              query_to_update.attributes.selections_rendered.get(matching_key).attributes.remove();
-
-              console.log(query_to_update.attributes.num_matches);
-
-              query_to_update.set({matching_areas:query_to_update.attributes.matching_areas.filter(function(element){
-                return (_.isEqual(matching_key,element)===false)}),
-                num_matches: (query_to_update.attributes.num_matches-1)});
-
-              console.log("Query to update after changes:");
-              console.log(query_to_update);
-
+              query_to_update.attributes.selections_rendered.get(front_end_match).forEach(function(subsection){
+                subsection.attributes.remove();
+              });
+              query_to_update.attributes.matching_areas.splice(front_end_match,1);
+              query_to_update.attributes.selections_rendered.delete(front_end_match);
+              match_count_change--;
             });
-          });
+
+            element.areas_added.forEach(function(matching_area_to_add){
+              console.log("Matching Area to Add:");
+              console.log(matching_area_to_add);
+              var created_subsections = new Tabula.Selections();
+              Object.keys(matching_area_to_add).forEach(function(page_number) {
+                console.log("Page Number:" + page_number);
+                matching_area_to_add[page_number].forEach(function (subsection) {
+                  created_subsections.add(Tabula.pdf_view.renderSelection({
+                    x1: subsection._area['x'],
+                    y1: subsection._area['y'],
+                    width: subsection._area['width'],
+                    height: subsection._area['height'],
+                    page_number: subsection._page_num,
+                    extraction_method: 'spreadsheet',
+                    selection_id: null,
+                    selection_type: 'regex'
+                  }));
+                });
+                match_count_change++;
+             });
+             query_to_update.attributes.selections_rendered.set(matching_area_to_add,created_subsections);
+            });
+
+            //TODO=figure out how to update query_to_update + fire change event so dynamic content is refreshed...
+              query_to_update.set({matching_areas:query_to_update.attributes.matching_areas,
+                                   num_matches: (query_to_update.attributes.num_matches+match_count_change)});
+
+            })
         }, this),
         error: function (xhr, status, err) {
           alert('Error in regex-check-on-resize event: ' + JSON.stringify(err));
@@ -1279,18 +1308,17 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     console.log("In process_result:");
     console.log(search_results);
 
-  //  var rendered_results= new Tabula.Selections();
     var selections_rendered = new Map();
-
     search_results["_matching_areas"].forEach(function(matching_area){
+      selections_rendered.set(matching_area,new Tabula.Selections());
       Object.keys(matching_area).forEach(function(page_with_match){
         matching_area[page_with_match].forEach(function(regex_rect){
-          selections_rendered.set(matching_area, Tabula.pdf_view.renderSelection({
-            x1: regex_rect['x'],
-            y1: regex_rect['y'],
-            width: regex_rect['width'],
-            height: regex_rect['height'],
-            page_number: parseInt(page_with_match),
+          selections_rendered.get(matching_area).add(Tabula.pdf_view.renderSelection({
+            x1: regex_rect._area['x'],
+            y1: regex_rect._area['y'],
+            width: regex_rect._area['width'],
+            height: regex_rect._area['height'],
+            page_number: regex_rect._page_num,
             extraction_method: 'spreadsheet',
             selection_id: null,
             selection_type: 'regex'
@@ -1304,11 +1332,12 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     console.log("What's going on?");
     console.log(selections_rendered);
 
-    console.log(selections_rendered.values());
-
-    if(Array.from(selections_rendered.values()).every(function(rendered_area){
-      return rendered_area.attributes.checkOverlaps();
-      }))
+    //TO-DO:THIS WILL NEED TO BE REDONE
+    if(Array.from(selections_rendered.keys()).every(function(matching_area){
+      console.log(matching_area);
+      return selections_rendered.get(matching_area).every(function(subsection){
+        console.log(subsection);
+        return true;})}))
       {
       this.collection.add(new Tabula.RegexResultModel({
         pattern_before: search_results["_regex_before_table"]["pattern"],
@@ -1320,9 +1349,9 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     }
     else{
       //TODO: figure out perhaps a cleaner way to do this?? Shirley's going to look into this
-      alert('TODO: Figure out what the user should see here about overlaps');
-      selections_rendered.forEach(function(sel){
-        sel.attributes.remove();
+     alert('TODO: Figure out what the user should see here about overlaps');
+     selections_rendered.forEach(function(sel){
+       sel.attributes.remove();
       })
     }
 
@@ -1355,7 +1384,7 @@ Tabula.RegexResultView = Backbone.View.extend({
 //    console.log(JSON.stringify($('#regex-result').html()));
     this.template = _.template($('#regex-result').html());
 
-    this.listenTo(this.model,'change',this.render());
+    this.listenTo(this.model,'change',this.render);
   },
   render: function(){
     console.log("In render of Tabula.RegexResultView:");
@@ -1479,9 +1508,9 @@ Tabula.RegexQueryModel = Backbone.Model.extend({ //Singleton
    },
    //determines if user has provided all values necessary to perform regex search <--TODO:move error checking to back-end or strengthen disable
    isFilledOut: function(){
-     key_array = this.keys();
+     var key_array = this.keys();
  //    console.log(key_array);
-     key_array_length = key_array.length;
+     var key_array_length = key_array.length;
      for(i=0; i<key_array_length;i++){
        if(this['attributes'][key_array[i]]===""){
  //        console.log(key_array[i]);
