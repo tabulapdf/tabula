@@ -1244,8 +1244,8 @@ Tabula.RegexCollectionView = Backbone.View.extend({
                     selection_type: 'regex'
                   }));
                 });
-                match_count_change++;
              });
+             match_count_change++;
              query_to_update.attributes.selections_rendered.set(matching_area_to_add,created_subsections);
             });
 
