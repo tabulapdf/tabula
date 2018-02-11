@@ -286,15 +286,32 @@ Cuba.define do
       on 'search' do
       puts req.params
       puts "In regex/search..."
-      if regex_query_meta_data.is_new_doc(req.params['file_path'])
-        regex_query_meta_data.reset_for_new_doc(req.params['file_path'])
+      query_data = req.params['query']
+      if regex_query_meta_data.is_new_doc(query_data['file_path'])
+        regex_query_meta_data.reset_for_new_doc(query_data['file_path'])
+      end
+#TODO-reduce code redundancy in search, check-on-resize (maybe a parser method that returns a filteredArea map?)
+
+        puts 'Do I get here?'
+
+
+
+      areas_to_filter =  Java::JavaUtil::HashMap.new #This needs to be based off of the req.params for header_filter_areas...
+      req.params['filtered_areas'].each do |pageNumber, valueMap|
+        puts pageNumber
+        puts valueMap
+        areas_to_filter.put(pageNumber.to_i.to_java(:int),Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(valueMap['header_height'].to_i,
+                                                                                                                         0,
+                                                                                                                         valueMap['gui_page_height'].to_i,
+                                                                                                                         valueMap['absolute_page_height'].to_i))
       end
 
-      regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(req.params['pattern_before'],
-                                                                      req.params['include_pattern_before'],
-                                                                      req.params['pattern_after'],
-                                                                      req.params['include_pattern_after'],
-                                                                      regex_query_meta_data.file)
+      regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(query_data['pattern_before'],
+                                                                      query_data['include_pattern_before'],
+                                                                      query_data['pattern_after'],
+                                                                      query_data['include_pattern_after'],
+                                                                      regex_query_meta_data.file,
+                                                                      areas_to_filter)
 
       regex_query_meta_data.regex_searches.push(regex_search)
 
@@ -316,7 +333,7 @@ Cuba.define do
         req.params['header_filter_areas'].each do |pageNumber, valueMap|
           puts pageNumber
           puts valueMap
-        areas_to_filter.put(pageNumber.to_i.to_java(:int),Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(valueMap['header_height'].to_i,
+          areas_to_filter.put(pageNumber.to_i.to_java(:int),Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(valueMap['header_height'].to_i,
                                                                                                                          0,
                                                                                                                          valueMap['gui_page_height'].to_i,
                                                                                                                          valueMap['absolute_page_height'].to_i))
