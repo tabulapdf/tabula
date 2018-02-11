@@ -1109,12 +1109,22 @@ Tabula.RegexHandler = Backbone.View.extend({
     /*
     *Determine if regex pattern has already been previously searched for
      */
+    //TODO-Remember to update this once footers get added...
+    var areas_to_filter_out = {};
+      _.each(Tabula.pdf_view.components['document_view'].page_views,function(pageView){
+      console.log(pageView);
+      areas_to_filter_out[pageView.model.attributes.number]={'header_height':parseInt(pageView.header_view.$el.css('height')),
+        'gui_page_height':parseInt(pageView.$el.css('height')),
+        'absolute_page_height':pageView.model.attributes.height};
+    });
+
     if (this.regex_results_handler.has_same_query(this.regex_query_handler.model.toJSON()) == false) {
 
       $.ajax({
         type: 'GET',
         url: '/regex/search',
-        data: this.regex_query_handler.model.toJSON(),
+        data: { query: this.regex_query_handler.model.toJSON(),
+                filtered_areas: areas_to_filter_out },
         dataType: 'json',
         success: _.bind(function (data) {
 
@@ -1280,8 +1290,10 @@ Tabula.RegexCollectionView = Backbone.View.extend({
   reset : function(){
     _.each(this.collection.toArray(),function(regex_search){
       //Removing all the drawn regex rectangles:
-      _.each(regex_search.toJSON()['rendered_results']['models'],function(regex_rectangle){
-        regex_rectangle.attributes.remove();
+      _.each(regex_search.toJSON()['selections_rendered']['models'],function(matching_area){
+        matching_area.forEach(function(subsection){
+          subsection.attributes.remove();
+        });
       })
     });
     //Remove all the entries in regex table in the side bar
@@ -1348,10 +1360,12 @@ Tabula.RegexCollectionView = Backbone.View.extend({
       }));
     }
     else{
-      //TODO: figure out perhaps a cleaner way to do this?? Shirley's going to look into this
+     //TODO: figure out perhaps a cleaner way to do this?? Shirley's going to look into this I think..
      alert('TODO: Figure out what the user should see here about overlaps');
-     selections_rendered.forEach(function(sel){
-       sel.attributes.remove();
+     selections_rendered.forEach(function(matching_area){
+       matching_area.forEach(function(subsection){
+         subsection.attributes.remove();
+       });
       })
     }
 
@@ -1395,9 +1409,15 @@ Tabula.RegexResultView = Backbone.View.extend({
   },
   remove_element_request: function(event){
     //Removing the RegexSelection objects associated with the RegexResult
-    this.model.attributes.selections_rendered.forEach(function(result){
-      result.attributes.remove();
 
+    console.log("In remove_element_request:");
+    console.log(this);
+
+    this.model.attributes.selections_rendered.forEach(function(matching_area){
+
+      matching_area.forEach(function(subsection){
+        subsection.attributes.remove();
+      });
     });
     //Removing the reference to the corresponding RegexResultModel
     this.$el.trigger('remove_element',this.model);
