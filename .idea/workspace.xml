@@ -433,7 +433,14 @@
       <option name="project" value="LOCAL" />
       <updated>1518418761099</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Update of workspace file">
+      <created>1518419617988</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1518419617988</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -507,7 +514,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial additions front-end testing files. Currently this first test is failing, will be updated." />
     <MESSAGE value="Added on to component testing for the home page. Need to finish testing last bit of components and then need to go back to the TestHelpPage and test hover menu." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added on to component testing for the home page. Need to finish testing last bit of components and then need to go back to the TestHelpPage and test hover menu." />
+    <MESSAGE value="Update of workspace file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update of workspace file" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
