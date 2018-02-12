@@ -3,6 +3,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import static junit.framework.TestCase.assertTrue;
+
 public class TestHomePage {
     @Test
     public static void main(String[] args){
@@ -12,19 +14,16 @@ public class TestHomePage {
             driver.findElement(By.className("navbar-brand")).click();
             driver.findElement(By.id("upload-nav")).click();
             driver.findElement(By.id("templates-nav")).click();
-            String template_text = driver.findElement(By.className("my_saved_template_title")).getText() ;
-            if(template_text == "My Saved Templates"){
-                driver.navigate().back();
-                System.out.print("PASS");
-            }
-            else{
-                System.out.print("FAIL");
-            }
+            String text_template = "My Saved Templates";
+            assertTrue("Failed",text_template.equals(driver.findElement(By.className("my_saved_template_title")).getText()));
+            driver.navigate().back();
             driver.findElement(By.id("about-nav")).click();
+            assertTrue("Failed","About Tabula".equals(driver.findElement(By.className("about_tabula")).getText()));
             driver.navigate().back();
             driver.findElement(By.id("help-nav")).click();
+            assertTrue("Failed","How to Use Tabula".equals(driver.findElement(By.name("howto")).getText()));
             driver.navigate().back();
-            Thread.sleep(3000);
+
             driver.quit();
         }catch(Exception e){
             System.out.print(e);
