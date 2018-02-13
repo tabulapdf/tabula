@@ -7580,6 +7580,8 @@ form {
 }
 */
 
+html.wait, html.wait * { cursor: wait !important; }
+
 #main-pane .pdf-page {
   position: relative;
 }

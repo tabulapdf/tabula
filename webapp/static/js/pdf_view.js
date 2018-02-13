@@ -1125,13 +1125,16 @@ Tabula.RegexHandler = Backbone.View.extend({
     });
 
     if (this.regex_results_handler.has_same_query(this.regex_query_handler.model.toJSON()) == false) {
-
+      $('html').addClass("wait");
       $.ajax({
         type: 'POST',
         url: '/regex/search',
         data: { query: this.regex_query_handler.model.toJSON(),
                 filtered_areas: areas_to_filter_out },
         dataType: 'json',
+        complete: function(){
+          $('html').removeClass("wait");
+        },
         success: _.bind(function (data) {
 
           this.regex_results_handler.process_result(data);
@@ -1186,11 +1189,14 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     console.log("In check_regex_searches_on_resize:");
     console.log(data);
     if(this.collection.length>0){
-
+      $('html').addClass("wait");
       $.ajax({
         type: 'POST',
         url: '/regex/check-on-resize',
         data: data,
+        complete: function(){
+          $('html').removeClass("wait");
+        },
         success: _.bind(function (data) {
           console.log("Successful check:");
           console.log("Returned data:");
