@@ -281,98 +281,6 @@ Cuba.define do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
     end
 
-    on 'regex' do
-
-      on 'search' do
-      puts req.params
-      puts "In regex/search..."
-      query_data = req.params['query']
-      if regex_query_meta_data.is_new_doc(query_data['file_path'])
-        regex_query_meta_data.reset_for_new_doc(query_data['file_path'])
-      end
-#TODO-reduce code redundancy in search, check-on-resize (maybe a parser method that returns a filteredArea map?)
-
-        puts 'Do I get here?'
-
-
-
-      areas_to_filter =  Java::JavaUtil::HashMap.new #This needs to be based off of the req.params for header_filter_areas...
-      req.params['filtered_areas'].each do |pageNumber, valueMap|
-        puts pageNumber
-        puts valueMap
-        areas_to_filter.put(pageNumber.to_i.to_java(:int),Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(valueMap['header_height'].to_i,
-                                                                                                                         0,
-                                                                                                                         valueMap['gui_page_height'].to_i,
-                                                                                                                         valueMap['absolute_page_height'].to_i))
-      end
-
-      regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(query_data['pattern_before'],
-                                                                      query_data['include_pattern_before'],
-                                                                      query_data['pattern_after'],
-                                                                      query_data['include_pattern_after'],
-                                                                      regex_query_meta_data.file,
-                                                                      areas_to_filter)
-
-      regex_query_meta_data.regex_searches.push(regex_search)
-
-      gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
-      res.write(gson.to_json(regex_search))
-      end
-
-      on 'check-on-resize' do
-        puts 'In regex/check-on-resize'
-        puts req.params
-        #TODO: restructure how filtered_areas are stored/sent to be more efficient...could do a much better job with this...
-        previous_filter_area = Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['previous_header_filter']['header_height'].to_i,
-                                                                                              0, #Height of footer filter 0 for now...
-                                                                                              req.params['previous_header_filter']['gui_page_height'].to_i,
-                                                                                              req.params['previous_header_filter']['absolute_page_height'].to_i)
-
-        areas_to_filter =  Java::JavaUtil::HashMap.new #This needs to be based off of the req.params for header_filter_areas...
-
-        req.params['header_filter_areas'].each do |pageNumber, valueMap|
-          puts pageNumber
-          puts valueMap
-          areas_to_filter.put(pageNumber.to_i.to_java(:int),Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(valueMap['header_height'].to_i,
-                                                                                                                         0,
-                                                                                                                         valueMap['gui_page_height'].to_i,
-                                                                                                                         valueMap['absolute_page_height'].to_i))
-        end
-
-        changedQueries = Java::TechnologyTabulaDetectors::
-                         RegexSearch.checkSearchesOnFilterResize(regex_query_meta_data.file,
-                                                                 req.params['previous_header_filter']['page_number'].to_i,
-                                                                 previous_filter_area,
-                                                                 areas_to_filter,
-                                                                 regex_query_meta_data.regex_searches)
-        puts changedQueries.length
-        gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
-
-        res.write(gson.to_json(changedQueries))
-      end
-
-      on 'remove-search-data' do
-        puts req.params
-        puts regex_query_meta_data.regex_searches
-        puts 'In remove-search-data'
-        removed_searches, regex_query_meta_data.regex_searches = regex_query_meta_data.regex_searches.partition {
-         |search| search.getRegexBeforeTable() == req.params['pattern_before'] &&
-         search.getRegexAfterTable() == req.params['pattern_after']
-        }
-        if removed_searches.length > 1 || removed_searches.length==0
-          res.status =500
-          res.write('Incorrect number of searches removed:',removed_searches.length)
-        else
-          puts 'Removed Regex search:'
-          puts removed_searches[0]
-
-          puts 'Remaining Regex searches:'
-
-          gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
-          res.write(gson.to_json(removed_searches))
-        end
-      end
-    end
 
     on 'documents' do
       res.status = 200
@@ -402,6 +310,101 @@ Cuba.define do
   end # /get
 
   on post do
+
+
+    on 'regex' do
+
+      on 'search' do
+        puts req.params
+        puts "In regex/search..."
+        query_data = req.params['query']
+        if regex_query_meta_data.is_new_doc(query_data['file_path'])
+          regex_query_meta_data.reset_for_new_doc(query_data['file_path'])
+        end
+#TODO-reduce code redundancy in search, check-on-resize (maybe a parser method that returns a filteredArea map?)
+
+        puts 'Do I get here?'
+
+
+
+        areas_to_filter =  Java::JavaUtil::HashMap.new #This needs to be based off of the req.params for header_filter_areas...
+        req.params['filtered_areas'].each do |pageNumber, valueMap|
+          puts pageNumber
+          puts valueMap
+          areas_to_filter.put(pageNumber.to_i.to_java(:int),Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(valueMap['header_height'].to_i,
+                                                                                                                           0,
+                                                                                                                           valueMap['gui_page_height'].to_i,
+                                                                                                                           valueMap['absolute_page_height'].to_i))
+        end
+
+        regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(query_data['pattern_before'],
+                                                                        query_data['include_pattern_before'],
+                                                                        query_data['pattern_after'],
+                                                                        query_data['include_pattern_after'],
+                                                                        regex_query_meta_data.file,
+                                                                        areas_to_filter)
+
+        regex_query_meta_data.regex_searches.push(regex_search)
+
+        gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+        res.write(gson.to_json(regex_search))
+      end
+
+      on 'check-on-resize' do
+        puts 'In regex/check-on-resize'
+        puts req.params
+        #TODO: restructure how filtered_areas are stored/sent to be more efficient...could do a much better job with this...
+        previous_filter_area = Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['previous_header_filter']['header_height'].to_i,
+                                                                                              0, #Height of footer filter 0 for now...
+                                                                                              req.params['previous_header_filter']['gui_page_height'].to_i,
+                                                                                              req.params['previous_header_filter']['absolute_page_height'].to_i)
+
+        areas_to_filter =  Java::JavaUtil::HashMap.new #This needs to be based off of the req.params for header_filter_areas...
+
+        req.params['header_filter_areas'].each do |pageNumber, valueMap|
+          puts pageNumber
+          puts valueMap
+          areas_to_filter.put(pageNumber.to_i.to_java(:int),Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(valueMap['header_height'].to_i,
+                                                                                                                           0,
+                                                                                                                           valueMap['gui_page_height'].to_i,
+                                                                                                                           valueMap['absolute_page_height'].to_i))
+        end
+
+        changedQueries = Java::TechnologyTabulaDetectors::
+            RegexSearch.checkSearchesOnFilterResize(regex_query_meta_data.file,
+                                                    req.params['previous_header_filter']['page_number'].to_i,
+                                                    previous_filter_area,
+                                                    areas_to_filter,
+                                                    regex_query_meta_data.regex_searches)
+        puts changedQueries.length
+        gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+
+        res.write(gson.to_json(changedQueries))
+      end
+
+      on 'remove-search-data' do
+        puts req.params
+        puts regex_query_meta_data.regex_searches
+        puts 'In remove-search-data'
+        removed_searches, regex_query_meta_data.regex_searches = regex_query_meta_data.regex_searches.partition {
+          |search| search.getRegexBeforeTable() == req.params['pattern_before'] &&
+            search.getRegexAfterTable() == req.params['pattern_after']
+        }
+        if removed_searches.length > 1 || removed_searches.length==0
+          res.status =500
+          res.write('Incorrect number of searches removed:',removed_searches.length)
+        else
+          puts 'Removed Regex search:'
+          puts removed_searches[0]
+
+          puts 'Remaining Regex searches:'
+
+          gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+          res.write(gson.to_json(removed_searches))
+        end
+      end
+    end
+
     on 'upload.json' do
       # Make sure this is a PDF, before doing anything
 
