@@ -680,7 +680,9 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     var page_views = this.page_views;
     for (var key in page_views) {
       // key: the name of the object key
-      if(page_views[key].$image['0'].src==imageData.src) {
+      if( (page_views[key].$image!=undefined) && (page_views[key].$image['0'].src==imageData.src)) {
+        console.log("Key:");
+        console.log(key);
             page_views[key].renderHeaderFilter();
            }
       }},
@@ -882,7 +884,8 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
       _.each(Tabula.pdf_view.components['document_view'].page_views,function(pageView){
         console.log(pageView);
-        data.header_filter_areas[pageView.model.attributes.number]={'header_height':parseInt(pageView.header_view.$el.css('height')),
+        var header_filter_height = (pageView.header_view==undefined) ? 0 : parseInt(pageView.header_view.$el.css('height'));
+        data.header_filter_areas[pageView.model.attributes.number]={'header_height': header_filter_height,
                                                                     'gui_page_height':parseInt(pageView.$el.css('height')),
                                                                     'absolute_page_height':pageView.model.attributes.height};
       });
@@ -1113,7 +1116,10 @@ Tabula.RegexHandler = Backbone.View.extend({
     var areas_to_filter_out = {};
       _.each(Tabula.pdf_view.components['document_view'].page_views,function(pageView){
       console.log(pageView);
-      areas_to_filter_out[pageView.model.attributes.number]={'header_height':parseInt(pageView.header_view.$el.css('height')),
+
+      var header_filter_height =(pageView.header_view==undefined) ? 0 :parseInt(pageView.header_view.$el.css('height'));
+
+      areas_to_filter_out[pageView.model.attributes.number]={'header_height':header_filter_height,
         'gui_page_height':parseInt(pageView.$el.css('height')),
         'absolute_page_height':pageView.model.attributes.height};
     });
@@ -1121,7 +1127,7 @@ Tabula.RegexHandler = Backbone.View.extend({
     if (this.regex_results_handler.has_same_query(this.regex_query_handler.model.toJSON()) == false) {
 
       $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: '/regex/search',
         data: { query: this.regex_query_handler.model.toJSON(),
                 filtered_areas: areas_to_filter_out },
@@ -1182,7 +1188,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     if(this.collection.length>0){
 
       $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: '/regex/check-on-resize',
         data: data,
         success: _.bind(function (data) {
@@ -1268,7 +1274,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     console.log("Search to remove:");
     console.log(search_to_remove.attributes);
     $.ajax({
-      type: 'GET',
+      type: 'POST',
       url: '/regex/remove-search-data',
       data: {'pattern_before': search_to_remove.attributes.pattern_before,
              'pattern_after':  search_to_remove.attributes.pattern_after },
