@@ -36,10 +36,11 @@
       <file leaf-file-name="TestHomePage.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="156">
-              <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+            <state relative-caret-position="90">
+              <caret line="5" column="0" lean-forward="true" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#4648#4649#0" expanded="true" />
+                <element signature="e#4677#4678#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -83,10 +84,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="53" />
-    <option name="y" value="24" />
-    <option name="width" value="932" />
-    <option name="height" value="744" />
+    <option name="x" value="227" />
+    <option name="y" value="1" />
+    <option name="width" value="934" />
+    <option name="height" value="773" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -103,8 +104,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="AndroidView" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
@@ -449,59 +450,66 @@
       <option name="project" value="LOCAL" />
       <updated>1518419617988</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Added on searching for Tabula's source code page, the test is currently failing after adding on that portion. WIll look into it to see why it is failing.">
+      <created>1518451743216</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1518451743216</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestHelpPage - 2018.02.11 at 21h 14m 40s.xml">
-      <configuration name="TestHelpPage" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestHelpPage - 2018.02.11 at 21h 15m 46s.xml">
-      <configuration name="TestHelpPage" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestHelpPage - 2018.02.11 at 21h 57m 12s.xml">
-      <configuration name="TestHelpPage" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestHelpPage_startWebDriver - 2018.02.11 at 21h 59m 51s.xml">
-      <configuration name="TestHelpPage.startWebDriver" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestHelpPage_startWebDriver - 2018.02.11 at 22h 00m 21s.xml">
-      <configuration name="TestHelpPage.startWebDriver" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestHomePage_startWebDriver - 2018.02.12 at 11h 03m 35s.xml">
+    <history-entry file="TestHomePage_startWebDriver - 2018.02.16 at 14h 08m 27s.xml">
       <configuration name="TestHomePage.startWebDriver" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestHomePage_startWebDriver - 2018.02.12 at 11h 05m 36s.xml">
+    <history-entry file="TestHomePage_startWebDriver - 2018.02.16 at 14h 11m 17s.xml">
       <configuration name="TestHomePage.startWebDriver" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestHomePage_startWebDriver - 2018.02.12 at 11h 06m 22s.xml">
+    <history-entry file="TestHomePage_startWebDriver - 2018.02.16 at 14h 15m 28s.xml">
       <configuration name="TestHomePage.startWebDriver" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestHomePage_startWebDriver - 2018.02.12 at 11h 06m 56s.xml">
+    <history-entry file="TestHomePage_startWebDriver - 2018.02.16 at 14h 20m 36s.xml">
       <configuration name="TestHomePage.startWebDriver" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestHomePage_startWebDriver - 2018.02.12 at 11h 07m 41s.xml">
+    <history-entry file="TestHomePage_startWebDriver - 2018.02.16 at 14h 21m 56s.xml">
+      <configuration name="TestHomePage.startWebDriver" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestHomePage_startWebDriver - 2018.02.16 at 14h 23m 51s.xml">
+      <configuration name="TestHomePage.startWebDriver" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestHomePage_startWebDriver - 2018.02.16 at 14h 25m 13s.xml">
+      <configuration name="TestHomePage.startWebDriver" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestHomePage_startWebDriver - 2018.02.16 at 14h 27m 52s.xml">
+      <configuration name="TestHomePage.startWebDriver" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestHomePage_startWebDriver - 2018.02.16 at 14h 57m 20s.xml">
+      <configuration name="TestHomePage.startWebDriver" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestHomePage_startWebDriver - 2018.02.16 at 14h 57m 59s.xml">
       <configuration name="TestHomePage.startWebDriver" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="52" y="-4" width="1315" height="773" extended-state="6" />
+    <frame x="227" y="1" width="1315" height="780" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25525525" sideWeight="0.49733436" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25375375" sideWeight="0.49733436" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1921922" sideWeight="0.50266564" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.07057057" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.08708709" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.036557503" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.028941356" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Learn" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -524,11 +532,12 @@
     <MESSAGE value="Initial additions front-end testing files. Currently this first test is failing, will be updated." />
     <MESSAGE value="Added on to component testing for the home page. Need to finish testing last bit of components and then need to go back to the TestHelpPage and test hover menu." />
     <MESSAGE value="Update of workspace file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update of workspace file" />
+    <MESSAGE value="Added on searching for Tabula's source code page, the test is currently failing after adding on that portion. WIll look into it to see why it is failing." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added on searching for Tabula's source code page, the test is currently failing after adding on that portion. WIll look into it to see why it is failing." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="3" />
+      <option name="time" value="6" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -545,10 +554,74 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="936">
+          <caret line="58" column="37" lean-forward="true" selection-start-line="58" selection-start-column="37" selection-end-line="58" selection-end-column="37" />
+          <folding>
+            <element signature="e#4648#4649#0" expanded="true" />
+            <element signature="e#4677#4678#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="19" column="45" lean-forward="false" selection-start-line="19" selection-start-column="45" selection-end-line="19" selection-end-column="45" />
+          <folding>
+            <element signature="e#4648#4649#0" expanded="true" />
+            <element signature="e#4677#4678#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="486">
+          <caret line="32" column="32" lean-forward="true" selection-start-line="32" selection-start-column="32" selection-end-line="32" selection-end-column="32" />
+          <folding>
+            <element signature="e#4648#4649#0" expanded="true" />
+            <element signature="e#4677#4678#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="504">
           <caret line="28" column="32" lean-forward="true" selection-start-line="28" selection-start-column="32" selection-end-line="28" selection-end-column="32" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#4648#4649#0" expanded="true" />
+            <element signature="e#4677#4678#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -589,6 +662,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHomeScreen.java" />
+    <entry file="file://$PROJECT_DIR$/webapp/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="145" column="113" lean-forward="false" selection-start-line="145" selection-start-column="113" selection-end-line="145" selection-end-column="113" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
@@ -599,19 +679,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="145" column="113" lean-forward="false" selection-start-line="145" selection-start-column="113" selection-end-line="145" selection-end-column="113" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="156">
-          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+        <state relative-caret-position="90">
+          <caret line="5" column="0" lean-forward="true" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#4648#4649#0" expanded="true" />
+            <element signature="e#4677#4678#0" expanded="true" />
           </folding>
         </state>
       </provider>
