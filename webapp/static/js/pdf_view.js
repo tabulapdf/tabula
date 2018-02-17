@@ -47,7 +47,6 @@ Tabula.Pages = Backbone.Collection.extend({
   url: null, //set on initialize
   comparator: 'number',
   initialize: function(){
-    console.log("In Tabula.Pages...");
     this.url = (base_uri || '/') + 'pdfs/' + PDF_ID + '/pages.json?_=' + Math.round(+new Date()).toString();
   }
 });
@@ -59,7 +58,6 @@ Tabula.Document = Backbone.Model.extend({
   url: null, //set on initialize
 
   initialize: function(options){
-    console.log("In Tabula.Document initialize....")
     this.page_collection = new Tabula.Pages([], {pdf_document: this});
     this.selections = new Tabula.Selections([], {pdf_document: this});
     this.autodetected_selections = new Tabula.AutodetectedSelections([], {pdf_document: this});
@@ -679,10 +677,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     return _(Tabula.pdf_view.pdf_document.selections.where({page_number: $(target).data('page')})).map(function(i){ return i.attributes; });
   },
   initialize: function(stuff){
-    console.log("In initialize of Tabula.DocumentView...");
-    console.log(stuff);
-    console.log("page_views");
-    console.log(this.page_views);
      _.bindAll(this, 'render', 'removePage', 'addSelection', '_onRectangularSelectorEnd', '_selectionsGetter');
     this.pdf_view = stuff.pdf_view;
     this.listenTo(this.collection, 'remove', this.removePage);
@@ -853,10 +847,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
   render: function(){
 
-    console.log("In render of page "+ this.model.get('number'));
-
-    console.log(this.$el.find('img'));
-
     this.$el.html(this.template({
                     'number': this.model.get('number'),
                     'image_url': this.model.imageUrl()
@@ -870,7 +860,8 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     this.$el.find('.page').append(this.image);
     this.$el.append(this.header_view.el);
 
-    
+    this.header_view.$el.hide();
+
     this.$el.find('img').attr('data-page', this.model.get('number'))
       .attr('data-original-width', this.model.get('width'))
       .attr('data-original-height', this.model.get('height'));
@@ -878,7 +869,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
     var self = this;
     this.image.onload = function(data) {
-      console.log("In onload for image " + self.model.get('number'));
+
       $(this).data('loaded', 'loaded');
       self.header_view.$el.show();
       self.header_view.$el.css({
@@ -1451,9 +1442,6 @@ Tabula.RegexResultModel = Backbone.Model.extend({
   matching_areas: null,  //set on initialize
 
   initialize: function(data) {
-    console.log("In initialize of RegexResultModel:");
-
-    console.log(data["matching_areas"].length);
 
     this.set({
       pattern_before: data["pattern_before"],
@@ -1776,7 +1764,6 @@ Tabula.PDFView = Backbone.View.extend(
     global_options: null,
 
     initialize: function(){
-      console.log("In initialize of Tabula.PDFView...");
       _.bindAll(this, 'render', 'addOne', 'addAll', 'totalSelections', 'renderSelection',
         'createDataView', 'checkForAutodetectedTables', 'getData', 'handleScroll',
         'loadSavedTemplate', 'saveTemplate', 'saveTemplateAs');
@@ -1789,10 +1776,6 @@ Tabula.PDFView = Backbone.View.extend(
         success: function(m){ },
         error: function(m, r, o){ console.log("error", m, r, o) }
       });
-
-
-      console.log("This.pdf_document:");
-      console.log(this.pdf_document);
 
       this.options = new Tabula.Options();
       this.listenTo(this.options, 'change', this.options.write);
@@ -2022,10 +2005,7 @@ Tabula.PDFView = Backbone.View.extend(
       // if(Tabula.LazyLoad){
       //   _(this.pdf_document.page_collection.slice(0, Tabula.LazyLoad)).each(this.addOne, this);
       // }else{
-
-        console.log("In addAll:");
-        console.log(this.pdf_document);
-
+      
         this.pdf_document.page_collection.each(this.addOne, this);
       // }
     },
