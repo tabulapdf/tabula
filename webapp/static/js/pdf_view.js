@@ -2005,7 +2005,7 @@ Tabula.PDFView = Backbone.View.extend(
       // if(Tabula.LazyLoad){
       //   _(this.pdf_document.page_collection.slice(0, Tabula.LazyLoad)).each(this.addOne, this);
       // }else{
-      
+
         this.pdf_document.page_collection.each(this.addOne, this);
       // }
     },
