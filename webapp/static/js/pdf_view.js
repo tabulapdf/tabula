@@ -842,6 +842,11 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       'width':0,
       'height':0});
 
+    this.listenTo(this.header_view,'header_resized', function(data){
+      console.log("Come Monday, it'll be alright...come Monday");
+      console.log(Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.check_regex_searches_on_resize(data));
+    });
+
   },
 
 
@@ -855,12 +860,14 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     this.image = new Image();
     this.image.src = this.model.imageUrl();
     this.image.draggable = false;
+    this.image['user-drag']="none";
+    this.image['user-select']="none";
     this.image.selectable = "on";
 
     this.$el.find('.page').append(this.image);
     this.$el.append(this.header_view.el);
 
-    this.header_view.$el.hide();
+   // this.header_view.$el.hide();
 
     this.$el.find('img').attr('data-page', this.model.get('number'))
       .attr('data-original-width', this.model.get('width'))
@@ -912,8 +919,8 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     var selections = Tabula.pdf_view.pdf_document.selections;
 
     var sel = selections.updateOrCreateByVendorSelectorId(selection,this.model.get('number'),
-                                                          {'width':this.image.width(),
-                                                           'height':this.image.height()});
+                                                          {'width':$(this.image).width(),
+                                                           'height':$(this.image).height()});
 
 
     // deal with invalid/too-small selections somehow (including thumbnails)
@@ -955,7 +962,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     console.log(selection);
 
     // remove repeat lassos button
-    var but_id = this.image.attr('id') + '-' + selection.id;
+    var but_id = $(this.image).attr('id') + '-' + selection.id;
     $('button#' + but_id).remove();
 
     // find and remove the canceled selection from the collection of selections. (triggering remove events).
@@ -1099,12 +1106,16 @@ Tabula.RegexHandler = Backbone.View.extend({
     /*
     *Determine if regex pattern has already been previously searched for
      */
-    //TODO-Remember to update this once footers get added...
+    //TODO-Remember to update this once footers get added...]
+    console.log("In perform_regex_search:");
+    console.log("Areas to filter out...");
     var areas_to_filter_out = {};
       _.each(Tabula.pdf_view.components['document_view'].page_views,function(pageView){
       console.log(pageView);
 
-      var header_filter_height =(pageView.header_view==undefined) ? 0 :parseInt(pageView.header_view.$el.css('height'));
+      var header_filter_height = parseInt(pageView.header_view.$el.css('height'));
+
+      console.log("Header filter height:"+header_filter_height);
 
       areas_to_filter_out[pageView.model.attributes.number]={'header_height':header_filter_height,
         'gui_page_height':parseInt(pageView.$el.css('height')),
