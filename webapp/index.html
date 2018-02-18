@@ -57,7 +57,7 @@
             <li><a id="templates-nav" href="mytemplates">My Templates</a></li>
             <li><a id="about-nav" href="about">About</a></li>
             <li><a id="help-nav" href="help">Help</a></li>
-            <li><a href="https://github.com/tabulapdf/tabula">Source Code</a></li>
+            <li><a id ="source-code" href="https://github.com/tabulapdf/tabula">Source Code</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -511,7 +511,7 @@
 
           <div class="jumbotron about">
 
-            <h1>About Tabula</h1>
+            <h1 class="abouttabula">About Tabula</h1>
             <p>Tabula is a tool for liberating data tables trapped inside PDF files.</p>
 
             <p>Tabula was created by journalists for journalists and anyone else working with data locked away in PDFs. Tabula will always be free and open source.</p>
@@ -535,8 +535,8 @@
             <div class="navbar">
             <ul class="nav nav-justified nav-tabs-justified" id="myNav">
               <li><a href="https://twitter.com/tabulapdf?lang=en"><img src="../img/Twitter_Logo_Blue.png" width="30" height="30">@TabulaPDF</a></li>
-              <li><a href="https://tabula.technology"><img src="/img/logo.png" width="30" height="30"> Tabula.Technology</a></li>
-              <li><a href="https://opencollective.com/tabulapdf"><img src="./img/open_collective.png" width="30" height="30"> Tabulapdf</a></li>
+              <li><a href="https://tabula.technology"><img src="/img/logo.png" width="30" height="30">Tabula.Technology</a></li>
+              <li><a href="https://opencollective.com/tabulapdf"><img src="./img/open_collective.png" width="30" height="30">Tabulapdf</a></li>
             </ul>
             </div>
           </div>
@@ -546,7 +546,7 @@
       <script type="text/templates" id="templates-template">
         <div class="container">
           <div class="jumbotron help">
-            <h1>My Saved Templates</h1>
+            <h1 class="my_saved_template_title">My Saved Templates</h1>
             <p style="font-size: small;">If you have several PDFs with the same layout, you can select the appropriate regions once, then save the selections as a Tabula Template, and load it in subsequent PDFs. You can see your saved templates here; you can also rename and delete them. If someone has shared a template with you, you can import it to Tabula here.</p>
             <p>To use a template, <a href="">upload a file</a> or select it from <a href="">My Files</a>.</p>
             <div id="template-library-container">
@@ -586,7 +586,7 @@
                 <!-- fix for the fact that IE11 is trash https://blog.yorkxin.org/posts/2014/02/06/ajax-with-formdata-is-broken-on-ie10-ie11/ -->
                 <input type="hidden" name="_dontcare">
 
-                <button type="submit" class="btn btn-default">Import</button>
+                <button type="submit" class="btn btn-default import_btn">Import</button>
               </form>
 
             </div>
