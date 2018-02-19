@@ -800,6 +800,15 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
                 return new_selection;
               });
 
+    console.log("Who can it be now??");
+
+    console.log("Hypothetical value to send to regex_query_meta_data:");
+    console.log("Page Count:");
+    console.log(Array.from(Object.keys(this.page_views)).length);
+    console.log("Filter Height:");
+    console.log(Tabula.pdf_view.components['document_view'].page_views['1'].header_view.$el['0'].offsetHeight);
+
+
     return this;
   }
 });
