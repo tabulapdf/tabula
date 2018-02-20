@@ -668,8 +668,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
 
 Tabula.DocumentView = Backbone.View.extend({ // Singleton
-  events: {
-  },
+  events: {},
   pdf_view: null, //added on create
   page_views: {},
   rectangular_selector: null,
@@ -802,12 +801,22 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
 
     console.log("Who can it be now??");
 
-    console.log("Hypothetical value to send to regex_query_meta_data:");
-    console.log("Page Count:");
-    console.log(Array.from(Object.keys(this.page_views)).length);
-    console.log("Filter Height:");
-    console.log(Tabula.pdf_view.components['document_view'].page_views['1'].header_view.$el['0'].offsetHeight);
+    $.ajax({
+      type: 'POST',
+      url: '/regex/reset',
+      data: { file_path: this.pdf_view.pdf_document.pdf_id},
+      dataType: 'json',
 
+      success: _.bind(function (data) {
+        console.log("Reset back-end book-keeping for regex queries, filtered areas...")
+      }, this),
+      error: function (xhr, status, err) {
+        alert('Error in reset: ' + JSON.stringify(err));
+        console.log('Error in reset...: ', err);
+        console.log(xhr);
+        console.log(status);
+      }
+    });
 
     return this;
   }
@@ -852,15 +861,16 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       'height':0});
 
     this.listenTo(this.header_view,'header_resized', function(data){
-      console.log("Come Monday, it'll be alright...come Monday");
+      console.log("Listening to header resized event...");
+      console.log(this.model.attributes);
+      data['gui_height'] = parseInt(this.$el.css('height'));
+      data['absolute_height'] = this.model.attributes.height;
+      data['page_number'] = this.model.attributes.number;
       console.log(Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.check_regex_searches_on_resize(data));
     });
-
   },
 
-
   render: function(){
-
     this.$el.html(this.template({
                     'number': this.model.get('number'),
                     'image_url': this.model.imageUrl()
@@ -876,6 +886,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     this.$el.find('.page').append(this.image);
     this.$el.append(this.header_view.el);
 
+    this.header_view.$el.hide();
    // this.header_view.$el.hide();
 
     this.$el.find('img').attr('data-page', this.model.get('number'))
@@ -893,7 +904,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
         left: self.$el.find('.page')['0'].offsetLeft,
         width: $(self.image).width()
         });
-      }
+      };
   //  console.log(this.$el.find('.page').find('img'));
 
 
@@ -1117,27 +1128,14 @@ Tabula.RegexHandler = Backbone.View.extend({
      */
     //TODO-Remember to update this once footers get added...]
     console.log("In perform_regex_search:");
-    console.log("Areas to filter out...");
-    var areas_to_filter_out = {};
-      _.each(Tabula.pdf_view.components['document_view'].page_views,function(pageView){
-      console.log(pageView);
 
-      var header_filter_height = parseInt(pageView.header_view.$el.css('height'));
-
-      console.log("Header filter height:"+header_filter_height);
-
-      areas_to_filter_out[pageView.model.attributes.number]={'header_height':header_filter_height,
-        'gui_page_height':parseInt(pageView.$el.css('height')),
-        'absolute_page_height':pageView.model.attributes.height};
-    });
 
     if (this.regex_results_handler.has_same_query(this.regex_query_handler.model.toJSON()) == false) {
       $('html').addClass("wait");
       $.ajax({
         type: 'POST',
         url: '/regex/search',
-        data: { query: this.regex_query_handler.model.toJSON(),
-                filtered_areas: areas_to_filter_out },
+        data: this.regex_query_handler.model.toJSON(),
         dataType: 'json',
         complete: function(){
           $('html').removeClass("wait");
@@ -1195,14 +1193,14 @@ Tabula.RegexCollectionView = Backbone.View.extend({
   check_regex_searches_on_resize: function(data){
     console.log("In check_regex_searches_on_resize:");
     console.log(data);
-    if(this.collection.length>0){
-      $('html').addClass("wait");
-      $.ajax({
-        type: 'POST',
-        url: '/regex/check-on-resize',
-        data: data,
-        complete: function(){
-          $('html').removeClass("wait");
+
+    $('html').addClass("wait");
+     $.ajax({
+       type: 'POST',
+       url: '/regex/check-on-resize',
+       data: data,
+       complete: function(){
+         $('html').removeClass("wait");
         },
         success: _.bind(function (data) {
           console.log("Successful check:");
@@ -1280,7 +1278,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
           console.log(xhr);
           console.log(status);
         }
-      })}
+      })
     return "Try to see it my way, only time will tell if I am right or if I'm wrong";
   },
   remove_regex_search: function(event_data,search_to_remove){
