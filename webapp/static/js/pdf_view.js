@@ -882,6 +882,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     this.image = new Image();
     this.image.src = this.model.imageUrl();
     this.image.draggable = false;
+    this.image.ondrag = function(ev){ return false;};
     this.image['user-drag']="none";
     this.image['user-select']="none";
     this.image.selectable = "on";
