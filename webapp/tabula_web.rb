@@ -332,7 +332,7 @@ Cuba.define do
       on 'search' do
         puts req.params
         puts "In regex/search..."
-        
+
         regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(req.params['pattern_before'],
                                                                         req.params['include_pattern_before'],
                                                                         req.params['pattern_after'],
@@ -341,6 +341,8 @@ Cuba.define do
                                                                         regex_query_meta_data.areas_to_filter)
 
         regex_query_meta_data.regex_searches.push(regex_search)
+
+        puts regex_query_meta_data.regex_searches
 
         gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
         res.write(gson.to_json(regex_search))
@@ -370,6 +372,7 @@ Cuba.define do
                                                     previous_filter_area,
                                                     regex_query_meta_data.areas_to_filter,
                                                     regex_query_meta_data.regex_searches)
+        puts 'Changed Queries:';
         puts changedQueries.length
         gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
 
@@ -386,7 +389,8 @@ Cuba.define do
         }
         if removed_searches.length > 1 || removed_searches.length==0
           res.status =500
-          res.write('Incorrect number of searches removed:',removed_searches.length)
+          puts removed_searches.length
+          res.write('Incorrect number of searches removed:')
         else
           puts 'Removed Regex search:'
           puts removed_searches[0]
@@ -396,6 +400,7 @@ Cuba.define do
           gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
           res.write(gson.to_json(removed_searches))
         end
+        res.write ''
       end
     end
 
