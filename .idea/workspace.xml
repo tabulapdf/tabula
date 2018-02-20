@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/webapp/static/js/HeaderView.js" afterPath="$PROJECT_DIR$/webapp/static/js/HeaderView.js" />
       <change beforePath="$PROJECT_DIR$/webapp/static/js/pdf_view.js" afterPath="$PROJECT_DIR$/webapp/static/js/pdf_view.js" />
       <change beforePath="$PROJECT_DIR$/webapp/tabula_web.rb" afterPath="$PROJECT_DIR$/webapp/tabula_web.rb" />
     </list>
@@ -22,12 +24,12 @@
       <file leaf-file-name="pdf_view.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/webapp/static/js/pdf_view.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="1209" column="36" lean-forward="false" selection-start-line="1209" selection-start-column="36" selection-end-line="1209" selection-end-column="36" />
+            <state relative-caret-position="148">
+              <caret line="514" column="9" lean-forward="false" selection-start-line="514" selection-start-column="9" selection-end-line="514" selection-end-column="9" />
               <folding>
-                <marker date="1519118866701" expanded="true" signature="37568:38176" ph="..." />
-                <marker date="1519118866701" expanded="true" signature="37825:37933" ph="..." />
-                <marker date="1519118866701" expanded="true" signature="37967:38164" ph="..." />
+                <marker date="1519127490579" expanded="true" signature="37508:38116" ph="..." />
+                <marker date="1519127490579" expanded="true" signature="37765:37873" ph="..." />
+                <marker date="1519127490579" expanded="true" signature="37907:38104" ph="..." />
               </folding>
             </state>
           </provider>
@@ -36,8 +38,8 @@
       <file leaf-file-name="tabula_web.rb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webapp/tabula_web.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
-              <caret line="20" column="48" lean-forward="false" selection-start-line="20" selection-start-column="48" selection-end-line="20" selection-end-column="48" />
+            <state relative-caret-position="438">
+              <caret line="575" column="0" lean-forward="false" selection-start-line="575" selection-start-column="0" selection-end-line="575" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -66,8 +68,8 @@
       <file leaf-file-name="HeaderView.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webapp/static/js/HeaderView.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="424">
-              <caret line="49" column="7" lean-forward="true" selection-start-line="49" selection-start-column="7" selection-end-line="49" selection-end-column="7" />
+            <state relative-caret-position="458">
+              <caret line="83" column="41" lean-forward="false" selection-start-line="83" selection-start-column="41" selection-end-line="83" selection-end-column="41" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -87,14 +89,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>TabulaSettings</find>
-      <find>DOCUMENTS_BASEPATH</find>
-      <find>'pdfs'</find>
-      <find>remove_regex_search</find>
-      <find>RegexResultCollection</find>
-      <find>Rack</find>
-      <find>pages.json</find>
-      <find>pdfs</find>
       <find>flush_workspace</find>
       <find>workspace</find>
       <find>Workspace</find>
@@ -105,18 +99,26 @@
       <find>ajax</find>
       <find>onload</find>
       <find>reset_for</find>
-      <find>DocumentView</find>
       <find>on 'regex'</find>
       <find>Tabula.Document</find>
       <find>res.write</find>
       <find>Tabula.DocumentView</find>
       <find>check_regex_searches_on_resize:</find>
       <find>header_resized</find>
-      <find>on 'regex' do</find>
-      <find>reset_for_new_doc</find>
       <find>check_regex_searches</find>
       <find>perform_regex_search:</find>
       <find>remove-search-data</find>
+      <find>not-allowed</find>
+      <find>on 'regex' do</find>
+      <find>DocumentView</find>
+      <find>render</find>
+      <find>PDFView</find>
+      <find>reset_for_new_doc</find>
+      <find>Tabula.PDFView</find>
+      <find>closeAndRenderSelectionView</find>
+      <find>closeAndRender</find>
+      <find>selections_rendered</find>
+      <find>Tabula.Selections</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -478,7 +480,7 @@
       <workItem from="1518927215933" duration="2167000" />
       <workItem from="1518965070820" duration="3870000" />
       <workItem from="1519007544389" duration="3996000" />
-      <workItem from="1519106932491" duration="7172000" />
+      <workItem from="1519106932491" duration="15334000" />
     </task>
     <task id="LOCAL-00001" summary="Initial additions front-end testing files. Currently this first test is failing, will be updated.">
       <created>1518393101424</created>
@@ -544,7 +546,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="17205000" />
+    <option name="totallyTimeSpent" value="25367000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -553,8 +555,9 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13250366" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1918429" sideWeight="0.50266564" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1918429" sideWeight="0.50266564" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -576,7 +579,6 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.08708709" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Learn" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
     </layout>
@@ -606,9 +608,9 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1519118866701" expanded="true" signature="37568:38176" ph="..." />
-            <marker date="1519118866701" expanded="true" signature="37825:37933" ph="..." />
-            <marker date="1519118866701" expanded="true" signature="37967:38164" ph="..." />
+            <marker date="1519127490579" expanded="true" signature="37508:38116" ph="..." />
+            <marker date="1519127490579" expanded="true" signature="37765:37873" ph="..." />
+            <marker date="1519127490579" expanded="true" signature="37907:38104" ph="..." />
           </folding>
         </state>
       </provider>
@@ -668,9 +670,9 @@
         <state relative-caret-position="833">
           <caret line="49" column="66" lean-forward="false" selection-start-line="49" selection-start-column="56" selection-end-line="49" selection-end-column="66" />
           <folding>
-            <marker date="1519118866701" expanded="true" signature="37568:38176" ph="..." />
-            <marker date="1519118866701" expanded="true" signature="37825:37933" ph="..." />
-            <marker date="1519118866701" expanded="true" signature="37967:38164" ph="..." />
+            <marker date="1519127490579" expanded="true" signature="37508:38116" ph="..." />
+            <marker date="1519127490579" expanded="true" signature="37765:37873" ph="..." />
+            <marker date="1519127490579" expanded="true" signature="37907:38104" ph="..." />
           </folding>
         </state>
       </provider>
@@ -730,9 +732,9 @@
         <state relative-caret-position="19975">
           <caret line="1175" column="17" lean-forward="true" selection-start-line="1175" selection-start-column="17" selection-end-line="1175" selection-end-column="17" />
           <folding>
-            <marker date="1519118866701" expanded="true" signature="37568:38176" ph="..." />
-            <marker date="1519118866701" expanded="true" signature="37825:37933" ph="..." />
-            <marker date="1519118866701" expanded="true" signature="37967:38164" ph="..." />
+            <marker date="1519127490579" expanded="true" signature="37508:38116" ph="..." />
+            <marker date="1519127490579" expanded="true" signature="37765:37873" ph="..." />
+            <marker date="1519127490579" expanded="true" signature="37907:38104" ph="..." />
           </folding>
         </state>
       </provider>
@@ -888,6 +890,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -915,10 +918,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/static/css/styles.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="193">
+          <caret line="3026" column="20" lean-forward="false" selection-start-line="3026" selection-start-column="10" selection-end-line="3026" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/webapp/static/js/HeaderView.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="424">
-          <caret line="49" column="7" lean-forward="true" selection-start-line="49" selection-start-column="7" selection-end-line="49" selection-end-column="7" />
+        <state relative-caret-position="458">
+          <caret line="83" column="41" lean-forward="false" selection-start-line="83" selection-start-column="41" selection-end-line="83" selection-end-column="41" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -927,20 +938,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/tabula_web.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="20" column="48" lean-forward="false" selection-start-line="20" selection-start-column="48" selection-end-line="20" selection-end-column="48" />
+        <state relative-caret-position="438">
+          <caret line="575" column="0" lean-forward="false" selection-start-line="575" selection-start-column="0" selection-end-line="575" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/static/js/pdf_view.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="1209" column="36" lean-forward="false" selection-start-line="1209" selection-start-column="36" selection-end-line="1209" selection-end-column="36" />
+        <state relative-caret-position="148">
+          <caret line="514" column="9" lean-forward="false" selection-start-line="514" selection-start-column="9" selection-end-line="514" selection-end-column="9" />
           <folding>
-            <marker date="1519118866701" expanded="true" signature="37568:38176" ph="..." />
-            <marker date="1519118866701" expanded="true" signature="37825:37933" ph="..." />
-            <marker date="1519118866701" expanded="true" signature="37967:38164" ph="..." />
+            <marker date="1519127490579" expanded="true" signature="37508:38116" ph="..." />
+            <marker date="1519127490579" expanded="true" signature="37765:37873" ph="..." />
+            <marker date="1519127490579" expanded="true" signature="37907:38104" ph="..." />
           </folding>
         </state>
       </provider>

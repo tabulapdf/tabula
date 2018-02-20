@@ -29,7 +29,6 @@
     resizing: false,
 
     enableHeaderResize: function(event){
-
       this.resizing = true;
       this.height_on_start_of_resize = parseInt(this.$el.css('height'));
       this.previous_y = (event.pageY - this.$el['0'].parentElement.offsetTop);
@@ -82,7 +81,7 @@
       });
 
       this.$el.attr('title','Drag down to define header area');
-
+      this.$el.attr('draggable','false');
       //Detect when user moves mouse/release mouse outside of the area
       $(document).on({
         mousemove: _.bind(this.resizeHeader,this),
