@@ -53,7 +53,12 @@ def upload(file)
   file_id = Digest::SHA1.hexdigest(Time.now.to_s + original_filename) # just SHA1 of time isn't unique with multiple uploads
   file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, file_id)
 
-  Tabula::Workspace.instance.move_file(file[:tempfile].path, file_id, 'document.pdf')
+  begin
+    Tabula::Workspace.instance.move_file(file[:tempfile].path, file_id, 'document.pdf')
+  rescue Errno::EACCES
+    # Windows doesn't like tempfiles to be moved
+	Tabula::Workspace.instance.copy_file(file[:tempfile].path, file_id, 'document.pdf')
+  end
 
   filepath = Tabula::Workspace.instance.get_document_path(file_id)
   job_batch = SecureRandom.uuid

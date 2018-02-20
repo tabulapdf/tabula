@@ -78,7 +78,9 @@ module Tabula
       FileUtils.mv(path, File.join(get_document_dir(document_id), filename))
     end
 
-
+	def copy_file(path, document_id, filename)
+	   FileUtils.cp_r(path, File.join(get_document_dir(document_id), filename))
+	end
 
     def list_templates
       read_workspace!
