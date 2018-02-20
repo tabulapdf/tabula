@@ -485,15 +485,34 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     var already_rendered_selections = [];
 
     regex_search_collection.forEach(function(regex_result){
-      var refreshed_sels = new Tabula.Selections();
-      regex_result.attributes.selections_rendered.forEach(function(regex_sel){
-        var refreshed_sel = Tabula.pdf_view.renderSelection(regex_sel.attributes);
-        refreshed_sels.add(refreshed_sel);
-        regex_sel.attributes.remove();
-        already_rendered_selections.push(refreshed_sel);
+      var refreshed_selections_rendered = new Map();
+      console.log("regex_result");
+      console.log(regex_result);
+
+
+      var selections_rendered = regex_result.attributes.selections_rendered;
+
+      console.log(selections_rendered);
+
+      selections_rendered.forEach(function(rendered_sels,matching_area){
+        console.log("Rendered_sels:");
+        console.log(rendered_sels);
+
+        var refreshed_sels = new Tabula.Selections();
+
+        rendered_sels.forEach(function(rendered_sel){
+          var refreshed_sel = Tabula.pdf_view.renderSelection(rendered_sel.attributes);
+          rendered_sel.attributes.remove();
+          refreshed_sels.add(refreshed_sel);
+          already_rendered_selections.push(refreshed_sel);
+        });
+
+        refreshed_selections_rendered.set(matching_area,refreshed_sels);
+
+        regex_result.attributes.selections_rendered = refreshed_selections_rendered;
       });
-      regex_result.attributes.selections_rendered = refreshed_sels;
-    });
+
+      });
 
     var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
          console.log("Selection:");
@@ -800,24 +819,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
                 return new_selection;
               });
 
-    console.log("Who can it be now??");
 
-    $.ajax({
-      type: 'POST',
-      url: '/regex/reset',
-      data: { file_path: this.pdf_view.pdf_document.pdf_id},
-      dataType: 'json',
-
-      success: _.bind(function (data) {
-        console.log("Reset back-end book-keeping for regex queries, filtered areas...")
-      }, this),
-      error: function (xhr, status, err) {
-        alert('Error in reset: ' + JSON.stringify(err));
-        console.log('Error in reset...: ', err);
-        console.log(xhr);
-        console.log(status);
-      }
-    });
 
     return this;
   }
@@ -1787,6 +1789,10 @@ Tabula.PDFView = Backbone.View.extend(
         'createDataView', 'checkForAutodetectedTables', 'getData', 'handleScroll',
         'loadSavedTemplate', 'saveTemplate', 'saveTemplateAs');
 
+
+
+
+
       this.pdf_document = new Tabula.Document({
         pdf_id: PDF_ID
       });
@@ -1795,6 +1801,27 @@ Tabula.PDFView = Backbone.View.extend(
         success: function(m){ },
         error: function(m, r, o){ console.log("error", m, r, o) }
       });
+
+
+      console.log("Who can it be now??");
+
+        $.ajax({
+          type: 'POST',
+          url: '/regex/reset',
+          data: { file_path: this.pdf_document.pdf_id},
+          dataType: 'json',
+
+          success: _.bind(function (data) {
+            console.log("Reset back-end book-keeping for regex queries, filtered areas...")
+          }, this),
+          error: function (xhr, status, err) {
+            alert('Error in reset: ' + JSON.stringify(err));
+            console.log('Error in reset...: ', err);
+            console.log(xhr);
+            console.log(status);
+          }
+        });
+
 
       this.options = new Tabula.Options();
       this.listenTo(this.options, 'change', this.options.write);
@@ -1817,6 +1844,8 @@ Tabula.PDFView = Backbone.View.extend(
 
       $(document).on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
       $('#sidebar').on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
+
+
 
 
 
@@ -1907,6 +1936,9 @@ Tabula.PDFView = Backbone.View.extend(
       // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
       // cause it to be rendered onto the page, and as a thumbnail
       // and causes it to get an 'id' attr.
+      console.log("In renderSelection:");
+      console.log("Sel:");
+      console.log(sel);
       var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page_number];
       var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page_number});
       if(!page){
@@ -2064,6 +2096,9 @@ Tabula.PDFView = Backbone.View.extend(
     },
 
     render : function(){
+
+      console.log("In Tabula.pdfView render...");
+
       document.title="Select Tables | Tabula";
       this.components['document_view'].render();
 

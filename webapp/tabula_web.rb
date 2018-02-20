@@ -45,7 +45,7 @@ class RegexQueryMetaData
     @doc_name=String.new()
     @regex_searches=[]
     @file = nil
-    @areas_to_filter = Java::JavaUtil::HashMap.new
+    @areas_to_filter = Java::JavaUtil::HashMap.new()
   end
 
   def is_new_doc(docName)
@@ -59,7 +59,7 @@ class RegexQueryMetaData
     @regex_searches=[]
 
     unless @file.nil?
-      @file.close() #TODO: figure out if a warning should be thronw here....
+      @file.close() #TODO: figure out if a warning should be thrown here....
     end
 
     output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, @doc_name)
@@ -333,6 +333,8 @@ Cuba.define do
         puts req.params
         puts "In regex/search..."
 
+        puts regex_query_meta_data.areas_to_filter
+
         regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(req.params['pattern_before'],
                                                                         req.params['include_pattern_before'],
                                                                         req.params['pattern_after'],
@@ -354,17 +356,19 @@ Cuba.define do
         #TODO: restructure how filtered_areas are stored/sent to be more efficient...could do a much better job with this...
         previous_filter_area = Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['previous_header_height'].to_i,
                                                                                               0, #Height of footer filter 0 for now...
-                                                                                              req.params['gui_page_height'].to_i,
-                                                                                              req.params['absolute_page_height'].to_i)
+                                                                                              req.params['gui_height'].to_i,
+                                                                                              req.params['absolute_height'].to_i)
 
 
 
         regex_query_meta_data.areas_to_filter.put(req.params['page_number'].to_i.to_java(:int),
                                                   Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['current_header_height'].to_i,
                                                                                                                  0,
-                                                                                                                 req.params['gui_page_height'].to_i,
-                                                                                                                 req.params['absolute_page_height'].to_i))
+                                                                                                                 req.params['gui_height'].to_i,
+                                                                                                                 req.params['absolute_height'].to_i))
 
+
+        puts regex_query_meta_data.areas_to_filter
 
         changedQueries = Java::TechnologyTabulaDetectors::
             RegexSearch.checkSearchesOnFilterResize(regex_query_meta_data.file,
