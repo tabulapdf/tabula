@@ -29,14 +29,21 @@
     resizing: false,
 
     enableHeaderResize: function(event){
-      this.resizing = true;
-      this.height_on_start_of_resize = parseInt(this.$el.css('height'));
-      this.previous_y = (event.pageY - this.$el['0'].parentElement.offsetTop);
+      console.log("In enableHeaderResize:");
+      if(this.resizing == false) {
+        this.height_on_start_of_resize = parseInt(this.$el.css('height'));
+        this.resizing = true;
 
-      //So that the user can more easily drag the header area when it is up at the top of the page
-      if(this.BUFFER>=this.previous_y){
-        this.$el.css({'height': this.BUFFER});
+        console.log("Height at start:"+this.height_on_start_of_resize);
+        this.previous_y = (event.pageY - this.$el['0'].parentElement.offsetTop);
+
+        //So that the user can more easily drag the header area when it is up at the top of the page
+        if(this.BUFFER>=this.previous_y){
+          this.$el.css({'height': this.BUFFER});
+        }
       }
+
+
 
     },
 
@@ -46,8 +53,9 @@
         console.log("In endHeaderResize:");
         console.log(this.$el);
         sendback={};
-        sendback['previous_header_height'] = this.height_on_start_of_resize; //Don't think the server needs it now...we'll see...
+        sendback['previous_header_height'] = this.height_on_start_of_resize;
         sendback['current_header_height'] =parseInt(this.$el.css('height'));
+        console.log("Height at finish:"+sendback['current_header_height']);
         this.trigger('header_resized',sendback);
       }
     },
@@ -55,6 +63,7 @@
     resizeHeader: function(event){
       if(this.resizing===true){
         var mouseLocation = event.pageY - this.$el['0'].parentElement.offsetTop;
+        console.log("Mouse Location:"+mouseLocation);
         var new_height = mouseLocation;
         if((this.previous_y>new_height) && (new_height<=this.BUFFER)){ //When the user is shrinking the size of the header
           new_height=0;
@@ -62,7 +71,7 @@
         else{
           new_height+=this.BUFFER; //buffer added to reduce cursor flicker
         }
-        this.$el.css({'height': new_height })
+        this.$el.css({'height': new_height });
         if(new_height==0){
           this.endHeaderResize(event);
         }
@@ -82,6 +91,7 @@
 
       this.$el.attr('title','Drag down to define header area');
       this.$el.attr('draggable','false');
+
       //Detect when user moves mouse/release mouse outside of the area
       $(document).on({
         mousemove: _.bind(this.resizeHeader,this),
