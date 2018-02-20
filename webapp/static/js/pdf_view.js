@@ -692,6 +692,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
         }
       }
     );
+
   },
   addSelection: function (d) {
     var page_number = $(d.pageView).data('page') || d.pageNumber;
