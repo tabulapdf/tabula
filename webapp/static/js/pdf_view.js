@@ -3,6 +3,7 @@ Tabula = Tabula || {};
 var clip = null;
 var base_uri = $('base').attr("href");
 
+
 PDF_ID = window.location.pathname.replace(base_uri, '').split('/')[1];
 Tabula.LazyLoad = 10; // max number of pages around the cursor to show (2x Tabula.LazyLoad pages are shown)
 Tabula.HideOnLazyLoad = false; // ideally, set to true, but this requires differently positioned selections, see https://github.com/tabulapdf/tabula/issues/245#issuecomment-75182061
@@ -484,15 +485,34 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     var already_rendered_selections = [];
 
     regex_search_collection.forEach(function(regex_result){
-      var refreshed_sels = new Tabula.Selections();
-      regex_result.attributes.selections_rendered.forEach(function(regex_sel){
-        var refreshed_sel = Tabula.pdf_view.renderSelection(regex_sel.attributes);
-        refreshed_sels.add(refreshed_sel);
-        regex_sel.attributes.remove();
-        already_rendered_selections.push(refreshed_sel);
+      var refreshed_selections_rendered = new Map();
+      console.log("regex_result");
+      console.log(regex_result);
+
+
+      var selections_rendered = regex_result.attributes.selections_rendered;
+
+      console.log(selections_rendered);
+
+      selections_rendered.forEach(function(rendered_sels,matching_area){
+        console.log("Rendered_sels:");
+        console.log(rendered_sels);
+
+        var refreshed_sels = new Tabula.Selections();
+
+        rendered_sels.forEach(function(rendered_sel){
+          var refreshed_sel = Tabula.pdf_view.renderSelection(rendered_sel.attributes);
+          rendered_sel.attributes.remove();
+          refreshed_sels.add(refreshed_sel);
+          already_rendered_selections.push(refreshed_sel);
+        });
+
+        refreshed_selections_rendered.set(matching_area,refreshed_sels);
+
+        regex_result.attributes.selections_rendered = refreshed_selections_rendered;
       });
-      regex_result.attributes.selections_rendered = refreshed_sels;
-    });
+
+      });
 
     var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
          console.log("Selection:");
@@ -667,27 +687,14 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
 
 Tabula.DocumentView = Backbone.View.extend({ // Singleton
-  events: {
-  },
+  events: {},
   pdf_view: null, //added on create
   page_views: {},
   rectangular_selector: null,
   _selectionsGetter: function(target) {
     return _(Tabula.pdf_view.pdf_document.selections.where({page_number: $(target).data('page')})).map(function(i){ return i.attributes; });
   },
-  filterOnSrc: function(imageData){
-
-    var page_views = this.page_views;
-    for (var key in page_views) {
-      // key: the name of the object key
-      if(page_views[key].$image['0'].src==imageData.src) {
-            page_views[key].renderHeaderFilter();
-           }
-      }},
-
   initialize: function(stuff){
-    console.log("page_views");
-    console.log(this.page_views);
      _.bindAll(this, 'render', 'removePage', 'addSelection', '_onRectangularSelectorEnd', '_selectionsGetter');
     this.pdf_view = stuff.pdf_view;
     this.listenTo(this.collection, 'remove', this.removePage);
@@ -704,9 +711,9 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
         }
       }
     );
+
   },
   addSelection: function (d) {
-
     var page_number = $(d.pageView).data('page') || d.pageNumber;
     var pv = this.page_views[page_number];
     var rs = new ResizableSelection({
@@ -741,7 +748,10 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
 
   render: function(){
     if(!Tabula.LazyLoad){ // old-style, non-lazyload behavior
+      console.log("if not Tabula.LazyLoad");
       _(this.page_views).each(_.bind(function(page_view, index){
+        console.log("Page:");
+        console.log($('#page-'+parseInt(index)+1));
         var already_on_page = $('#page-' + parseInt(index)+1).length;
         if(!already_on_page){
           this.$el.append(page_view.render().el);
@@ -755,7 +765,10 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
       // just so pages end up in the right order, we have to loop AWAY FROM the cursor in both directions
       // so if the cursor is at 1.
       for (var number=Tabula.pdf_view.lazyLoadCursor;number>0;number--){
+
+
         var page_view = this.page_views[number];
+
         if(!page_view) continue; // this is the first render, and there are no pages (probably!)
         var page_el = $('#page-' + number);
         var visible_on_page = page_el.filter(':visible').length;
@@ -771,7 +784,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
               // console.log('show ' + number);
             }else{
               this.$el.prepend(page_view.render().el);
-
             }
           }
         }
@@ -792,11 +804,11 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
               // console.log('show ' + number);
             }else{
               this.$el.append(page_view.render().el);
-
             }
           }
         }
       }
+
     }
 
               // should remove the "hidden" selections
@@ -806,6 +818,9 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
                 var new_selection = Tabula.pdf_view.renderSelection(hidden_selection.attributes); // adds it to Tabula.pdf_view.pdf_document.selections
                 return new_selection;
               });
+
+
+
     return this;
   }
 });
@@ -818,7 +833,6 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
 //   and the processing of information returned from the server.
 //
 //   1/19/2018  REM; added header_view and renderHeader to support user-defined header operations
-//   1/30/2018  REM; renamed renderHeader to renderHeaderFilter to avoid confusion and added comments to the method
 Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   document_view: null, //added on create
   header_view: null,
@@ -839,60 +853,67 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     this.pdf_view = stuff.pdf_view;
     _.bindAll(this, 'rotate_page', 'createTables',
       '_onSelectStart', '_onSelectChange', '_onSelectEnd', '_onSelectCancel', 'render');
-    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){ this.render(); });
-  },
+    this.listenTo(Tabula.pdf_view.pdf_document, 'change', function(){
+      this.render(); });
 
+
+    //Set header_view to zeroed out values until image has been loaded
+    this.header_view = new HeaderView({'top':0,
+      'left':0,
+      'width':0,
+      'height':0});
+
+    this.listenTo(this.header_view,'header_resized', function(data){
+      console.log("Listening to header resized event...");
+      console.log(this.model.attributes);
+      data['gui_height'] = parseInt(this.$el.css('height'));
+      data['absolute_height'] = this.model.attributes.height;
+      data['page_number'] = this.model.attributes.number;
+      console.log(Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.check_regex_searches_on_resize(data));
+    });
+  },
 
   render: function(){
     this.$el.html(this.template({
                     'number': this.model.get('number'),
                     'image_url': this.model.imageUrl()
                   }));
+
+    this.image = new Image();
+    this.image.src = this.model.imageUrl();
+    this.image.draggable = false;
+    this.image.ondrag = function(ev){ return false;};
+    this.image['user-drag']="none";
+    this.image['user-select']="none";
+    this.image.selectable = "on";
+
+    this.$el.find('.page').append(this.image);
+    this.$el.append(this.header_view.el);
+
+    this.header_view.$el.hide();
+   // this.header_view.$el.hide();
+
     this.$el.find('img').attr('data-page', this.model.get('number'))
-                        .attr('data-original-width', this.model.get('width'))
-                        .attr('data-original-height', this.model.get('height'));
-                        // .attr('data-rotation', this.model.get('rotation'));
-    this.$image = this.$el.find('img');
+      .attr('data-original-width', this.model.get('width'))
+      .attr('data-original-height', this.model.get('height'));
+    // .attr('data-rotation', this.model.get('rotation'));
+
+    var self = this;
+    this.image.onload = function(data) {
+
+      $(this).data('loaded', 'loaded');
+      self.header_view.$el.show();
+      self.header_view.$el.css({
+        top: 0,
+        left: self.$el.find('.page')['0'].offsetLeft,
+        width: $(self.image).width()
+        });
+      };
+  //  console.log(this.$el.find('.page').find('img'));
+
 
     return this;
   },
-  /*
-  * Note: The dimensions of HeaderView rely on the dimensions of the Tabula.Page object. Therefore, until the
-  * page is loaded, the HeaderView should not be constructed. Since the initialize method completes before the
-  * onLoad method is fired for a given Tabula.Page object, the renderHeaderFilter method must be used.
-   */
-  renderHeaderFilter: function(){
-
-    this.header_view = new HeaderView({top: 0,
-                                       left: this.$image['0'].parentElement.offsetLeft,
-                                       width: this.$image.width()});
-    console.log(this.header_view.el);
-    this.$el.append(this.header_view.el);
-    this.listenTo(this.header_view, 'header_resized', function(data){
-      data.previous_header_filter.page_number = this.model.attributes.number;
-      data.previous_header_filter.gui_page_height = parseInt(this.$el.css('height'));
-      data.previous_header_filter.absolute_page_height =
-        Tabula.pdf_view.components['document_view'].page_views[this.model.attributes.number].model.attributes.height;
-
-
-      console.log("In listening to header_resized:");
-      console.log(this.$el.css('height'));
-
-      data.header_filter_areas = {};
-
-      _.each(Tabula.pdf_view.components['document_view'].page_views,function(pageView){
-        console.log(pageView);
-        data.header_filter_areas[pageView.model.attributes.number]={'header_height':parseInt(pageView.header_view.$el.css('height')),
-                                                                    'gui_page_height':parseInt(pageView.$el.css('height')),
-                                                                    'absolute_page_height':pageView.model.attributes.height};
-      });
-
-      console.log("What is in the data?:");
-      console.log(data);
-
-      Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.check_regex_searches_on_resize(data)});
-  },
-
   createTables: function(asfd){
     this.iasAlreadyInited = true;
   },
@@ -900,15 +921,15 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   _onSelectStart: function(selection) {
     Tabula.pdf_view.pdf_document.selections.updateOrCreateByVendorSelectorId(selection,
                                                                   this.model.get('number'),
-                                                                  {'width': this.$image.width(),
-                                                                   'height': this.$image.height});
+                                                                  {'width': this.image.width(),
+                                                                   'height': this.image.height});
   },
 
   _onSelectChange: function(selection) {
     Tabula.pdf_view.pdf_document.selections.updateOrCreateByVendorSelectorId(selection,
                                                                   this.model.get('number'),
-                                                                  {'width': this.$image.width(),
-                                                                   'height': this.$image.height()});
+                                                                  {'width': this.image.width(),
+                                                                   'height': this.image.height()});
   },
 
   _onSelectEnd: function(selection) {
@@ -922,13 +943,13 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     var selections = Tabula.pdf_view.pdf_document.selections;
 
     var sel = selections.updateOrCreateByVendorSelectorId(selection,this.model.get('number'),
-                                                          {'width':this.$image.width(),
-                                                           'height':this.$image.height()});
+                                                          {'width':$(this.image).width(),
+                                                           'height':$(this.image).height()});
 
 
     // deal with invalid/too-small selections somehow (including thumbnails)
     if (selection.width === 0 && selection.height === 0) {
-      $('#thumb-' + this.$image.attr('id') + ' #vendorSelection-show-' + selection.id).css('display', 'none');
+      $('#thumb-' + this.image.attr('id') + ' #vendorSelection-show-' + selection.id).css('display', 'none');
       selection.remove();
     }
 
@@ -965,7 +986,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     console.log(selection);
 
     // remove repeat lassos button
-    var but_id = this.$image.attr('id') + '-' + selection.id;
+    var but_id = $(this.image).attr('id') + '-' + selection.id;
     $('button#' + but_id).remove();
 
     // find and remove the canceled selection from the collection of selections. (triggering remove events).
@@ -1109,23 +1130,20 @@ Tabula.RegexHandler = Backbone.View.extend({
     /*
     *Determine if regex pattern has already been previously searched for
      */
-    //TODO-Remember to update this once footers get added...
-    var areas_to_filter_out = {};
-      _.each(Tabula.pdf_view.components['document_view'].page_views,function(pageView){
-      console.log(pageView);
-      areas_to_filter_out[pageView.model.attributes.number]={'header_height':parseInt(pageView.header_view.$el.css('height')),
-        'gui_page_height':parseInt(pageView.$el.css('height')),
-        'absolute_page_height':pageView.model.attributes.height};
-    });
+    //TODO-Remember to update this once footers get added...]
+    console.log("In perform_regex_search:");
+
 
     if (this.regex_results_handler.has_same_query(this.regex_query_handler.model.toJSON()) == false) {
-
+      $('html').addClass("wait");
       $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: '/regex/search',
-        data: { query: this.regex_query_handler.model.toJSON(),
-                filtered_areas: areas_to_filter_out },
+        data: this.regex_query_handler.model.toJSON(),
         dataType: 'json',
+        complete: function(){
+          $('html').removeClass("wait");
+        },
         success: _.bind(function (data) {
 
           this.regex_results_handler.process_result(data);
@@ -1179,12 +1197,15 @@ Tabula.RegexCollectionView = Backbone.View.extend({
   check_regex_searches_on_resize: function(data){
     console.log("In check_regex_searches_on_resize:");
     console.log(data);
-    if(this.collection.length>0){
 
-      $.ajax({
-        type: 'GET',
-        url: '/regex/check-on-resize',
-        data: data,
+    $('html').addClass("wait");
+     $.ajax({
+       type: 'POST',
+       url: '/regex/check-on-resize',
+       data: data,
+       complete: function(){
+         $('html').removeClass("wait");
+        },
         success: _.bind(function (data) {
           console.log("Successful check:");
           console.log("Returned data:");
@@ -1261,14 +1282,14 @@ Tabula.RegexCollectionView = Backbone.View.extend({
           console.log(xhr);
           console.log(status);
         }
-      })}
+      })
     return "Try to see it my way, only time will tell if I am right or if I'm wrong";
   },
   remove_regex_search: function(event_data,search_to_remove){
     console.log("Search to remove:");
     console.log(search_to_remove.attributes);
     $.ajax({
-      type: 'GET',
+      type: 'POST',
       url: '/regex/remove-search-data',
       data: {'pattern_before': search_to_remove.attributes.pattern_before,
              'pattern_after':  search_to_remove.attributes.pattern_after },
@@ -1443,9 +1464,6 @@ Tabula.RegexResultModel = Backbone.Model.extend({
   matching_areas: null,  //set on initialize
 
   initialize: function(data) {
-    console.log("In initialize of RegexResultModel:");
-
-    console.log(data["matching_areas"].length);
 
     this.set({
       pattern_before: data["pattern_before"],
@@ -1772,6 +1790,10 @@ Tabula.PDFView = Backbone.View.extend(
         'createDataView', 'checkForAutodetectedTables', 'getData', 'handleScroll',
         'loadSavedTemplate', 'saveTemplate', 'saveTemplateAs');
 
+
+
+
+
       this.pdf_document = new Tabula.Document({
         pdf_id: PDF_ID
       });
@@ -1780,6 +1802,27 @@ Tabula.PDFView = Backbone.View.extend(
         success: function(m){ },
         error: function(m, r, o){ console.log("error", m, r, o) }
       });
+
+
+      console.log("Who can it be now??");
+
+        $.ajax({
+          type: 'POST',
+          url: '/regex/reset',
+          data: { file_path: this.pdf_document.pdf_id},
+          dataType: 'json',
+
+          success: _.bind(function (data) {
+            console.log("Reset back-end book-keeping for regex queries, filtered areas...")
+          }, this),
+          error: function (xhr, status, err) {
+            alert('Error in reset: ' + JSON.stringify(err));
+            console.log('Error in reset...: ', err);
+            console.log(xhr);
+            console.log(status);
+          }
+        });
+
 
       this.options = new Tabula.Options();
       this.listenTo(this.options, 'change', this.options.write);
@@ -1802,6 +1845,8 @@ Tabula.PDFView = Backbone.View.extend(
 
       $(document).on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
       $('#sidebar').on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
+
+
 
 
 
@@ -1892,6 +1937,9 @@ Tabula.PDFView = Backbone.View.extend(
       // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
       // cause it to be rendered onto the page, and as a thumbnail
       // and causes it to get an 'id' attr.
+      console.log("In renderSelection:");
+      console.log("Sel:");
+      console.log(sel);
       var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page_number];
       var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page_number});
       if(!page){
@@ -1908,6 +1956,7 @@ Tabula.PDFView = Backbone.View.extend(
       if(Tabula.LazyLoad && !pageView){
         return [];
       }
+
 
       // mimics drawing the selection onto the page
       var $img = pageView.$el.find('img');
@@ -2009,9 +2058,6 @@ Tabula.PDFView = Backbone.View.extend(
       //   _(this.pdf_document.page_collection.slice(0, Tabula.LazyLoad)).each(this.addOne, this);
       // }else{
 
-        console.log("In addAll:");
-        console.log(this.pdf_document);
-
         this.pdf_document.page_collection.each(this.addOne, this);
       // }
     },
@@ -2051,6 +2097,9 @@ Tabula.PDFView = Backbone.View.extend(
     },
 
     render : function(){
+
+      console.log("In Tabula.pdfView render...");
+
       document.title="Select Tables | Tabula";
       this.components['document_view'].render();
 
