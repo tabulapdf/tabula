@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 import static junit.framework.TestCase.assertTrue;
 
-//Checks the multiple links found on the About page.
-// TODO: check for the 3 links that open up a new tab instead of navigating through the same back. The rest of the links are passing the test cases
-//@author: SM  modified: 2/18/18
+//Checks the multiple links found on the About page. For three of the links, there will be 3 tabs that open in addition to
+//to the original tab. The three tabs, I have not been able to switch control to another tab so it only checks to open the url.
+//@author: SM  modified: 2/22/18
 public class TestAboutPage {
   WebDriver driver;
     @Test
@@ -42,28 +42,22 @@ public class TestAboutPage {
             assertTrue("Failed, couldn't find Tabula's GitHub page", driver.getCurrentUrl().equals(tabula_github_url));
             driver.navigate().back();
 
-           /* By Manuel_text = By.linkText("Manuel Aristarán");
+            //The following 3 links open up 3 additional tabs which are not tested for, since I wasn't able to find a correct
+            //way to switch the control of the tab to another tab to check for the correct url, the test only opens up the urls.
+            By Manuel_text = By.linkText("Manuel Aristarán");
             WebElement Manuel_link = wait.until(ExpectedConditions.elementToBeClickable(Manuel_text));
             Manuel_link.click();
-            Thread.sleep(2000);
-            String Manuel_url = "http://jazzido.com/";
-            assertTrue("Failed, couldn't find Manuel Aristarán's page", driver.getCurrentUrl().equals(Manuel_url));
-            driver.navigate().back();
+            Thread.sleep(4000);
 
             By Mike_text = By.linkText("Mike Tigas");
             WebElement Mike_link = wait.until(ExpectedConditions.elementToBeClickable(Mike_text));
             Mike_link.click();
-            String Mike_url = "https://mike.tig.as/";
-            assertTrue("Failed, couldn't find Mike Tigas's page", driver.getCurrentUrl().equals(Mike_url));
-            driver.navigate().back();
 
             By Jeremy_text = By.linkText("Jeremy B. Merrill");
             WebElement Jeremy_link = wait.until(ExpectedConditions.elementToBeClickable(Jeremy_text));
             Jeremy_link.click();
-            String Jeremy_url = "http://jeremybmerrill.com/";
-            assertTrue("Failed, couldn't find Jeremy B. Merrill's page", driver.getCurrentUrl().equals(Jeremy_url));
-            driver.navigate().back();*/
 
+            //the following links will check for the correct url.
             By ProPublica_text = By.linkText("ProPublica");
             WebElement ProPublica_link = wait.until(ExpectedConditions.elementToBeClickable(ProPublica_text));
             ProPublica_link.click();
@@ -92,7 +86,7 @@ public class TestAboutPage {
             WebElement NYTimes_link = wait.until(ExpectedConditions.elementToBeClickable(NYTimes_text));
             NYTimes_link.click();
             String NYTimes_url = "https://www.nytimes.com/";
-            driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
+            driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             assertTrue("Failed, couldn't find The New York Times' page", driver.getCurrentUrl().equals(NYTimes_url));
             driver.navigate().back();
 
