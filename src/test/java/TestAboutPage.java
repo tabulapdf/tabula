@@ -12,7 +12,9 @@ import java.util.concurrent.TimeUnit;
 import static junit.framework.TestCase.assertTrue;
 
 //Checks the multiple links found on the About page. For three of the links, there will be 3 tabs that open in addition to
-//to the original tab. The three tabs, I have not been able to switch control to another tab so it only checks to open the url.
+// to the original tab. The three tabs, I have not been able to switch control to another tab so it only checks to open the
+// url. Additionally, the media menu is not tested for since it is already tested in TestHomePage. Additionally, the media
+// menu is not tested for since it is already tested in TestHomePage.
 //@author: SM  modified: 2/22/18
 public class TestAboutPage {
   WebDriver driver;
