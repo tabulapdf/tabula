@@ -836,6 +836,7 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
 Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   document_view: null, //added on create
   header_view: null,
+  footer_view: null,
   className: 'pdf-page',
   iasAlreadyInited: false,
   selections: null,
@@ -859,6 +860,11 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
     //Set header_view to zeroed out values until image has been loaded
     this.header_view = new HeaderView({'top':0,
+      'left':0,
+      'width':0,
+      'height':0});
+
+    this.footer_view = new FooterView({'top':0,
       'left':0,
       'width':0,
       'height':0});
@@ -889,9 +895,10 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
     this.$el.find('.page').append(this.image);
     this.$el.append(this.header_view.el);
-
+    this.$el.append(this.footer_view.el);
     this.header_view.$el.hide();
-   // this.header_view.$el.hide();
+    this.footer_view.$el.hide();
+
 
     this.$el.find('img').attr('data-page', this.model.get('number'))
       .attr('data-original-width', this.model.get('width'))
@@ -901,13 +908,23 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     var self = this;
     this.image.onload = function(data) {
 
+      console.log("Image on load:");
+      console.log(self.$el.find('.page'));
+
       $(this).data('loaded', 'loaded');
       self.header_view.$el.show();
       self.header_view.$el.css({
         top: 0,
-        left: self.$el.find('.page')['0'].offsetLeft,
+        left: self.$el.find('.page')['0'].offsetLeft, //TODO-ask Shirley about this Firefox/Chrome issue...
         width: $(self.image).width()
         });
+
+      self.footer_view.$el.show();
+      self.footer_view.$el.css({
+        top: $(self.image).height(),
+        left: self.$el.find('.page')['0'].offsetLeft,
+        width: $(self.image).width()
+      });
       };
   //  console.log(this.$el.find('.page').find('img'));
 
