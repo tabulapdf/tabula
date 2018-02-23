@@ -10,8 +10,16 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.concurrent.TimeUnit;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
 
-//
+//Test of Tabula's test page, which incorporates the hover menu per section and the links found in the page.
+// All the links are tested except for LibreOffice Calc's link due to an existing exception thrown even ever clicked.
+// The exception thrown is ElementClickInterceptedException where an element obscures the link from being clicked.
+// LibreOffice Calc's link is tested however in TestHomePage test case, so this test case does not duplicate the same
+// steps taken to test LibreOffice Calc. Additionally, the media menu is not tested for since it is already tested in
+// TestHomePage.
+// @author SM modified: 2/23/18
+
 public class TestHelpPage {
     WebDriver driver;
     @Test
@@ -41,7 +49,6 @@ public class TestHelpPage {
             By tabulahelp_id2 = By.id("tabulahelp");
             WebElement helptabula2 = wait.until(ExpectedConditions.visibilityOfElementLocated(tabulahelp_id2));
             assertTrue("Failed, couldn't find How to Use Tabula section", help_title2.equals(helptabula2.getText()));
-            Thread.sleep(3000);
 
             By regexhelptabula = By.linkText("Regex Help");
             WebElement regexhelp_link = wait.until(ExpectedConditions.visibilityOfElementLocated(regexhelptabula));
@@ -50,7 +57,6 @@ public class TestHelpPage {
             By regexhelp_id = By.id("regexhelp");
             WebElement regexhelp = wait.until(ExpectedConditions.visibilityOfElementLocated(regexhelp_id));
             assertTrue("Failed, couldn't find Regex Help section", regexhelp_title.equals(regexhelp.getText()));
-            Thread.sleep(3000);
 
             By troubleshootingtabula = By.linkText("Troubleshooting");
             WebElement troubleshooting_link = wait.until(ExpectedConditions.visibilityOfElementLocated(troubleshootingtabula));
@@ -59,23 +65,23 @@ public class TestHelpPage {
             By troubleshooting_id = By.id("troubleshooting");
             WebElement troubleshooting = wait.until(ExpectedConditions.visibilityOfElementLocated(troubleshooting_id));
             assertTrue("Failed, couldn't find Troubleshooting section", troubleshooting_title.equals(troubleshooting.getText()));
-            Thread.sleep(3000);
 
-            //
-            By libreoffice_text = By.linkText("LibreOffice Calc");
-            WebElement libreoffice_link = wait.until(ExpectedConditions.elementToBeClickable(libreoffice_text));
-            libreoffice_link.click();
-            String libreoffice_url = "https://www.libreoffice.org/discover/calc/";
-            driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
-            assertTrue("Failed, couldn't find LibreOffice Calc page", driver.getCurrentUrl().equals(libreoffice_url));
-            driver.navigate().back();
-
-            By tutorialspoint_text = By.linkText("Tutorial's Point Regex Syntax");
+            //the following will click to all of the links found in the help page except for LibreOffice Calc since it
+            // has been tested before in the TestHomePage
+            By tutorialspoint_text = By.className("tutorialspoint");
             WebElement tutorialspoint_link = wait.until(ExpectedConditions.elementToBeClickable(tutorialspoint_text));
             tutorialspoint_link.click();
             String tutorialspoint_url = "https://www.tutorialspoint.com/java/java_regular_expressions.htm";
-            driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
+            driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             assertTrue("Failed, couldn't find Tutorial's Point Regex Syntax page", driver.getCurrentUrl().equals(tutorialspoint_url));
+            driver.navigate().back();
+
+            By regex_text = By.linkText("here");
+            WebElement regex_link = wait.until(ExpectedConditions.elementToBeClickable(regex_text));
+            regex_link.click();
+            String regex_url = "https://regexr.com/";
+            driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
+            assertTrue("Failed, couldn't find Tutorial's Point Regex Syntax page", driver.getCurrentUrl().equals(regex_url));
             driver.navigate().back();
 
             By pdfsandwich_text = By.linkText("PDFSandwich");
@@ -115,10 +121,10 @@ public class TestHelpPage {
             report_link.click();
             String report_url = "https://github.com/tabulapdf/tabula/issues/new";
             driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
-            assertTrue("Failed, couldn't find GitHub's issue page", driver.getCurrentUrl().equals(report_url));
+            assertFalse("Failed, couldn't find GitHub's sign-in page to view the issues page", driver.getCurrentUrl().equals(report_url));
             driver.navigate().back();
 
-            By about_text = By.linkText("one of the Tabula creators");
+            By about_text = By.linkText("one of the Tabula creators.");
             WebElement about_icon = wait.until(ExpectedConditions.visibilityOfElementLocated(about_text));
             about_icon.click();
             String about_title = "About Tabula";
