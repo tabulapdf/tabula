@@ -7140,7 +7140,14 @@ button.close {
   box-sizing: border-box;
 }
 
-.header-region:hover{
+.footer-region{
+  position: absolute;
+  border: 3px solid rgba(19, 248, 255, 0.8);
+  background: rgba(15, 183, 255, 0.2);
+  box-sizing: border-box;
+}
+
+.header-region:hover, .footer-region:hover{
   cursor: row-resize;
 }
 
@@ -7315,6 +7322,7 @@ body {
   font-weight: 500;
   color: #333333;
 }
+
 
 .navbar-default a.navbar-brand {
   padding-left: 30px;

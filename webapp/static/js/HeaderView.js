@@ -9,6 +9,8 @@
 //   1/18/2018  REM; created
 //   1/30/2018  REM; updated UI to reduce mouse flicker, increase intuitiveness
 //   2/1/2018   REM; adding state so that it can be determined if header is being enlarged or shrunk on a resize event
+//   2/21/2018  REM; updated resize methods so that enableHeaderResize is only activated once per drag operation. Also
+//                   updated the data sent back on the header-resize event
 //
 /* global $, paper, Backbone, _, console */
 (function (name, context, definition) {
@@ -65,18 +67,38 @@
         var mouseLocation = event.pageY - this.$el['0'].parentElement.offsetTop;
         console.log("Mouse Location:"+mouseLocation);
         var new_height = mouseLocation;
-        if((this.previous_y>new_height) && (new_height<=this.BUFFER)){ //When the user is shrinking the size of the header
+        if((this.previous_y>new_height) && (new_height<=this.BUFFER)){
+          //When the user is shrinking the size of the header
           new_height=0;
+          this.$el.css({'height': new_height });
         }
-        else{
-          new_height+=this.BUFFER; //buffer added to reduce cursor flicker
-        }
-        this.$el.css({'height': new_height });
-        if(new_height==0){
+        if(this.checkFooterOverlap({'new_height':new_height})){
+          while(this.checkFooterOverlap(--new_height)){} //Resize to borderline
+          this.$el.css({'height':new_height});
           this.endHeaderResize(event);
         }
+        else{
+          new_height+=this.BUFFER; //buffer added to reduce cursor flicker;
+          this.$el.css({'height': new_height });
+        }
+
         this.previous_y = mouseLocation; //Updating status variables for next mousemove...
       }
+    },
+
+    checkFooterOverlap: function(data){
+      //Returns true if an overlap is detected
+      console.log(this.$el['0'].parentElement);
+      var footer_el = $(this.$el['0'].parentElement).find('.footer-region');
+      console.log("In checkFooterOverlap:");
+      console.log(footer_el);
+
+      console.log("Header Height:"+data.new_height);
+      console.log("Footer Top:"+footer_el.css('top'));
+
+
+      return ((parseInt(footer_el.css('top')))<=data.new_height)
+
     },
 
     initialize: function(data){
@@ -90,7 +112,6 @@
       });
 
       this.$el.attr('title','Drag down to define header area');
-      this.$el.attr('draggable','false');
 
       //Detect when user moves mouse/release mouse outside of the area
       $(document).on({
