@@ -73,13 +73,11 @@
     },
 
     resizeFooter: function(event){
-      console.log("In resizeFooter:");
 
       if(this.resizing===true){
+        console.log("In resizeFooter:");
         var mouseLocation = event.pageY - this.gui_page_top_offset;
-        console.log("Mouse Location:"+mouseLocation);
         var new_height = this.gui_page_height - mouseLocation;
-        console.log("Proposed New Height:"+new_height);
 
         var new_top = parseInt(this.$el.css('top'));
 
