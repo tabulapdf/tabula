@@ -869,14 +869,26 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       'width':0,
       'height':0});
 
-    this.listenTo(this.header_view,'header_resized', function(data){
-      console.log("Listening to header resized event...");
-      console.log(this.model.attributes);
-      data['gui_height'] = parseInt(this.$el.css('height'));
-      data['absolute_height'] = this.model.attributes.height;
-      data['page_number'] = this.model.attributes.number;
-      console.log(Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.check_regex_searches_on_resize(data));
-    });
+    this.listenTo(this.header_view,'header_resized',this.detect_filter_resize);
+    this.listenTo(this.footer_view,'footer_resized',this.detect_filter_resize);
+  },
+
+  detect_filter_resize: function(data){
+    console.log("Listening to resize event...");
+    console.log(this.model.attributes);
+    console.log("Data:");
+    console.log(data);
+    if(data['current_header_height']==undefined){
+      console.log('Do I get here?');
+      data['current_header_height'] = data['previous_header_height']= parseInt(this.header_view.$el.css('height'));
+    }
+    else{
+      data['current_footer_height'] = data['previous_footer_height']= parseInt(this.footer_view.$el.css('height'));
+    }
+    data['gui_height'] = parseInt(this.$el.css('height'));
+    data['absolute_height'] = this.model.attributes.height;
+    data['page_number'] = this.model.attributes.number;
+    console.log(Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.check_regex_searches_on_resize(data));
   },
 
   render: function(){

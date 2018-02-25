@@ -355,7 +355,7 @@ Cuba.define do
         puts req.params
         #TODO: restructure how filtered_areas are stored/sent to be more efficient...could do a much better job with this...
         previous_filter_area = Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['previous_header_height'].to_i,
-                                                                                              0, #Height of footer filter 0 for now...
+                                                                                              req.params['previous_footer_height'].to_i,
                                                                                               req.params['gui_height'].to_i,
                                                                                               req.params['absolute_height'].to_i)
 
@@ -363,7 +363,7 @@ Cuba.define do
 
         regex_query_meta_data.areas_to_filter.put(req.params['page_number'].to_i.to_java(:int),
                                                   Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['current_header_height'].to_i,
-                                                                                                                 0,
+                                                                                                                 req.params['current_footer_height'].to_i,
                                                                                                                  req.params['gui_height'].to_i,
                                                                                                                  req.params['absolute_height'].to_i))
 

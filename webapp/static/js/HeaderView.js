@@ -44,15 +44,12 @@
           this.$el.css({'height': this.BUFFER});
         }
       }
-
-
-
     },
 
     endHeaderResize: function(event){
+      console.log("In endHeaderResize:");
       if(this.resizing===true){
         this.resizing = false;
-        console.log("In endHeaderResize:");
         console.log(this.$el);
         sendback={};
         sendback['previous_header_height'] = this.height_on_start_of_resize;
@@ -65,7 +62,6 @@
     resizeHeader: function(event){
       if(this.resizing===true){
         var mouseLocation = event.pageY - this.$el['0'].parentElement.offsetTop;
-        console.log("Mouse Location:"+mouseLocation);
         var new_height = mouseLocation;
         if((this.previous_y>new_height) && (new_height<=this.BUFFER)){
           //When the user is shrinking the size of the header
@@ -81,22 +77,14 @@
           new_height+=this.BUFFER; //buffer added to reduce cursor flicker;
           this.$el.css({'height': new_height });
         }
-
         this.previous_y = mouseLocation; //Updating status variables for next mousemove...
       }
     },
 
     checkFooterOverlap: function(data){
       //Returns true if an overlap is detected
-      console.log(this.$el['0'].parentElement);
-      var footer_el = $(this.$el['0'].parentElement).find('.footer-region');
       console.log("In checkFooterOverlap:");
-      console.log(footer_el);
-
-      console.log("Header Height:"+data.new_height);
-      console.log("Footer Top:"+footer_el.css('top'));
-
-
+      var footer_el = $(this.$el['0'].parentElement).find('.footer-region');
       return ((parseInt(footer_el.css('top')))<=data.new_height)
 
     },
