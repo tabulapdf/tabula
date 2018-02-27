@@ -3,6 +3,12 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/com/squareup/okhttp3/okhttp/3.9.1/okhttp-3.9.1.jar!/" />
     </CLASSES>
+<<<<<<< HEAD
+=======
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/squareup/okhttp3/okhttp/3.9.1/okhttp-3.9.1-javadoc.jar!/" />
+    </JAVADOC>
+>>>>>>> 29c75c4a6fe86e090cf13e39a79dbdee760124ae
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/com/squareup/okhttp3/okhttp/3.9.1/okhttp-3.9.1-sources.jar!/" />
     </SOURCES>
