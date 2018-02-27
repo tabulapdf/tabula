@@ -3,12 +3,9 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/org/checkerframework/checker-compat-qual/2.0.0/checker-compat-qual-2.0.0.jar!/" />
     </CLASSES>
-<<<<<<< HEAD
-=======
     <JAVADOC>
       <root url="jar://$MAVEN_REPOSITORY$/org/checkerframework/checker-compat-qual/2.0.0/checker-compat-qual-2.0.0-javadoc.jar!/" />
     </JAVADOC>
->>>>>>> 29c75c4a6fe86e090cf13e39a79dbdee760124ae
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/org/checkerframework/checker-compat-qual/2.0.0/checker-compat-qual-2.0.0-sources.jar!/" />
     </SOURCES>

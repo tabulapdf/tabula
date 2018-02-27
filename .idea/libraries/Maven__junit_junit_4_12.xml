@@ -3,12 +3,9 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.12/junit-4.12.jar!/" />
     </CLASSES>
-<<<<<<< HEAD
-=======
     <JAVADOC>
       <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.12/junit-4.12-javadoc.jar!/" />
     </JAVADOC>
->>>>>>> 29c75c4a6fe86e090cf13e39a79dbdee760124ae
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.12/junit-4.12-sources.jar!/" />
     </SOURCES>
