@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-//Test of Tabula's test page, which incorporates the hover menu per section and the links found in the page.
-// All the links are tested except for LibreOffice Calc's link due to an existing exception thrown even ever clicked.
+//Test of Tabula's test page, which incorporates the hover menu per section and the links found on the page.
+// All the links are tested except for LibreOffice Calc's link due to an existing exception thrown whenever clicked.
 // The exception thrown is ElementClickInterceptedException where an element obscures the link from being clicked.
 // LibreOffice Calc's link is tested however in TestHomePage test case, so this test case does not duplicate the same
 // steps taken to test LibreOffice Calc. Additionally, the media menu is not tested for since it is already tested in
