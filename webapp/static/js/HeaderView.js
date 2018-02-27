@@ -52,9 +52,9 @@
         this.resizing = false;
         console.log(this.$el);
         sendback={};
-        sendback['previous_header_height'] = this.height_on_start_of_resize;
-        sendback['current_header_height'] =parseInt(this.$el.css('height'));
-        console.log("Height at finish:"+sendback['current_header_height']);
+        Tabula.pdf_view.components['document_view'].header_height = parseInt(this.$el.css('height'));
+        sendback['header_height'] =parseInt(this.$el.css('height'));
+        console.log("Height at finish:"+sendback['header_height']);
         this.trigger('header_resized',sendback);
       }
     },

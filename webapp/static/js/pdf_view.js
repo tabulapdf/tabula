@@ -691,6 +691,8 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   pdf_view: null, //added on create
   page_views: {},
   rectangular_selector: null,
+  header_height: 0,
+  footer_height: 0,
   _selectionsGetter: function(target) {
     return _(Tabula.pdf_view.pdf_document.selections.where({page_number: $(target).data('page')})).map(function(i){ return i.attributes; });
   },
@@ -839,6 +841,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   footer_view: null,
   className: 'pdf-page',
   iasAlreadyInited: false,
+  imageIsLoaded:false,
   selections: null,
   id: function(){
     return 'page-' + this.model.get('number');
@@ -874,24 +877,43 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   },
 
   detect_filter_resize: function(data){
+    Object.keys(Tabula.pdf_view.components['document_view'].page_views).forEach(function(key){
+      var page_view = Tabula.pdf_view.components['document_view'].page_views[key];
+      console.log("Key;");
+      console.log(key);
+      if(page_view.imageIsLoaded){
+        page_view.header_view.$el.css({
+          top: 0,
+          left: page_view.$el.find('.page')['0'].offsetLeft,
+          width: $(page_view.image).width(),
+          height: Tabula.pdf_view.components['document_view'].header_height
+        });
+
+        page_view.footer_view.$el.css({
+          top: $(page_view.image).height() - Tabula.pdf_view.components['document_view'].footer_height,
+          left: page_view.$el.find('.page')['0'].offsetLeft,
+          width: $(page_view.image).width(),
+          height: Tabula.pdf_view.components['document_view'].footer_height
+        });
+      }
+    })
     console.log("Listening to resize event...");
     console.log(this.model.attributes);
     console.log("Data:");
     console.log(data);
-    if(data['current_header_height']==undefined){
+    if(data['header_height']==undefined){
       console.log('Do I get here?');
-      data['current_header_height'] = data['previous_header_height']= parseInt(this.header_view.$el.css('height'));
+      data['header_height'] = parseInt(this.header_view.$el.css('height'));
     }
     else{
-      data['current_footer_height'] = data['previous_footer_height']= parseInt(this.footer_view.$el.css('height'));
+      data['footer_height'] = parseInt(this.footer_view.$el.css('height'));
     }
     data['gui_height'] = parseInt(this.$el.css('height'));
-    data['absolute_height'] = this.model.attributes.height;
-    data['page_number'] = this.model.attributes.number;
     console.log(Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.check_regex_searches_on_resize(data));
-  },
+    },
 
   render: function(){
+    console.log("In Tabula.PageView render...");
     this.$el.html(this.template({
                     'number': this.model.get('number'),
                     'image_url': this.model.imageUrl()
@@ -908,18 +930,40 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     this.$el.find('.page').append(this.image);
     this.$el.append(this.header_view.el);
     this.$el.append(this.footer_view.el);
-    this.header_view.$el.hide();
-    this.footer_view.$el.hide();
-
 
     this.$el.find('img').attr('data-page', this.model.get('number'))
       .attr('data-original-width', this.model.get('width'))
       .attr('data-original-height', this.model.get('height'));
     // .attr('data-rotation', this.model.get('rotation'));
 
+    if(this.imageIsLoaded){
+      this.header_view.$el.show();
+      this.footer_view.$el.show();
+
+      self.header_view.$el.css({
+        top: 0,
+        left: self.$el.find('.page')['0'].offsetLeft,
+        width: $(self.image).width(),
+        height: Tabula.pdf_view.components['document_view'].header_height
+      });
+
+      self.footer_view.$el.show();
+      self.footer_view.$el.css({
+        top: $(self.image).height() - Tabula.pdf_view.components['document_view'].footer_height,
+        left: self.$el.find('.page')['0'].offsetLeft,
+        width: $(self.image).width(),
+        height: Tabula.pdf_view.components['document_view'].footer_height
+      });
+    }
+    else{
+      this.header_view.$el.hide();
+      this.footer_view.$el.hide();
+    }
+
     var self = this;
     this.image.onload = function(data) {
 
+      self.imageIsLoaded = true;
       console.log("Image on load:");
       console.log(self.$el.find('.page'));
 
@@ -927,15 +971,17 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       self.header_view.$el.show();
       self.header_view.$el.css({
         top: 0,
-        left: self.$el.find('.page')['0'].offsetLeft, //TODO-ask Shirley about this Firefox/Chrome issue...
-        width: $(self.image).width()
+        left: self.$el.find('.page')['0'].offsetLeft,
+        width: $(self.image).width(),
+        height: Tabula.pdf_view.components['document_view'].header_height
         });
 
       self.footer_view.$el.show();
       self.footer_view.$el.css({
-        top: $(self.image).height(),
+        top: $(self.image).height() - Tabula.pdf_view.components['document_view'].footer_height,
         left: self.$el.find('.page')['0'].offsetLeft,
-        width: $(self.image).width()
+        width: $(self.image).width(),
+        height: Tabula.pdf_view.components['document_view'].footer_height
       });
       };
   //  console.log(this.$el.find('.page').find('img'));
@@ -1226,14 +1272,14 @@ Tabula.RegexCollectionView = Backbone.View.extend({
   check_regex_searches_on_resize: function(data){
     console.log("In check_regex_searches_on_resize:");
     console.log(data);
-
-    $('html').addClass("wait");
-     $.ajax({
-       type: 'POST',
-       url: '/regex/check-on-resize',
-       data: data,
-       complete: function(){
-         $('html').removeClass("wait");
+    if(this.collection.length!=0) {
+      $('html').addClass("wait");
+      $.ajax({
+        type: 'POST',
+        url: '/regex/check-on-resize',
+        data: data,
+        complete: function () {
+          $('html').removeClass("wait");
         },
         success: _.bind(function (data) {
           console.log("Successful check:");
@@ -1244,12 +1290,12 @@ Tabula.RegexCollectionView = Backbone.View.extend({
 
           var query_models = this.collection.models;
 
-          JSON.parse(data).forEach(function(element){
+          JSON.parse(data).forEach(function (element) {
 
             console.log("Element:");
             console.log(element);
 
-            var query_to_update = _.find(query_models,function(model){
+            var query_to_update = _.find(query_models, function (model) {
               return (model.attributes.pattern_before == element.updated_regex_search._regex_before_table.pattern) &&
                 (model.attributes.pattern_after == element.updated_regex_search._regex_after_table.pattern)
             });
@@ -1262,25 +1308,25 @@ Tabula.RegexCollectionView = Backbone.View.extend({
 
             //TODO: Refactor below to remove code redundancies...
 
-            element.areas_removed.forEach(function(matching_area_to_remove){
+            element.areas_removed.forEach(function (matching_area_to_remove) {
               console.log("Matching Area To Remove:");
               console.log(matching_area_to_remove);
-              var front_end_match =_.find(Array.from(query_to_update.attributes.selections_rendered.keys()), function (key_match) {
+              var front_end_match = _.find(Array.from(query_to_update.attributes.selections_rendered.keys()), function (key_match) {
                 return _.isEqual(key_match, matching_area_to_remove);
               });
-              query_to_update.attributes.selections_rendered.get(front_end_match).forEach(function(subsection){
+              query_to_update.attributes.selections_rendered.get(front_end_match).forEach(function (subsection) {
                 subsection.attributes.remove();
               });
-              query_to_update.attributes.matching_areas.splice(front_end_match,1);
+              query_to_update.attributes.matching_areas.splice(front_end_match, 1);
               query_to_update.attributes.selections_rendered.delete(front_end_match);
               match_count_change--;
             });
 
-            element.areas_added.forEach(function(matching_area_to_add){
+            element.areas_added.forEach(function (matching_area_to_add) {
               console.log("Matching Area to Add:");
               console.log(matching_area_to_add);
               var created_subsections = new Tabula.Selections();
-              Object.keys(matching_area_to_add).forEach(function(page_number) {
+              Object.keys(matching_area_to_add).forEach(function (page_number) {
                 console.log("Page Number:" + page_number);
                 matching_area_to_add[page_number].forEach(function (subsection) {
                   created_subsections.add(Tabula.pdf_view.renderSelection({
@@ -1294,16 +1340,18 @@ Tabula.RegexCollectionView = Backbone.View.extend({
                     selection_type: 'regex'
                   }));
                 });
-             });
-             match_count_change++;
-             query_to_update.attributes.selections_rendered.set(matching_area_to_add,created_subsections);
+              });
+              match_count_change++;
+              query_to_update.attributes.selections_rendered.set(matching_area_to_add, created_subsections);
             });
 
             //TODO=figure out how to update query_to_update + fire change event so dynamic content is refreshed...
-              query_to_update.set({matching_areas:query_to_update.attributes.matching_areas,
-                                   num_matches: (query_to_update.attributes.num_matches+match_count_change)});
+            query_to_update.set({
+              matching_areas: query_to_update.attributes.matching_areas,
+              num_matches: (query_to_update.attributes.num_matches + match_count_change)
+            });
 
-            })
+          })
         }, this),
         error: function (xhr, status, err) {
           alert('Error in regex-check-on-resize event: ' + JSON.stringify(err));
@@ -1311,7 +1359,11 @@ Tabula.RegexCollectionView = Backbone.View.extend({
           console.log(xhr);
           console.log(status);
         }
-      })
+      });
+    }
+
+
+
     return "Try to see it my way, only time will tell if I am right or if I'm wrong";
   },
   remove_regex_search: function(event_data,search_to_remove){
@@ -1394,12 +1446,12 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     console.log("What's going on?");
     console.log(selections_rendered);
 
-    //TO-DO:THIS WILL NEED TO BE REDONE
     if(Array.from(selections_rendered.keys()).every(function(matching_area){
       console.log(matching_area);
       return selections_rendered.get(matching_area).every(function(subsection){
         console.log(subsection);
-        return true;})}))
+        return subsection.attributes.checkOverlaps();})}))
+
       {
       this.collection.add(new Tabula.RegexResultModel({
         pattern_before: search_results["_regex_before_table"]["pattern"],
@@ -1414,7 +1466,9 @@ Tabula.RegexCollectionView = Backbone.View.extend({
      alert('TODO: Figure out what the user should see here about overlaps');
      selections_rendered.forEach(function(matching_area){
        matching_area.forEach(function(subsection){
+         console.log(subsection);
          subsection.attributes.remove();
+         //TODO-need to figure out how to call regex remove from here...
        });
       })
     }
