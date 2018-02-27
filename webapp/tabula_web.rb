@@ -36,7 +36,7 @@ require_relative '../lib/tabula_job_executor/jobs/detect_tables.rb'
 
 class RegexQueryMetaData
 
-  attr_accessor :regex_searches,:areas_to_filter
+  attr_accessor :regex_searches,:filter_area
   attr_reader   :file
 
   include Singleton
@@ -45,7 +45,7 @@ class RegexQueryMetaData
     @doc_name=String.new()
     @regex_searches=[]
     @file = nil
-    @areas_to_filter = Java::JavaUtil::HashMap.new()
+    @filter_area = nil
   end
 
   def is_new_doc(docName)
@@ -67,9 +67,6 @@ class RegexQueryMetaData
 
     page_count = @file.getNumberOfPages()
 
-    1.upto(page_count) do |page_num|
-      @areas_to_filter.put(page_num.to_i.to_java(:int),nil)
-    end
 
   end
 end
@@ -333,14 +330,14 @@ Cuba.define do
         puts req.params
         puts "In regex/search..."
 
-        puts regex_query_meta_data.areas_to_filter
+        puts regex_query_meta_data.filter_area
 
         regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(req.params['pattern_before'],
                                                                         req.params['include_pattern_before'],
                                                                         req.params['pattern_after'],
                                                                         req.params['include_pattern_after'],
                                                                         regex_query_meta_data.file,
-                                                                        regex_query_meta_data.areas_to_filter)
+                                                                        regex_query_meta_data.filter_area)
 
         regex_query_meta_data.regex_searches.push(regex_search)
 
@@ -354,27 +351,17 @@ Cuba.define do
         puts 'In regex/check-on-resize'
         puts req.params
         #TODO: restructure how filtered_areas are stored/sent to be more efficient...could do a much better job with this...
-        previous_filter_area = Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['previous_header_height'].to_i,
-                                                                                              req.params['previous_footer_height'].to_i,
-                                                                                              req.params['gui_height'].to_i,
-                                                                                              req.params['absolute_height'].to_i)
+        regex_query_meta_data.filter_area = Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['header_height'].to_i,
+                                                                                              req.params['footer_height'].to_i,
+                                                                                              req.params['gui_height'].to_i)
 
 
 
-        regex_query_meta_data.areas_to_filter.put(req.params['page_number'].to_i.to_java(:int),
-                                                  Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['current_header_height'].to_i,
-                                                                                                                 req.params['current_footer_height'].to_i,
-                                                                                                                 req.params['gui_height'].to_i,
-                                                                                                                 req.params['absolute_height'].to_i))
-
-
-        puts regex_query_meta_data.areas_to_filter
+        puts regex_query_meta_data.filter_area
 
         changedQueries = Java::TechnologyTabulaDetectors::
             RegexSearch.checkSearchesOnFilterResize(regex_query_meta_data.file,
-                                                    req.params['page_number'].to_i,
-                                                    previous_filter_area,
-                                                    regex_query_meta_data.areas_to_filter,
+                                                    regex_query_meta_data.filter_area,
                                                     regex_query_meta_data.regex_searches)
         puts 'Changed Queries:';
         puts changedQueries.length
