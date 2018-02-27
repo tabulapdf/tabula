@@ -877,6 +877,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   },
 
   detect_filter_resize: function(data){
+    //TODO- clean this up so that a global variable in documentView is not needed (for now it's okay)
     Object.keys(Tabula.pdf_view.components['document_view'].page_views).forEach(function(key){
       var page_view = Tabula.pdf_view.components['document_view'].page_views[key];
       console.log("Key;");
