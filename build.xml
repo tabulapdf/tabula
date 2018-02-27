@@ -72,7 +72,7 @@
       <config
           headerType="console"
           outfile="${windows.dir}/tabula.exe"
-          jarPath="${build.dir}/tabula.jar"
+          jarPath="tabula.jar"
           dontWrapJar="true"
           icon="${build.dir}/icons/tabula.ico">
         <classPath mainClass="WarMain">
