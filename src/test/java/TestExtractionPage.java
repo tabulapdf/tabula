@@ -31,7 +31,7 @@ public class TestExtractionPage {
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             assertTrue("Failed, couldn't find Extraction page", regex_options_string.equals(regex_options.getText()));
 
-  /*          Thread.sleep(2000);
+            Thread.sleep(2000);
             By templates_name = By.id("templates_title");
             WebElement templates_button = wait.until(ExpectedConditions.visibilityOfElementLocated(templates_name));
             templates_button.click();
@@ -40,7 +40,7 @@ public class TestExtractionPage {
             WebElement templates_list = wait.until(ExpectedConditions.visibilityOfElementLocated(templates_list_title));
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             assertTrue("Failed, couldn't find Templates List in Extraction page", templates_list_string.equals(templates_list.getText()));
-*/
+
             //checking that the PDF outline sidebar is visible
             By sidebar_title = By.id("sidebar");
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);

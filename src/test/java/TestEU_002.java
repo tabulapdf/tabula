@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import static junit.framework.TestCase.assertTrue;
 
-public class TestEU_002File {
+public class TestEU_002 {
     WebDriver driver;
     @Test
     public void startWebDriver() throws InterruptedException {
