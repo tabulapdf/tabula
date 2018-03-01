@@ -116,7 +116,6 @@ public class TestHomePage {
             WebElement input_browser = wait.until(ExpectedConditions.elementToBeClickable(input_btn));
             input_browser.click();
             Thread.sleep(4000);
-            driver.quit();
         }catch(Exception e){
             System.out.print(e);
 
