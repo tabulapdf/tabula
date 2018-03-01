@@ -59,15 +59,14 @@
     },
 
     endFooterResize: function(event){
-      console.log("In endFooterResize:");
       if(this.resizing===true){
         this.resizing = false;
-        console.log("In endHeaderResize:");
+        console.log("In endFooterResize:");
         console.log(this.$el);
         sendback={};
-        sendback['previous_footer_height'] = this.height_on_start_of_resize;
-        sendback['current_footer_height'] =parseInt(this.$el.css('height'));
-        console.log("Height at finish:"+sendback['current_header_height']);
+        Tabula.pdf_view.components['document_view'].footer_height = parseInt(this.$el.css('height'));
+        sendback['footer_height'] =parseInt(this.$el.css('height'));
+        console.log("Height at finish:"+sendback['footer_height']);
         this.trigger('footer_resized',sendback);
       }
     },
