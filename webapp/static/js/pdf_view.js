@@ -514,14 +514,22 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
       });
 
+    console.log("Already_rendered_selections:");
+    console.log(already_rendered_selections);
+
     var oldSelections = this.pdf_view.pdf_document.selections.models.map(function(sel){
          console.log("Selection:");
          console.log(sel.attributes);
 
-         if($.inArray(sel.attributes,already_rendered_selections)){
+         console.log("Already_rendered_selections:");
+         console.log(already_rendered_selections);
+
+         if($.inArray(sel,already_rendered_selections)!=-1){
+           console.log('Selection has already been rendered');
            return sel;
          }
          else{
+           console.log('Selection has not already been rendered...');
            return Tabula.pdf_view.renderSelection(sel['attributes']);
          }
       });
@@ -1273,7 +1281,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
   check_regex_searches_on_resize: function(data){
     console.log("In check_regex_searches_on_resize:");
     console.log(data);
-    if(this.collection.length!=0) {
+   // if(this.collection.length!=0) {
       $('html').addClass("wait");
       $.ajax({
         type: 'POST',
@@ -1361,7 +1369,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
           console.log(status);
         }
       });
-    }
+   // }
 
 
 
