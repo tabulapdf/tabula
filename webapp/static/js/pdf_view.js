@@ -233,7 +233,7 @@ Tabula.AutodetectedSelections = Tabula.Selections.extend({
           y2: tableCoords[1] + tableCoords[3],
           width: tableCoords[2],
           height: tableCoords[3],
-          page: pageIndex,
+          page_number: pageIndex,
           extraction_method: 'spreadsheet',
           selection_id: null
         };
