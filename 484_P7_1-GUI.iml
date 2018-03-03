@@ -4,6 +4,8 @@
     <shared />
   </component>
   <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/classes/production/484_P7_1-GUI" />
+    <output-test url="file://$MODULE_DIR$/classes/test/484_P7_1-GUI" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
@@ -21,6 +23,7 @@
           <root url="jar://$MAVEN_REPOSITORY$/org/opentest4j/opentest4j/1.0.0/opentest4j-1.0.0.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/1.0.0/junit-platform-commons-1.0.0.jar!/" />
         </CLASSES>
+        <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>

@@ -7,6 +7,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.concurrent.TimeUnit;
+
 import static junit.framework.TestCase.assertTrue;
 
 // Test of Tabula's homepage, menu, media links at the bottom of the page, and button to click window explorer to upload files.
@@ -75,6 +77,7 @@ public class TestHomePage {
             WebElement source_code_icon2 = wait.until(ExpectedConditions.elementToBeClickable(source_code_id));
             source_code_icon2.click();
             String github_url = "https://github.com/tabulapdf/tabula";
+            driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             assertTrue("Failed, couldn't find Tabula's GitHub page", driver.getCurrentUrl().equals(github_url));
             driver.navigate().back();
 
@@ -83,6 +86,7 @@ public class TestHomePage {
             WebElement tabula_twitter_icon = wait.until(ExpectedConditions.elementToBeClickable(tabulatwt_classname));
             tabula_twitter_icon.click();
             String tabula_twitter_url = "https://twitter.com/tabulapdf?lang=en";
+            driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             assertTrue("Failed, couldn't find Tabula's Twitter page", driver.getCurrentUrl().equals(tabula_twitter_url));
             driver.navigate().back();
 
@@ -93,6 +97,7 @@ public class TestHomePage {
             WebElement tabulapdfoc_icon = wait.until(ExpectedConditions.elementToBeClickable(tabulapdfoc_classname));
             tabulapdfoc_icon.click();
             String tabulapdfoc_url = "https://opencollective.com/tabulapdf";
+            driver.manage().timeouts().pageLoadTimeout(200, TimeUnit.SECONDS);
             assertTrue("Failed, couldn't find Tabula's Opencollective page", driver.getCurrentUrl().equals(tabulapdfoc_url));
             driver.navigate().back();
 
@@ -102,6 +107,7 @@ public class TestHomePage {
             WebElement libreoffice_link = wait.until(ExpectedConditions.elementToBeClickable(libreoffice_text));
             libreoffice_link.click();
             String libreoffice_url = "https://www.libreoffice.org/discover/calc/";
+            driver.manage().timeouts().pageLoadTimeout(200, TimeUnit.SECONDS);
             assertTrue("Failed, couldn't find LibreOffice Calc page", driver.getCurrentUrl().equals(libreoffice_url));
             driver.navigate().back();
 
@@ -109,7 +115,7 @@ public class TestHomePage {
             By input_btn = By.className("input-group-btn");
             WebElement input_browser = wait.until(ExpectedConditions.elementToBeClickable(input_btn));
             input_browser.click();
-            driver.quit();
+            Thread.sleep(4000);
         }catch(Exception e){
             System.out.print(e);
 
