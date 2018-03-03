@@ -1879,17 +1879,14 @@ Tabula.PDFView = Backbone.View.extend(
         error: function(m, r, o){ console.log("error", m, r, o) }
       });
 
-
-      console.log("Who can it be now??");
-
         $.ajax({
           type: 'POST',
           url: '/regex/reset',
           data: { file_path: this.pdf_document.pdf_id},
           dataType: 'json',
 
-          success: _.bind(function (data) {
-            console.log("Reset back-end book-keeping for regex queries, filtered areas...")
+          success: _.bind(function() {
+            console.log("Reset back-end book-keeping for regex queries")
           }, this),
           error: function (xhr, status, err) {
             alert('Error in reset: ' + JSON.stringify(err));
