@@ -1145,7 +1145,6 @@ html {
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.428571429;
-  color: #333333;
   background-color: #fff;
 }
 
@@ -7465,7 +7464,7 @@ form {
   z-index: 2;
   -webkit-box-shadow: inset -0.25em 0 0.5em -0.25em rgba(0, 0, 0, 0.1);
   box-shadow: inset -0.25em 0 0.5em -0.25em rgba(0, 0, 0, 0.1);
-  height: 87%;
+  height: 100%;
 }
 #sidebar h5 {
   border-top: 1px solid #777777;
@@ -7600,6 +7599,8 @@ html.wait, html.wait * { cursor: wait !important; }
   width: 100%;
   max-width: 800px;
   min-width: 179px;
+  -webkit-box-shadow: 0 0 2em rgba(0, 0, 0, 0.4);
+
   position: relative;
   margin: 0 auto;
 }
@@ -7835,7 +7836,7 @@ div.spinner {
   right: 0px;
   position: fixed;
   top: 104px;
-  height:90%;
+  height:100%;
   width: 230px;
   display: inline;
   overflow-y: scroll;
