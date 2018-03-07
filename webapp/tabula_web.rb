@@ -350,19 +350,22 @@ Cuba.define do
       on 'check-on-resize' do
         puts 'In regex/check-on-resize'
         puts req.params
-        #TODO: restructure how filtered_areas are stored/sent to be more efficient...could do a much better job with this...
+        
         regex_query_meta_data.filter_area = Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['header_height'].to_i,
                                                                                               req.params['footer_height'].to_i,
                                                                                               req.params['gui_height'].to_i)
 
-
-
         puts regex_query_meta_data.filter_area
 
-        changedQueries = Java::TechnologyTabulaDetectors::
-            RegexSearch.checkSearchesOnFilterResize(regex_query_meta_data.file,
-                                                    regex_query_meta_data.filter_area,
-                                                    regex_query_meta_data.regex_searches)
+        changedQueries = []
+
+        unless regex_query_meta_data.regex_searches.nil? || regex_query_meta_data.regex_searches.empty?
+          changedQueries = Java::TechnologyTabulaDetectors::
+              RegexSearch.checkSearchesOnFilterResize(regex_query_meta_data.file,
+                                                      regex_query_meta_data.filter_area,
+                                                      regex_query_meta_data.regex_searches)
+        end
+
         puts 'Changed Queries:';
         puts changedQueries.length
         gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()

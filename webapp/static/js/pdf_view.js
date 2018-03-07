@@ -884,11 +884,12 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   },
 
   detect_filter_resize: function(data){
+    console.log("In detect_filter_resize:");
+    console.log("Data:");
+    console.log(data);
     //TODO- clean this up so that a global variable in documentView is not needed (for now it's okay)
     Object.keys(Tabula.pdf_view.components['document_view'].page_views).forEach(function(key){
       var page_view = Tabula.pdf_view.components['document_view'].page_views[key];
-      console.log("Key;");
-      console.log(key);
       if(page_view.imageIsLoaded){
         page_view.header_view.$el.css({
           top: 0,
@@ -904,7 +905,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
           height: Tabula.pdf_view.components['document_view'].footer_height
         });
       }
-    })
+    });
     console.log("Listening to resize event...");
     console.log(this.model.attributes);
     console.log("Data:");
@@ -916,7 +917,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       data['footer_height'] = parseInt(this.footer_view.$el.css('height'));
     }
     data['gui_height'] = parseInt(this.$el.css('height'));
-    console.log(Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.check_regex_searches_on_resize(data));
+    Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.update_regex_search_properties_on_resize(data);
     },
 
   render: function(){
@@ -1276,10 +1277,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     this.collection = new Tabula.RegexResultCollection();
     this.collection.on('add',this.render,this);
   },
-  check_regex_searches_on_resize: function(data){
-    console.log("In check_regex_searches_on_resize:");
-    console.log(data);
-   // if(this.collection.length!=0) {
+  update_regex_search_properties_on_resize: function(data){
       $('html').addClass("wait");
       $.ajax({
         type: 'POST',
@@ -1289,31 +1287,17 @@ Tabula.RegexCollectionView = Backbone.View.extend({
           $('html').removeClass("wait");
         },
         success: _.bind(function (data) {
-          console.log("Successful check:");
-          console.log("Returned data:");
-          console.log(JSON.parse(data));
-          console.log("What I've got to work with:");
-          console.log(this.collection.models);
 
           var query_models = this.collection.models;
-
           JSON.parse(data).forEach(function (element) {
-
-            console.log("Element:");
-            console.log(element);
-
             var query_to_update = _.find(query_models, function (model) {
               return (model.attributes.pattern_before == element.updated_regex_search._regex_before_table.pattern) &&
                 (model.attributes.pattern_after == element.updated_regex_search._regex_after_table.pattern)
             });
 
-
-            console.log("Query_To_Update:");
-            console.log(query_to_update);
-
             var match_count_change = 0;
 
-            //TODO: Refactor below to remove code redundancies...
+            //TODO: Refactor below to remove code redundancies if time permits...
 
             element.areas_removed.forEach(function (matching_area_to_remove) {
               console.log("Matching Area To Remove:");
@@ -1367,7 +1351,6 @@ Tabula.RegexCollectionView = Backbone.View.extend({
           console.log(status);
         }
       });
-   // }
   },
   remove_regex_search: function(event_data,search_to_remove){
     console.log("Search to remove:");
