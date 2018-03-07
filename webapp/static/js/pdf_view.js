@@ -169,9 +169,9 @@ Tabula.Selections = Backbone.Collection.extend({
 
 
   updateOrCreateByVendorSelectorId: function(vendorSelection, pageNumber, imageDims){
-    console.log("In updateOrCreateByVendorSelectorId:");
-    console.log("VendorSelection:");
-    console.log(vendorSelection);
+    //console.log("In updateOrCreateByVendorSelectorId:");
+    //console.log("VendorSelection:");
+    //console.log(vendorSelection);
     var selection = this.get(vendorSelection.id);
 
     if (selection) { // if it already exists
@@ -233,7 +233,7 @@ Tabula.AutodetectedSelections = Tabula.Selections.extend({
           y2: tableCoords[1] + tableCoords[3],
           width: tableCoords[2],
           height: tableCoords[3],
-          page: pageIndex,
+          page_number: pageIndex,
           extraction_method: 'spreadsheet',
           selection_id: null
         };
@@ -311,11 +311,10 @@ Tabula.Query = Backbone.Model.extend({
   },
 
   doQuery: function(options) {
-    console.log("In doQuery:");
 
     this.query_data = {
       'coords': JSON.stringify(this.get('list_of_coords')),
-      'new_filename': null,
+      'new_filename': null
     };
 
     // print selection coordinates to the console
@@ -911,7 +910,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     console.log("Data:");
     console.log(data);
     if(data['header_height']==undefined){
-      console.log('Do I get here?');
       data['header_height'] = parseInt(this.header_view.$el.css('height'));
     }
     else{
@@ -1370,10 +1368,6 @@ Tabula.RegexCollectionView = Backbone.View.extend({
         }
       });
    // }
-
-
-
-    return "Try to see it my way, only time will tell if I am right or if I'm wrong";
   },
   remove_regex_search: function(event_data,search_to_remove){
     console.log("Search to remove:");
@@ -1452,13 +1446,8 @@ Tabula.RegexCollectionView = Backbone.View.extend({
 
     //Check for overlapping queries
 
-    console.log("What's going on?");
-    console.log(selections_rendered);
-
     if(Array.from(selections_rendered.keys()).every(function(matching_area){
-      console.log(matching_area);
       return selections_rendered.get(matching_area).every(function(subsection){
-        console.log(subsection);
         return subsection.attributes.checkOverlaps();})}))
 
       {
@@ -1475,7 +1464,6 @@ Tabula.RegexCollectionView = Backbone.View.extend({
      alert('TODO: Figure out what the user should see here about overlaps');
      selections_rendered.forEach(function(matching_area){
        matching_area.forEach(function(subsection){
-         console.log(subsection);
          subsection.attributes.remove();
          //TODO-need to figure out how to call regex remove from here...
        });
@@ -1505,8 +1493,8 @@ Tabula.RegexResultView = Backbone.View.extend({
   tagName: 'tr',
   events: {'click':'remove_element_request'},
   initialize: function(data){
-    console.log('In Tabula.RegexResultView.initialize:');
-    console.log(data.model);
+    //console.log('In Tabula.RegexResultView.initialize:');
+    //console.log(data.model);
     this.model = data.model;
 //    console.log(JSON.stringify($('#regex-result').html()));
     this.template = _.template($('#regex-result').html());
@@ -1514,18 +1502,14 @@ Tabula.RegexResultView = Backbone.View.extend({
     this.listenTo(this.model,'change',this.render);
   },
   render: function(){
-    console.log("In render of Tabula.RegexResultView:");
-    console.log("this.model:");
-    console.log(this.model);
+    //console.log("In render of Tabula.RegexResultView:");
+    //console.log("this.model:");
+    //console.log(this.model);
     this.$el.html(this.template(this.model.attributes));
     return this;
   },
   remove_element_request: function(event){
     //Removing the RegexSelection objects associated with the RegexResult
-
-    console.log("In remove_element_request:");
-    console.log(this);
-
     this.model.attributes.selections_rendered.forEach(function(matching_area){
 
       matching_area.forEach(function(subsection){
@@ -1895,17 +1879,14 @@ Tabula.PDFView = Backbone.View.extend(
         error: function(m, r, o){ console.log("error", m, r, o) }
       });
 
-
-      console.log("Who can it be now??");
-
         $.ajax({
           type: 'POST',
           url: '/regex/reset',
           data: { file_path: this.pdf_document.pdf_id},
           dataType: 'json',
 
-          success: _.bind(function (data) {
-            console.log("Reset back-end book-keeping for regex queries, filtered areas...")
+          success: _.bind(function() {
+            console.log("Reset back-end book-keeping for regex queries")
           }, this),
           error: function (xhr, status, err) {
             alert('Error in reset: ' + JSON.stringify(err));
