@@ -350,7 +350,7 @@ Cuba.define do
       on 'check-on-resize' do
         puts 'In regex/check-on-resize'
         puts req.params
-        
+
         regex_query_meta_data.filter_area = Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['header_height'].to_i,
                                                                                               req.params['footer_height'].to_i,
                                                                                               req.params['gui_height'].to_i)

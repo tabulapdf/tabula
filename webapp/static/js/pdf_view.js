@@ -755,6 +755,43 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     });
   },
 
+  update_filter_specs: function(data){
+
+    var return_vals={'previous_header_height':this.header_height,
+                     'previous_footer_height':this.footer_height};
+
+    if(data['header_height']!=undefined){
+      console.log('header height was defined...');
+     return_vals['header_height']=this.header_height = data['header_height'];
+    }
+    if(data['footer_height']!=undefined){
+      console.log('footer height was defined...');
+      return_vals['footer_height']=this.footer_height = data['footer_height'];
+    }
+
+    Object.keys(this.page_views).forEach(function(key){
+      var page_view = Tabula.pdf_view.components['document_view'].page_views[key];
+      if(page_view.imageIsLoaded){
+        page_view.header_view.$el.css({
+          top: 0,
+          left: page_view.$el.find('.page')['0'].offsetLeft,
+          width: $(page_view.image).width(),
+          height: Tabula.pdf_view.components['document_view'].header_height
+        });
+
+        page_view.footer_view.$el.css({
+          top: $(page_view.image).height() - Tabula.pdf_view.components['document_view'].footer_height,
+          left: page_view.$el.find('.page')['0'].offsetLeft,
+          width: $(page_view.image).width(),
+          height: Tabula.pdf_view.components['document_view'].footer_height
+        });
+      }
+    });
+
+
+    return return_vals;
+  },
+
   render: function(){
     if(!Tabula.LazyLoad){ // old-style, non-lazyload behavior
       console.log("if not Tabula.LazyLoad");
@@ -884,44 +921,43 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   },
 
   detect_filter_resize: function(data){
-    console.log("In detect_filter_resize:");
-    console.log("Data:");
-    console.log(data);
-    //TODO- clean this up so that a global variable in documentView is not needed (for now it's okay)
-    Object.keys(Tabula.pdf_view.components['document_view'].page_views).forEach(function(key){
-      var page_view = Tabula.pdf_view.components['document_view'].page_views[key];
-      if(page_view.imageIsLoaded){
-        page_view.header_view.$el.css({
-          top: 0,
-          left: page_view.$el.find('.page')['0'].offsetLeft,
-          width: $(page_view.image).width(),
-          height: Tabula.pdf_view.components['document_view'].header_height
-        });
 
-        page_view.footer_view.$el.css({
-          top: $(page_view.image).height() - Tabula.pdf_view.components['document_view'].footer_height,
-          left: page_view.$el.find('.page')['0'].offsetLeft,
-          width: $(page_view.image).width(),
-          height: Tabula.pdf_view.components['document_view'].footer_height
-        });
-      }
-    });
-    console.log("Listening to resize event...");
-    console.log(this.model.attributes);
-    console.log("Data:");
-    console.log(data);
-    if(data['header_height']==undefined){
-      data['header_height'] = parseInt(this.header_view.$el.css('height'));
+    var filter_data = Tabula.pdf_view.components['document_view'].update_filter_specs(data);
+    filter_data['gui_height'] = parseInt(this.$el.css('height'));
+    Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.update_regex_search_properties_on_resize(filter_data);
+
+    //Check for overlapping queries
+
+    if(Array.from(selections_rendered.keys()).every(function(matching_area){
+        return selections_rendered.get(matching_area).every(function(subsection){
+          return subsection.attributes.checkOverlaps();})}))
+
+    {
+      this.collection.add(new Tabula.RegexResultModel({
+        pattern_before: search_results["_regex_before_table"]["pattern"],
+        pattern_after: search_results["_regex_after_table"]["pattern"],
+        num_matches: search_results["_matching_areas"].length,
+        matching_areas: search_results["_matching_areas"],
+        selections_rendered: selections_rendered
+      }));
     }
     else{
-      data['footer_height'] = parseInt(this.footer_view.$el.css('height'));
+      //TODO: figure out perhaps a cleaner way to do this?? Shirley's going to look into this I think..
+      alert('TODO: Figure out what the user should see here about overlaps');
+      selections_rendered.forEach(function(matching_area){
+        matching_area.forEach(function(subsection){
+          subsection.attributes.remove();
+          //TODO-need to figure out how to call regex remove from here...
+        });
+      })
     }
-    data['gui_height'] = parseInt(this.$el.css('height'));
-    Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.update_regex_search_properties_on_resize(data);
+
     },
 
+
+
   render: function(){
-    console.log("In Tabula.PageView render...");
+
     this.$el.html(this.template({
                     'number': this.model.get('number'),
                     'image_url': this.model.imageUrl()
