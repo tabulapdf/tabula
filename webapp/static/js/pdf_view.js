@@ -175,11 +175,11 @@ Tabula.Selections = Backbone.Collection.extend({
     var selection = this.get(vendorSelection.id);
 
     if (selection) { // if it already exists
-      console.log("Selection already in the collection");
+      //console.log("Selection already in the collection");
       selection.set(_.omit(vendorSelection, 'id'));
     }
     else {
-      console.log("Selection was not already in the collection");
+      //console.log("Selection was not already in the collection");
       var new_selection_args = _.extend({'page_number': pageNumber,
                                     'imageWidth': imageDims.width,
                                     'imageHeight': imageDims.height,
@@ -188,7 +188,7 @@ Tabula.Selections = Backbone.Collection.extend({
                                     'pdf_document': this.pdf_document},
                                     vendorSelection);
       selection = new Tabula.Selection(new_selection_args);
-      console.log(selection.toJSON());
+      //console.log(selection.toJSON());
       this.add(selection);
     }
     return selection;
@@ -763,10 +763,12 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
     if(data['header_height']!=undefined){
       console.log('header height was defined...');
      return_vals['header_height']=this.header_height = data['header_height'];
+     return_vals['footer_height']=this.footer_height;
     }
     if(data['footer_height']!=undefined){
       console.log('footer height was defined...');
       return_vals['footer_height']=this.footer_height = data['footer_height'];
+      return_vals['header_height']=this.header_height;
     }
 
     Object.keys(this.page_views).forEach(function(key){
@@ -925,33 +927,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     var filter_data = Tabula.pdf_view.components['document_view'].update_filter_specs(data);
     filter_data['gui_height'] = parseInt(this.$el.css('height'));
     Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.update_regex_search_properties_on_resize(filter_data);
-
-    //Check for overlapping queries
-
-    if(Array.from(selections_rendered.keys()).every(function(matching_area){
-        return selections_rendered.get(matching_area).every(function(subsection){
-          return subsection.attributes.checkOverlaps();})}))
-
-    {
-      this.collection.add(new Tabula.RegexResultModel({
-        pattern_before: search_results["_regex_before_table"]["pattern"],
-        pattern_after: search_results["_regex_after_table"]["pattern"],
-        num_matches: search_results["_matching_areas"].length,
-        matching_areas: search_results["_matching_areas"],
-        selections_rendered: selections_rendered
-      }));
-    }
-    else{
-      //TODO: figure out perhaps a cleaner way to do this?? Shirley's going to look into this I think..
-      alert('TODO: Figure out what the user should see here about overlaps');
-      selections_rendered.forEach(function(matching_area){
-        matching_area.forEach(function(subsection){
-          subsection.attributes.remove();
-          //TODO-need to figure out how to call regex remove from here...
-        });
-      })
-    }
-
     },
 
 
@@ -1008,8 +983,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     this.image.onload = function(data) {
 
       self.imageIsLoaded = true;
-      console.log("Image on load:");
-      console.log(self.$el.find('.page'));
 
       $(this).data('loaded', 'loaded');
       self.header_view.$el.show();
@@ -1249,8 +1222,8 @@ Tabula.RegexHandler = Backbone.View.extend({
     /*
     *Determine if regex pattern has already been previously searched for
      */
-    //TODO-Remember to update this once footers get added...]
-    console.log("In perform_regex_search:");
+
+    //console.log("In perform_regex_search:");
 
 
     if (this.regex_results_handler.has_same_query(this.regex_query_handler.model.toJSON()) == false) {
@@ -1313,12 +1286,15 @@ Tabula.RegexCollectionView = Backbone.View.extend({
     this.collection = new Tabula.RegexResultCollection();
     this.collection.on('add',this.render,this);
   },
-  update_regex_search_properties_on_resize: function(data){
+  update_regex_search_properties_on_resize: function(filter_data){
+    console.log("In update_regex_search_properties_on_resize...");
+    console.log(filter_data);
+    var new_subsections=new Tabula.Selections();
       $('html').addClass("wait");
       $.ajax({
         type: 'POST',
         url: '/regex/check-on-resize',
-        data: data,
+        data: filter_data,
         complete: function () {
           $('html').removeClass("wait");
         },
@@ -1336,8 +1312,8 @@ Tabula.RegexCollectionView = Backbone.View.extend({
             //TODO: Refactor below to remove code redundancies if time permits...
 
             element.areas_removed.forEach(function (matching_area_to_remove) {
-              console.log("Matching Area To Remove:");
-              console.log(matching_area_to_remove);
+              //console.log("Matching Area To Remove:");
+              //console.log(matching_area_to_remove);
               var front_end_match = _.find(Array.from(query_to_update.attributes.selections_rendered.keys()), function (key_match) {
                 return _.isEqual(key_match, matching_area_to_remove);
               });
@@ -1350,35 +1326,52 @@ Tabula.RegexCollectionView = Backbone.View.extend({
             });
 
             element.areas_added.forEach(function (matching_area_to_add) {
-              console.log("Matching Area to Add:");
-              console.log(matching_area_to_add);
+              //console.log("Matching Area to Add:");
+              //console.log(matching_area_to_add);
               var created_subsections = new Tabula.Selections();
               Object.keys(matching_area_to_add).forEach(function (page_number) {
                 console.log("Page Number:" + page_number);
                 matching_area_to_add[page_number].forEach(function (subsection) {
-                  created_subsections.add(Tabula.pdf_view.renderSelection({
-                    x1: subsection._area['x'],
-                    y1: subsection._area['y'],
-                    width: subsection._area['width'],
-                    height: subsection._area['height'],
-                    page_number: subsection._page_num,
-                    extraction_method: 'spreadsheet',
-                    selection_id: null,
-                    selection_type: 'regex'
-                  }));
+                    var new_subsection = Tabula.pdf_view.renderSelection({
+                      x1: subsection._area['x'],
+                      y1: subsection._area['y'],
+                      width: subsection._area['width'],
+                      height: subsection._area['height'],
+                      page_number: subsection._page_num,
+                      extraction_method: 'spreadsheet',
+                      selection_id: null,
+                      selection_type: 'regex'
+                    });
+                    created_subsections.add(new_subsection);
+                    new_subsections.add(new_subsection);
                 });
               });
               match_count_change++;
               query_to_update.attributes.selections_rendered.set(matching_area_to_add, created_subsections);
             });
 
-            //TODO=figure out how to update query_to_update + fire change event so dynamic content is refreshed...
             query_to_update.set({
               matching_areas: query_to_update.attributes.matching_areas,
               num_matches: (query_to_update.attributes.num_matches + match_count_change)
             });
 
-          })
+          });
+
+
+          if(new_subsections.models.every(function(subsection){
+            return subsection.attributes.checkOverlaps();
+            })===false){
+
+            //Resetting the header,footer info to previous state, as current state violates desired behavior
+            //(regex searches that overlap one another)
+
+           filter_data['header_height']=filter_data['previous_header_height'];
+           filter_data['footer_height']=filter_data['previous_footer_height'];
+
+           alert('Request resive event will lead to overlap in regex searches. Restructure regex searches and try again...');
+           Tabula.pdf_view.components['document_view'].update_filter_specs(filter_data);
+           this.update_regex_search_properties_on_resize(filter_data);
+          }
         }, this),
         error: function (xhr, status, err) {
           alert('Error in regex-check-on-resize event: ' + JSON.stringify(err));
@@ -1387,6 +1380,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
           console.log(status);
         }
       });
+
   },
   remove_regex_search: function(event_data,search_to_remove){
     console.log("Search to remove:");
@@ -1441,8 +1435,8 @@ Tabula.RegexCollectionView = Backbone.View.extend({
   },
   process_result: function (search_results) {
 
-    console.log("In process_result:");
-    console.log(search_results);
+    //console.log("In process_result:");
+    //console.log(search_results);
 
     var selections_rendered = new Map();
     search_results["_matching_areas"].forEach(function(matching_area){
@@ -2189,8 +2183,6 @@ Tabula.PDFView = Backbone.View.extend(
     },
 
     render : function(){
-
-      console.log("In Tabula.pdfView render...");
 
       document.title="Select Tables | Tabula";
       this.components['document_view'].render();

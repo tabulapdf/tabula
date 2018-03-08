@@ -31,7 +31,7 @@
     resizing: false,
 
     enableHeaderResize: function(event){
-      console.log("In enableHeaderResize:");
+      //console.log("In enableHeaderResize:");
       if(this.resizing == false) {
         this.height_on_start_of_resize = parseInt(this.$el.css('height'));
         this.resizing = true;
@@ -47,7 +47,7 @@
     },
 
     endHeaderResize: function(event){
-      console.log("In endHeaderResize:");
+      //console.log("In endHeaderResize:");
       if(this.resizing===true){
         this.resizing = false;
         console.log(this.$el);
@@ -82,7 +82,7 @@
 
     checkFooterOverlap: function(data){
       //Returns true if an overlap is detected
-      console.log("In checkFooterOverlap:");
+      //console.log("In checkFooterOverlap:");
       var footer_el = $(this.$el['0'].parentElement).find('.footer-region');
       return ((parseInt(footer_el.css('top')))<=data.new_height)
 
