@@ -64,7 +64,6 @@
         console.log("In endFooterResize:");
         console.log(this.$el);
         sendback={};
-        Tabula.pdf_view.components['document_view'].footer_height = parseInt(this.$el.css('height'));
         sendback['footer_height'] =parseInt(this.$el.css('height'));
         console.log("Height at finish:"+sendback['footer_height']);
         this.trigger('footer_resized',sendback);
