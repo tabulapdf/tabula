@@ -41,7 +41,7 @@ public class TestHelpPage {
             assertTrue("Failed, couldn't find Help page", help_title.equals(helptabula.getText()));
 
             //the following three sections click on each menu option on the help page to navigate to that specific
-            // section, then it checks if it foudn the corresponding title for that section
+            // section, then it checks if it found the corresponding title for that section
             By howtotabula = By.linkText("How To Use Tabula");
             WebElement howto_link = wait.until(ExpectedConditions.visibilityOfElementLocated(howtotabula));
             howto_link.click();
