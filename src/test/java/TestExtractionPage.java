@@ -17,6 +17,10 @@ import static junit.framework.TestCase.assertTrue;
 // What it doesn't test are the individual URL links in the regex tabs, since those same links are already tested in
 // the TestHelpPage and TestHomePage test cases, as well as the Autodetect Tables button and the Preview & Export Data
 // button are not tested since their functionality will be tested in other test cases.
+// TODO: currently, I do not know how to directly call a pdf file so I can use it for the test cases without manually
+//  using the windows explorer to retrieve it. For now, I will use the pdf file that has been pre-uploaded already,
+// until this is fixed.
+// For this test case, I will use the eu_002.pdf file since I just need a way to get to the page and a pdf file is necessary.
 // @author SM modified: 3/6/18
 public class TestExtractionPage {
     WebDriver driver;
@@ -33,6 +37,14 @@ public class TestExtractionPage {
             WebElement extract_button = wait.until(ExpectedConditions.visibilityOfElementLocated(extract_name));
             Thread.sleep(2000);
             extract_button.click();
+            driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
+
+            //menu options did not fully load
+            if(driver.findElements( By.id("restore-detected-tables") ).size() == 0){
+                //refresh the page
+                driver.navigate().refresh();
+            }
+
             String regex_options_string = "Regex Options";
             By regex_options_title = By.id("regex_options_title");
             WebElement regex_options = wait.until(ExpectedConditions.visibilityOfElementLocated(regex_options_title));
@@ -85,7 +97,6 @@ public class TestExtractionPage {
             WebElement templates_list = wait.until(ExpectedConditions.visibilityOfElementLocated(templates_list_title));
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             assertTrue("Failed, couldn't find Templates List in Extraction page", templates_list_string.equals(templates_list.getText()));
-
 
             
         }catch(Exception e){
