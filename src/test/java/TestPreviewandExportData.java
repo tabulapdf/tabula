@@ -1,0 +1,118 @@
+import org.junit.After;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.TimeUnit;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
+
+//Test of Tabula's Preview and Export Data page.
+// TODO: currently, I do not know how to directly call a pdf file so I can use it for the test cases without manually
+//  using the windows explorer to retrieve it. For now, I will use the pdf file that has been pre-uploaded already,
+// until this is fixed.
+// For this test case, I will use the eu_002.pdf file since I just need a way to get to the page and a pdf file is necessary.
+public class TestPreviewandExportData {
+    WebDriver driver;
+    @Test
+    public void startWebDriver() throws InterruptedException {
+        driver = new FirefoxDriver();
+        driver.get("http://127.0.0.1:9292/");
+        driver.manage().window().maximize();
+        WebDriverWait wait = new WebDriverWait(driver, 100);
+    try{
+        //navigates to the extraction page and checks that it is in the extraction page
+        By extract_name = By.linkText("Extract Data");
+        WebElement extract_button = wait.until(ExpectedConditions.visibilityOfElementLocated(extract_name));
+        Thread.sleep(1000);
+        extract_button.click();
+
+        //menu options did not fully load
+        if(driver.findElements( By.id("restore-detected-tables") ).size() == 0){
+            //refresh the page
+            driver.navigate().refresh();
+        }
+        //clicks on the Autodetect Tables and waits for Tabula to detect something (this will not be extensively tested
+        // for the sake that this is just a component test) then it wait and click the Preview & Export Data button
+        By autodetect_id = By.id("restore-detected-tables");
+        WebElement autodetect_button = wait.until(ExpectedConditions.elementToBeClickable(autodetect_id));
+        autodetect_button.click();
+        driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
+
+        By previewandexport_id = By.id("all-data");
+        WebElement previewandexport_button = wait.until(ExpectedConditions.visibilityOfElementLocated(previewandexport_id));
+        previewandexport_button.click();
+
+        By revise_selections_id = By.id("revise-selections");
+        WebElement revise_selections_button = wait.until(ExpectedConditions.elementToBeClickable(revise_selections_id));
+        revise_selections_button.click();
+        //checks that it navigated back to the extraction page
+        String regex_options_string = "Regex Options";
+        By regex_options_title = By.id("regex_options_title");
+        WebElement regex_options = wait.until(ExpectedConditions.visibilityOfElementLocated(regex_options_title));
+        driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
+        assertTrue("Failed, couldn't find Extraction page", regex_options_string.equals(regex_options.getText()));
+        driver.navigate().back();
+        //counts the number of rows displayed when the stream button is set to default and compares the row count
+        Thread.sleep(1000);
+        List<WebElement> stream_rows = driver.findElements(By.className("detection-row"));
+        int stream_count = stream_rows.size();
+        int stream_hc_count = 38;
+        assertTrue("Failed, number of rows, from the Stream option, did not match", (stream_hc_count == stream_count ));
+
+        By lattice_id = By.id("spreadsheet-method-btn");
+        WebElement lattice_button = wait.until(ExpectedConditions.elementToBeClickable(lattice_id));
+        lattice_button.click();
+        Thread.sleep(1000);
+        List<WebElement> lattice_rows = driver.findElements(By.className("detection-row"));
+        int lattice_count = lattice_rows.size();
+        int lattice_hc_count = 7;
+        assertTrue("Failed, number of rows, from the Lattice option, did not match", (lattice_hc_count == lattice_count ));
+
+        By contact_name = By.linkText("Contact the developers");
+        WebElement contact_button = wait.until(ExpectedConditions.elementToBeClickable(contact_name));
+        contact_button.click();
+        String contact_url = "http://www.github.com/tabulapdf/tabula/issues/new";
+        driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
+        assertFalse("Failed, couldn't find GitHub's sign-in page to view the report an issue page", driver.getCurrentUrl().equals(contact_url));
+        driver.navigate().back();
+        autodetect_button.click();
+        previewandexport_button.click();
+
+        By export_format_name = By.className("form-control format");
+        WebElement export_format_button = wait.until(ExpectedConditions.elementToBeClickable(export_format_name));
+        export_format_button.click();
+        By tsv_name = By.id("tsv");
+        String tsv = "TSV";
+        WebElement tsv_option = wait.until(ExpectedConditions.presenceOfElementLocated(tsv_name));
+        assertTrue("Failed, couldn't find Export Format options", tsv.equals(tsv_option.getText()));
+
+        By export_name = By.id("download-data");
+        wait.ignoring(NoSuchElementException.class);
+        WebElement export_button = wait.until(ExpectedConditions.elementToBeClickable(export_name));
+        assertTrue("Failed, couldn't find Export Format options", export_button.isDisplayed());
+        export_button.click();
+
+
+//        Toolkit toolkit = Toolkit.getDefaultToolkit();
+//        Clipboard clipboard = toolkit.getSystemClipboard();
+//        String result = (String) clipboard.getData(DataFlavor.stringFlavor);
+//        System.out.println("String from Clipboard:" + result);
+//        Thread.sleep(2000);
+
+        }catch(Exception e){
+        System.out.print(e);
+        }
+    }
+    @After
+    public void TearDown(){
+        driver.quit();
+    }
+}
