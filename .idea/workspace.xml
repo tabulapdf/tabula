@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/webapp/static/js/FooterView.js" afterPath="$PROJECT_DIR$/webapp/static/js/FooterView.js" />
+      <change beforePath="$PROJECT_DIR$/webapp/static/js/HeaderView.js" afterPath="$PROJECT_DIR$/webapp/static/js/HeaderView.js" />
       <change beforePath="$PROJECT_DIR$/webapp/static/js/pdf_view.js" afterPath="$PROJECT_DIR$/webapp/static/js/pdf_view.js" />
       <change beforePath="$PROJECT_DIR$/webapp/tabula_web.rb" afterPath="$PROJECT_DIR$/webapp/tabula_web.rb" />
     </list>
@@ -27,12 +29,12 @@
       <file leaf-file-name="pdf_view.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webapp/static/js/pdf_view.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1301">
-              <caret line="1299" column="78" lean-forward="false" selection-start-line="1299" selection-start-column="78" selection-end-line="1299" selection-end-column="78" />
+            <state relative-caret-position="757">
+              <caret line="952" column="5" lean-forward="false" selection-start-line="952" selection-start-column="5" selection-end-line="952" selection-end-column="5" />
               <folding>
-                <marker date="1520456414293" expanded="true" signature="40641:41249" ph="..." />
-                <marker date="1520456414293" expanded="true" signature="40898:41006" ph="..." />
-                <marker date="1520456414293" expanded="true" signature="41040:41237" ph="..." />
+                <marker date="1520478707490" expanded="true" signature="41778:42386" ph="..." />
+                <marker date="1520478707490" expanded="true" signature="42035:42143" ph="..." />
+                <marker date="1520478707490" expanded="true" signature="42177:42374" ph="..." />
               </folding>
             </state>
           </provider>
@@ -41,8 +43,8 @@
       <file leaf-file-name="tabula_web.rb" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/webapp/tabula_web.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="352" column="8" lean-forward="false" selection-start-line="352" selection-start-column="8" selection-end-line="352" selection-end-column="8" />
+            <state relative-caret-position="272">
+              <caret line="319" column="17" lean-forward="false" selection-start-line="319" selection-start-column="4" selection-end-line="319" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -51,8 +53,8 @@
       <file leaf-file-name="HeaderView.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webapp/static/js/HeaderView.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+            <state relative-caret-position="238">
+              <caret line="53" column="20" lean-forward="false" selection-start-line="53" selection-start-column="20" selection-end-line="53" selection-end-column="20" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -63,8 +65,8 @@
       <file leaf-file-name="FooterView.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webapp/static/js/FooterView.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="493">
+              <caret line="65" column="20" lean-forward="false" selection-start-line="65" selection-start-column="20" selection-end-line="65" selection-end-column="20" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -94,8 +96,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>howto</find>
-      <find>link</find>
       <find>id</find>
       <find>text_template</find>
       <find>libreoffice</find>
@@ -116,11 +116,16 @@
       <find>detect_filter_resize</find>
       <find>perform_regex_search</find>
       <find>.header_height</find>
-      <find>header_height</find>
       <find>gui_height</find>
       <find>check_regex_searches_on_resize</find>
       <find>update_regex_searches_on_resize</find>
       <find>update_regex_search_properties_on_resize</find>
+      <find>header_height</find>
+      <find>Tabula.DocumentView</find>
+      <find>on</find>
+      <find>.on</find>
+      <find>DocumentView</find>
+      <find>update_filter_specs</find>
     </findStrings>
     <replaceStrings>
       <replace>update_regex_searches_on_resize</replace>
@@ -146,8 +151,10 @@
         <option value="$PROJECT_DIR$/src/test/java/TestAboutPage.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java" />
-        <option value="$PROJECT_DIR$/webapp/static/js/pdf_view.js" />
         <option value="$PROJECT_DIR$/webapp/tabula_web.rb" />
+        <option value="$PROJECT_DIR$/webapp/static/js/HeaderView.js" />
+        <option value="$PROJECT_DIR$/webapp/static/js/FooterView.js" />
+        <option value="$PROJECT_DIR$/webapp/static/js/pdf_view.js" />
       </list>
     </option>
   </component>
@@ -528,7 +535,7 @@
       <workItem from="1519869797717" duration="3065000" />
       <workItem from="1519915078505" duration="723000" />
       <workItem from="1520037846359" duration="3082000" />
-      <workItem from="1520454997680" duration="2052000" />
+      <workItem from="1520454997680" duration="6097000" />
     </task>
     <task id="LOCAL-00001" summary="Initial additions front-end testing files. Currently this first test is failing, will be updated.">
       <created>1518393101424</created>
@@ -643,7 +650,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8934000" />
+    <option name="totallyTimeSpent" value="12979000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
@@ -856,42 +863,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/static/js/pdf_view.js">
+    <entry file="file://$PROJECT_DIR$/webapp/static/js/FooterView.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1301">
-          <caret line="1299" column="78" lean-forward="false" selection-start-line="1299" selection-start-column="78" selection-end-line="1299" selection-end-column="78" />
+        <state relative-caret-position="493">
+          <caret line="65" column="20" lean-forward="false" selection-start-line="65" selection-start-column="20" selection-end-line="65" selection-end-column="20" />
           <folding>
-            <marker date="1520456414293" expanded="true" signature="40641:41249" ph="..." />
-            <marker date="1520456414293" expanded="true" signature="40898:41006" ph="..." />
-            <marker date="1520456414293" expanded="true" signature="41040:41237" ph="..." />
+            <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/static/js/HeaderView.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+        <state relative-caret-position="238">
+          <caret line="53" column="20" lean-forward="false" selection-start-line="53" selection-start-column="20" selection-end-line="53" selection-end-column="20" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/static/js/FooterView.js">
+    <entry file="file://$PROJECT_DIR$/webapp/static/js/pdf_view.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="757">
+          <caret line="952" column="5" lean-forward="false" selection-start-line="952" selection-start-column="5" selection-end-line="952" selection-end-column="5" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <marker date="1520478707490" expanded="true" signature="41778:42386" ph="..." />
+            <marker date="1520478707490" expanded="true" signature="42035:42143" ph="..." />
+            <marker date="1520478707490" expanded="true" signature="42177:42374" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/tabula_web.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="352" column="8" lean-forward="false" selection-start-line="352" selection-start-column="8" selection-end-line="352" selection-end-column="8" />
+        <state relative-caret-position="272">
+          <caret line="319" column="17" lean-forward="false" selection-start-line="319" selection-start-column="4" selection-end-line="319" selection-end-column="17" />
           <folding />
         </state>
       </provider>
