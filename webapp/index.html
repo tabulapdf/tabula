@@ -99,10 +99,10 @@
           <span class="filename" style="font-size:14px;"><%= original_filename %></span>
           <label for="format">Export Format:</label>
           <select name="format" <%=disableIfNoData%> class="form-control format">
-            <option value="csv">CSV</option>
-            <option value="tsv">TSV</option>
-            <option value="bbox">JSON (dimensions)</option>
-            <option value="json">JSON (data)</option>
+            <option id="csv" value="csv">CSV</option>
+            <option id="tsv" value="tsv">TSV</option>
+            <option id="bbox" value="bbox">JSON (dimensions)</option>
+            <option id="json" value="json">JSON (data)</option>
             <!-- <option value="&#x1F4A9;SV">&#x1F4A9;SV</option> -->
             <option value="zip">zip of CSVs</option>
             <!-- <option value="xml">XML</option> -->
@@ -206,7 +206,7 @@
               <table class="table table-bordered extracted-data">
                 <tbody>
                 <% _(table).each(function(row){ %>
-                  <tr>
+                  <tr  class ="detection-row">
                     <% _(row).each(function(cell){ %>
                       <td><%= cell %></td>
                     <% }) %>
