@@ -98,7 +98,7 @@
           <!-- <input class="filename" name="new_filename" value="<%= new_filename || original_filename %>"></input> -->
           <span class="filename" style="font-size:14px;"><%= original_filename %></span>
           <label for="format">Export Format:</label>
-          <select name="format" <%=disableIfNoData%> class="form-control format">
+          <select id="forms" name="format" <%=disableIfNoData%> class="form-control format">
             <option id="csv" value="csv">CSV</option>
             <option id="tsv" value="tsv">TSV</option>
             <option id="bbox" value="bbox">JSON (dimensions)</option>
