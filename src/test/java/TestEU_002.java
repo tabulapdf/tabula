@@ -11,6 +11,12 @@ import java.util.concurrent.TimeUnit;
 
 import static junit.framework.TestCase.assertTrue;
 
+//Test of the eu_002 pdf file.
+// TODO: currently, I do not know how to directly call a pdf file so I can use it for the test cases without manually
+//  using the windows explorer to retrieve it. For now, the pdf will be preloaded onto Tabula for testing.
+// What will be tested for the eu_002 pdf file:
+// -
+
 public class TestEU_002 {
     WebDriver driver;
     @Test
@@ -52,9 +58,6 @@ public class TestEU_002 {
             WebElement search_button2 = wait.until(ExpectedConditions.visibilityOfElementLocated(search_id));
             search_button2.click();
             Thread.sleep(3000);
-
-
-
 
 
         } catch (Exception e) {
