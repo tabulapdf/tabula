@@ -1,18 +1,12 @@
 sudo: false
-language: ruby
+language: java
 before_install:
   - gem update --system
   - gem install bundler
   - gem install jbundler
-rvm:
-  - jruby-9.1.9.0
 jdk:
   - oraclejdk8
   - openjdk7
 script: bundle exec jbundle install && bundle exec rake war && bundle exec rake jardist
-after_failure:
-  - test $TRAVIS_TEST_RESULT = 0
-after_success:
-  - test $TRAVIS_TEST_RESULT = 0
 notifications:
   email: false
