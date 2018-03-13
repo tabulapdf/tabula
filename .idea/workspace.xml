@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/.travis.yml" afterPath="$PROJECT_DIR$/.travis.yml" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" afterPath="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/WatchmanTest.java" afterPath="$PROJECT_DIR$/src/test/java/WatchmanTest.java" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -26,12 +27,12 @@
       <file leaf-file-name="TestPreviewandExportData.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="21" column="14" lean-forward="false" selection-start-line="21" selection-start-column="14" selection-end-line="21" selection-end-column="14" />
+            <state relative-caret-position="146">
+              <caret line="28" column="23" lean-forward="false" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#7642#7643#0" expanded="true" />
-                <element signature="e#7671#7672#0" expanded="true" />
+                <element signature="e#7784#7785#0" expanded="true" />
+                <element signature="e#7813#7814#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -49,30 +50,22 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
+      <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="270">
-              <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+              <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WatchmanTest.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="WatchmanTest.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/WatchmanTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="20" column="9" lean-forward="false" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="9" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#327#328#0" expanded="true" />
-                <element signature="e#397#398#0" expanded="true" />
-                <element signature="e#486#487#0" expanded="true" />
-                <element signature="e#542#543#0" expanded="true" />
-                <element signature="e#584#585#0" expanded="true" />
-                <element signature="e#607#608#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="54">
+              <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -117,11 +110,11 @@
         <option value="$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestExtractionPage.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestSuite_Components.java" />
-        <option value="$PROJECT_DIR$/src/test/java/WatchmanTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
         <option value="$PROJECT_DIR$/.travis.yml" />
+        <option value="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" />
+        <option value="$PROJECT_DIR$/src/test/java/WatchmanTest.java" />
       </list>
     </option>
   </component>
@@ -138,10 +131,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="631" />
-    <option name="y" value="24" />
-    <option name="width" value="778" />
-    <option name="height" value="744" />
+    <option name="x" value="313" />
+    <option name="y" value="3" />
+    <option name="width" value="780" />
+    <option name="height" value="737" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -291,7 +284,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.TestEU_002">
+  <component name="RunManager" selected="JUnit.TestPreviewandExportData">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="HTML_USED" value="false" />
       <option name="WIDTH" value="400" />
@@ -567,8 +560,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.TestEU_002" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.TestPreviewandExportData" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.TestPreviewandExportData" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.TestEU_002" />
         <item index="2" class="java.lang.String" itemvalue="JUnit.WatchmanTest" />
         <item index="3" class="java.lang.String" itemvalue="JUnit.TestPreviewandExportData.startWebDriver" />
         <item index="4" class="java.lang.String" itemvalue="JUnit.TestExtractionPage" />
@@ -708,39 +701,46 @@
       <option name="project" value="LOCAL" />
       <updated>1520958235168</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Fixed the travis file to mimic the one in the java repo to see if that will fix why the build is failing">
+      <created>1520959372851</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1520959372851</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestEU_002 - 2018.03.13 at 12h 00m 45s.xml">
+    <history-entry file="TestEU_002 - 2018.03.13 at 14h 35m 36s.xml">
       <configuration name="TestEU_002" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002 - 2018.03.13 at 12h 01m 50s.xml">
-      <configuration name="TestEU_002" configurationId="JUnit" />
+    <history-entry file="TestPreviewandExportData - 2018.03.13 at 14h 35m 44s.xml">
+      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002 - 2018.03.13 at 12h 04m 06s.xml">
-      <configuration name="TestEU_002" configurationId="JUnit" />
+    <history-entry file="TestPreviewandExportData - 2018.03.13 at 14h 39m 17s.xml">
+      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002 - 2018.03.13 at 12h 04m 49s.xml">
-      <configuration name="TestEU_002" configurationId="JUnit" />
+    <history-entry file="TestPreviewandExportData - 2018.03.13 at 15h 04m 58s.xml">
+      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestPreviewandExportData_startWebDriver - 2018.03.10 at 00h 52m 30s.xml">
-      <configuration name="TestPreviewandExportData.startWebDriver" configurationId="JUnit" />
+    <history-entry file="TestPreviewandExportData - 2018.03.13 at 15h 05m 23s.xml">
+      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestPreviewandExportData_startWebDriver - 2018.03.10 at 01h 27m 43s.xml">
-      <configuration name="TestPreviewandExportData.startWebDriver" configurationId="JUnit" />
+    <history-entry file="TestPreviewandExportData - 2018.03.13 at 15h 07m 00s.xml">
+      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestPreviewandExportData_startWebDriver - 2018.03.10 at 01h 28m 49s.xml">
-      <configuration name="TestPreviewandExportData.startWebDriver" configurationId="JUnit" />
+    <history-entry file="TestPreviewandExportData - 2018.03.13 at 15h 07m 41s.xml">
+      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestPreviewandExportData_startWebDriver - 2018.03.10 at 01h 32m 04s.xml">
-      <configuration name="TestPreviewandExportData.startWebDriver" configurationId="JUnit" />
+    <history-entry file="TestPreviewandExportData - 2018.03.13 at 15h 07m 53s.xml">
+      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestPreviewandExportData_startWebDriver - 2018.03.10 at 01h 32m 31s.xml">
-      <configuration name="TestPreviewandExportData.startWebDriver" configurationId="JUnit" />
+    <history-entry file="TestPreviewandExportData - 2018.03.13 at 15h 08m 55s.xml">
+      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="WatchmanTest - 2018.03.11 at 14h 55m 52s.xml">
-      <configuration name="WatchmanTest" configurationId="JUnit" />
+    <history-entry file="TestPreviewandExportData - 2018.03.13 at 15h 10m 57s.xml">
+      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
@@ -755,8 +755,8 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.09009009" sideWeight="0.16907844" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.09009009" sideWeight="0.83092153" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14564565" sideWeight="0.86062455" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.09009009" sideWeight="0.83092153" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2822823" sideWeight="0.86062455" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -826,7 +826,8 @@
     <MESSAGE value="Completed the Test Preview and Export Data page, and that was the last of the component testing! What isn't tested, which is just one button is mentioned why on the test case- shouldn't affect the overall functionality and am okay if that button is not tested for; other comments and small things to fix are mentioned in the comments. Will begin the user scenario testing with the first round of pdf files." />
     <MESSAGE value="Added on an environment variable to see if I can see the build results on travis CI" />
     <MESSAGE value="Update to travis for front end repo" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update to travis for front end repo" />
+    <MESSAGE value="Fixed the travis file to mimic the one in the java repo to see if that will fix why the build is failing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed the travis file to mimic the one in the java repo to see if that will fix why the build is failing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -994,31 +995,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java">
+    <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="21" column="14" lean-forward="false" selection-start-line="21" selection-start-column="14" selection-end-line="21" selection-end-column="14" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#7642#7643#0" expanded="true" />
-            <element signature="e#7671#7672#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/WatchmanTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="20" column="9" lean-forward="false" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="9" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#327#328#0" expanded="true" />
-            <element signature="e#397#398#0" expanded="true" />
-            <element signature="e#486#487#0" expanded="true" />
-            <element signature="e#542#543#0" expanded="true" />
-            <element signature="e#584#585#0" expanded="true" />
-            <element signature="e#607#608#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="270">
+          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1032,10 +1013,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.travis.yml">
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+        <state relative-caret-position="146">
+          <caret line="28" column="23" lean-forward="false" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#7784#7785#0" expanded="true" />
+            <element signature="e#7813#7814#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/WatchmanTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding />
         </state>
       </provider>
