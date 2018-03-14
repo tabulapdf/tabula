@@ -26,9 +26,6 @@ public class TestPreviewandExportData {
     WebDriver driver;
     @Test
     public void startWebDriver() throws InterruptedException {
-       // /home/slmendez/SeleniumGecko
-
-        System.getProperty("webdriver.gecko.driver", "/home/slmendez/SeleniumGecko/geckodriver.exe");
         driver = new FirefoxDriver();
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();

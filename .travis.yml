@@ -4,6 +4,10 @@ before_install:
   - gem update --system
   - gem install bundler
   - gem install jbundler
+  - wget https://github.com/mozilla/geckodriver/releases/download/v0.20.0/geckodriver-v0.20.0-linux64.tar.gz
+  - mkdir geckodriver
+  - tar -xzf geckodriver-v0.20.0-linux64.tar.gz -C geckodriver
+  - export PATH=$PATH:$PWD/geckodriver
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
 jdk:
   - oraclejdk8
