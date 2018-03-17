@@ -75,7 +75,7 @@ Tabula.Selection = Backbone.Model.extend({
   },
 
   updateCoords: function(){
-    var page = Tabula.pdf_view.pdf_document.page_collection.at(this.get('page_number') - 1);
+    var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: this.get('page_number')});
     var imageWidth = this.get('imageWidth');
 
     var original_pdf_width = page.get('width');
@@ -1040,7 +1040,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
   'events': {
     // on load, create an empty div with class 'selection-show' to be the selection thumbnail.
     'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
-    'click i.delete-page': 'deletePage',
+    'click .delete-page': 'deletePage',
     'click a': 'scrollToPage'
   },
   tagName: 'li',
@@ -1358,9 +1358,11 @@ Tabula.PDFView = Backbone.View.extend(
     },
 
     loadSavedTemplate: function(template_model){
+      var existent_page_numbers = Tabula.pdf_view.pdf_document.page_collection.models.map(function(page){ return page.get('number')});
+
       _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
       template_model.fetch({success: _.bind(function(template_model){
-        var selections_to_load = _(template_model.get('selections')).filter(function(sel){ return sel.page <= Tabula.pdf_view.pdf_document.page_collection.length}).map(function(sel){
+        var selections_to_load = _(_(template_model.get('selections')).filter(function(sel){ return existent_page_numbers.indexOf(sel.page) >= 0 })).map(function(sel){
           return Tabula.pdf_view.renderSelection(sel);
         });
         this.pdf_document.selections.reset(selections_to_load);
