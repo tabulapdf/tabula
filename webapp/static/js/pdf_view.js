@@ -1360,7 +1360,7 @@ Tabula.PDFView = Backbone.View.extend(
     loadSavedTemplate: function(template_model){
       _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
       template_model.fetch({success: _.bind(function(template_model){
-        var selections_to_load = _(template_model.get('selections')).map(function(sel){
+        var selections_to_load = _(template_model.get('selections')).filter(function(sel){ return sel.page <= Tabula.pdf_view.pdf_document.page_collection.length}).map(function(sel){
           return Tabula.pdf_view.renderSelection(sel);
         });
         this.pdf_document.selections.reset(selections_to_load);
