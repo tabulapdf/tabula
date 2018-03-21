@@ -3,7 +3,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -21,12 +21,20 @@ public class TestEU_002 {
     WebDriver driver;
     @Test
     public void startWebDriver() throws InterruptedException {
-        driver = new FirefoxDriver();
+        driver = new ChromeDriver();
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 100);
+        String filePath = "/home/slmendez/484_P7_1-GUI/src/test/eu-002.pdf"; //
+        WebElement chooseFile = driver.findElement(By.id("file"));
+        chooseFile.sendKeys(filePath);
+        Thread.sleep(2000);
+        WebElement import_btn = driver.findElement(By.id("import_file"));
+        import_btn.click();
+        Thread.sleep(1000);
 
         try {
+
             By extract_name = By.linkText("Extract Data");
             WebElement extract_button = wait.until(ExpectedConditions.visibilityOfElementLocated(extract_name));
             extract_button.click();

@@ -3,9 +3,10 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import static junit.framework.TestCase.assertTrue;
 
 // Test of Tabula's My Templates' page and it's associating links. It clicks through the navigating links and the
@@ -15,8 +16,9 @@ public class TestMyTemplatesPage {
     WebDriver driver;
     @Test
     public void startWebDriver() throws InterruptedException {
-        driver = new FirefoxDriver();
+        driver = new ChromeDriver();
         driver.get("http://127.0.0.1:9292/");
+        driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 100);
         try{
             //navigates to the My Templates tab from the homepage tab
@@ -53,7 +55,7 @@ public class TestMyTemplatesPage {
             WebElement input_browser = wait.until(ExpectedConditions.elementToBeClickable(input_btn));
             input_browser.click();
             //utilizing thread.sleep() to give enough time for the file explorer to display correctly. 
-            Thread.sleep(2000);
+            Thread.sleep(1000);
 
         }catch(Exception e){
             System.out.print(e);
