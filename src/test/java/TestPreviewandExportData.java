@@ -17,10 +17,8 @@ import static org.junit.Assert.assertFalse;
 //Test of Tabula's Preview and Export Data page, including the links and buttons on the page. Expect for two buttons,
 // the export button that triggers a pop-up window and the copy to clipboard button that is seen as disabled whenever
 // on remote control but enabled when manually tested.
-// TODO: currently, I do not know how to directly call a pdf file so I can use it for the test cases without manually
-//  using the windows explorer to retrieve it. For now, I will use the pdf file that has been pre-uploaded already,
-// until this is fixed.
-// For this test case, I will use the eu_002.pdf file since I just need a way to get to the page and a pdf file is necessary.
+// TODO: currently, A better way to call the pdf has been changed; need to find a way to not use the absolute pathname
+// For this test case, eu_002.pdf is utilized.
 // @author SM modified: 3/10/18
 public class TestPreviewandExportData {
     WebDriver driver;
@@ -30,13 +28,19 @@ public class TestPreviewandExportData {
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 100);
+        String filePath = "/home/slmendez/484_P7_1-GUI/src/test/eu-002.pdf"; //
+        WebElement chooseFile = driver.findElement(By.id("file"));
+        chooseFile.sendKeys(filePath);
+        Thread.sleep(1000);
+        WebElement import_btn = driver.findElement(By.id("import_file"));
+        import_btn.click();
     try{
         //navigates to the extraction page and checks that it is in the extraction page
         By extract_name = By.linkText("Extract Data");
         WebElement extract_button = wait.until(ExpectedConditions.visibilityOfElementLocated(extract_name));
-        Thread.sleep(1000);
+       // Thread.sleep(1000);
         extract_button.click();
-        Thread.sleep(1000);
+       // Thread.sleep(1000);
 
         //menu options did not fully load
         if(driver.findElements( By.id("restore-detected-tables") ).size() == 0){
@@ -65,7 +69,7 @@ public class TestPreviewandExportData {
         assertTrue("Failed, couldn't find Extraction page", regex_options_string.equals(regex_options.getText()));
         driver.navigate().back();
         //counts the number of rows displayed when the stream button is set to default and compares the row count
-        Thread.sleep(1000);
+       // Thread.sleep(1000);
         List<WebElement> stream_rows = driver.findElements(By.className("detection-row"));
         int stream_count = stream_rows.size();
         int stream_hc_count = 38;
@@ -73,7 +77,7 @@ public class TestPreviewandExportData {
 
         By lattice_id = By.id("spreadsheet-method-btn");
         WebElement lattice_button = wait.until(ExpectedConditions.elementToBeClickable(lattice_id));
-        Thread.sleep(1000);
+       // Thread.sleep(1000);
         lattice_button.click();
         List<WebElement> lattice_rows = driver.findElements(By.className("detection-row"));
         int lattice_count = lattice_rows.size();
@@ -88,7 +92,7 @@ public class TestPreviewandExportData {
         assertFalse("Failed, couldn't find GitHub's sign-in page to view the report an issue page", driver.getCurrentUrl().equals(contact_url));
         driver.navigate().back();
         //menu options did not fully load
-        Thread.sleep(1000);
+      //  Thread.sleep(1000);
         if(driver.findElements( By.id("clear-all-selections") ).size() == 0){
             //refresh the page
             driver.navigate().refresh();
@@ -126,6 +130,14 @@ public class TestPreviewandExportData {
         // after running the test various times on remote control, the copy to clipboard button is disabled. Hence, I
         // will not include the testing of the button since the test is suppose to check if the button is clickable and
         // it will fail at this present state.
+
+        //navigates back and deletes the pdf utilized
+        driver.navigate().back();
+        driver.navigate().back();
+        By delete_pdf = By.id("delete_pdf");
+        WebElement delete_btn = wait.until(ExpectedConditions.elementToBeClickable(delete_pdf));
+        delete_btn.click();
+        driver.switchTo().alert().accept();
 
     }catch(Exception e){
         System.out.print(e);

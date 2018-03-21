@@ -198,6 +198,8 @@ Tabula.Library = Backbone.View.extend({
       },this));
 
       var formdata = new FormData($('form#upload')[0]);
+      console.log("URL");
+      console.log($('form#upload').attr('action'));
       $.ajax({
           url: $('form#upload').attr('action'),
           type: 'POST',

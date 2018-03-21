@@ -3,10 +3,12 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.util.concurrent.TimeUnit;
+
 import static junit.framework.TestCase.assertTrue;
 
 //Checks the multiple links found on the About page. For three of the links, there will be 3 tabs that open in addition to
@@ -18,8 +20,9 @@ public class TestAboutPage {
   WebDriver driver;
     @Test
     public void startWebDriver() throws InterruptedException{
-        driver = new FirefoxDriver();
+        driver = new ChromeDriver();
         driver.get("http://127.0.0.1:9292/");
+        driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 100);
 
         try {
