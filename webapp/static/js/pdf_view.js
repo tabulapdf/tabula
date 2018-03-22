@@ -433,6 +433,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
 
   initialize: function(stuff){
+    console.log("In initialize of Tabula.DataView...");
     _.bindAll(this, 'render', 'renderFlashClipboardNonsense', 'updateFilename', 'queryWithToggledExtractionMethod', 'closeAndRenderSelectionView', 'setFormAction');
     this.pdf_view = stuff.pdf_view;
     console.log("Model to Tabula.DataView:");
@@ -574,6 +575,32 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     $('.table-region').remove();
     $('.selection-show').remove(); // nuke thumbs, we'll put 'em back in a second
 
+
+    //Short-hand variable...
+    var regex_collection = Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.models;
+
+    var regex_selection_ids = [];
+
+    regex_collection.forEach(function(regex_search){
+      regex_search.attributes.selections_rendered.forEach(function(sub_sections){
+        return sub_sections.models.map(function(sub_section){
+          console.log("Sub_Section:");
+          console.log(sub_section);
+          console.log(sub_section.id);
+          regex_selection_ids.push(sub_section.id);
+        });
+      });
+    });
+
+    var user_drawn_selections = this.model.attributes.list_of_coords.filter(function(selection){
+      return regex_selection_ids.every(function(regex_id){
+        return regex_id != selection.selection_id;
+      })
+    });
+
+    console.log("NEW_ARGS");
+    console.log(JSON.stringify(user_drawn_selections));
+
     this.$el.html(this.template({
       pdf_id: PDF_ID,
       data: this.model.getDataArray(),
@@ -584,7 +611,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
       _.template($('#templates #export-control-panel-template').html().replace(/nestedscript/g, 'script'))(
         _(this.pdf_view.pdf_document.attributes).extend({
           pdf_id: PDF_ID,
-          list_of_coords: JSON.stringify(this.model.get('list_of_coords')),
+          list_of_coords: JSON.stringify(user_drawn_selections),
           copyDisabled: Tabula.pdf_view.flash_borked ? 'disabled="disabled" data-toggle="tooltip" title="'+Tabula.pdf_view.flash_borken_message+'"' : '',
           disableIfNoData: (_.isNull(this.model.get('data')) || typeof(this.model.get('data')) === "undefined") ? 'disabled="disabled"' : ''
         })

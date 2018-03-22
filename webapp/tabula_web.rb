@@ -461,6 +461,8 @@ Cuba.define do
         ]
       end
 
+      puts req.params
+
       tables = Tabula.extract_tables(pdf_path, coords)
 
       filename =  if req.params['new_filename'] && req.params['new_filename'].strip.size
@@ -510,22 +512,54 @@ Cuba.define do
         # ahahaha. I get the last laugh now.
 
         res.write String.from_java_bytes(baos.to_byte_array)
-      when 'script'
+        when 'script'
+
+        gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+
+        sanitized_query_data = Array.new
+
+        regex_query_meta_data.regex_searches.each{ |x|
+          raw_search_data =JSON.parse(gson.to_json(x))
+
+          sanitized_query_data.push({pattern_before: raw_search_data["_regex_before_table"]["pattern"],
+                                     include_pattern_before: raw_search_data["_include_regex_before_table"],
+                                     pattern_after: raw_search_data["_regex_after_table"]["pattern"],
+                                     include_pattern_after: raw_search_data["_include_regex_after_table"]})
+        }
+
+        puts sanitized_query_data
+
+        regex_cli_option = JSON.generate({queries: sanitized_query_data});
+
+        puts regex_cli_option.to_json
+
+        regex_cli_string = ""
+        if !regex_query_meta_data.regex_searches.empty?
+          regex_cli_string="-r '#{regex_cli_option}'"
+        end
+
+        drawn_boxes_cli_string=""
+
+        coords.each do |c|
+          extraction_method_switch = if c['extraction_method'] == "original"
+                                       "--no-spreadsheet"
+                                     elsif c['extraction_method'] == "spreadsheet"
+                                       "--spreadsheet"
+                                     else
+                                       ""
+                                     end
+          drawn_boxes_cli_string = drawn_boxes_cli_string + extraction_method_switch +
+            "-a #{c['y1'].round(3)},#{c['x1'].round(3)},#{c['y2'].round(3)},#{c['x2'].round(3)} -p #{c['page']}"
+        end
+
         # Write shell script of tabula-extractor commands.  $1 takes
         # the name of a file from the command line and passes it
         # to tabula-extractor so the script can be reused on similar pdfs.
         res['Content-Type'] = 'application/x-sh'
         res['Content-Disposition'] = "attachment; filename=\"#{filename}.sh\""
-        coords.each do |c|
-          extraction_method_switch = if c['extraction_method'] == "original"
-                                        "--no-spreadsheet"
-                                     elsif c['extraction_method'] == "spreadsheet"
-                                        "--spreadsheet"
-                                     else
-                                        ""
-                                     end
-          res.write "java -jar tabula-java.jar #{extraction_method_switch} -a #{c['y1'].round(3)},#{c['x1'].round(3)},#{c['y2'].round(3)},#{c['x2'].round(3)} -p #{c['page']} \"$1\" \n"
-        end
+       
+        res.write "java -jar tabula-java.jar #{regex_cli_string} #{drawn_boxes_cli_string} \"$1\" \n"
+
       when 'bbox'
         # Write json representation of bounding boxes and pages for
         # use in OCR and other back ends.
