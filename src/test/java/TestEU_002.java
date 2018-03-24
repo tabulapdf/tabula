@@ -39,7 +39,7 @@ public class TestEU_002 {
 
     }
     @Test
-    public void TestHalfRegexInputs() throws InterruptedException{
+    public void TestHalfRegexInputsforPatternBeforeandPatternAfter() throws InterruptedException{
         try {
             //navigates to the extraction page and checks that it is in the extraction page
             By extract_name = By.linkText("Extract Data");
@@ -66,27 +66,30 @@ public class TestEU_002 {
             // clicking the regex search button
             By pattern_before_input = By.id("pattern_before");
             driver.findElement(pattern_before_input).sendKeys("Table 5");
+            //Thread.sleep(500);
             By regex_search_id = By.id("regex-search");
             assertFalse("Failed, regex search button is enabled", driver.findElement(regex_search_id).isEnabled());
             driver.findElement(pattern_before_input).clear();
-            Thread.sleep(500);
+            //Thread.sleep(500);
             driver.navigate().refresh();
-            Thread.sleep(500);
+            //Thread.sleep(500);
 
             //Test that checks that the regex search button is disabled after entering "Table 6" in pattern_after and
             // clicking the regex search button
             By pattern_after_input = By.id("pattern_after");
             driver.findElement(pattern_after_input).sendKeys("Table 6");
+            //Thread.sleep(500);
             By regex_search_id2 = By.id("regex-search");
             assertFalse("Failed, regex search button is enabled", driver.findElement(regex_search_id2).isEnabled());
             driver.findElement(pattern_after_input).clear();
-            
+
             //navigates back and deletes the pdf utilized
-            Thread.sleep(500);
+            //Thread.sleep(500);
             driver.navigate().back();
             By delete_pdf = By.id("delete_pdf");
             WebElement delete_btn = wait.until(ExpectedConditions.elementToBeClickable(delete_pdf));
             delete_btn.click();
+            //Thread.sleep(500);
             driver.switchTo().alert().accept();
 
         } catch (Exception e) {
@@ -105,11 +108,11 @@ public class TestEU_002 {
             if(driver.findElements( By.id("restore-detected-tables")).size() == 0){
                 //refresh the page
                 driver.navigate().refresh();
-            }
+            }else{}
             if(driver.findElements(By.id("thumbnail-list")).size() == 0){
                 //refresh the page
                 driver.navigate().refresh();
-            }
+            }else{}
             //checks if it is in the extraction page
             String regex_options_string = "Regex Options";
             By regex_options_title = By.id("regex_options_title");
@@ -125,9 +128,22 @@ public class TestEU_002 {
             By regex_search_id3 = By.id("regex-search");
             WebElement regex_button = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id3));
             regex_button.click();
+            //Thread.sleep(1000);
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
-            System.out.print(result);
+            //System.out.print(result);
+            Boolean regex_result;
+            if(result.equals("0")){ regex_result = true;}
+            else{ regex_result = false;}
+            assertFalse("Failed, regex found a match for incorrect inputs for pattern before and pattern after", regex_result);
 
+            //navigates back and deletes the pdf utilized
+            //Thread.sleep(500);
+            driver.navigate().back();
+            By delete_pdf = By.id("delete_pdf");
+            WebElement delete_btn = wait.until(ExpectedConditions.elementToBeClickable(delete_pdf));
+            delete_btn.click();
+            //Thread.sleep(500);
+            driver.switchTo().alert().accept();
         }
         catch(Exception e){
             System.out.print(e);
@@ -135,5 +151,9 @@ public class TestEU_002 {
     }
     @AfterClass
     public static void TearDown(){
+        driver.navigate().back();
+        driver.findElement(By.id("delete_pdf")).click();
+        //Thread.sleep(500);
+        driver.switchTo().alert().accept();
         driver.quit();
     }}
