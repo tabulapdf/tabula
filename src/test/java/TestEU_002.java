@@ -69,6 +69,9 @@ public class TestEU_002 {
             By regex_search_id = By.id("regex-search");
             assertFalse("Failed, regex search button is enabled", driver.findElement(regex_search_id).isEnabled());
             driver.findElement(pattern_before_input).clear();
+            Thread.sleep(500);
+            driver.navigate().refresh();
+            Thread.sleep(500);
 
             //Test that checks that the regex search button is disabled after entering "Table 6" in pattern_after and
             // clicking the regex search button
@@ -77,39 +80,56 @@ public class TestEU_002 {
             By regex_search_id2 = By.id("regex-search");
             assertFalse("Failed, regex search button is enabled", driver.findElement(regex_search_id2).isEnabled());
             driver.findElement(pattern_after_input).clear();
-
-
-
-
-/*
-            By pattern_after_input = By.id("pattern_after");
-            driver.findElement(pattern_after_input).sendKeys("Table 6");
-            Thread.sleep(2000);
-            By search_id = By.id("regex-search");
-            WebElement search_button = wait.until(ExpectedConditions.visibilityOfElementLocated(search_id));
-            search_button.click();
-            Thread.sleep(4000);
-            By clear_id = By.id("clear-all-selections");
-            WebElement clear_button = wait.until(ExpectedConditions.visibilityOfElementLocated(clear_id));
-            clear_button.click(); //clear results
-            Thread.sleep(3000);
-            driver.findElement(pattern_before_input).sendKeys("Table 5");
-            By include_pattern_before_id = By.id("include_pattern_before");
-            WebElement include_pattern_bbox = wait.until(ExpectedConditions.visibilityOfElementLocated(include_pattern_before_id));
-            include_pattern_bbox.click();
-            driver.findElement(pattern_after_input).sendKeys("Table 6");
-            Thread.sleep(4000);
-            WebElement search_button2 = wait.until(ExpectedConditions.visibilityOfElementLocated(search_id));
-            search_button2.click();
-            Thread.sleep(3000); */
-
+            
             //navigates back and deletes the pdf utilized
+            Thread.sleep(500);
             driver.navigate().back();
             By delete_pdf = By.id("delete_pdf");
             WebElement delete_btn = wait.until(ExpectedConditions.elementToBeClickable(delete_pdf));
             delete_btn.click();
             driver.switchTo().alert().accept();
+
         } catch (Exception e) {
+            System.out.print(e);
+        }
+    }
+    @Test
+    public void TestWrongInputsforBeforePatternandAfterPattern(){
+        try{
+            //navigates to the extraction page and checks that it is in the extraction page
+            By extract_name = By.linkText("Extract Data");
+            WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(extract_name));
+            extract_button.click();
+            driver.manage().timeouts().pageLoadTimeout(300, TimeUnit.SECONDS);
+            //menu options did not fully load
+            if(driver.findElements( By.id("restore-detected-tables")).size() == 0){
+                //refresh the page
+                driver.navigate().refresh();
+            }
+            if(driver.findElements(By.id("thumbnail-list")).size() == 0){
+                //refresh the page
+                driver.navigate().refresh();
+            }
+            //checks if it is in the extraction page
+            String regex_options_string = "Regex Options";
+            By regex_options_title = By.id("regex_options_title");
+            WebElement regex_options = wait.until(ExpectedConditions.visibilityOfElementLocated(regex_options_title));
+            driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
+            assertTrue("Failed, couldn't find Extraction page", regex_options_string.equals(regex_options.getText()));
+
+            //Test that inputs an incorrect input for pattern before and incorrect input for pattern after
+            By pattern_before_input = By.id("pattern_before");
+            By pattern_after_input = By.id("pattern_after");
+            driver.findElement(pattern_before_input).sendKeys("ksgjlk");
+            driver.findElement(pattern_after_input).sendKeys("fgfsgs");
+            By regex_search_id3 = By.id("regex-search");
+            WebElement regex_button = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id3));
+            regex_button.click();
+            String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
+            System.out.print(result);
+
+        }
+        catch(Exception e){
             System.out.print(e);
         }
     }
