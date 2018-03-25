@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="Added on">
+    <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/classes/test/484_P7_1-GUI/TestEU_002.class" afterPath="$PROJECT_DIR$/classes/test/484_P7_1-GUI/TestEU_002.class" />
       <change beforePath="$PROJECT_DIR$/src/test/java/TestEU_002.java" afterPath="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
@@ -39,8 +39,8 @@
       <file leaf-file-name="TestEU_002.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2548">
-              <caret line="24" column="16" lean-forward="true" selection-start-line="24" selection-start-column="16" selection-end-line="24" selection-end-column="16" />
+            <state relative-caret-position="-2080">
+              <caret line="110" column="0" lean-forward="false" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -728,38 +728,45 @@
       <option name="project" value="LOCAL" />
       <updated>1521930611967</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Added on more test scenarios of inputting a common word and a correct input to pattern before and pattern after">
+      <created>1522017195592</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1522017195592</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.25 at 15h 38m 41s.xml">
+    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.25 at 19h 38m 22s.xml">
       <configuration name="TestEU_002.TestCommonWordInputforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.25 at 15h 39m 02s.xml">
+    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.25 at 19h 41m 02s.xml">
       <configuration name="TestEU_002.TestCommonWordInputforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.25 at 16h 14m 44s.xml">
+    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.25 at 19h 42m 58s.xml">
       <configuration name="TestEU_002.TestCommonWordInputforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.25 at 17h 49m 00s.xml">
+    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.25 at 19h 43m 26s.xml">
       <configuration name="TestEU_002.TestCommonWordInputforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.25 at 18h 13m 44s.xml">
+    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.25 at 19h 43m 47s.xml">
       <configuration name="TestEU_002.TestCommonWordInputforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.25 at 18h 14m 40s.xml">
+    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.25 at 19h 44m 33s.xml">
       <configuration name="TestEU_002.TestCommonWordInputforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002_TestWrongInputsforBeforePatternandAfterPattern - 2018.03.25 at 15h 44m 13s.xml">
-      <configuration name="TestEU_002.TestWrongInputsforBeforePatternandAfterPattern" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.25 at 19h 45m 50s.xml">
+      <configuration name="TestEU_002.TestCommonWordInputforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002_TestWrongInputsforBeforePatternandAfterPattern - 2018.03.25 at 15h 44m 34s.xml">
-      <configuration name="TestEU_002.TestWrongInputsforBeforePatternandAfterPattern" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestHalfRegexInputsforPatternBeforeandPatternAfter - 2018.03.25 at 19h 30m 04s.xml">
+      <configuration name="TestEU_002.TestHalfRegexInputsforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002_TestWrongInputsforBeforePatternandAfterPattern - 2018.03.25 at 15h 45m 04s.xml">
-      <configuration name="TestEU_002.TestWrongInputsforBeforePatternandAfterPattern" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestHalfRegexInputsforPatternBeforeandPatternAfter - 2018.03.25 at 19h 32m 20s.xml">
+      <configuration name="TestEU_002.TestHalfRegexInputsforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002_TestWrongInputsforBeforePatternandAfterPattern - 2018.03.25 at 15h 45m 32s.xml">
+    <history-entry file="TestEU_002_TestWrongInputsforBeforePatternandAfterPattern - 2018.03.25 at 19h 33m 11s.xml">
       <configuration name="TestEU_002.TestWrongInputsforBeforePatternandAfterPattern" configurationId="JUnit" />
     </history-entry>
   </component>
@@ -775,7 +782,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.076576576" sideWeight="0.16907844" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.05255255" sideWeight="0.83092153" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15315315" sideWeight="0.83092153" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.09009009" sideWeight="0.83092153" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -824,11 +831,12 @@
     <MESSAGE value="Added on some beginning test cases for eu-002.pdf, testing for the regex search disabled button" />
     <MESSAGE value="Added on a new method to test for incorrect inputs for pattern after and pattern before" />
     <MESSAGE value="Added on another test case that inputs 2 incorrect inputs to the pattern before and pattern after and checks that there are zero results" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added on another test case that inputs 2 incorrect inputs to the pattern before and pattern after and checks that there are zero results" />
+    <MESSAGE value="Added on more test scenarios of inputting a common word and a correct input to pattern before and pattern after" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added on more test scenarios of inputting a common word and a correct input to pattern before and pattern after" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="15" />
+      <option name="time" value="18" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1017,8 +1025,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2548">
-          <caret line="24" column="16" lean-forward="true" selection-start-line="24" selection-start-column="16" selection-end-line="24" selection-end-column="16" />
+        <state relative-caret-position="-2080">
+          <caret line="110" column="0" lean-forward="false" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

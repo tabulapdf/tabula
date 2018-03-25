@@ -22,6 +22,17 @@ public class TestEU_002 {
     public static String Tabula_url = "http://127.0.0.1:9292/";
     public WebDriverWait wait = new WebDriverWait(driver, 100);
 
+    public void PageRefresh(){
+        //menu options did not fully load
+        if(driver.findElements( By.id("restore-detected-tables")).size() == 0){
+            //refresh the page
+            driver.navigate().refresh();
+        }
+        if(driver.findElements(By.id("thumbnail-list")).size() == 0){
+            //refresh the page
+            driver.navigate().refresh();
+        }
+    }
     @BeforeClass
     public static void SetUp() throws InterruptedException {
         driver = new ChromeDriver();
@@ -33,26 +44,17 @@ public class TestEU_002 {
         Thread.sleep(1000);
         WebElement import_btn = driver.findElement(By.id("import_file"));
         import_btn.click();
-        Thread.sleep(1000);
+        Thread.sleep(700);
 
     }
     @Test
     public void TestHalfRegexInputsforPatternBeforeandPatternAfter() throws InterruptedException{
         try {
             //navigates to the extraction page and checks that it is in the extraction page
-            By extract_name = By.linkText("Extract Data");
-            WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(extract_name));
+            WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
             extract_button.click();
+            PageRefresh();
             Thread.sleep(500);
-            //menu options did not fully load
-            if(driver.findElements( By.id("restore-detected-tables")).size() == 0){
-                //refresh the page
-                driver.navigate().refresh();
-            }
-            if(driver.findElements(By.id("thumbnail-list")).size() == 0){
-                //refresh the page
-                driver.navigate().refresh();
-            }
 
             //Test that checks that the regex search button is disabled after entering "Table 5" in pattern_before and
             // clicking the regex search button
@@ -64,7 +66,8 @@ public class TestEU_002 {
             driver.findElement(pattern_before_input).clear();
             //Thread.sleep(500);
             driver.navigate().refresh();
-            //Thread.sleep(500);
+            PageRefresh();
+            Thread.sleep(500);
 
             //Test that checks that the regex search button is disabled after entering "Table 6" in pattern_after and
             // clicking the regex search button
@@ -86,19 +89,10 @@ public class TestEU_002 {
     public void TestWrongInputsforBeforePatternandAfterPattern() throws InterruptedException{
         try{
             //navigates to the extraction page and checks that it is in the extraction page
-            By extract_name = By.linkText("Extract Data");
-            WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(extract_name));
+            WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
             extract_button.click();
+            PageRefresh();
             Thread.sleep(500);
-            //menu options did not fully load
-            if(driver.findElements( By.id("restore-detected-tables")).size() == 0){
-                //refresh the page
-                driver.navigate().refresh();
-            }
-            if(driver.findElements(By.id("thumbnail-list")).size() == 0){
-                //refresh the page
-                driver.navigate().refresh();
-            }
 
             //Test that inputs an incorrect input for pattern before and incorrect input for pattern after
             By pattern_before_input = By.id("pattern_before");
@@ -119,9 +113,10 @@ public class TestEU_002 {
             driver.findElement(pattern_before_input).clear();
             driver.findElement(pattern_after_input).clear();
             driver.navigate().refresh();
+            PageRefresh();
+            Thread.sleep(500);
 
             //Test inputs correct input for pattern after and incorrect input for pattern before
-            Thread.sleep(500);
             By pattern_before_input2 = By.id("pattern_before");
             By pattern_after_input2 = By.id("pattern_after");
             driver.findElement(pattern_before_input2).sendKeys("jflaksl");
@@ -139,9 +134,10 @@ public class TestEU_002 {
             driver.findElement(pattern_before_input2).clear();
             driver.findElement(pattern_after_input2).clear();
             driver.navigate().refresh();
+            PageRefresh();
+            Thread.sleep(500);
 
             //Test inputs incorrect input for pattern after and correct input for pattern before
-            Thread.sleep(500);
             By pattern_before_input3 = By.id("pattern_before");
             By pattern_after_input3 = By.id("pattern_after");
             driver.findElement(pattern_before_input3).sendKeys("Table 5");
@@ -170,22 +166,12 @@ public class TestEU_002 {
     public void TestCommonWordInputforPatternBeforeandPatternAfter() throws InterruptedException{
         try{
             //navigates to the extraction page and checks that it is in the extraction page
-            By extract_name = By.linkText("Extract Data");
-            WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(extract_name));
+            WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
             extract_button.click();
+            PageRefresh();
             Thread.sleep(500);
-            //menu options did not fully load
-            if(driver.findElements( By.id("restore-detected-tables")).size() == 0){
-                //refresh the page
-                driver.navigate().refresh();
-            }
-            if(driver.findElements(By.id("thumbnail-list")).size() == 0){
-                //refresh the page
-                driver.navigate().refresh();
-            }
 
             //Tests pattern before and pattern after with a common input found in the pdf
-            Thread.sleep(500);
             By pattern_before_input = By.id("pattern_before");
             By pattern_after_input = By.id("pattern_after");
             driver.findElement(pattern_before_input).sendKeys("Table");
@@ -203,9 +189,10 @@ public class TestEU_002 {
             driver.findElement(pattern_before_input).clear();
             driver.findElement(pattern_after_input).clear();
             driver.navigate().refresh();
+            PageRefresh();
+            Thread.sleep(500);
 
             //Tests pattern before with a common input found in the pdf and pattern after with a correct input
-            Thread.sleep(500);
             By pattern_before_input2 = By.id("pattern_before");
             By pattern_after_input2 = By.id("pattern_after");
             driver.findElement(pattern_before_input2).sendKeys("Table");
@@ -222,9 +209,11 @@ public class TestEU_002 {
                     regex_result2);
             driver.findElement(pattern_before_input2).clear();
             driver.findElement(pattern_after_input2).clear();
+            driver.navigate().refresh();
+            PageRefresh();
+            Thread.sleep(500);
 
             //Tests pattern before with a correct input and pattern after with a common input found in the pdf
-            Thread.sleep(500);
             By pattern_before_input3 = By.id("pattern_before");
             By pattern_after_input3 = By.id("pattern_after");
             driver.findElement(pattern_before_input3).sendKeys("Table 5");
