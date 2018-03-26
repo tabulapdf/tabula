@@ -203,7 +203,7 @@
             <div id="table-container">
             <% if(data.length){ %>
               <% _(data).each(function(table){ %>
-              <table class="table table-bordered extracted-data">
+              <table id="extracted-table" class="table table-bordered extracted-data">
                 <tbody>
                 <% _(table).each(function(row){ %>
                   <tr  class ="detection-row">
