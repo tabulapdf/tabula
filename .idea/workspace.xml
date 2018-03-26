@@ -5,8 +5,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/classes/test/484_P7_1-GUI/TestEU_002.class" afterPath="$PROJECT_DIR$/classes/test/484_P7_1-GUI/TestEU_002.class" />
       <change beforePath="$PROJECT_DIR$/src/test/java/TestEU_002.java" afterPath="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/WatchmanTest.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/webapp/index.html" afterPath="$PROJECT_DIR$/webapp/index.html" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -51,8 +49,8 @@
       <file leaf-file-name="TestEU_002.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2434">
-              <caret line="29" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+            <state relative-caret-position="197">
+              <caret line="270" column="43" lean-forward="true" selection-start-line="270" selection-start-column="43" selection-end-line="270" selection-end-column="43" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -755,16 +753,17 @@
       <option name="project" value="LOCAL" />
       <updated>1522021675572</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Noticed some issues with the refresh method I had for the test classes, have changed it for it to only refresh when the menu bar disappears. Doesn't necessary hurt if the pdf bar or pdf view is not present since it doesn't affect the test cases. Will be updating this method to previous test cases that need it. Also implemented a more correct way to verify tabula is gathering the correct data based on the output">
+      <created>1522044035277</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1522044035277</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.25 at 19h 45m 50s.xml">
-      <configuration name="TestEU_002.TestCommonWordInputforPatternBeforeandPatternAfter" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.26 at 01h 09m 23s.xml">
-      <configuration name="TestEU_002.TestCommonWordInputforPatternBeforeandPatternAfter" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.26 at 01h 09m 40s.xml">
       <configuration name="TestEU_002.TestCommonWordInputforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
@@ -789,6 +788,12 @@
     <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.26 at 01h 57m 11s.xml">
       <configuration name="TestEU_002.TestCommonWordInputforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="TestEU_002_TestCommonWordInputforPatternBeforeandPatternAfter - 2018.03.26 at 02h 39m 33s.xml">
+      <configuration name="TestEU_002.TestCommonWordInputforPatternBeforeandPatternAfter" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestEU_002_TestWrongInputsforBeforePatternandAfterPattern - 2018.03.26 at 02h 37m 11s.xml">
+      <configuration name="TestEU_002.TestWrongInputsforBeforePatternandAfterPattern" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="52" y="-4" width="1315" height="773" extended-state="6" />
@@ -802,7 +807,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23423423" sideWeight="0.17364813" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.123123124" sideWeight="0.8263519" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14114115" sideWeight="0.8263519" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.09009009" sideWeight="0.83092153" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -827,8 +832,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added on to component testing for the home page. Need to finish testing last bit of components and then need to go back to the TestHelpPage and test hover menu." />
-    <MESSAGE value="Update of workspace file" />
     <MESSAGE value="Added on searching for Tabula's source code page, the test is currently failing after adding on that portion. WIll look into it to see why it is failing." />
     <MESSAGE value="Completed Test case for homepage, minor things that are not checked are mentioned why in the test case." />
     <MESSAGE value="Merge branch 'Header_Addition' of https://github.com/redmyers/484_P7_1-GUI into Header_Addition&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml" />
@@ -852,7 +855,9 @@
     <MESSAGE value="Added on another test case that inputs 2 incorrect inputs to the pattern before and pattern after and checks that there are zero results" />
     <MESSAGE value="Added on more test scenarios of inputting a common word and a correct input to pattern before and pattern after" />
     <MESSAGE value="mMade another method to eliminate some redundant code and fixed up some previous test cases" />
-    <option name="LAST_COMMIT_MESSAGE" value="mMade another method to eliminate some redundant code and fixed up some previous test cases" />
+    <MESSAGE value="Noticed some issues with the refresh method I had for the test classes, have changed it for it to only refresh when the menu bar disappears. Doesn't necessary hurt if the pdf bar or pdf view is not present since it doesn't affect the test cases. Will be updating this method to previous test cases that need it. Also implemented a more correct way to vertify tabula is gathering the correct data based on the output" />
+    <MESSAGE value="Noticed some issues with the refresh method I had for the test classes, have changed it for it to only refresh when the menu bar disappears. Doesn't necessary hurt if the pdf bar or pdf view is not present since it doesn't affect the test cases. Will be updating this method to previous test cases that need it. Also implemented a more correct way to verify tabula is gathering the correct data based on the output" />
+    <option name="LAST_COMMIT_MESSAGE" value="Noticed some issues with the refresh method I had for the test classes, have changed it for it to only refresh when the menu bar disappears. Doesn't necessary hurt if the pdf bar or pdf view is not present since it doesn't affect the test cases. Will be updating this method to previous test cases that need it. Also implemented a more correct way to verify tabula is gathering the correct data based on the output" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1047,8 +1052,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2434">
-          <caret line="29" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+        <state relative-caret-position="197">
+          <caret line="270" column="43" lean-forward="true" selection-start-line="270" selection-start-column="43" selection-end-line="270" selection-end-column="43" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
