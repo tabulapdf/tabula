@@ -22,19 +22,21 @@ public class TestEU_002 {
     public static String Tabula_url = "http://127.0.0.1:9292/";
     public WebDriverWait wait = new WebDriverWait(driver, 100);
 
-    public void PageRefresh(){
+    public void PageRefresh() throws InterruptedException {
         //menu options did not fully load
-        if(driver.findElements( By.id("restore-detected-tables")).size() == 0){
-            //refresh the page
-            driver.navigate().refresh();
-        }
-        if(driver.findElements(By.id("thumbnail-list")).size() == 0){
-            //refresh the page
-            driver.navigate().refresh();
-        }
+        Thread.sleep(500);
+        //refresh the page
+        while(driver.findElements( By.id("restore-detected-tables")).size() == 0) driver.navigate().refresh();
+
+    }
+    public void PreviewandExportDatapg(){
+        By previewandexport_id = By.id("all-data");
+        WebElement previewandexport_button = wait.until(ExpectedConditions.visibilityOfElementLocated(previewandexport_id));
+        previewandexport_button.click();
     }
     @BeforeClass
     public static void SetUp() throws InterruptedException {
+        //set up of chromdriver and navigation to the url, as well as uploading of the pdf file
         driver = new ChromeDriver();
         driver.get(Tabula_url);
         driver.manage().window().maximize();
@@ -45,7 +47,6 @@ public class TestEU_002 {
         WebElement import_btn = driver.findElement(By.id("import_file"));
         import_btn.click();
         Thread.sleep(700);
-
     }
     @Test
     public void TestHalfRegexInputsforPatternBeforeandPatternAfter() throws InterruptedException{
@@ -59,7 +60,7 @@ public class TestEU_002 {
             //Test that checks that the regex search button is disabled after entering "Table 5" in pattern_before and
             // clicking the regex search button
             By pattern_before_input = By.id("pattern_before");
-            driver.findElement(pattern_before_input).sendKeys("Table 5");
+            driver.findElement(pattern_before_input).sendKeys("Chart 4");
             //Thread.sleep(500);
             By regex_search_id = By.id("regex-search");
             assertFalse("Failed, regex search button is enabled", driver.findElement(regex_search_id).isEnabled());
@@ -72,7 +73,7 @@ public class TestEU_002 {
             //Test that checks that the regex search button is disabled after entering "Table 6" in pattern_after and
             // clicking the regex search button
             By pattern_after_input = By.id("pattern_after");
-            driver.findElement(pattern_after_input).sendKeys("Table 6");
+            driver.findElement(pattern_after_input).sendKeys("");
             //Thread.sleep(500);
             By regex_search_id2 = By.id("regex-search");
             assertFalse("Failed, regex search button is enabled", driver.findElement(regex_search_id2).isEnabled());
@@ -174,20 +175,38 @@ public class TestEU_002 {
             //Tests pattern before and pattern after with a common input found in the pdf
             By pattern_before_input = By.id("pattern_before");
             By pattern_after_input = By.id("pattern_after");
-            driver.findElement(pattern_before_input).sendKeys("Table");
-            driver.findElement(pattern_after_input).sendKeys("Table");
+            driver.findElement(pattern_before_input).sendKeys("Impacts");
+            driver.findElement(pattern_after_input).sendKeys("Impacts");
             By regex_search_id = By.id("regex-search");
             WebElement regex_button = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id));
             regex_button.click();
             Thread.sleep(600);
+            PageRefresh();
+            Thread.sleep(500);
+            //confirmation of data picked and number of results from the regex results table in the extraction page
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result;
             if(result.equals("1")){ regex_result = true;} //if true, there are zero matches
             else{ regex_result = false;}
-            assertTrue("Failed, regex found a match for common input for both pattern before and pattern after",
-                    regex_result);
-            driver.findElement(pattern_before_input).clear();
-            driver.findElement(pattern_after_input).clear();
+            PreviewandExportDatapg();
+            Thread.sleep(600);
+            String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Knowledge')]")).getText();
+            Boolean regex_data;
+            if(result_data.equals("Knowledge and awareness of different cultures")){ regex_data = true;}
+            else{ regex_data = false;}
+            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Self')]")).getText();
+            Boolean regex_data2;
+            if(result_data2.equals("Self competence")){ regex_data2 = true;}
+            else{ regex_data2 = false;}
+            Boolean final_results;
+            if(regex_result && regex_data && regex_data2){ final_results = true;}
+            else{final_results = false;}
+            assertTrue("Failed, regex found no match/correct match for a common input found in the pdf for both " +
+                            "pattern before and pattern after",
+                    final_results);
+            driver.navigate().back();
+            Thread.sleep(500);
+
             driver.navigate().refresh();
             PageRefresh();
             Thread.sleep(500);
@@ -195,8 +214,8 @@ public class TestEU_002 {
             //Tests pattern before with a common input found in the pdf and pattern after with a correct input
             By pattern_before_input2 = By.id("pattern_before");
             By pattern_after_input2 = By.id("pattern_after");
-            driver.findElement(pattern_before_input2).sendKeys("Table");
-            driver.findElement(pattern_after_input2).sendKeys("Table 6");
+            driver.findElement(pattern_before_input2).sendKeys("Impacts");
+            driver.findElement(pattern_after_input2).sendKeys("Impacts on participating teachers");
             By regex_search_id2 = By.id("regex-search");
             WebElement regex_button2 = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id2));
             regex_button2.click();
@@ -207,8 +226,6 @@ public class TestEU_002 {
             else{ regex_result2 = false;}
             assertTrue("Failed, regex found a match for common input for both pattern before and pattern after",
                     regex_result2);
-            driver.findElement(pattern_before_input2).clear();
-            driver.findElement(pattern_after_input2).clear();
             driver.navigate().refresh();
             PageRefresh();
             Thread.sleep(500);
@@ -216,8 +233,8 @@ public class TestEU_002 {
             //Tests pattern before with a correct input and pattern after with a common input found in the pdf
             By pattern_before_input3 = By.id("pattern_before");
             By pattern_after_input3 = By.id("pattern_after");
-            driver.findElement(pattern_before_input3).sendKeys("Table 5");
-            driver.findElement(pattern_after_input3).sendKeys("Table");
+            driver.findElement(pattern_before_input3).sendKeys("Impacts on participating pupils");
+            driver.findElement(pattern_after_input3).sendKeys("Impacts");
             By regex_search_id3 = By.id("regex-search");
             WebElement regex_button3 = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id3));
             regex_button3.click();
@@ -228,11 +245,17 @@ public class TestEU_002 {
             else{ regex_result3 = false;}
             assertTrue("Failed, regex found a match for correct input for pattern before and common input for " +
                             "pattern after", regex_result3);
-            driver.findElement(pattern_before_input3).clear();
-            driver.findElement(pattern_after_input3).clear();
 
             driver.navigate().back();
             Thread.sleep(500);
+        }catch(Exception e){
+            System.out.print(e);
+        }
+    }
+    @Test
+    public void Test() throws InterruptedException{
+        try{
+
         }catch(Exception e){
             System.out.print(e);
         }
