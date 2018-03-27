@@ -14,8 +14,6 @@ import static org.junit.Assert.assertFalse;
 //Test of the eu_002 pdf file.
 // TODO: currently, I do not know how to directly call a pdf file so I can use it for the test cases without manually
 //  using the windows explorer to retrieve it. For now, the pdf will be preloaded onto Tabula for testing.
-// What will be tested for the eu_002 pdf file:
-// -
 
 public class TestEU_002 {
     private static WebDriver driver;
@@ -352,6 +350,7 @@ public class TestEU_002 {
             extract_button.click();
             PageRefresh();
 
+            Thread.sleep(1200);
             //Test to get only the text-based image to appear in the preview and export data page
             PatternInputStrings("satisfied", "Question");
             ClickRegexButton();
@@ -362,10 +361,12 @@ public class TestEU_002 {
             PreviewandExportDatapg();
             Thread.sleep(600);
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Total')]")).getText();
+            System.out.print(result_data);
             Boolean regex_data;
             if (result_data.equals("Total")) { regex_data = true; }
             else { regex_data = false; }
-            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'EU-25/EFTA:')]")).getText();
+            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'EU-25/EFTA: Middle')]")).getText();
+            System.out.print(result_data2);
             Boolean regex_data2;
             if (result_data2.equals("EU-25/EFTA: Middle (AT, BE, DE, LI, LU, NL)")) {
                 regex_data2 = true; }
@@ -374,6 +375,10 @@ public class TestEU_002 {
             if (regex_result && regex_data && regex_data2) { final_results = true; }
                 else { final_results = false; }
             assertTrue("Failed, Tabula could not find the text-based image", final_results);
+
+            driver.navigate().back();
+            driver.navigate().back();
+            Thread.sleep(500);
         }catch (Exception e){
             System.out.print(e);
         }
