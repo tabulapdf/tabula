@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/webapp/index.html" afterPath="$PROJECT_DIR$/webapp/index.html" />
+      <change beforePath="$PROJECT_DIR$/lib/tabula_java_wrapper.rb" afterPath="$PROJECT_DIR$/lib/tabula_java_wrapper.rb" />
       <change beforePath="$PROJECT_DIR$/webapp/static/js/pdf_view.js" afterPath="$PROJECT_DIR$/webapp/static/js/pdf_view.js" />
       <change beforePath="$PROJECT_DIR$/webapp/tabula_web.rb" afterPath="$PROJECT_DIR$/webapp/tabula_web.rb" />
     </list>
@@ -25,25 +25,35 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="pdf_view.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="pdf_view.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/webapp/static/js/pdf_view.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
-              <caret line="391" column="21" lean-forward="false" selection-start-line="391" selection-start-column="2" selection-end-line="391" selection-end-column="21" />
+            <state relative-caret-position="547">
+              <caret line="89" column="14" lean-forward="true" selection-start-line="89" selection-start-column="14" selection-end-line="89" selection-end-column="14" />
               <folding>
-                <marker date="1522130842932" expanded="true" signature="41825:42433" ph="..." />
-                <marker date="1522130842932" expanded="true" signature="42082:42190" ph="..." />
-                <marker date="1522130842932" expanded="true" signature="42224:42421" ph="..." />
+                <marker date="1522135327445" expanded="true" signature="41921:42529" ph="..." />
+                <marker date="1522135327445" expanded="true" signature="42178:42286" ph="..." />
+                <marker date="1522135327445" expanded="true" signature="42320:42517" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tabula_web.rb" pinned="false" current-in-tab="true">
+      <file leaf-file-name="tabula_web.rb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webapp/tabula_web.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="316">
-              <caret line="584" column="10" lean-forward="false" selection-start-line="584" selection-start-column="10" selection-end-line="584" selection-end-column="10" />
+            <state relative-caret-position="17">
+              <caret line="572" column="12" lean-forward="true" selection-start-line="572" selection-start-column="12" selection-end-line="572" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="tabula_java_wrapper.rb" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/tabula_java_wrapper.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -53,7 +63,7 @@
         <entry file="file://$PROJECT_DIR$/webapp/index.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="193">
-              <caret line="174" column="31" lean-forward="false" selection-start-line="174" selection-start-column="27" selection-end-line="174" selection-end-column="31" />
+              <caret line="151" column="186" lean-forward="false" selection-start-line="151" selection-start-column="177" selection-end-line="151" selection-end-column="186" />
               <folding />
             </state>
           </provider>
@@ -71,19 +81,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>convertToTabulaExtractor</find>
-      <find>convertTo:</find>
-      <find>convertTo</find>
-      <find>tabula-java</find>
-      <find>doQuery</find>
-      <find>setFormAction</find>
-      <find>query_meta_data</find>
-      <find>regex_query_meta_data</find>
-      <find>regex_query_meta_data.regex_searches</find>
-      <find>regex_searches</find>
-      <find>DO I GET HERE</find>
-      <find>DO I GET HERE???</find>
-      <find>JSON.parse</find>
       <find>JSON.dump</find>
       <find>Export</find>
       <find>Tabula.DataView</find>
@@ -97,10 +94,23 @@
       <find>regex_selection</find>
       <find>renderSelection</find>
       <find>user_drawn</find>
-      <find>extraction_method</find>
-      <find>extraction_method:</find>
       <find>setExtractionMethod</find>
       <find>coords</find>
+      <find>extraction</find>
+      <find>stream</find>
+      <find>extraction_method: 'guess'</find>
+      <find>perform_regex_search</find>
+      <find>on 'regex' do</find>
+      <find>Tabula.Document</find>
+      <find>data</find>
+      <find>extract_tables</find>
+      <find>open question</find>
+      <find>doQuery</find>
+      <find>extraction_method</find>
+      <find>doQuery:</find>
+      <find>extraction_method:</find>
+      <find>Preview &amp;</find>
+      <find>/data</find>
     </findStrings>
     <replaceStrings>
       <replace>update_regex_searches_on_resize</replace>
@@ -131,6 +141,7 @@
         <option value="$PROJECT_DIR$/webapp/index.html" />
         <option value="$PROJECT_DIR$/webapp/static/js/pdf_view.js" />
         <option value="$PROJECT_DIR$/webapp/tabula_web.rb" />
+        <option value="$PROJECT_DIR$/lib/tabula_java_wrapper.rb" />
       </list>
     </option>
   </component>
@@ -517,7 +528,7 @@
       <workItem from="1521484016623" duration="1077000" />
       <workItem from="1521675735276" duration="3467000" />
       <workItem from="1521684782557" duration="20214000" />
-      <workItem from="1522107442302" duration="8683000" />
+      <workItem from="1522107442302" duration="12746000" />
     </task>
     <task id="LOCAL-00001" summary="Initial additions front-end testing files. Currently this first test is failing, will be updated.">
       <created>1518393101424</created>
@@ -632,7 +643,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="54520000" />
+    <option name="totallyTimeSpent" value="58583000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -643,6 +654,7 @@
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.025679758" sideWeight="0.11805027" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35585585" sideWeight="0.70754" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -664,7 +676,6 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17867868" sideWeight="0.8819497" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Learn" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
     </layout>
@@ -725,7 +736,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/TestHelpPage.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPageTest.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHomeScreen.java" />
     <entry file="file://$PROJECT_DIR$/webapp/index.html">
@@ -851,31 +861,39 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lib/tabula_java_wrapper.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/webapp/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="193">
-          <caret line="174" column="31" lean-forward="false" selection-start-line="174" selection-start-column="27" selection-end-line="174" selection-end-column="31" />
+          <caret line="151" column="186" lean-forward="false" selection-start-line="151" selection-start-column="177" selection-end-line="151" selection-end-column="186" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/tabula_web.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="572" column="12" lean-forward="true" selection-start-line="572" selection-start-column="12" selection-end-line="572" selection-end-column="12" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/static/js/pdf_view.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="391" column="21" lean-forward="false" selection-start-line="391" selection-start-column="2" selection-end-line="391" selection-end-column="21" />
+        <state relative-caret-position="547">
+          <caret line="89" column="14" lean-forward="true" selection-start-line="89" selection-start-column="14" selection-end-line="89" selection-end-column="14" />
           <folding>
-            <marker date="1522130842932" expanded="true" signature="41825:42433" ph="..." />
-            <marker date="1522130842932" expanded="true" signature="42082:42190" ph="..." />
-            <marker date="1522130842932" expanded="true" signature="42224:42421" ph="..." />
+            <marker date="1522135327445" expanded="true" signature="41921:42529" ph="..." />
+            <marker date="1522135327445" expanded="true" signature="42178:42286" ph="..." />
+            <marker date="1522135327445" expanded="true" signature="42320:42517" ph="..." />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/tabula_web.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="316">
-          <caret line="584" column="10" lean-forward="false" selection-start-line="584" selection-start-column="10" selection-end-line="584" selection-end-column="10" />
-          <folding />
         </state>
       </provider>
     </entry>

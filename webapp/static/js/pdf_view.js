@@ -106,7 +106,7 @@ Tabula.Selection = Backbone.Model.extend({
     }
     var selection_coords = {
       page: this.get('page_number'),
-      extraction_method: this.get('extractionMethod') || 'guess',
+      extraction_method: this.get('extractionMethod') || 'stream',//'guess',
       selection_id: this.id,
       x1:  this.get('x1'),
       x2: this.get('x2'),
@@ -234,7 +234,7 @@ Tabula.AutodetectedSelections = Tabula.Selections.extend({
           width: tableCoords[2],
           height: tableCoords[3],
           page_number: pageIndex,
-          extraction_method: 'spreadsheet',
+          extraction_method: 'stream',//'spreadsheet',
           selection_id: null
         };
       }, this));
@@ -314,6 +314,7 @@ Tabula.Query = Backbone.Model.extend({
 
     this.query_data = {
       'coords': JSON.stringify(this.get('list_of_coords')),
+      'extraction_method': JSON.stringify(this.get('extraction_method')),
       'new_filename': null
     };
 
@@ -323,7 +324,7 @@ Tabula.Query = Backbone.Model.extend({
     console.log(_.map(this.get('list_of_coords'), function(l){ return [l.y1, l.x1, l.y2, l.x2].join(', '); }).join("\n") );
 
     // shallow copy the selections collection
-    // so if hte user somehow changes the selections between starting the query and it finishing,
+    // so if the user somehow changes the selections between starting the query and it finishing,
     // there isn't an error
     var stashed_selections = new Tabula.Selections(Tabula.pdf_view.pdf_document.selections.models.slice());
 
@@ -1201,7 +1202,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     // when you finish a query, then still pop up its data.
     // when you click or move an already-selected query, then you're "editing" it?
     // hmm.
-    Tabula.pdf_view.query = new Tabula.Query({list_of_coords: list_of_all_coords, extraction_method: 'guess'});
+    Tabula.pdf_view.query = new Tabula.Query({list_of_coords: list_of_all_coords, extraction_method: 'stream'});
     Tabula.pdf_view.createDataView();
     Tabula.pdf_view.query.doQuery();
   },
@@ -1368,7 +1369,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
                       width: subsection._area['width'],
                       height: subsection._area['height'],
                       page_number: subsection._page_num,
-                      extraction_method: 'spreadsheet',
+                      extraction_method: 'stream',//'spreadsheet',
                       selection_id: null,
                       selection_type: 'regex'
                     });
@@ -1479,7 +1480,7 @@ Tabula.RegexCollectionView = Backbone.View.extend({
             width: regex_rect._area['width'],
             height: regex_rect._area['height'],
             page_number: regex_rect._page_num,
-            extraction_method: 'spreadsheet',
+            extraction_method: 'stream',//'spreadsheet',
             selection_id: null,
             selection_type: 'regex'
           }));
