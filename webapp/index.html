@@ -99,11 +99,11 @@
           <!-- <input class="filename" name="new_filename" value="<%= new_filename || original_filename %>"></input> -->
           <span class="filename" style="font-size:14px;"><%= original_filename %></span>
           <label for="format">Export Format:</label>
-          <select name="format" <%=disableIfNoData%> class="form-control format">
-            <option value="csv">CSV</option>
-            <option value="tsv">TSV</option>
-            <option value="bbox">JSON (dimensions)</option>
-            <option value="json">JSON (data)</option>
+          <select id="forms" name="format" <%=disableIfNoData%> class="form-control format">
+            <option id="csv" value="csv">CSV</option>
+            <option id="tsv" value="tsv">TSV</option>
+            <option id="bbox" value="bbox">JSON (dimensions)</option>
+            <option id="json" value="json">JSON (data)</option>
             <!-- <option value="&#x1F4A9;SV">&#x1F4A9;SV</option> -->
             <option value="zip">zip of CSVs</option>
             <!-- <option value="xml">XML</option> -->
@@ -204,10 +204,10 @@
             <div id="table-container">
             <% if(data.length){ %>
               <% _(data).each(function(table){ %>
-              <table class="table table-bordered extracted-data">
+              <table id="extracted-table" class="table table-bordered extracted-data">
                 <tbody>
                 <% _(table).each(function(row){ %>
-                  <tr>
+                  <tr  class ="detection-row">
                     <% _(row).each(function(cell){ %>
                       <td><%= cell %></td>
                     <% }) %>
@@ -397,7 +397,7 @@
                 <!-- fix for the fact that IE11 is trash https://blog.yorkxin.org/posts/2014/02/06/ajax-with-formdata-is-broken-on-ie10-ie11/ -->
                 <input type="hidden" name="_dontcare">
 
-                <button type="submit" class="btn btn-default">Import</button>
+                <button id="import_file" type="submit" class="btn btn-default">Import</button>
               </form>
 
             </div>
@@ -473,7 +473,7 @@
         <td><%= size ? Math.floor(size / 1024) : '??' %> kB</td>
         <td><%= page_count || '??' %></td>
         <td><%= new Date(parseInt(time) * 1000).toUTCString().slice(5, -7) %></td>
-        <td><a href="javascript:"><span data-filename=<%= original_filename %> data-pdfid=<%= id %> class="glyphicon glyphicon-remove delete-pdf"></span></a></td>
+        <td><a href="javascript:"><span data-filename=<%= original_filename %> data-pdfid=<%= id %> class="glyphicon glyphicon-remove delete-pdf" id="delete_pdf"></span></a></td>
         <td><a href="pdf/<%= id %>"><button type="button" class="btn btn-sm btn-success">Extract Data</button></a></td>
       </script>
 
@@ -623,7 +623,7 @@
           <p>Note: Tabula only works on text-based PDFs, not scanned documents.</p>
           <p></p>
           <!--Regex Help section -->
-          <h1 id="regexhelp" name="regexhelp">Regex Help</h1>
+          <h1 id="_regexhelp" name="regexhelp">Regex Help</h1>
           <div style="padding-left: 25px;">
               <ul style="padding-left: 15px;">
                 <li>Providing a regex command can improve how Tabula is able to detect where the data lies within the pdf! </li>
