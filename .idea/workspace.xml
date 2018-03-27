@@ -2,10 +2,68 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_api_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_chrome_driver_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_edge_driver_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_firefox_driver_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_ie_driver_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_opera_driver_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_remote_driver_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_safari_driver_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_support_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_findbugs_jsr305_1_3_9.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_findbugs_jsr305_1_3_9.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_gson_gson_2_8_2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_gson_gson_2_8_2.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_errorprone_error_prone_annotations_2_1_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_errorprone_error_prone_annotations_2_1_3.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_23_6_jre.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_23_6_jre.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_j2objc_j2objc_annotations_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_j2objc_j2objc_annotations_1_1.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okhttp3_okhttp_3_9_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okhttp3_okhttp_3_9_1.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okio_okio_1_13_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okio_okio_1_13_0.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_10.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_10.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_2.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_12.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_12.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_7_9.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_7_9.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_exec_1_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_exec_1_3.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpclient_4_5_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpclient_4_5_3.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpcore_4_4_6.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpcore_4_4_6.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_0_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_0_0.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_checkerframework_checker_compat_qual_2_0_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_checkerframework_checker_compat_qual_2_0_0.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_codehaus_mojo_animal_sniffer_annotations_1_14.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_codehaus_mojo_animal_sniffer_annotations_1_14.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_1_0.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_1_0.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_opentest4j_opentest4j_1_0_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_opentest4j_opentest4j_1_0_0.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_api_3_9_0.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_chrome_driver_3_9_0.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_edge_driver_3_9_0.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_firefox_driver_3_9_0.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_ie_driver_3_9_0.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_java_3_9_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_java_3_11_0.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_opera_driver_3_9_0.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_remote_driver_3_9_0.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_safari_driver_3_9_0.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_support_3_9_0.xml" afterPath="" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/lib/tabula_java_wrapper.rb" afterPath="$PROJECT_DIR$/lib/tabula_java_wrapper.rb" />
-      <change beforePath="$PROJECT_DIR$/webapp/static/js/pdf_view.js" afterPath="$PROJECT_DIR$/webapp/static/js/pdf_view.js" />
-      <change beforePath="$PROJECT_DIR$/webapp/tabula_web.rb" afterPath="$PROJECT_DIR$/webapp/tabula_web.rb" />
+      <change beforePath="$PROJECT_DIR$/.travis.yml" afterPath="$PROJECT_DIR$/.travis.yml" />
+      <change beforePath="$PROJECT_DIR$/484_P7_1-GUI.iml" afterPath="$PROJECT_DIR$/484_P7_1-GUI.iml" />
+      <change beforePath="$PROJECT_DIR$/classes/test/484_P7_1-GUI/TestAboutPage.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/classes/test/484_P7_1-GUI/TestEU_002.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/classes/test/484_P7_1-GUI/TestExtractionPage.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/classes/test/484_P7_1-GUI/TestHelpPage.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/classes/test/484_P7_1-GUI/TestHomePage.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/classes/test/484_P7_1-GUI/TestMyTemplatesPage.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change beforePath="$PROJECT_DIR$/src/test/eu-002.pdf" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestAboutPage.java" afterPath="$PROJECT_DIR$/src/test/java/TestAboutPage.java" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestEU_002.java" afterPath="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestExtractionPage.java" afterPath="$PROJECT_DIR$/src/test/java/TestExtractionPage.java" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestHelpPage.java" afterPath="$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestHomePage.java" afterPath="$PROJECT_DIR$/src/test/java/TestHomePage.java" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java" afterPath="$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java" />
+      <change beforePath="$PROJECT_DIR$/webapp/index.html" afterPath="$PROJECT_DIR$/webapp/index.html" />
+      <change beforePath="$PROJECT_DIR$/webapp/static/js/library.js" afterPath="$PROJECT_DIR$/webapp/static/js/library.js" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -29,7 +87,7 @@
         <entry file="file://$PROJECT_DIR$/webapp/static/js/pdf_view.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="547">
-              <caret line="89" column="14" lean-forward="true" selection-start-line="89" selection-start-column="14" selection-end-line="89" selection-end-column="14" />
+              <caret line="89" column="14" lean-forward="false" selection-start-line="89" selection-start-column="14" selection-end-line="89" selection-end-column="14" />
               <folding>
                 <marker date="1522135327445" expanded="true" signature="41921:42529" ph="..." />
                 <marker date="1522135327445" expanded="true" signature="42178:42286" ph="..." />
@@ -43,7 +101,7 @@
         <entry file="file://$PROJECT_DIR$/webapp/tabula_web.rb">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="17">
-              <caret line="572" column="12" lean-forward="true" selection-start-line="572" selection-start-column="12" selection-end-line="572" selection-end-column="12" />
+              <caret line="572" column="12" lean-forward="false" selection-start-line="572" selection-start-column="12" selection-end-line="572" selection-end-column="12" />
               <folding />
             </state>
           </provider>
@@ -53,7 +111,7 @@
         <entry file="file://$PROJECT_DIR$/lib/tabula_java_wrapper.rb">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -63,7 +121,7 @@
         <entry file="file://$PROJECT_DIR$/webapp/index.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="193">
-              <caret line="151" column="186" lean-forward="false" selection-start-line="151" selection-start-column="177" selection-end-line="151" selection-end-column="186" />
+              <caret line="151" column="186" lean-forward="false" selection-start-line="151" selection-start-column="186" selection-end-line="151" selection-end-column="186" />
               <folding />
             </state>
           </provider>
@@ -81,41 +139,22 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>JSON.dump</find>
-      <find>Export</find>
-      <find>Tabula.DataView</find>
-      <find>export-control-panel-template</find>
-      <find>selections_rendered</find>
-      <find>data-action</find>
-      <find>pdf_id</find>
-      <find>tables</find>
-      <find>list_of_coords</find>
-      <find>extraction_method']</find>
-      <find>regex_selection</find>
-      <find>renderSelection</find>
-      <find>user_drawn</find>
-      <find>setExtractionMethod</find>
-      <find>coords</find>
-      <find>extraction</find>
-      <find>stream</find>
-      <find>extraction_method: 'guess'</find>
-      <find>perform_regex_search</find>
-      <find>on 'regex' do</find>
-      <find>Tabula.Document</find>
-      <find>data</find>
-      <find>extract_tables</find>
-      <find>open question</find>
-      <find>doQuery</find>
-      <find>extraction_method</find>
-      <find>doQuery:</find>
-      <find>extraction_method:</find>
-      <find>Preview &amp;</find>
-      <find>/data</find>
+      <find>howto</find>
+      <find>link</find>
+      <find>id</find>
+      <find>text_template</find>
+      <find>libreoffice</find>
+      <find>regex_command_title</find>
+      <find>Regex Help</find>
+      <find>regexhelp</find>
+      <find>regex_search_id</find>
+      <find>system</find>
+      <find>regex-search</find>
+      <find>pattern_before_input</find>
     </findStrings>
-    <replaceStrings>
-      <replace>update_regex_searches_on_resize</replace>
-      <replace>update_regex_search_properties_on_resize</replace>
-    </replaceStrings>
+    <dirStrings>
+      <dir>$PROJECT_DIR$/src/test/java</dir>
+    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -128,20 +167,21 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/TestHelpPage.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestHelpPageTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestHomeScreen.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestHomePage.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestSuite_Components.java" />
+        <option value="$PROJECT_DIR$/.travis.yml" />
+        <option value="$PROJECT_DIR$/src/test/java/WatchmanTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestAboutPage.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestHomePage.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java" />
-        <option value="$PROJECT_DIR$/webapp/static/js/FooterView.js" />
-        <option value="$PROJECT_DIR$/webapp/static/js/HeaderView.js" />
-        <option value="$PROJECT_DIR$/webapp/index.html" />
-        <option value="$PROJECT_DIR$/webapp/static/js/pdf_view.js" />
-        <option value="$PROJECT_DIR$/webapp/tabula_web.rb" />
-        <option value="$PROJECT_DIR$/lib/tabula_java_wrapper.rb" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/test/java/TestExtractionPage.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" />
       </list>
     </option>
   </component>
@@ -164,10 +204,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="580" />
-    <option name="y" value="7" />
-    <option name="width" value="784" />
-    <option name="height" value="701" />
+    <option name="x" value="407" />
+    <option name="y" value="152" />
+    <option name="width" value="873" />
+    <option name="height" value="723" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -222,16 +262,15 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="Downloaded.Files.Path.Enabled" value="false" />
     <property name="Repository.Attach.JavaDocs" value="false" />
     <property name="Repository.Attach.Sources" value="false" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
     <property name="ChangesBrowser.SHOW_FLATTEN" value="false" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
@@ -253,44 +292,16 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Unknown.TestAboutPage.startWebDriver667359706">
-    <configuration name="TestHomePage (4)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="MAIN_CLASS_NAME" value="TestHomePage" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="484_P7_1-GUI" />
-      <envs />
-    </configuration>
-    <configuration name="TestHomePage (5)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="MAIN_CLASS_NAME" value="TestHomePage" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="484_P7_1-GUI" />
-      <envs />
-    </configuration>
-    <configuration name="TestAboutPage" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager">
+    <configuration name="TestAboutPage.startWebDriver" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="484_P7_1-GUI" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
       <option name="MAIN_CLASS_NAME" value="TestAboutPage" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="METHOD_NAME" value="startWebDriver" />
+      <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
@@ -302,14 +313,94 @@
       <envs />
       <patterns />
     </configuration>
-    <configuration name="TestAboutPage.startWebDriver" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+    <configuration name="TestEU_002.TestCommonWordInputforPatternBeforeandPatternAfter" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="484_P7_1-GUI" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestAboutPage" />
-      <option name="METHOD_NAME" value="startWebDriver" />
+      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
+      <option name="METHOD_NAME" value="TestCommonWordInputforPatternBeforeandPatternAfter" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="TestEU_002.TestInclusiveInputsforPatternBefore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="484_P7_1-GUI" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
+      <option name="METHOD_NAME" value="TestInclusiveInputsforPatternBefore" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="484_P7_1-GUI" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
+      <option name="METHOD_NAME" value="TestInclusiveInputsforPatternBeforeandPatternAfter" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="TestEU_002.TestTextBasedImage" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="484_P7_1-GUI" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
+      <option name="METHOD_NAME" value="TestTextBasedImage" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="TestEU_002.TestWrongInputsforBeforePatternandAfterPattern" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="484_P7_1-GUI" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
+      <option name="METHOD_NAME" value="TestWrongInputsforBeforePatternandAfterPattern" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -349,46 +440,6 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
       <option name="MAIN_CLASS_NAME" value="TestHelpPage" />
-      <option name="METHOD_NAME" value="startWebDriver" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-    </configuration>
-    <configuration name="TestHomePage.startWebDriver" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="484_P7_1-GUI" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestHomePage" />
-      <option name="METHOD_NAME" value="startWebDriver" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-    </configuration>
-    <configuration name="TestMyTemplatesPage.startWebDriver" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="484_P7_1-GUI" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestMyTemplatesPage" />
       <option name="METHOD_NAME" value="startWebDriver" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
@@ -518,17 +569,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
-      <workItem from="1519774535335" duration="12000" />
-      <workItem from="1519869797717" duration="3065000" />
-      <workItem from="1519915078505" duration="723000" />
-      <workItem from="1520037846359" duration="3082000" />
-      <workItem from="1520454997680" duration="6097000" />
-      <workItem from="1520480678088" duration="7913000" />
-      <workItem from="1520907357467" duration="187000" />
-      <workItem from="1521484016623" duration="1077000" />
-      <workItem from="1521675735276" duration="3467000" />
-      <workItem from="1521684782557" duration="20214000" />
-      <workItem from="1522107442302" duration="12746000" />
     </task>
     <task id="LOCAL-00001" summary="Initial additions front-end testing files. Currently this first test is failing, will be updated.">
       <created>1518393101424</created>
@@ -607,43 +647,176 @@
       <option name="project" value="LOCAL" />
       <updated>1519716126244</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Fixed errors">
+      <created>1519922709348</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1519922709348</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Wrapped up the TestExtractionPage, what isn't being tested is mentioned why in the comments. Will start to work on the last component test case before moving onto user case scenario testing">
+      <created>1520384892450</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1520384892450</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Added on majority of the components tested in Test Preview and Export Data page, current issue with a stale element exception being thrown but should be able to fix it.">
+      <created>1520493466140</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1520493466140</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Completed the Test Preview and Export Data page, and that was the last of the component testing! What isn't tested, which is just one button is mentioned why on the test case- shouldn't affect the overall functionality and am okay if that button is not tested for; other comments and small things to fix are mentioned in the comments. Will begin the user scenario testing with the first round of pdf files.">
+      <created>1520665007036</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1520665007036</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Added on an environment variable to see if I can see the build results on travis CI">
+      <created>1520791273567</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1520791273567</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Update to travis for front end repo">
+      <created>1520958235168</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1520958235168</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Fixed the travis file to mimic the one in the java repo to see if that will fix why the build is failing">
+      <created>1520959372851</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1520959372851</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Added on pathname of the geckodriver in one of the test case files">
+      <created>1520968351169</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1520968351169</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Added on more commands before the script for the travis file, testing to see if it will work">
+      <created>1521051824260</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1521051824260</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Changed for all test cases so far to use ChromeDriver as opposed to FirefoxDriver, added on a better solution for calling the pdf file in order to utilize it in the test cases, as well as being able to delete the file once done.">
+      <created>1521592347676</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1521592347676</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Added on some beginning test cases for eu-002.pdf, testing for the regex search disabled button">
+      <created>1521868628829</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1521868628829</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Added on a new method to test for incorrect inputs for pattern after and pattern before">
+      <created>1521926671143</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1521926671143</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Added on another test case that inputs 2 incorrect inputs to the pattern before and pattern after and checks that there are zero results">
+      <created>1521930611967</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1521930611967</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Added on more test scenarios of inputting a common word and a correct input to pattern before and pattern after">
+      <created>1522017195592</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1522017195592</updated>
+    </task>
+    <task id="LOCAL-00026" summary="mMade another method to eliminate some redundant code and fixed up some previous test cases">
+      <created>1522021675572</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1522021675572</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Noticed some issues with the refresh method I had for the test classes, have changed it for it to only refresh when the menu bar disappears. Doesn't necessary hurt if the pdf bar or pdf view is not present since it doesn't affect the test cases. Will be updating this method to previous test cases that need it. Also implemented a more correct way to verify tabula is gathering the correct data based on the output">
+      <created>1522044035277</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1522044035277</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Fixed up and cleaned up some prior test cases that utilize the refreshpage method, as well as added on the extra data verification for regex inputs. Will move on to the next set of user scenarios">
+      <created>1522046480325</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1522046480325</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Got rid of more redundant code, updated the pom file, and added on 3 more test scenarios that use inclusive">
+      <created>1522127587309</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1522127587309</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Added on test case that tests a text-based image and verifies it's data">
+      <created>1522129745836</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1522129745836</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestHelpPage - 2018.02.23 at 15h 54m 18s.xml">
-      <configuration name="TestHelpPage" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestInclusiveInputsforPatternBeforeandPatternAfter - 2018.03.27 at 00h 38m 39s.xml">
+      <configuration name="TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestHelpPage - 2018.02.23 at 15h 55m 06s.xml">
-      <configuration name="TestHelpPage" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestInclusiveInputsforPatternBeforeandPatternAfter - 2018.03.27 at 00h 39m 30s.xml">
+      <configuration name="TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestHelpPage - 2018.02.23 at 15h 56m 13s.xml">
-      <configuration name="TestHelpPage" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestInclusiveInputsforPatternBeforeandPatternAfter - 2018.03.27 at 00h 46m 26s.xml">
+      <configuration name="TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestHelpPage - 2018.02.23 at 16h 35m 33s.xml">
-      <configuration name="TestHelpPage" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestInclusiveInputsforPatternBeforeandPatternAfter - 2018.03.27 at 00h 57m 34s.xml">
+      <configuration name="TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestMyTemplatesPage_startWebDriver - 2018.02.23 at 17h 14m 40s.xml">
-      <configuration name="TestMyTemplatesPage.startWebDriver" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestTextBasedImage - 2018.03.27 at 02h 02m 06s.xml">
+      <configuration name="TestEU_002.TestTextBasedImage" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestMyTemplatesPage_startWebDriver - 2018.02.23 at 17h 16m 43s.xml">
-      <configuration name="TestMyTemplatesPage.startWebDriver" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestTextBasedImage - 2018.03.27 at 02h 02m 41s.xml">
+      <configuration name="TestEU_002.TestTextBasedImage" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestMyTemplatesPage_startWebDriver - 2018.02.23 at 17h 22m 37s.xml">
-      <configuration name="TestMyTemplatesPage.startWebDriver" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestTextBasedImage - 2018.03.27 at 02h 03m 29s.xml">
+      <configuration name="TestEU_002.TestTextBasedImage" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestMyTemplatesPage_startWebDriver - 2018.02.23 at 17h 48m 15s.xml">
-      <configuration name="TestMyTemplatesPage.startWebDriver" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestTextBasedImage - 2018.03.27 at 02h 05m 25s.xml">
+      <configuration name="TestEU_002.TestTextBasedImage" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestMyTemplatesPage_startWebDriver - 2018.02.23 at 17h 50m 03s.xml">
-      <configuration name="TestMyTemplatesPage.startWebDriver" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestTextBasedImage - 2018.03.27 at 02h 07m 07s.xml">
+      <configuration name="TestEU_002.TestTextBasedImage" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestMyTemplatesPage_startWebDriver - 2018.02.23 at 17h 50m 30s.xml">
-      <configuration name="TestMyTemplatesPage.startWebDriver" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestTextBasedImage - 2018.03.27 at 02h 08m 05s.xml">
+      <configuration name="TestEU_002.TestTextBasedImage" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="58583000" />
+    <option name="totallyTimeSpent" value="30000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -663,21 +836,29 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.058558557" sideWeight="0.17821783" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3978979" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.045045044" sideWeight="0.48819497" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17867868" sideWeight="0.8819497" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.033033032" sideWeight="0.8217822" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.09009009" sideWeight="0.83092153" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.002284844" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Learn" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -709,51 +890,44 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
     </layout-to-restore>
   </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
-  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Initial additions front-end testing files. Currently this first test is failing, will be updated." />
-    <MESSAGE value="Added on to component testing for the home page. Need to finish testing last bit of components and then need to go back to the TestHelpPage and test hover menu." />
-    <MESSAGE value="Update of workspace file" />
-    <MESSAGE value="Added on searching for Tabula's source code page, the test is currently failing after adding on that portion. WIll look into it to see why it is failing." />
-    <MESSAGE value="Completed Test case for homepage, minor things that are not checked are mentioned why in the test case." />
-    <MESSAGE value="Merge branch 'Header_Addition' of https://github.com/redmyers/484_P7_1-GUI into Header_Addition&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml" />
     <MESSAGE value="wrapped up the About page test case, had an issue with testing for multiple tabs but after searching it and the solutions found not working for tabs on firefox-I don't directly test for the tabs on the test case. So the test case only incorporates checking for links and opening tabs for links that are redirected." />
     <MESSAGE value="Added on TestHelpPage test case which tests the different components of the help page. Currently, have to debug why some of the pages are causing the test to fail and have to go in comment on what is being tested and why Thread.sleep() is used although it isn't suggested." />
     <MESSAGE value="Finished up the TestHelpPage and some minor HTML changes, additionally did not include testing for the libreOffice Calc link in the TestHelpPage but it is explained why. Since I couldn't find a solution to this problem and it is already tested for in the TestHomePage, then it was not tested for this test again." />
     <MESSAGE value="Have an issue pulling Ross' code" />
     <MESSAGE value="Reverting to last commit since it is giving a small issue with my workspace file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Reverting to last commit since it is giving a small issue with my workspace file" />
+    <MESSAGE value="Fixed errors" />
+    <MESSAGE value="Wrapped up the TestExtractionPage, what isn't being tested is mentioned why in the comments. Will start to work on the last component test case before moving onto user case scenario testing" />
+    <MESSAGE value="Added on majority of the components tested in Test Preview and Export Data page, current issue with a stale element exception being thrown but should be able to fix it." />
+    <MESSAGE value="Completed the Test Preview and Export Data page, and that was the last of the component testing! What isn't tested, which is just one button is mentioned why on the test case- shouldn't affect the overall functionality and am okay if that button is not tested for; other comments and small things to fix are mentioned in the comments. Will begin the user scenario testing with the first round of pdf files." />
+    <MESSAGE value="Added on an environment variable to see if I can see the build results on travis CI" />
+    <MESSAGE value="Update to travis for front end repo" />
+    <MESSAGE value="Fixed the travis file to mimic the one in the java repo to see if that will fix why the build is failing" />
+    <MESSAGE value="Added on pathname of the geckodriver in one of the test case files" />
+    <MESSAGE value="Added on more commands before the script for the travis file, testing to see if it will work" />
+    <MESSAGE value="Changed for all test cases so far to use ChromeDriver as opposed to FirefoxDriver, added on a better solution for calling the pdf file in order to utilize it in the test cases, as well as being able to delete the file once done." />
+    <MESSAGE value="Added on some beginning test cases for eu-002.pdf, testing for the regex search disabled button" />
+    <MESSAGE value="Added on a new method to test for incorrect inputs for pattern after and pattern before" />
+    <MESSAGE value="Added on another test case that inputs 2 incorrect inputs to the pattern before and pattern after and checks that there are zero results" />
+    <MESSAGE value="Added on more test scenarios of inputting a common word and a correct input to pattern before and pattern after" />
+    <MESSAGE value="mMade another method to eliminate some redundant code and fixed up some previous test cases" />
+    <MESSAGE value="Noticed some issues with the refresh method I had for the test classes, have changed it for it to only refresh when the menu bar disappears. Doesn't necessary hurt if the pdf bar or pdf view is not present since it doesn't affect the test cases. Will be updating this method to previous test cases that need it. Also implemented a more correct way to vertify tabula is gathering the correct data based on the output" />
+    <MESSAGE value="Noticed some issues with the refresh method I had for the test classes, have changed it for it to only refresh when the menu bar disappears. Doesn't necessary hurt if the pdf bar or pdf view is not present since it doesn't affect the test cases. Will be updating this method to previous test cases that need it. Also implemented a more correct way to verify tabula is gathering the correct data based on the output" />
+    <MESSAGE value="Fixed up and cleaned up some prior test cases that utilize the refreshpage method, as well as added on the extra data verification for regex inputs. Will move on to the next set of user scenarios" />
+    <MESSAGE value="Got rid of more redundant code, updated the pom file, and added on 3 more test scenarios that use inclusive" />
+    <MESSAGE value="Added on test case that tests a text-based image and verifies it's data" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added on test case that tests a text-based image and verifies it's data" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="6" />
+      <option name="time" value="18" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPageTest.java" />
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestHomeScreen.java" />
-    <entry file="file://$PROJECT_DIR$/webapp/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="145" column="113" lean-forward="false" selection-start-line="145" selection-start-column="113" selection-end-line="145" selection-end-column="113" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java" />
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java" />
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="6" column="6" lean-forward="false" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="108">
@@ -807,93 +981,116 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/target/test-classes/TestHelpPage.class" />
-    <entry file="file://$PROJECT_DIR$/484_P7_1-GUI.iml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-732">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/TestHelpPage.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPageTest.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHomeScreen.java" />
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java" />
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java">
+    <entry file="file://$PROJECT_DIR$/webapp/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="6" column="6" lean-forward="false" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
+        <state relative-caret-position="193">
+          <caret line="151" column="186" lean-forward="false" selection-start-line="151" selection-start-column="186" selection-end-line="151" selection-end-column="186" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java" />
-    <entry file="file://$PROJECT_DIR$/pom.xml">
+    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="17" column="14" lean-forward="true" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExtractionLog_03-10-2018.txt" />
+    <entry file="file://$PROJECT_DIR$/classes/test/484_P7_1-GUI/TestPreviewandExportData.class" />
+    <entry file="file://$PROJECT_DIR$/.ruby-version">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/484_P7_1-GUI.iml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Rakefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="8" column="21" lean-forward="true" selection-start-line="8" selection-start-column="21" selection-end-line="8" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="4" lean-forward="false" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+        <state relative-caret-position="144">
+          <caret line="8" column="7" lean-forward="false" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="7" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="29" lean-forward="false" selection-start-line="13" selection-start-column="29" selection-end-line="13" selection-end-column="29" />
+        <state relative-caret-position="288">
+          <caret line="27" column="13" lean-forward="true" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/static/js/FooterView.js">
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1105">
-          <caret line="65" column="20" lean-forward="false" selection-start-line="65" selection-start-column="20" selection-end-line="65" selection-end-column="20" />
+        <state relative-caret-position="288">
+          <caret line="28" column="45" lean-forward="true" selection-start-line="28" selection-start-column="45" selection-end-line="28" selection-end-column="45" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/static/js/HeaderView.js">
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1428">
-          <caret line="84" column="8" lean-forward="false" selection-start-line="84" selection-start-column="8" selection-end-line="84" selection-end-column="8" />
+        <state relative-caret-position="162">
+          <caret line="20" column="27" lean-forward="true" selection-start-line="20" selection-start-column="27" selection-end-line="20" selection-end-column="27" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/tabula_java_wrapper.rb">
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="414">
+          <caret line="32" column="0" lean-forward="false" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/index.html">
+    <entry file="file://$PROJECT_DIR$/src/test/java/WatchmanTest.java" />
+    <entry file="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-remote-driver/3.9.0/selenium-remote-driver-3.9.0.jar!/org/openqa/selenium/remote/RemoteWebDriver.class" />
+    <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="151" column="186" lean-forward="false" selection-start-line="151" selection-start-column="177" selection-end-line="151" selection-end-column="186" />
-          <folding />
+        <state relative-caret-position="270">
+          <caret line="15" column="31" lean-forward="false" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="31" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/tabula_web.rb">
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestExtractionPage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="572" column="12" lean-forward="true" selection-start-line="572" selection-start-column="12" selection-end-line="572" selection-end-column="12" />
-          <folding />
+        <state relative-caret-position="63">
+          <caret line="14" column="36" lean-forward="true" selection-start-line="14" selection-start-column="36" selection-end-line="14" selection-end-column="36" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/static/js/pdf_view.js">
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="547">
-          <caret line="89" column="14" lean-forward="true" selection-start-line="89" selection-start-column="14" selection-end-line="89" selection-end-column="14" />
-          <folding>
-            <marker date="1522135327445" expanded="true" signature="41921:42529" ph="..." />
-            <marker date="1522135327445" expanded="true" signature="42178:42286" ph="..." />
-            <marker date="1522135327445" expanded="true" signature="42320:42517" ph="..." />
-          </folding>
+        <state relative-caret-position="252">
+          <caret line="28" column="26" lean-forward="true" selection-start-line="28" selection-start-column="26" selection-end-line="28" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3808">
+          <caret line="352" column="27" lean-forward="false" selection-start-line="352" selection-start-column="27" selection-end-line="352" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="339">
+          <caret line="68" column="0" lean-forward="false" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -954,7 +1151,6 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
-                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>
