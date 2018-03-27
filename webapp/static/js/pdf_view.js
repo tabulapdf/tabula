@@ -592,10 +592,12 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
       });
     });
 
+    var say_what = this.model.attributes;
+
     var user_drawn_selections = this.model.attributes.list_of_coords.filter(function(selection){
       return regex_selection_ids.every(function(regex_id){
         return regex_id != selection.selection_id;
-      })
+      });
     });
 
     console.log("NEW_ARGS");
@@ -611,7 +613,8 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
       _.template($('#templates #export-control-panel-template').html().replace(/nestedscript/g, 'script'))(
         _(this.pdf_view.pdf_document.attributes).extend({
           pdf_id: PDF_ID,
-          list_of_coords: JSON.stringify(user_drawn_selections),
+          list_of_coords: JSON.stringify(this.model.attributes.list_of_coords),
+          user_drawn_selections: JSON.stringify(user_drawn_selections), //selections not user_drawn were regex...
           copyDisabled: Tabula.pdf_view.flash_borked ? 'disabled="disabled" data-toggle="tooltip" title="'+Tabula.pdf_view.flash_borken_message+'"' : '',
           disableIfNoData: (_.isNull(this.model.get('data')) || typeof(this.model.get('data')) === "undefined") ? 'disabled="disabled"' : ''
         })
