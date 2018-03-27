@@ -19,6 +19,8 @@ java_import 'java.io.ByteArrayOutputStream'
 java_import 'java.util.zip.ZipEntry'
 java_import 'java.util.zip.ZipOutputStream'
 java_import org.apache.pdfbox.pdmodel.PDDocument
+java_import org.apache.pdfbox.cos.COSDictionary
+java_import org.apache.pdfbox.cos.COSName
 
 require_relative './tabula_settings.rb'
 
@@ -36,36 +38,35 @@ require_relative '../lib/tabula_job_executor/jobs/detect_tables.rb'
 
 class RegexQueryMetaData
 
-  attr_accessor :regex_searches,:filter_area
+  attr_accessor :regex_searches,:filter_area,:doc_ID
   attr_reader   :file
 
   include Singleton
 
   def initialize
-    @doc_name=String.new()
+    @doc_ID=String.new()
     @regex_searches=[]
     @file = nil
     @filter_area = nil
   end
 
-  def is_new_doc(docName)
-    puts !(@doc_name == docName)
-    return !(@doc_name == docName)
+  def is_new_doc(docID)
+    puts !(@doc_ID == docID)
+    return !(@doc_ID == docID)
   end
 
-  def reset_for_new_doc(docName)
+  def reset_for_new_doc(docID)
 
-    @doc_name=docName
+    @doc_ID=docID
     @regex_searches=[]
 
     unless @file.nil?
       @file.close() #TODO: figure out if a warning should be thrown here....
     end
 
-    output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, @doc_name)
+    output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, @doc_ID)
     @file = PDDocument.load(Java::JavaIO::File.new(File.join(output_dir,'document.pdf')))
 
-    page_count = @file.getNumberOfPages()
 
 
   end
@@ -523,7 +524,7 @@ Cuba.define do
         when 'script'
 
           puts 'USER DRAWN SELECTIONS...'
-          puts req.params['user_drawn_sels']
+          puts req.params['user_drawn_selections']
           puts 'COORDS'
           puts req.params['coords']
 
@@ -554,13 +555,13 @@ Cuba.define do
 
         drawn_boxes_cli_string=""
 
-        user_drawn_sels = JSON.load(req.params['user_drawn_sels'])
+        user_drawn_selections = JSON.load(req.params['user_drawn_selections'])
 
-        if user_drawn_sels.nil?
-          user_drawn_sels = []
+        if user_drawn_selections.nil?
+          user_drawn_selections = []
         end
 
-        user_drawn_sels.sort_by! do |sel_set|
+        user_drawn_selections.sort_by! do |sel_set|
             [
             sel_set['page'],
             [sel_set['y1'], sel_set['y2']].min.to_i / 10,
@@ -568,7 +569,7 @@ Cuba.define do
             ]
           end
 
-        user_drawn_sels.each do |s|
+        user_drawn_selections.each do |s|
           drawn_boxes_cli_string = drawn_boxes_cli_string +
             "-a #{s['y1'].round(3)},#{s['x1'].round(3)},#{s['y2'].round(3)},#{s['x2'].round(3)} -p #{s['page']}"
         end
@@ -590,13 +591,17 @@ Cuba.define do
          break
        end
 
-        # Write shell script of tabula-extractor commands.  $1 takes
+
+       margins = JSON.load(req.params['margin_scale'])
+
+       margin_cli_string ="-m '#{margins}'"
+          # Write shell script of tabula-extractor commands.  $1 takes
         # the name of a file from the command line and passes it
         # to tabula-extractor so the script can be reused on similar pdfs.
         res['Content-Type'] = 'application/x-sh'
         res['Content-Disposition'] = "attachment; filename=\"#{filename}.sh\""
 
-        res.write "java -jar tabula-java.jar #{extraction_cli_string} #{regex_cli_string} #{drawn_boxes_cli_string} \"$1\" \n"
+        res.write "java -jar tabula-java.jar #{extraction_cli_string} #{regex_cli_string} #{drawn_boxes_cli_string} #{margin_cli_string} \"$1\" \n"
 
       when 'bbox'
         # Write json representation of bounding boxes and pages for
