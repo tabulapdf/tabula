@@ -3,7 +3,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -18,14 +18,16 @@ import static org.junit.Assert.assertFalse;
 // LibreOffice Calc's link is tested however in TestHomePage test case, so this test case does not duplicate the same
 // steps taken to test LibreOffice Calc. Additionally, the media menu is not tested for since it is already tested in
 // TestHomePage.
+//need to fix
 // @author SM modified: 2/23/18
 
 public class TestHelpPage {
     WebDriver driver;
     @Test
     public void startWebDriver() throws InterruptedException{
-        driver = new FirefoxDriver();
+        driver = new ChromeDriver();
         driver.get("http://127.0.0.1:9292/");
+        driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 100);
 
         try{
@@ -54,7 +56,7 @@ public class TestHelpPage {
             WebElement regexhelp_link = wait.until(ExpectedConditions.visibilityOfElementLocated(regexhelptabula));
             regexhelp_link.click();
             String regexhelp_title = "Regex Help";
-            By regexhelp_id = By.id("regexhelp");
+            By regexhelp_id = By.id("_regexhelp");
             WebElement regexhelp = wait.until(ExpectedConditions.visibilityOfElementLocated(regexhelp_id));
             assertTrue("Failed, couldn't find Regex Help section", regexhelp_title.equals(regexhelp.getText()));
 
