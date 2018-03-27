@@ -21,6 +21,14 @@ import static org.junit.Assert.assertFalse;
 // For this test case, eu_002.pdf is utilized.
 // @author SM modified: 3/10/18
 public class TestPreviewandExportData {
+    public void PageRefresh() throws InterruptedException {
+        //menu options did not fully load
+        Thread.sleep(500);
+        //refresh the page
+        while(driver.findElements( By.id("restore-detected-tables")).size() == 0) driver.navigate().refresh();
+        Thread.sleep(500);
+
+    }
     WebDriver driver;
     @Test
     public void startWebDriver() throws InterruptedException {
@@ -42,11 +50,7 @@ public class TestPreviewandExportData {
         extract_button.click();
        // Thread.sleep(1000);
 
-        //menu options did not fully load
-        if(driver.findElements( By.id("restore-detected-tables") ).size() == 0){
-            //refresh the page
-            driver.navigate().refresh();
-        }
+        PageRefresh();
         //clicks on the Autodetect Tables and waits for Tabula to detect something (this will not be extensively tested
         // for the sake that this is just a component test) then it wait and click the Preview & Export Data button
         By autodetect_id = By.id("restore-detected-tables");
@@ -92,11 +96,7 @@ public class TestPreviewandExportData {
         assertFalse("Failed, couldn't find GitHub's sign-in page to view the report an issue page", driver.getCurrentUrl().equals(contact_url));
         driver.navigate().back();
         //menu options did not fully load
-      //  Thread.sleep(1000);
-        if(driver.findElements( By.id("clear-all-selections") ).size() == 0){
-            //refresh the page
-            driver.navigate().refresh();
-        }
+        PageRefresh();
         By autodetect_id2 = By.id("restore-detected-tables");
         WebElement autodetect_button2 = wait.until(ExpectedConditions.elementToBeClickable(autodetect_id2));
         autodetect_button2.click();
