@@ -18,22 +18,35 @@ import static org.junit.Assert.assertFalse;
 // -
 
 public class TestEU_002 {
-    public static WebDriver driver;
-    public static String Tabula_url = "http://127.0.0.1:9292/";
-    public WebDriverWait wait = new WebDriverWait(driver, 100);
+    private static WebDriver driver;
+    private static String Tabula_url = "http://127.0.0.1:9292/";
+    private WebDriverWait wait = new WebDriverWait(driver, 100);
 
-    public void PageRefresh() throws InterruptedException {
+    private void PageRefresh() throws InterruptedException {
         //menu options did not fully load
-        Thread.sleep(500);
+        Thread.sleep(1000);
         //refresh the page
-        while(driver.findElements( By.id("restore-detected-tables")).size() == 0) driver.navigate().refresh();
-        Thread.sleep(500);
-
+        while(driver.findElements( By.id("restore-detected-tables")).size() == 0) {
+            driver.navigate().refresh();
+            Thread.sleep(700);
+        }
     }
-    public void PreviewandExportDatapg(){
+    private void PreviewandExportDatapg(){
         By previewandexport_id = By.id("all-data");
         WebElement previewandexport_button = wait.until(ExpectedConditions.visibilityOfElementLocated(previewandexport_id));
         previewandexport_button.click();
+    }
+    private void ClickRegexButton() throws InterruptedException {
+        By regex_search_id = By.id("regex-search");
+        WebElement regex_button = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id));
+        regex_button.click();
+        Thread.sleep(600);
+    }
+    private void PatternInputStrings(String pattern_before, String pattern_after){
+        By pattern_before_input = By.id("pattern_before");
+        By pattern_after_input = By.id("pattern_after");
+        driver.findElement(pattern_before_input).sendKeys(pattern_before);
+        driver.findElement(pattern_after_input).sendKeys(pattern_after);
     }
     @BeforeClass
     public static void SetUp() throws InterruptedException {
@@ -92,62 +105,38 @@ public class TestEU_002 {
             PageRefresh();
 
             //Test that inputs an incorrect input for pattern before and incorrect input for pattern after
-            By pattern_before_input = By.id("pattern_before");
-            By pattern_after_input = By.id("pattern_after");
-            driver.findElement(pattern_before_input).sendKeys("ksgjlk");
-            driver.findElement(pattern_after_input).sendKeys("fgfsgs");
-            By regex_search_id = By.id("regex-search");
-            WebElement regex_button = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id));
-            regex_button.click();
-            Thread.sleep(500);
+            PatternInputStrings("ksgjlk", "fgfsgs");
+            ClickRegexButton();
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
             Boolean regex_result;
             if(result.equals("0")){ regex_result = true;} //if true, there are zero matches
             else{ regex_result = false;}
-            assertTrue("Failed, regex found a match for incorrect inputs for pattern before and pattern after",
+            assertTrue("Failed, Tabula found a match for incorrect inputs for pattern before and pattern after",
                     regex_result);
-            driver.findElement(pattern_before_input).clear();
-            driver.findElement(pattern_after_input).clear();
             driver.navigate().refresh();
             PageRefresh();
 
             //Test inputs correct input for pattern after and incorrect input for pattern before
-            By pattern_before_input2 = By.id("pattern_before");
-            By pattern_after_input2 = By.id("pattern_after");
-            driver.findElement(pattern_before_input2).sendKeys("jflaksl");
-            driver.findElement(pattern_after_input2).sendKeys("Table 6");
-            By regex_search_id2 = By.id("regex-search");
-            WebElement regex_button2 = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id2));
-            regex_button2.click();
-            Thread.sleep(500);
+            PatternInputStrings("jflaksl","Table 6" );
+            ClickRegexButton();
             String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
             Boolean regex_result2;
             if(result2.equals("0")){ regex_result2 = true;} //if true, there are zero matches
             else{ regex_result2 = false;}
-            assertTrue("Failed, regex found a match for a correct input for pattern after and incorrect input for " +
+            assertTrue("Failed, Tabula found a match for a correct input for pattern after and incorrect input for " +
                     "pattern before", regex_result2);
-            driver.findElement(pattern_before_input2).clear();
-            driver.findElement(pattern_after_input2).clear();
             driver.navigate().refresh();
             PageRefresh();
 
             //Test inputs incorrect input for pattern after and correct input for pattern before
-            By pattern_before_input3 = By.id("pattern_before");
-            By pattern_after_input3 = By.id("pattern_after");
-            driver.findElement(pattern_before_input3).sendKeys("Table 5");
-            driver.findElement(pattern_after_input3).sendKeys("glslkgf");
-            By regex_search_id3 = By.id("regex-search");
-            WebElement regex_button3 = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id3));
-            regex_button3.click();
-            Thread.sleep(500);
+            PatternInputStrings("Table 5","glslkgf");
+            ClickRegexButton();
             String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
             Boolean regex_result3;
             if(result3.equals("0")){ regex_result3 = true;} //if true, there are zero matches
             else{ regex_result3 = false;}
-            assertTrue("Failed, regex found a match for incorrect input for pattern after and correct input for" +
+            assertTrue("Failed, Tabula found a match for incorrect input for pattern after and correct input for" +
                     " pattern before", regex_result3);
-            driver.findElement(pattern_before_input3).clear();
-            driver.findElement(pattern_after_input3).clear();
 
             driver.navigate().back();
             Thread.sleep(500);
@@ -165,13 +154,8 @@ public class TestEU_002 {
             PageRefresh();
 
             //Tests pattern before and pattern after with a common input found in the pdf
-            By pattern_before_input = By.id("pattern_before");
-            By pattern_after_input = By.id("pattern_after");
-            driver.findElement(pattern_before_input).sendKeys("Impacts");
-            driver.findElement(pattern_after_input).sendKeys("Impacts");
-            By regex_search_id = By.id("regex-search");
-            WebElement regex_button = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id));
-            regex_button.click();
+            PatternInputStrings("Impacts", "Impacts");
+            ClickRegexButton();
             PageRefresh();
             //confirmation of data picked and number of results from the regex results table in the extraction page
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
@@ -191,7 +175,7 @@ public class TestEU_002 {
             Boolean final_results;
             if(regex_result && regex_data && regex_data2){ final_results = true;}
             else{final_results = false;}
-            assertTrue("Failed, regex found no match/correct match for a common input found in the pdf for both " +
+            assertTrue("Failed, Tabula found no match/correct match for a common input found in the pdf for both " +
                             "pattern before and pattern after",
                     final_results);
             driver.navigate().back();
@@ -201,14 +185,8 @@ public class TestEU_002 {
             PageRefresh();
 
             //Tests pattern before with a common input found in the pdf and pattern after with a correct input
-            By pattern_before_input2 = By.id("pattern_before");
-            By pattern_after_input2 = By.id("pattern_after");
-            driver.findElement(pattern_before_input2).sendKeys("Impacts");
-            driver.findElement(pattern_after_input2).sendKeys("Impacts on participating teachers");
-            By regex_search_id2 = By.id("regex-search");
-            WebElement regex_button2 = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id2));
-            regex_button2.click();
-            Thread.sleep(600);
+            PatternInputStrings("Impacts", "Impacts on participating teachers");
+            ClickRegexButton();
             String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result2;
             if(result2.equals("1")){ regex_result2 = true;}
@@ -226,20 +204,14 @@ public class TestEU_002 {
             Boolean final_results2;
             if(regex_result2 && regex_data3 && regex_data4){ final_results2 = true;}
             else{final_results2 = false;}
-            assertTrue("Failed, regex found no match/correct match for a common input for pattern before and " +
+            assertTrue("Failed, Tabula found no match/correct match for a common input for pattern before and " +
                             "correct input for pattern after", final_results2);
             driver.navigate().refresh();
             PageRefresh();
 
             //Tests pattern before with a correct input and pattern after with a common input found in the pdf
-            By pattern_before_input3 = By.id("pattern_before");
-            By pattern_after_input3 = By.id("pattern_after");
-            driver.findElement(pattern_before_input3).sendKeys("Impacts on participating pupils");
-            driver.findElement(pattern_after_input3).sendKeys("Impacts");
-            By regex_search_id3 = By.id("regex-search");
-            WebElement regex_button3 = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id3));
-            regex_button3.click();
-            Thread.sleep(600);
+            PatternInputStrings("Impacts on participating pupils","Impacts");
+            ClickRegexButton();
             String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result3;
             if(result3.equals("1")){ regex_result3 = true;} //if true, there are zero matches
@@ -257,7 +229,7 @@ public class TestEU_002 {
             Boolean final_results3;
             if(regex_result3 && regex_data5 && regex_data6){ final_results3 = true;}
             else{final_results3 = false;}
-            assertTrue("Failed, regex found no match/correct match for a common input for pattern after and " +
+            assertTrue("Failed, Tabula found no match/correct match for a common input for pattern after and " +
                     "correct input for pattern after", final_results3);
 
             driver.navigate().back();
@@ -268,9 +240,100 @@ public class TestEU_002 {
         }
     }
     @Test
-    public void Test() throws InterruptedException{
+    public void TestInclusiveInputsforPatternBeforeandPatternAfter() throws InterruptedException{
         try{
+            //navigates to the extraction page and checks that it is in the extraction page
+            WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+            extract_button.click();
+            PageRefresh();
 
+            //Tests for inclusive for pattern before and non-inclusive for pattern after
+            PatternInputStrings("European/International","International");
+            WebElement inclusive_before_btn = driver.findElement(By.id("include_pattern_before"));
+            inclusive_before_btn.click();
+            ClickRegexButton();
+            String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
+            Boolean regex_result;
+            if(result.equals("1")){ regex_result = true;} //if true, there are zero matches
+            else{ regex_result = false;}
+            PreviewandExportDatapg();
+            Thread.sleep(600);
+            String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                    "'European/International')]")).getText();
+            Boolean regex_data;
+            if(result_data.equals("European/International dimension of the")){ regex_data = true;}
+            else{ regex_data = false;}
+            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'day')]")).getText();
+            Boolean regex_data2;
+            if(result_data2.equals("day school-life")){ regex_data2 = true;}
+            else{ regex_data2 = false;}
+            Boolean final_results;
+            if(regex_result && regex_data && regex_data2){ final_results = true;}
+            else{final_results = false;}
+            assertTrue("Failed, regex found no match for inclusive for pattern before and non-inclusive for " +
+                    "pattern after", final_results);
+            driver.navigate().refresh();
+            PageRefresh();
+
+            //Tests for non-inclusive for pattern before and inclusive for pattern after
+            PatternInputStrings("European/International", "International");
+            WebElement inclusive_after_btn2 = driver.findElement(By.id("include_pattern_after"));
+            inclusive_after_btn2.click();
+            ClickRegexButton();
+            String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
+            Boolean regex_result3;
+            if(result2.equals("1")){ regex_result3 = true;} //if true, there are zero matches
+            else{ regex_result3 = false;}
+            PreviewandExportDatapg();
+            Thread.sleep(600);
+            String result_data3 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                    "'school')]")).getText();
+            Boolean regex_data3;
+            if(result_data3.equals("school")){ regex_data3 = true;}
+            else{ regex_data3 = false;}
+            String result_data4 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'International')]")).getText();
+            Boolean regex_data4;
+            if(result_data4.equals("International mobility of pupils")){ regex_data4 = true;}
+            else{ regex_data4 = false;}
+            Boolean final_results2;
+            if(regex_result3 && regex_data3 && regex_data4){ final_results2 = true;}
+            else{final_results2 = false;}
+            assertTrue("Failed, regex found no match for inclusive for pattern after and non-inclusive for " +
+                    "pattern before", final_results2);
+            driver.navigate().refresh();
+            PageRefresh();
+
+            //Tests for inclusive for pattern before and for pattern after
+            PatternInputStrings("European/International","Training");
+            WebElement inclusive_before_btn3 = driver.findElement(By.id("include_pattern_before"));
+            inclusive_before_btn3.click();
+            WebElement inclusive_after_btn3 = driver.findElement(By.id("include_pattern_after"));
+            inclusive_after_btn3.click();
+            Thread.sleep(500);
+            ClickRegexButton();
+            String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
+            Boolean regex_result4;
+            if(result3.equals("1")){ regex_result4 = true;} //if true, there are zero matches
+            else{ regex_result4 = false;}
+            PreviewandExportDatapg();
+            Thread.sleep(600);
+            String result_data5 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'European/International')]")).getText();
+            Boolean regex_data5;
+            if(result_data5.equals("European/International dimension of the")){ regex_data5 = true;}
+            else{ regex_data5 = false;}
+            String result_data6 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Training')]")).getText();
+            Boolean regex_data6;
+            if(result_data6.equals("Training of teachers")){ regex_data6 = true;}
+            else{ regex_data6 = false;}
+            Boolean final_results3;
+            if(regex_result4 && regex_data5 && regex_data6){ final_results3 = true;}
+            else{final_results3 = false;}
+            assertTrue("Failed, regex found no match for inclusive for pattern after and inclusive for " +
+                    "pattern before", final_results3);
+
+            driver.navigate().back();
+            driver.navigate().back();
+            Thread.sleep(500);
         }catch(Exception e){
             System.out.print(e);
         }
@@ -283,5 +346,3 @@ public class TestEU_002 {
         driver.quit();
     }}
 
-            // Use pattern before with inclusive and click search (3)
-            // Use pattern after with inclusive and click search
