@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/appbundler_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/appbundler_1_0.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/484_P7_1-GUI.iml" afterPath="$PROJECT_DIR$/484_P7_1-GUI.iml" />
-      <change beforePath="$PROJECT_DIR$/Rakefile" afterPath="$PROJECT_DIR$/Rakefile" />
+      <change beforePath="$PROJECT_DIR$/webapp/index.html" afterPath="$PROJECT_DIR$/webapp/index.html" />
       <change beforePath="$PROJECT_DIR$/webapp/static/js/pdf_view.js" afterPath="$PROJECT_DIR$/webapp/static/js/pdf_view.js" />
       <change beforePath="$PROJECT_DIR$/webapp/tabula_web.rb" afterPath="$PROJECT_DIR$/webapp/tabula_web.rb" />
     </list>
@@ -30,12 +28,12 @@
       <file leaf-file-name="pdf_view.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webapp/static/js/pdf_view.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="428">
-              <caret line="615" column="12" lean-forward="true" selection-start-line="615" selection-start-column="12" selection-end-line="615" selection-end-column="12" />
+            <state relative-caret-position="193">
+              <caret line="391" column="21" lean-forward="false" selection-start-line="391" selection-start-column="2" selection-end-line="391" selection-end-column="21" />
               <folding>
-                <marker date="1521706155196" expanded="true" signature="41652:42260" ph="..." />
-                <marker date="1521706155196" expanded="true" signature="41909:42017" ph="..." />
-                <marker date="1521706155196" expanded="true" signature="42051:42248" ph="..." />
+                <marker date="1522130842932" expanded="true" signature="41825:42433" ph="..." />
+                <marker date="1522130842932" expanded="true" signature="42082:42190" ph="..." />
+                <marker date="1522130842932" expanded="true" signature="42224:42421" ph="..." />
               </folding>
             </state>
           </provider>
@@ -44,8 +42,8 @@
       <file leaf-file-name="tabula_web.rb" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/webapp/tabula_web.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="333">
-              <caret line="559" column="7" lean-forward="false" selection-start-line="559" selection-start-column="7" selection-end-line="559" selection-end-column="7" />
+            <state relative-caret-position="316">
+              <caret line="584" column="10" lean-forward="false" selection-start-line="584" selection-start-column="10" selection-end-line="584" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -54,8 +52,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webapp/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="188">
-              <caret line="91" column="68" lean-forward="false" selection-start-line="91" selection-start-column="39" selection-end-line="91" selection-end-column="68" />
+            <state relative-caret-position="193">
+              <caret line="174" column="31" lean-forward="false" selection-start-line="174" selection-start-column="27" selection-end-line="174" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -73,24 +71,12 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>-b</find>
-      <find>extractor</find>
-      <find>convertTo(</find>
-      <find>java</find>
-      <find>convertToTabulaExtractorScript</find>
-      <find>RegexCollection</find>
-      <find>RegexResultCollection</find>
-      <find>RegexCollectionView</find>
-      <find>RegexHandler</find>
-      <find>SidebarView</find>
-      <find>convertToTabulaExt</find>
       <find>convertToTabulaExtractor</find>
       <find>convertTo:</find>
       <find>convertTo</find>
       <find>tabula-java</find>
       <find>doQuery</find>
       <find>setFormAction</find>
-      <find>list_of_coords</find>
       <find>query_meta_data</find>
       <find>regex_query_meta_data</find>
       <find>regex_query_meta_data.regex_searches</find>
@@ -103,6 +89,18 @@
       <find>Tabula.DataView</find>
       <find>export-control-panel-template</find>
       <find>selections_rendered</find>
+      <find>data-action</find>
+      <find>pdf_id</find>
+      <find>tables</find>
+      <find>list_of_coords</find>
+      <find>extraction_method']</find>
+      <find>regex_selection</find>
+      <find>renderSelection</find>
+      <find>user_drawn</find>
+      <find>extraction_method</find>
+      <find>extraction_method:</find>
+      <find>setExtractionMethod</find>
+      <find>coords</find>
     </findStrings>
     <replaceStrings>
       <replace>update_regex_searches_on_resize</replace>
@@ -130,6 +128,7 @@
         <option value="$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java" />
         <option value="$PROJECT_DIR$/webapp/static/js/FooterView.js" />
         <option value="$PROJECT_DIR$/webapp/static/js/HeaderView.js" />
+        <option value="$PROJECT_DIR$/webapp/index.html" />
         <option value="$PROJECT_DIR$/webapp/static/js/pdf_view.js" />
         <option value="$PROJECT_DIR$/webapp/tabula_web.rb" />
       </list>
@@ -153,7 +152,7 @@
       </MavenImportingSettings>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="580" />
     <option name="y" value="7" />
     <option name="width" value="784" />
@@ -176,7 +175,6 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -206,6 +204,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
       <pane id="PackagesPane" />
       <pane id="AndroidView" />
     </panes>
@@ -243,7 +242,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Unknown.TestAboutPage.startWebDriver2121324647">
+  <component name="RunManager" selected="Unknown.TestAboutPage.startWebDriver667359706">
     <configuration name="TestHomePage (4)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="TestHomePage" />
@@ -517,7 +516,8 @@
       <workItem from="1520907357467" duration="187000" />
       <workItem from="1521484016623" duration="1077000" />
       <workItem from="1521675735276" duration="3467000" />
-      <workItem from="1521684782557" duration="19662000" />
+      <workItem from="1521684782557" duration="20214000" />
+      <workItem from="1522107442302" duration="8683000" />
     </task>
     <task id="LOCAL-00001" summary="Initial additions front-end testing files. Currently this first test is failing, will be updated.">
       <created>1518393101424</created>
@@ -632,10 +632,10 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="45285000" />
+    <option name="totallyTimeSpent" value="54520000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20863836" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -643,7 +643,6 @@
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.025679758" sideWeight="0.11805027" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35585585" sideWeight="0.70754" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -665,6 +664,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17867868" sideWeight="0.8819497" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Learn" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
     </layout>
@@ -841,9 +841,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1105">
           <caret line="65" column="20" lean-forward="false" selection-start-line="65" selection-start-column="20" selection-end-line="65" selection-end-column="20" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -851,36 +848,33 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1428">
           <caret line="84" column="8" lean-forward="false" selection-start-line="84" selection-start-column="8" selection-end-line="84" selection-end-column="8" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="188">
-          <caret line="91" column="68" lean-forward="false" selection-start-line="91" selection-start-column="39" selection-end-line="91" selection-end-column="68" />
+        <state relative-caret-position="193">
+          <caret line="174" column="31" lean-forward="false" selection-start-line="174" selection-start-column="27" selection-end-line="174" selection-end-column="31" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/static/js/pdf_view.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="428">
-          <caret line="615" column="12" lean-forward="true" selection-start-line="615" selection-start-column="12" selection-end-line="615" selection-end-column="12" />
+        <state relative-caret-position="193">
+          <caret line="391" column="21" lean-forward="false" selection-start-line="391" selection-start-column="2" selection-end-line="391" selection-end-column="21" />
           <folding>
-            <marker date="1521706155196" expanded="true" signature="41652:42260" ph="..." />
-            <marker date="1521706155196" expanded="true" signature="41909:42017" ph="..." />
-            <marker date="1521706155196" expanded="true" signature="42051:42248" ph="..." />
+            <marker date="1522130842932" expanded="true" signature="41825:42433" ph="..." />
+            <marker date="1522130842932" expanded="true" signature="42082:42190" ph="..." />
+            <marker date="1522130842932" expanded="true" signature="42224:42421" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/webapp/tabula_web.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="333">
-          <caret line="559" column="7" lean-forward="false" selection-start-line="559" selection-start-column="7" selection-end-line="559" selection-end-column="7" />
+        <state relative-caret-position="316">
+          <caret line="584" column="10" lean-forward="false" selection-start-line="584" selection-start-column="10" selection-end-line="584" selection-end-column="10" />
           <folding />
         </state>
       </provider>
