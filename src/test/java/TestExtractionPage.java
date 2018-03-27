@@ -28,7 +28,7 @@ public class TestExtractionPage {
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 200);
-        String filePath = "/home/slmendez/484_P7_1-GUI/src/test/eu-002.pdf"; //
+        String filePath = "/home/slmendez/484_P7_1-GUI/src/test/pdf/eu-002.pdf"; //
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
         Thread.sleep(1000);

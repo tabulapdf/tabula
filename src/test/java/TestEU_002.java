@@ -54,7 +54,7 @@ public class TestEU_002 {
         driver = new ChromeDriver();
         driver.get(Tabula_url);
         driver.manage().window().maximize();
-        String filePath = "/home/slmendez/484_P7_1-GUI/src/test/eu-002.pdf"; //
+        String filePath = "/home/slmendez/484_P7_1-GUI/src/test/pdf/eu-002.pdf"; //
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
         Thread.sleep(1000);
@@ -338,6 +338,57 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
+    @Test
+    public void TestCaseSensitivity() throws InterruptedException{
+        //Test case sensitive input for pattern before and correct input for pattern after
+        //Test case sensitive input for pattern after and correct input for pattern before
+        //Test case sensitive input for both pattern before and pattern after
+    }
+    @Test
+    public void TestTextBasedImage() throws InterruptedException{
+        try {
+            //navigates to the extraction page and checks that it is in the extraction page
+            WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+            extract_button.click();
+            PageRefresh();
+
+            //Test to get only the text-based image to appear in the preview and export data page
+            PatternInputStrings("satisfied", "Question");
+            ClickRegexButton();
+            String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
+            Boolean regex_result;
+            if (result.equals("1")) { regex_result = true; } //if true, there are zero matches
+            else { regex_result = false; }
+            PreviewandExportDatapg();
+            Thread.sleep(600);
+            String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Total')]")).getText();
+            Boolean regex_data;
+            if (result_data.equals("Total")) { regex_data = true; }
+            else { regex_data = false; }
+            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'EU-25/EFTA:')]")).getText();
+            Boolean regex_data2;
+            if (result_data2.equals("EU-25/EFTA: Middle (AT, BE, DE, LI, LU, NL)")) {
+                regex_data2 = true; }
+                else { regex_data2 = false; }
+            Boolean final_results;
+            if (regex_result && regex_data && regex_data2) { final_results = true; }
+                else { final_results = false; }
+            assertTrue("Failed, Tabula could not find the text-based image", final_results);
+        }catch (Exception e){
+            System.out.print(e);
+        }
+    }
+    @Test
+    public void TestVerticalTable() throws InterruptedException{
+        //navigates to the extraction page and checks that it is in the extraction page
+        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+        extract_button.click();
+        PageRefresh();
+
+        //Test for vertical table
+
+    }
+
     @AfterClass
     public static void TearDown(){
         //navigates back and deletes the pdf utilized
@@ -345,4 +396,4 @@ public class TestEU_002 {
         driver.switchTo().alert().accept();
         driver.quit();
     }}
-
+    //TODO: ") causes an error on Tabula
