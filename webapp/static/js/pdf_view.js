@@ -3,8 +3,8 @@ Tabula = Tabula || {};
 var clip = null;
 var base_uri = $('base').attr("href");
 
-
 PDF_ID = window.location.pathname.replace(base_uri, '').split('/')[1];
+
 Tabula.LazyLoad = 10; // max number of pages around the cursor to show (2x Tabula.LazyLoad pages are shown)
 Tabula.HideOnLazyLoad = false; // ideally, set to true, but this requires differently positioned selections, see https://github.com/tabulapdf/tabula/issues/245#issuecomment-75182061
 
@@ -593,7 +593,11 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
       });
     });
 
-    var say_what = this.model.attributes;
+    var header_scale = Tabula.pdf_view.components['document_view'].header_scale;
+    var footer_scale = Tabula.pdf_view.components['document_view'].footer_scale;
+
+
+    console.log(Tabula.pdf_view.components['document_view']);
 
     var user_drawn_selections = this.model.attributes.list_of_coords.filter(function(selection){
       return regex_selection_ids.every(function(regex_id){
@@ -616,6 +620,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
           pdf_id: PDF_ID,
           list_of_coords: JSON.stringify(this.model.attributes.list_of_coords),
           user_drawn_selections: JSON.stringify(user_drawn_selections), //selections not user_drawn were regex...
+          margin_scale: JSON.stringify({'header_scale':header_scale,'footer_scale':footer_scale}),
           copyDisabled: Tabula.pdf_view.flash_borked ? 'disabled="disabled" data-toggle="tooltip" title="'+Tabula.pdf_view.flash_borken_message+'"' : '',
           disableIfNoData: (_.isNull(this.model.get('data')) || typeof(this.model.get('data')) === "undefined") ? 'disabled="disabled"' : ''
         })
@@ -730,7 +735,9 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   page_views: {},
   rectangular_selector: null,
   header_height: 0,
+  header_scale:  0,
   footer_height: 0,
+  footer_scale: 0,
   _selectionsGetter: function(target) {
     return _(Tabula.pdf_view.pdf_document.selections.where({page_number: $(target).data('page')})).map(function(i){ return i.attributes; });
   },
@@ -789,17 +796,23 @@ Tabula.DocumentView = Backbone.View.extend({ // Singleton
   update_filter_specs: function(data){
 
     var return_vals={'previous_header_height':this.header_height,
-                     'previous_footer_height':this.footer_height};
+                     'previous_footer_height':this.footer_height,
+                     'previous_header_scale':this.header_scale,
+                     'previous_footer_scale':this.footer_scale};
 
     if(data['header_height']!=undefined){
       console.log('header height was defined...');
      return_vals['header_height']=this.header_height = data['header_height'];
+     return_vals['header_scale']=this.header_scale = data['header_scale'];
      return_vals['footer_height']=this.footer_height;
+     return_vals['footer_scale']=this.footer_scale;
     }
     if(data['footer_height']!=undefined){
       console.log('footer height was defined...');
       return_vals['footer_height']=this.footer_height = data['footer_height'];
+      return_vals['footer_scale']=this.footer_scale = data['footer_scale'];
       return_vals['header_height']=this.header_height;
+      return_vals['header_scale']=this.header_scale;
     }
 
     Object.keys(this.page_views).forEach(function(key){
@@ -955,8 +968,10 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
   detect_filter_resize: function(data){
 
+    data['footer_scale'] = data['footer_height']/parseFloat(this.$el.css('height'));
+    data['header_scale'] = data['header_height']/parseFloat(this.$el.css('height'));
     var filter_data = Tabula.pdf_view.components['document_view'].update_filter_specs(data);
-    filter_data['gui_height'] = parseInt(this.$el.css('height'));
+
     Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.update_regex_search_properties_on_resize(filter_data);
     },
 
@@ -987,6 +1002,21 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     // .attr('data-rotation', this.model.get('rotation'));
 
     if(this.imageIsLoaded){
+
+      if(this.header_view==undefined || this.header_view==null){
+        this.header_view = new HeaderView({'top':0,
+          'left':0,
+          'width':0,
+          'height':0});
+      }
+
+      if(this.footer_view==undefined || this.footer_view==null){
+        this.footer_view = new FooterView({'top':0,
+          'left':0,
+          'width':0,
+          'height':0});
+      }
+
       this.header_view.$el.show();
       this.footer_view.$el.show();
 
@@ -1398,7 +1428,8 @@ Tabula.RegexCollectionView = Backbone.View.extend({
 
            filter_data['header_height']=filter_data['previous_header_height'];
            filter_data['footer_height']=filter_data['previous_footer_height'];
-
+           filter_data['header_scale'] =filter_data['previous_header_scale'];
+           filter_data['footer_scale']=filter_data['previous_footer_scale'];
            alert('Request resive event will lead to overlap in regex searches. Restructure regex searches and try again...');
            Tabula.pdf_view.components['document_view'].update_filter_specs(filter_data);
            this.update_regex_search_properties_on_resize(filter_data);
@@ -1919,26 +1950,31 @@ Tabula.PDFView = Backbone.View.extend(
       });
 
       this.pdf_document.fetch({
-        success: function(m){ },
+        success: function(m){ console.log("WHAT WAS FETCHED:");
+        console.log(m)},
         error: function(m, r, o){ console.log("error", m, r, o) }
-      });
-
+      }).then( function(meta_data){
+        console.log(meta_data);
         $.ajax({
-          type: 'POST',
-          url: '/regex/reset',
-          data: { file_path: this.pdf_document.pdf_id},
-          dataType: 'json',
+        type: 'POST',
+        url: '/regex/reset',
+        data: { file_path: meta_data.id},
+        dataType: 'json',
 
-          success: _.bind(function() {
-            console.log("Reset back-end book-keeping for regex queries")
-          }, this),
-          error: function (xhr, status, err) {
-            alert('Error in reset: ' + JSON.stringify(err));
-            console.log('Error in reset...: ', err);
-            console.log(xhr);
-            console.log(status);
-          }
-        });
+        success: _.bind(function() {
+          console.log("Reset back-end book-keeping for regex queries")
+        }, this),
+        error: function (xhr, status, err) {
+          alert('Error in reset: ' + JSON.stringify(err));
+          console.log('Error in reset...: ', err);
+          console.log(xhr);
+          console.log(status);
+        }
+      })}); //see if this works...
+
+
+
+
 
 
       this.options = new Tabula.Options();
