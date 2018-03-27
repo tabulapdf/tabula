@@ -19,6 +19,8 @@ java_import 'java.io.ByteArrayOutputStream'
 java_import 'java.util.zip.ZipEntry'
 java_import 'java.util.zip.ZipOutputStream'
 java_import org.apache.pdfbox.pdmodel.PDDocument
+java_import org.apache.pdfbox.cos.COSDictionary
+java_import org.apache.pdfbox.cos.COSName
 
 require_relative './tabula_settings.rb'
 
@@ -36,36 +38,35 @@ require_relative '../lib/tabula_job_executor/jobs/detect_tables.rb'
 
 class RegexQueryMetaData
 
-  attr_accessor :regex_searches,:filter_area
+  attr_accessor :regex_searches,:filter_area,:doc_ID
   attr_reader   :file
 
   include Singleton
 
   def initialize
-    @doc_name=String.new()
+    @doc_ID=String.new()
     @regex_searches=[]
     @file = nil
     @filter_area = nil
   end
 
-  def is_new_doc(docName)
-    puts !(@doc_name == docName)
-    return !(@doc_name == docName)
+  def is_new_doc(docID)
+    puts !(@doc_ID == docID)
+    return !(@doc_ID == docID)
   end
 
-  def reset_for_new_doc(docName)
+  def reset_for_new_doc(docID)
 
-    @doc_name=docName
+    @doc_ID=docID
     @regex_searches=[]
 
     unless @file.nil?
       @file.close() #TODO: figure out if a warning should be thrown here....
     end
 
-    output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, @doc_name)
+    output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, @doc_ID)
     @file = PDDocument.load(Java::JavaIO::File.new(File.join(output_dir,'document.pdf')))
 
-    page_count = @file.getNumberOfPages()
 
 
   end
@@ -461,7 +462,14 @@ Cuba.define do
         ]
       end
 
-      tables = Tabula.extract_tables(pdf_path, coords)
+      extraction_method = JSON.load(req.params['extraction_method'])
+
+      options = {"extraction_method" => extraction_method}
+
+
+      puts req.params
+
+      tables = Tabula.extract_tables(pdf_path, coords, options)
 
       filename =  if req.params['new_filename'] && req.params['new_filename'].strip.size
                     basename = File.basename(req.params['new_filename'], File.extname(req.params['new_filename']))
@@ -471,12 +479,15 @@ Cuba.define do
                   end
 
       case req.params['format']
-      when 'csv'
-        res['Content-Type'] = 'text/csv'
-        res['Content-Disposition'] = "attachment; filename=\"#{filename}.csv\""
-        tables.each do |table|
-          res.write table.to_csv
-        end
+        when 'csv'
+          res['Content-Type'] = 'text/csv'
+          res['Content-Disposition'] = "attachment; filename=\"#{filename}.csv\""
+          puts 'TABLES'
+          puts tables
+          tables.each do |table|
+            res.write table.to_csv
+            puts table.to_csv
+          end
       when 'tsv'
         res['Content-Type'] = 'text/tab-separated-values'
         res['Content-Disposition'] = "attachment; filename=\"#{filename}.tsv\""
@@ -510,22 +521,88 @@ Cuba.define do
         # ahahaha. I get the last laugh now.
 
         res.write String.from_java_bytes(baos.to_byte_array)
-      when 'script'
-        # Write shell script of tabula-extractor commands.  $1 takes
+        when 'script'
+
+          puts 'USER DRAWN SELECTIONS...'
+          puts req.params['user_drawn_selections']
+          puts 'COORDS'
+          puts req.params['coords']
+
+        gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+
+        sanitized_query_data = Array.new
+
+        regex_query_meta_data.regex_searches.each{ |x|
+
+          raw_search_data =JSON.parse(gson.to_json(x))
+
+          sanitized_query_data.push({pattern_before: raw_search_data["_regex_before_table"]["pattern"],
+                                     include_pattern_before: raw_search_data["_include_regex_before_table"],
+                                     pattern_after: raw_search_data["_regex_after_table"]["pattern"],
+                                     include_pattern_after: raw_search_data["_include_regex_after_table"]})
+        }
+
+        puts sanitized_query_data
+
+        regex_cli_option = JSON.generate({queries: sanitized_query_data});
+
+        puts regex_cli_option.to_json
+
+        regex_cli_string = ""
+        if !regex_query_meta_data.regex_searches.empty?
+          regex_cli_string="-r '#{regex_cli_option}'"
+        end
+
+        drawn_boxes_cli_string=""
+
+        user_drawn_selections = JSON.load(req.params['user_drawn_selections'])
+
+        if user_drawn_selections.nil?
+          user_drawn_selections = []
+        end
+
+        user_drawn_selections.sort_by! do |sel_set|
+            [
+            sel_set['page'],
+            [sel_set['y1'], sel_set['y2']].min.to_i / 10,
+            [sel_set['x1'], sel_set['x2']].min
+            ]
+          end
+
+        user_drawn_selections.each do |s|
+          drawn_boxes_cli_string = drawn_boxes_cli_string +
+            "-a #{s['y1'].round(3)},#{s['x1'].round(3)},#{s['y2'].round(3)},#{s['x2'].round(3)} -p #{s['page']}"
+        end
+
+       extraction_cli_string = ''
+
+       coords.each do |c|
+         extraction_cli_string = if c['extraction_method'] == "original"
+                                   "--no-spreadsheet"
+                                 elsif c['extraction_method'] == "spreadsheet"
+                                   "--spreadsheet"
+                                 elsif c['extraction_method'] == "stream"
+                                   "--stream"
+                                 elsif c['extraction_method'] == "lattice"
+                                   "--lattice"
+                                 else
+                                      ' ' #Non-empty string
+                                 end
+         break
+       end
+
+
+       margins = JSON.load(req.params['margin_scale'])
+
+       margin_cli_string ="-m '#{margins}'"
+          # Write shell script of tabula-extractor commands.  $1 takes
         # the name of a file from the command line and passes it
         # to tabula-extractor so the script can be reused on similar pdfs.
         res['Content-Type'] = 'application/x-sh'
         res['Content-Disposition'] = "attachment; filename=\"#{filename}.sh\""
-        coords.each do |c|
-          extraction_method_switch = if c['extraction_method'] == "original"
-                                        "--no-spreadsheet"
-                                     elsif c['extraction_method'] == "spreadsheet"
-                                        "--spreadsheet"
-                                     else
-                                        ""
-                                     end
-          res.write "java -jar tabula-java.jar #{extraction_method_switch} -a #{c['y1'].round(3)},#{c['x1'].round(3)},#{c['y2'].round(3)},#{c['x2'].round(3)} -p #{c['page']} \"$1\" \n"
-        end
+
+        res.write "java -jar tabula-java.jar #{extraction_cli_string} #{regex_cli_string} #{drawn_boxes_cli_string} #{margin_cli_string} \"$1\" \n"
+
       when 'bbox'
         # Write json representation of bounding boxes and pages for
         # use in OCR and other back ends.
