@@ -461,11 +461,14 @@ Cuba.define do
         ]
       end
 
+      extraction_method = JSON.load(req.params['extraction_method'])
+
+      options = {"extraction_method" => extraction_method}
 
 
       puts req.params
 
-      tables = Tabula.extract_tables(pdf_path, coords)
+      tables = Tabula.extract_tables(pdf_path, coords, options)
 
       filename =  if req.params['new_filename'] && req.params['new_filename'].strip.size
                     basename = File.basename(req.params['new_filename'], File.extname(req.params['new_filename']))
@@ -574,15 +577,19 @@ Cuba.define do
 
        coords.each do |c|
          extraction_cli_string = if c['extraction_method'] == "original"
-                                      "--no-spreadsheet"
-                                    elsif c['extraction_method'] == "spreadsheet"
-                                      "--spreadsheet"
-                                    else
+                                   "--no-spreadsheet"
+                                 elsif c['extraction_method'] == "spreadsheet"
+                                   "--spreadsheet"
+                                 elsif c['extraction_method'] == "stream"
+                                   "--stream"
+                                 elsif c['extraction_method'] == "lattice"
+                                   "--lattice"
+                                 else
                                       ' ' #Non-empty string
                                  end
          break
        end
-          
+
         # Write shell script of tabula-extractor commands.  $1 takes
         # the name of a file from the command line and passes it
         # to tabula-extractor so the script can be reused on similar pdfs.
