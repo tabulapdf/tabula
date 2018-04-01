@@ -3,6 +3,7 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.7.9/byte-buddy-1.7.9.jar!/" />
     </CLASSES>
+    <JAVADOC />
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.7.9/byte-buddy-1.7.9-sources.jar!/" />
     </SOURCES>
