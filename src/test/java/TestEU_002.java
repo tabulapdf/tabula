@@ -105,6 +105,7 @@ public class TestEU_002 {
             //Test that inputs an incorrect input for pattern before and incorrect input for pattern after
             PatternInputStrings("ksgjlk", "fgfsgs");
             ClickRegexButton();
+            Thread.sleep(1000);
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
             Boolean regex_result;
             if(result.equals("0")){ regex_result = true;} //if true, there are zero matches
@@ -117,6 +118,7 @@ public class TestEU_002 {
             //Test inputs correct input for pattern after and incorrect input for pattern before
             PatternInputStrings("jflaksl","Table 6" );
             ClickRegexButton();
+            Thread.sleep(1000);
             String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
             Boolean regex_result2;
             if(result2.equals("0")){ regex_result2 = true;} //if true, there are zero matches
@@ -129,6 +131,7 @@ public class TestEU_002 {
             //Test inputs incorrect input for pattern after and correct input for pattern before
             PatternInputStrings("Table 5","glslkgf");
             ClickRegexButton();
+            Thread.sleep(1000);
             String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
             Boolean regex_result3;
             if(result3.equals("0")){ regex_result3 = true;} //if true, there are zero matches
@@ -154,6 +157,7 @@ public class TestEU_002 {
             //Tests pattern before and pattern after with a common input found in the pdf
             PatternInputStrings("Impacts", "Impacts");
             ClickRegexButton();
+            Thread.sleep(1000);
             PageRefresh();
             //confirmation of data picked and number of results from the regex results table in the extraction page
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
@@ -185,6 +189,7 @@ public class TestEU_002 {
             //Tests pattern before with a common input found in the pdf and pattern after with a correct input
             PatternInputStrings("Impacts", "Impacts on participating teachers");
             ClickRegexButton();
+            Thread.sleep(1000);
             String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result2;
             if(result2.equals("1")){ regex_result2 = true;}
@@ -350,7 +355,6 @@ public class TestEU_002 {
             extract_button.click();
             PageRefresh();
 
-            Thread.sleep(1200);
             //Test to get only the text-based image to appear in the preview and export data page
             PatternInputStrings("satisfied", "Question");
             ClickRegexButton();
@@ -361,7 +365,6 @@ public class TestEU_002 {
             PreviewandExportDatapg();
             Thread.sleep(600);
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Total')]")).getText();
-            System.out.print(result_data);
             Boolean regex_data;
             if (result_data.equals("Total")) { regex_data = true; }
             else { regex_data = false; }
