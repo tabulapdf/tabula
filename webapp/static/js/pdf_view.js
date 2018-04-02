@@ -1020,15 +1020,15 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       this.header_view.$el.show();
       this.footer_view.$el.show();
 
-      self.header_view.$el.css({
+      this.header_view.$el.css({
         top: 0,
         left: self.$el.find('.page')['0'].offsetLeft,
         width: $(self.image).width(),
         height: Tabula.pdf_view.components['document_view'].header_height
       });
 
-      self.footer_view.$el.show();
-      self.footer_view.$el.css({
+      this.footer_view.$el.show();
+      this.footer_view.$el.css({
         top: $(self.image).height() - Tabula.pdf_view.components['document_view'].footer_height,
         left: self.$el.find('.page')['0'].offsetLeft,
         width: $(self.image).width(),
@@ -1523,7 +1523,11 @@ Tabula.RegexCollectionView = Backbone.View.extend({
 
     if(Array.from(selections_rendered.keys()).every(function(matching_area){
       return selections_rendered.get(matching_area).every(function(subsection){
-        return subsection.attributes.checkOverlaps();})}))
+        console.log('SUBSECTION:');
+        console.log(subsection);
+         return true;})}))
+
+        // return subsection.attributes.checkOverlaps();})}))
 
       {
       this.collection.add(new Tabula.RegexResultModel({
