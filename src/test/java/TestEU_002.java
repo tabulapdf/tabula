@@ -61,7 +61,7 @@ public class TestEU_002 {
         Thread.sleep(700);
     }
     @Test
-    public void TestHalfRegexInputsforPatternBeforeandPatternAfter() throws InterruptedException{
+    public void TestHalfRegexInputsforPatternBeforeandPatternAfter(){
         try {
             //navigates to the extraction page and checks that it is in the extraction page
             WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
@@ -81,7 +81,7 @@ public class TestEU_002 {
             //Test that checks that the regex search button is disabled after entering "Table 6" in pattern_after and
             // clicking the regex search button
             By pattern_after_input = By.id("pattern_after");
-            driver.findElement(pattern_after_input).sendKeys("");
+            driver.findElement(pattern_after_input).sendKeys("Chart 5");
             //Thread.sleep(500);
             By regex_search_id2 = By.id("regex-search");
             assertFalse("Failed, regex search button is enabled", driver.findElement(regex_search_id2).isEnabled());
@@ -95,7 +95,7 @@ public class TestEU_002 {
         }
     }
     @Test
-    public void TestWrongInputsforBeforePatternandAfterPattern() throws InterruptedException{
+    public void TestWrongInputsforBeforePatternandAfterPattern(){
         try{
             //navigates to the extraction page and checks that it is in the extraction page
             WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
@@ -147,7 +147,7 @@ public class TestEU_002 {
         }
     }
     @Test
-    public void TestCommonWordInputforPatternBeforeandPatternAfter() throws InterruptedException{
+    public void TestCommonWordInputforPatternBeforeandPatternAfter(){
         try{
             //navigates to the extraction page and checks that it is in the extraction page
             WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
@@ -243,7 +243,7 @@ public class TestEU_002 {
         }
     }
     @Test
-    public void TestInclusiveInputsforPatternBeforeandPatternAfter() throws InterruptedException{
+    public void TestInclusiveInputsforPatternBeforeandPatternAfter() {
         try{
             //navigates to the extraction page and checks that it is in the extraction page
             WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
@@ -343,12 +343,55 @@ public class TestEU_002 {
     }
     @Test
     public void TestCaseSensitivity() throws InterruptedException{
+        //navigates to the extraction page and checks that it is in the extraction page
+        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+        extract_button.click();
+        PageRefresh();
+
         //Test case sensitive input for pattern before and correct input for pattern after
+        PatternInputStrings("knowledge and awareness", "Self competence");
+        ClickRegexButton();
+        Thread.sleep(1000);
+        String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
+        //check that there is 0 results in the regex table
+        Boolean regex_result;
+        if(result.equals("0")){ regex_result = true;} //if true, there are zero matches
+        else{ regex_result = false;}
+        assertTrue("Failed, Tabula found a match for a case-sensitive search of pattern before",
+                regex_result);
+        driver.navigate().refresh();
+        PageRefresh();
+
         //Test case sensitive input for pattern after and correct input for pattern before
+        PatternInputStrings("Knowledge and awareness", "self competence");
+        ClickRegexButton();
+        Thread.sleep(1000);
+        String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
+        //check that there is 0 results in the regex table
+        Boolean regex_result2;
+        if(result2.equals("0")){ regex_result2 = true;} //if true, there are zero matches
+        else{ regex_result2 = false;}
+        assertTrue("Failed, Tabula found a match for a case-sensitive search of pattern after",
+                regex_result2);
+        driver.navigate().refresh();
+        PageRefresh();
+
         //Test case sensitive input for both pattern before and pattern after
+        PatternInputStrings("knowledge and awareness", "self competence");
+        ClickRegexButton();
+        Thread.sleep(1000);
+        String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
+        //check that there is 0 results in the regex table
+        Boolean regex_result3;
+        if(result3.equals("0")){ regex_result3 = true;} //if true, there are zero matches
+        else{ regex_result3 = false;}
+        assertTrue("Failed, Tabula found a match for a case-sensitive search of pattern after and pattern before",
+                regex_result3);
+        driver.navigate().back();
+        Thread.sleep(500);
     }
     @Test
-    public void TestTextBasedImage() throws InterruptedException{
+    public void TestTextBasedImage(){
         try {
             //navigates to the extraction page and checks that it is in the extraction page
             WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
