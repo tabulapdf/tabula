@@ -46,6 +46,16 @@ public class TestEU_002 {
         driver.findElement(pattern_before_input).sendKeys(pattern_before);
         driver.findElement(pattern_after_input).sendKeys(pattern_after);
     }
+    private void InclusiveButtons(boolean patternbefore, boolean patternafter) throws InterruptedException {
+        WebElement inclusive_before_btn = driver.findElement(By.id("include_pattern_before"));
+        WebElement inclusive_after_btn = driver.findElement(By.id("include_pattern_after"));
+        if (patternbefore){
+            inclusive_before_btn.click();
+        }
+        if(patternafter){
+            inclusive_after_btn.click();
+        }
+    }
     @BeforeClass
     public static void SetUp() throws InterruptedException {
         //set up of chromdriver and navigation to the url, as well as uploading of the pdf file
@@ -252,8 +262,7 @@ public class TestEU_002 {
 
             //Tests for inclusive for pattern before and non-inclusive for pattern after
             PatternInputStrings("European/International","International");
-            WebElement inclusive_before_btn = driver.findElement(By.id("include_pattern_before"));
-            inclusive_before_btn.click();
+            InclusiveButtons(true, false);
             ClickRegexButton();
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result;
@@ -280,8 +289,7 @@ public class TestEU_002 {
 
             //Tests for non-inclusive for pattern before and inclusive for pattern after
             PatternInputStrings("European/International", "International");
-            WebElement inclusive_after_btn2 = driver.findElement(By.id("include_pattern_after"));
-            inclusive_after_btn2.click();
+            InclusiveButtons(false, true);
             ClickRegexButton();
             String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result3;
@@ -308,10 +316,7 @@ public class TestEU_002 {
 
             //Tests for inclusive for pattern before and for pattern after
             PatternInputStrings("European/International","Training");
-            WebElement inclusive_before_btn3 = driver.findElement(By.id("include_pattern_before"));
-            inclusive_before_btn3.click();
-            WebElement inclusive_after_btn3 = driver.findElement(By.id("include_pattern_after"));
-            inclusive_after_btn3.click();
+            InclusiveButtons(true, true);
             Thread.sleep(500);
             ClickRegexButton();
             String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
@@ -439,7 +444,18 @@ public class TestEU_002 {
         //Test for vertical table
 
     }
+    @Test
+    public void TestMultipleRegexSearches() throws InterruptedException{
+        //navigates to the extraction page and checks that it is in the extraction page
+        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+        extract_button.click();
+        PageRefresh();
 
+        PatternInputStrings("Impacts", "Knowledge");
+        ClickRegexButton();
+
+
+    }
     @AfterClass
     public static void TearDown(){
         //navigates back and deletes the pdf utilized

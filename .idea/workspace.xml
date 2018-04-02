@@ -39,8 +39,8 @@
       <file leaf-file-name="TestEU_002.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="18">
-              <caret line="340" column="32" lean-forward="true" selection-start-line="340" selection-start-column="32" selection-end-line="340" selection-end-column="32" />
+            <state relative-caret-position="543">
+              <caret line="355" column="5" lean-forward="true" selection-start-line="355" selection-start-column="5" selection-end-line="355" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -73,6 +73,7 @@
       <find>regex-search</find>
       <find>pattern_before_input</find>
       <find>SYSTE</find>
+      <find>inclusi</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/src/test/java</dir>
@@ -256,7 +257,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.TestEU_002.TestCaseSensitivity">
+  <component name="RunManager" selected="JUnit.TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="HTML_USED" value="false" />
       <option name="WIDTH" value="400" />
@@ -338,14 +339,14 @@
       <envs />
       <patterns />
     </configuration>
-    <configuration name="TestEU_002.TestWrongInputsforBeforePatternandAfterPattern" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="484_P7_1-GUI" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
       <option name="MAIN_CLASS_NAME" value="TestEU_002" />
-      <option name="METHOD_NAME" value="TestWrongInputsforBeforePatternandAfterPattern" />
+      <option name="METHOD_NAME" value="TestInclusiveInputsforPatternBeforeandPatternAfter" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -525,18 +526,18 @@
       <item index="2" class="java.lang.String" itemvalue="JUnit.TestHelpPage" />
       <item index="3" class="java.lang.String" itemvalue="Maven.Unnamed" />
       <item index="4" class="java.lang.String" itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestMultiPageTables" />
-      <item index="5" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestWrongInputsforBeforePatternandAfterPattern" />
-      <item index="6" class="java.lang.String" itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestInclusiveInputsforPatternBeforeandPatternAfter" />
-      <item index="7" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestHalfRegexInputsforPatternBeforeandPatternAfter" />
-      <item index="8" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestCaseSensitivity" />
+      <item index="5" class="java.lang.String" itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestInclusiveInputsforPatternBeforeandPatternAfter" />
+      <item index="6" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestHalfRegexInputsforPatternBeforeandPatternAfter" />
+      <item index="7" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestCaseSensitivity" />
+      <item index="8" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestCaseSensitivity" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestHalfRegexInputsforPatternBeforeandPatternAfter" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestInclusiveInputsforPatternBeforeandPatternAfter" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestMultiPageTables" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestWrongInputsforBeforePatternandAfterPattern" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestCaseSensitivity" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestHalfRegexInputsforPatternBeforeandPatternAfter" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestInclusiveInputsforPatternBeforeandPatternAfter" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestMultiPageTables" />
       </list>
     </recent_temporary>
   </component>
@@ -792,7 +793,14 @@
       <option name="project" value="LOCAL" />
       <updated>1522168422551</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Added on 3 test cases for case-sensitivity of the eu-002.pdf file. Will move on to work on the test case for multiple regex searches">
+      <created>1522708795612</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1522708795612</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -808,8 +816,8 @@
     <history-entry file="TestEU_002_TestHalfRegexInputsforPatternBeforeandPatternAfter - 2018.04.02 at 18h 15m 51s.xml">
       <configuration name="TestEU_002.TestHalfRegexInputsforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestOneStopVotingSiteListNov2012_TestInclusiveInputsforPatternBeforeandPatternAfter - 2018.03.27 at 12h 24m 06s.xml">
-      <configuration name="TestOneStopVotingSiteListNov2012.TestInclusiveInputsforPatternBeforeandPatternAfter" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestInclusiveInputsforPatternBeforeandPatternAfter - 2018.04.02 at 19h 13m 25s.xml">
+      <configuration name="TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
     <history-entry file="TestOneStopVotingSiteListNov2012_TestInclusiveInputsforPatternBeforeandPatternAfter - 2018.03.27 at 12h 25m 03s.xml">
       <configuration name="TestOneStopVotingSiteListNov2012.TestInclusiveInputsforPatternBeforeandPatternAfter" configurationId="JUnit" />
@@ -864,7 +872,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Reverting to last commit since it is giving a small issue with my workspace file" />
     <MESSAGE value="Fixed errors" />
     <MESSAGE value="Wrapped up the TestExtractionPage, what isn't being tested is mentioned why in the comments. Will start to work on the last component test case before moving onto user case scenario testing" />
     <MESSAGE value="Added on majority of the components tested in Test Preview and Export Data page, current issue with a stale element exception being thrown but should be able to fix it." />
@@ -889,7 +896,8 @@
     <MESSAGE value="Merge remote-tracking branch 'remotes/origin/Header_Addition' into Header_Addition&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml" />
     <MESSAGE value="Added on 2 user scenarios of a 2 page spanning table and a 5 page spanning table. The 5 page spanning table scenario is running into an internal error, and after confirming with Ben testing out the scenario as well, this may be something we may have to further look into." />
     <MESSAGE value="Added on inclusive/exclusive user scenarios for the the one_stop_voting_sit_list_nov2012 pdf file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added on inclusive/exclusive user scenarios for the the one_stop_voting_sit_list_nov2012 pdf file" />
+    <MESSAGE value="Added on 3 test cases for case-sensitivity of the eu-002.pdf file. Will move on to work on the test case for multiple regex searches" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added on 3 test cases for case-sensitivity of the eu-002.pdf file. Will move on to work on the test case for multiple regex searches" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1081,8 +1089,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="340" column="32" lean-forward="true" selection-start-line="340" selection-start-column="32" selection-end-line="340" selection-end-column="32" />
+        <state relative-caret-position="543">
+          <caret line="355" column="5" lean-forward="true" selection-start-line="355" selection-start-column="5" selection-end-line="355" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
