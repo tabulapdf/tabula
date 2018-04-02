@@ -282,7 +282,7 @@ public class TestEU_002 {
             Boolean final_results;
             if(regex_result && regex_data && regex_data2){ final_results = true;}
             else{final_results = false;}
-            assertTrue("Failed, regex found no match for inclusive for pattern before and non-inclusive for " +
+            assertTrue("Failed, Tabula found no match for inclusive for pattern before and non-inclusive for " +
                     "pattern after", final_results);
             driver.navigate().refresh();
             PageRefresh();
@@ -309,7 +309,7 @@ public class TestEU_002 {
             Boolean final_results2;
             if(regex_result3 && regex_data3 && regex_data4){ final_results2 = true;}
             else{final_results2 = false;}
-            assertTrue("Failed, regex found no match for inclusive for pattern after and non-inclusive for " +
+            assertTrue("Failed, Tabula found no match for inclusive for pattern after and non-inclusive for " +
                     "pattern before", final_results2);
             driver.navigate().refresh();
             PageRefresh();
@@ -336,9 +336,8 @@ public class TestEU_002 {
             Boolean final_results3;
             if(regex_result4 && regex_data5 && regex_data6){ final_results3 = true;}
             else{final_results3 = false;}
-            assertTrue("Failed, regex found no match for inclusive for pattern after and inclusive for " +
+            assertTrue("Failed, Tabula found no match for inclusive for pattern after and inclusive for " +
                     "pattern before", final_results3);
-
             driver.navigate().back();
             driver.navigate().back();
             Thread.sleep(500);
@@ -452,9 +451,32 @@ public class TestEU_002 {
         PageRefresh();
 
         PatternInputStrings("Impacts", "Knowledge");
+        InclusiveButtons(true, true);
         ClickRegexButton();
+        String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'2')]")).getText();
+        Boolean regex_result;
+        if(result.equals("2")){ regex_result = true;} //if true, there are zero matches
+        else{ regex_result = false;}
+        PreviewandExportDatapg();
+        Thread.sleep(600);
 
-
+        String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                "'Impacts on participating pupils')]")).getText();
+        Boolean regex_data;
+        if(result_data.equals("Impacts on participating pupils")){ regex_data = true;}
+        else{ regex_data = false;}
+        String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Knowledge/appreciation of school')]")).getText();
+        Boolean regex_data2;
+        if(result_data2.equals("Knowledge/appreciation of school system and")){ regex_data2 = true;}
+        else{ regex_data2 = false;}
+        Boolean final_results;
+        if(regex_result && regex_data && regex_data2){ final_results = true;}
+        else{final_results = false;}
+        assertTrue("Failed, Tabula didn't find the 2 regex matches", final_results);
+        driver.navigate().refresh();
+        PageRefresh();
+        driver.navigate().back();
+        Thread.sleep(500);
     }
     @AfterClass
     public static void TearDown(){

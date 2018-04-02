@@ -39,8 +39,8 @@
       <file leaf-file-name="TestEU_002.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="543">
-              <caret line="355" column="5" lean-forward="true" selection-start-line="355" selection-start-column="5" selection-end-line="355" selection-end-column="5" />
+            <state relative-caret-position="-3576">
+              <caret line="242" column="12" lean-forward="false" selection-start-line="242" selection-start-column="12" selection-end-line="242" selection-end-column="12" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -257,7 +257,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter">
+  <component name="RunManager" selected="JUnit.TestEU_002.TestMultipleRegexSearches">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="HTML_USED" value="false" />
       <option name="WIDTH" value="400" />
@@ -359,6 +359,26 @@
       <envs />
       <patterns />
     </configuration>
+    <configuration name="TestEU_002.TestMultipleRegexSearches" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="484_P7_1-GUI" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
+      <option name="METHOD_NAME" value="TestMultipleRegexSearches" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
     <configuration name="TestHelpPage" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="484_P7_1-GUI" />
@@ -407,26 +427,6 @@
       <option name="PACKAGE_NAME" value="" />
       <option name="MAIN_CLASS_NAME" value="TestOneStopVotingSiteListNov2012" />
       <option name="METHOD_NAME" value="TestInclusiveInputsforPatternBeforeandPatternAfter" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-    </configuration>
-    <configuration name="TestOneStopVotingSiteListNov2012.TestMultiPageTables" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="484_P7_1-GUI" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestOneStopVotingSiteListNov2012" />
-      <option name="METHOD_NAME" value="TestMultiPageTables" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -525,19 +525,19 @@
       <item index="1" class="java.lang.String" itemvalue="JUnit.TestHelpPage.startWebDriver" />
       <item index="2" class="java.lang.String" itemvalue="JUnit.TestHelpPage" />
       <item index="3" class="java.lang.String" itemvalue="Maven.Unnamed" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestMultiPageTables" />
-      <item index="5" class="java.lang.String" itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestInclusiveInputsforPatternBeforeandPatternAfter" />
-      <item index="6" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestHalfRegexInputsforPatternBeforeandPatternAfter" />
-      <item index="7" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestCaseSensitivity" />
-      <item index="8" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestInclusiveInputsforPatternBeforeandPatternAfter" />
+      <item index="5" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestHalfRegexInputsforPatternBeforeandPatternAfter" />
+      <item index="6" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestCaseSensitivity" />
+      <item index="7" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter" />
+      <item index="8" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestMultipleRegexSearches" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestCaseSensitivity" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestHalfRegexInputsforPatternBeforeandPatternAfter" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestInclusiveInputsforPatternBeforeandPatternAfter" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestMultiPageTables" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestMultipleRegexSearches" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestCaseSensitivity" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestHalfRegexInputsforPatternBeforeandPatternAfter" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestInclusiveInputsforPatternBeforeandPatternAfter" />
       </list>
     </recent_temporary>
   </component>
@@ -800,7 +800,14 @@
       <option name="project" value="LOCAL" />
       <updated>1522708795612</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Added on a method to deal with inclusive clicks">
+      <created>1522710904198</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1522710904198</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -819,8 +826,8 @@
     <history-entry file="TestEU_002_TestInclusiveInputsforPatternBeforeandPatternAfter - 2018.04.02 at 19h 13m 25s.xml">
       <configuration name="TestEU_002.TestInclusiveInputsforPatternBeforeandPatternAfter" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestOneStopVotingSiteListNov2012_TestInclusiveInputsforPatternBeforeandPatternAfter - 2018.03.27 at 12h 25m 03s.xml">
-      <configuration name="TestOneStopVotingSiteListNov2012.TestInclusiveInputsforPatternBeforeandPatternAfter" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestMultipleRegexSearches - 2018.04.02 at 19h 25m 14s.xml">
+      <configuration name="TestEU_002.TestMultipleRegexSearches" configurationId="JUnit" />
     </history-entry>
     <history-entry file="TestOneStopVotingSiteListNov2012_TestInclusiveInputsforPatternBeforeandPatternAfter - 2018.03.27 at 12h 27m 03s.xml">
       <configuration name="TestOneStopVotingSiteListNov2012.TestInclusiveInputsforPatternBeforeandPatternAfter" configurationId="JUnit" />
@@ -848,7 +855,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13513513" sideWeight="0.18278751" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.09009009" sideWeight="0.83092153" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.05255255" sideWeight="0.81721246" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.118618615" sideWeight="0.81721246" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -872,7 +879,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed errors" />
     <MESSAGE value="Wrapped up the TestExtractionPage, what isn't being tested is mentioned why in the comments. Will start to work on the last component test case before moving onto user case scenario testing" />
     <MESSAGE value="Added on majority of the components tested in Test Preview and Export Data page, current issue with a stale element exception being thrown but should be able to fix it." />
     <MESSAGE value="Completed the Test Preview and Export Data page, and that was the last of the component testing! What isn't tested, which is just one button is mentioned why on the test case- shouldn't affect the overall functionality and am okay if that button is not tested for; other comments and small things to fix are mentioned in the comments. Will begin the user scenario testing with the first round of pdf files." />
@@ -897,7 +903,8 @@
     <MESSAGE value="Added on 2 user scenarios of a 2 page spanning table and a 5 page spanning table. The 5 page spanning table scenario is running into an internal error, and after confirming with Ben testing out the scenario as well, this may be something we may have to further look into." />
     <MESSAGE value="Added on inclusive/exclusive user scenarios for the the one_stop_voting_sit_list_nov2012 pdf file" />
     <MESSAGE value="Added on 3 test cases for case-sensitivity of the eu-002.pdf file. Will move on to work on the test case for multiple regex searches" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added on 3 test cases for case-sensitivity of the eu-002.pdf file. Will move on to work on the test case for multiple regex searches" />
+    <MESSAGE value="Added on a method to deal with inclusive clicks" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added on a method to deal with inclusive clicks" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1089,8 +1096,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="543">
-          <caret line="355" column="5" lean-forward="true" selection-start-line="355" selection-start-column="5" selection-end-line="355" selection-end-column="5" />
+        <state relative-caret-position="-3576">
+          <caret line="242" column="12" lean-forward="false" selection-start-line="242" selection-start-column="12" selection-end-line="242" selection-end-column="12" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
