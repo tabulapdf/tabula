@@ -1,19 +1,15 @@
 sudo: false
-language: java
+language: ruby
 before_install:
   - gem update --system
   - gem install bundler
   - gem install jbundler
-  - wget https://github.com/mozilla/geckodriver/releases/download/v0.20.0/geckodriver-v0.20.0-linux64.tar.gz
-  - mkdir geckodriver
-  - tar -xzf geckodriver-v0.20.0-linux64.tar.gz -C geckodriver
-  - export PATH=$PATH:$PWD/geckodriver
-install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
+rvm:
+  - jruby-9.1.9.0
 jdk:
   - oraclejdk8
   - openjdk7
-script:
-  - bundle exec jbundle install && bundle exec rake war && bundle exec rake jardist
-  - mvn test -Dgpg.skip=true
+script: bundle exec jbundle install && bundle exec rake war && bundle exec rake jardist
 notifications:
   email: false
+
