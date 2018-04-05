@@ -1022,16 +1022,16 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
 
       this.header_view.$el.css({
         top: 0,
-        left: self.$el.find('.page')['0'].offsetLeft,
-        width: $(self.image).width(),
+        left: this.$el.find('.page')['0'].offsetLeft,
+        width: $(this.image).width(),
         height: Tabula.pdf_view.components['document_view'].header_height
       });
 
       this.footer_view.$el.show();
       this.footer_view.$el.css({
-        top: $(self.image).height() - Tabula.pdf_view.components['document_view'].footer_height,
-        left: self.$el.find('.page')['0'].offsetLeft,
-        width: $(self.image).width(),
+        top: $(this.image).height() - Tabula.pdf_view.components['document_view'].footer_height,
+        left: this.$el.find('.page')['0'].offsetLeft,
+        width: $(this.image).width(),
         height: Tabula.pdf_view.components['document_view'].footer_height
       });
     }

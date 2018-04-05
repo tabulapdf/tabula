@@ -354,7 +354,7 @@ Cuba.define do
 
         regex_query_meta_data.filter_area = Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['header_scale'].to_f,
                                                                                               req.params['footer_scale'].to_f)
-                                                                                              
+
 
         puts regex_query_meta_data.filter_area
 
@@ -571,7 +571,7 @@ Cuba.define do
 
         user_drawn_selections.each do |s|
           drawn_boxes_cli_string = drawn_boxes_cli_string +
-            "-a #{s['y1'].round(3)},#{s['x1'].round(3)},#{s['y2'].round(3)},#{s['x2'].round(3)} -p #{s['page']}"
+            " -a #{s['y1'].round(3)},#{s['x1'].round(3)},#{s['y2'].round(3)},#{s['x2'].round(3)} -p #{s['page']}"
         end
 
        extraction_cli_string = ''
