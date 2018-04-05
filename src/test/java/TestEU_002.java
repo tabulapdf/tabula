@@ -462,10 +462,12 @@ public class TestEU_002 {
 
         String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                 "'Impacts on participating pupils')]")).getText();
+        System.out.print(result_data);
         Boolean regex_data;
         if(result_data.equals("Impacts on participating pupils")){ regex_data = true;}
         else{ regex_data = false;}
         String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Knowledge/appreciation of school')]")).getText();
+        System.out.print(result_data2);
         Boolean regex_data2;
         if(result_data2.equals("Knowledge/appreciation of school system and")){ regex_data2 = true;}
         else{ regex_data2 = false;}
