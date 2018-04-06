@@ -51,8 +51,8 @@
       <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+            <state relative-caret-position="234">
+              <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -141,10 +141,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="257" />
-    <option name="y" value="13" />
-    <option name="width" value="875" />
-    <option name="height" value="752" />
+    <option name="x" value="521" />
+    <option name="y" value="24" />
+    <option name="width" value="873" />
+    <option name="height" value="744" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -575,13 +575,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00001" summary="Initial additions front-end testing files. Currently this first test is failing, will be updated.">
-      <created>1518393101424</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1518393101425</updated>
-    </task>
     <task id="LOCAL-00002" summary="Added on to component testing for the home page. Need to finish testing last bit of components and then need to go back to the TestHelpPage and test hover menu.">
       <created>1518418761098</created>
       <option name="number" value="00002" />
@@ -918,7 +911,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523036445048</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="took off the jbundle update line off the travis file">
+      <created>1523036641988</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1523036641989</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -990,7 +990,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="mMade another method to eliminate some redundant code and fixed up some previous test cases" />
     <MESSAGE value="Noticed some issues with the refresh method I had for the test classes, have changed it for it to only refresh when the menu bar disappears. Doesn't necessary hurt if the pdf bar or pdf view is not present since it doesn't affect the test cases. Will be updating this method to previous test cases that need it. Also implemented a more correct way to vertify tabula is gathering the correct data based on the output" />
     <MESSAGE value="Noticed some issues with the refresh method I had for the test classes, have changed it for it to only refresh when the menu bar disappears. Doesn't necessary hurt if the pdf bar or pdf view is not present since it doesn't affect the test cases. Will be updating this method to previous test cases that need it. Also implemented a more correct way to verify tabula is gathering the correct data based on the output" />
     <MESSAGE value="Fixed up and cleaned up some prior test cases that utilize the refreshpage method, as well as added on the extra data verification for regex inputs. Will move on to the next set of user scenarios" />
@@ -1015,7 +1014,8 @@
     <MESSAGE value="took off certain lines that were giving an exit code of 1 in the travis file, going to see if that will arise new problems" />
     <MESSAGE value="added on chrome addon from what was recommended on the travis documentation page" />
     <MESSAGE value="added on more commands to the install and before_install sections" />
-    <option name="LAST_COMMIT_MESSAGE" value="added on more commands to the install and before_install sections" />
+    <MESSAGE value="took off the jbundle update line off the travis file" />
+    <option name="LAST_COMMIT_MESSAGE" value="took off the jbundle update line off the travis file" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1210,8 +1210,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        <state relative-caret-position="234">
+          <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
           <folding />
         </state>
       </provider>
