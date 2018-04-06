@@ -6,16 +6,14 @@ before_install:
   - gem update --system
   - gem install bundler
   - gem install jbundler
-  - bundle install
-  - jruby -S jbundle install
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
-  - jruby -G -r jbundler -S rackup
 jdk:
-  - openjdk7
   - oraclejdk8
+  - openjdk7
 script:
+  -  - bundle exec jbundle install && bundle exec rake war && bundle exec rake jardist
   - mvn test -Dgpg.skip=true
 notifications:
   email: false
