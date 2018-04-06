@@ -7,7 +7,6 @@ before_install:
   - gem install bundler
   - gem install jbundler
   - bundle install
-  - jbundle update
   - jruby -S jbundle install
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 install:
