@@ -8,8 +8,9 @@ install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true 
 jdk:
   - openjdk7
   - oraclejdk8
-script: - bundle exec jbundle install && bundle exec rake war && bundle exec rake jardist
-        - mvn test -Dgpg.skip=true
+script:
+  - bundle exec jbundle install && bundle exec rake war && bundle exec rake jardist
+  - mvn test -Dgpg.skip=true
 notifications:
   email: false
 
