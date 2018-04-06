@@ -12,7 +12,6 @@ jdk:
   - oraclejdk8
   - openjdk7
 script:
-  - bundle exec jbundle install && bundle exec rake war && bundle exec rake jardist
   - mvn test -Dgpg.skip=true
 notifications:
   email: false
