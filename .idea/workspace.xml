@@ -51,8 +51,8 @@
       <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="6" column="99" lean-forward="false" selection-start-line="6" selection-start-column="99" selection-end-line="6" selection-end-column="99" />
+            <state relative-caret-position="252">
+              <caret line="14" column="4" lean-forward="false" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -141,8 +141,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="300" />
-    <option name="y" value="1" />
+    <option name="x" value="257" />
+    <option name="y" value="13" />
     <option name="width" value="875" />
     <option name="height" value="752" />
   </component>
@@ -904,7 +904,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523034053074</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="added on chrome addon from what was recommended on the travis documentation page">
+      <created>1523034528425</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1523034528425</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -976,7 +983,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added on another test case that inputs 2 incorrect inputs to the pattern before and pattern after and checks that there are zero results" />
     <MESSAGE value="Added on more test scenarios of inputting a common word and a correct input to pattern before and pattern after" />
     <MESSAGE value="mMade another method to eliminate some redundant code and fixed up some previous test cases" />
     <MESSAGE value="Noticed some issues with the refresh method I had for the test classes, have changed it for it to only refresh when the menu bar disappears. Doesn't necessary hurt if the pdf bar or pdf view is not present since it doesn't affect the test cases. Will be updating this method to previous test cases that need it. Also implemented a more correct way to vertify tabula is gathering the correct data based on the output" />
@@ -1001,7 +1007,8 @@
     <MESSAGE value="updated pom file, need to find a way to put a parent tag (?)" />
     <MESSAGE value="updated release info on pom file" />
     <MESSAGE value="took off certain lines that were giving an exit code of 1 in the travis file, going to see if that will arise new problems" />
-    <option name="LAST_COMMIT_MESSAGE" value="took off certain lines that were giving an exit code of 1 in the travis file, going to see if that will arise new problems" />
+    <MESSAGE value="added on chrome addon from what was recommended on the travis documentation page" />
+    <option name="LAST_COMMIT_MESSAGE" value="added on chrome addon from what was recommended on the travis documentation page" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1196,8 +1203,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="6" column="99" lean-forward="false" selection-start-line="6" selection-start-column="99" selection-end-line="6" selection-end-column="99" />
+        <state relative-caret-position="252">
+          <caret line="14" column="4" lean-forward="false" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
           <folding />
         </state>
       </provider>

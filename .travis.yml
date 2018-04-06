@@ -3,9 +3,16 @@ language: java
 addons:
   chrome: stable
 before_install:
-  - # start your web application and listen on `localhost`
-    - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
-install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
+  - gem update --system
+  - gem install bundler
+  - gem install jbundler
+  - bundle install
+  - jbundle update
+  - jruby -S jbundle install
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+install:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
+  - jruby -G -r jbundler -S rackup
 jdk:
   - openjdk7
   - oraclejdk8
