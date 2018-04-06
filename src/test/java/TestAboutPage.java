@@ -17,9 +17,10 @@ import static junit.framework.TestCase.assertTrue;
 // menu is not tested for since it is already tested in TestHomePage.
 //@author: SM  modified: 2/22/18
 public class TestAboutPage {
-  WebDriver driver;
+    WebDriver driver;
     @Test
-    public void startWebDriver() throws InterruptedException{
+    public void startWebDriver(){
+        System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver.exe");
         driver = new ChromeDriver();
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
