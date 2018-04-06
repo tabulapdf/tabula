@@ -2,9 +2,39 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_findbugs_jsr305_1_3_9.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_gson_gson_2_8_2.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_errorprone_error_prone_annotations_2_1_3.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_23_6_jre.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_j2objc_j2objc_annotations_1_1.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okhttp3_okhttp_3_9_1.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okio_okio_1_13_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_10.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_2.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_12.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_7_9.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_exec_1_3.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpclient_4_5_3.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpcore_4_4_6.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_0_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_checkerframework_checker_compat_qual_2_0_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_codehaus_mojo_animal_sniffer_annotations_1_14.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_1_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_1_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_opentest4j_opentest4j_1_0_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_api_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_chrome_driver_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_edge_driver_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_firefox_driver_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_ie_driver_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_java_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_opera_driver_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_remote_driver_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_safari_driver_3_11_0.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_support_3_11_0.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/484_P7_1-GUI.iml" afterPath="$PROJECT_DIR$/484_P7_1-GUI.iml" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change beforePath="$PROJECT_DIR$/.travis.yml" afterPath="$PROJECT_DIR$/.travis.yml" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -49,21 +79,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="false">
+      <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+            <state relative-caret-position="54">
+              <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="5" selection-end-column="18" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="11" column="20" lean-forward="false" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -124,8 +154,8 @@
         <option value="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
-        <option value="$PROJECT_DIR$/.travis.yml" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/.travis.yml" />
       </list>
     </option>
   </component>
@@ -576,13 +606,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00004" summary="Added on searching for Tabula's source code page, the test is currently failing after adding on that portion. WIll look into it to see why it is failing.">
-      <created>1518451743216</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1518451743216</updated>
-    </task>
     <task id="LOCAL-00005" summary="Completed Test case for homepage, minor things that are not checked are mentioned why in the test case.">
       <created>1518811728912</created>
       <option name="number" value="00005" />
@@ -919,7 +942,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523037459806</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="going back to original pom file">
+      <created>1523038524091</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1523038524091</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -991,7 +1021,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed up and cleaned up some prior test cases that utilize the refreshpage method, as well as added on the extra data verification for regex inputs. Will move on to the next set of user scenarios" />
     <MESSAGE value="Got rid of more redundant code, updated the pom file, and added on 3 more test scenarios that use inclusive" />
     <MESSAGE value="Added on test case that tests a text-based image and verifies it's data" />
     <MESSAGE value="Added on new test pdf file, to add on some more complicated user scenarios" />
@@ -1016,7 +1045,8 @@
     <MESSAGE value="took off the jbundle update line off the travis file" />
     <MESSAGE value="deleted some lines in the travis file regarding the set up of the gui repo" />
     <MESSAGE value="trying to see why travis-ci is not at least seeing the test cases" />
-    <option name="LAST_COMMIT_MESSAGE" value="trying to see why travis-ci is not at least seeing the test cases" />
+    <MESSAGE value="going back to original pom file" />
+    <option name="LAST_COMMIT_MESSAGE" value="going back to original pom file" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1201,18 +1231,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.travis.yml">
+    <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
+    <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" column="20" lean-forward="false" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+        <state relative-caret-position="54">
+          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="5" selection-end-column="18" />
           <folding />
         </state>
       </provider>
