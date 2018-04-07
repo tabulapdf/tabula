@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -21,8 +22,12 @@ import static junit.framework.TestCase.assertTrue;
 public class TestHomePage {
     WebDriver driver;
     @Test
-    public void startWebDriver() throws InterruptedException{
-        driver = new ChromeDriver();
+    public void startWebDriver(){
+        System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("headless");
+
+        driver = new ChromeDriver(options);
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 100);
@@ -36,14 +41,11 @@ public class TestHomePage {
             By upload__id = By.linkText("My Files");
             WebElement upload_icon = wait.until(ExpectedConditions.visibilityOfElementLocated(upload__id));
             upload_icon.click();
-           // WebElement upload_icon2 = wait.until(ExpectedConditions.visibilityOfElementLocated(upload__id));
-           // upload_icon2.click();
 
             By templates_id = By.linkText("My Templates");
             WebElement templates_icon = wait.until(ExpectedConditions.visibilityOfElementLocated(templates_id));
             templates_icon.click();
-          //  WebElement templates_icon2 = wait.until(ExpectedConditions.visibilityOfElementLocated(templates_id));
-          //  templates_icon2.click();
+
             String text_template = "My Saved Templates";
             By saved_template_classname = By.className("my_saved_template_title");
             WebElement template_title = wait.until(ExpectedConditions.visibilityOfElementLocated(saved_template_classname));
@@ -53,8 +55,7 @@ public class TestHomePage {
             By about_id = By.linkText("About");
             WebElement about_icon = wait.until(ExpectedConditions.visibilityOfElementLocated(about_id));
             about_icon.click();
-          //  WebElement about_icon2 = wait.until(ExpectedConditions.visibilityOfElementLocated(about_id));
-          //  about_icon2.click();
+
             String about_title = "About Tabula";
             By abouttabula_classname = By.className("abouttabula");
             WebElement abouttabula = wait.until(ExpectedConditions.visibilityOfElementLocated(abouttabula_classname));
@@ -64,8 +65,7 @@ public class TestHomePage {
             By help_id = By.linkText("Help");
             WebElement help_icon = wait.until(ExpectedConditions.visibilityOfElementLocated(help_id));
             help_icon.click();
-          //  WebElement help_icon2 = wait.until(ExpectedConditions.visibilityOfElementLocated(help_id));
-          //  help_icon2.click();
+
             String help_title = "How to Use Tabula";
             By helptabula_id = By.id("tabulahelp");
             WebElement helptabula = wait.until(ExpectedConditions.visibilityOfElementLocated(helptabula_id));
@@ -75,8 +75,7 @@ public class TestHomePage {
             By source_code_id = By.linkText("Source Code");
             WebElement source_code_icon = wait.until(ExpectedConditions.elementToBeClickable(source_code_id));
             source_code_icon.click();
-           // WebElement source_code_icon2 = wait.until(ExpectedConditions.elementToBeClickable(source_code_id));
-           // source_code_icon2.click();
+
             String github_url = "https://github.com/tabulapdf/tabula";
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             assertTrue("Failed, couldn't find Tabula's GitHub page", driver.getCurrentUrl().equals(github_url));
@@ -119,9 +118,7 @@ public class TestHomePage {
             Thread.sleep(1000);
 
         }catch(Exception e){
-            System.out.print(e);
-
-        }
+            System.out.print(e); }
     }
     //whether the test case passes or not, the instance of the browser will close
     @After
