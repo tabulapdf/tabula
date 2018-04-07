@@ -13,6 +13,12 @@ before_install:
   - sudo mv chromedriver /usr/local/bin
   - sudo chmod a+x /usr/local/bin/chromedriver
   # start the server
+  - git clone https://github.com/redmyers/484_P7_1-GUI.git
+  - git checkout Regex_Front_End
+  - gem install bundler
+  - bundle install
+  - jruby -S jbundle install
+  - jruby -G -r jbundler -S rackup
 
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
