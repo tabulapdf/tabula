@@ -8,7 +8,7 @@ before_install:
   - gem install jbundler
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   # google chrome standalone driver
-  - wget http://chromedriver.storage.googleapis.com/2.10/chromedriver_linux64.zip
+  - wget http://chromedriver.storage.googleapis.com/2.37/chromedriver_linux64.zip
   - unzip chromedriver_linux64.zip
   - sudo mv chromedriver /usr/local/bin
   - sudo chmod a+x /usr/local/bin/chromedriver
