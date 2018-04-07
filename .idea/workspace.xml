@@ -39,8 +39,8 @@
       <file leaf-file-name="TestAboutPage.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="22" column="56" lean-forward="false" selection-start-line="22" selection-start-column="56" selection-end-line="22" selection-end-column="56" />
+            <state relative-caret-position="270">
+              <caret line="26" column="48" lean-forward="true" selection-start-line="26" selection-start-column="48" selection-end-line="26" selection-end-column="48" />
               <folding />
             </state>
           </provider>
@@ -150,11 +150,11 @@
       </MavenImportingSettings>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="4">
-    <option name="x" value="709" />
-    <option name="y" value="24" />
-    <option name="width" value="657" />
-    <option name="height" value="744" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="295" />
+    <option name="y" value="6" />
+    <option name="width" value="875" />
+    <option name="height" value="752" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -585,13 +585,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00007" summary="wrapped up the About page test case, had an issue with testing for multiple tabs but after searching it and the solutions found not working for tabs on firefox-I don't directly test for the tabs on the test case. So the test case only incorporates checking for links and opening tabs for links that are redirected.">
-      <created>1519338414242</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1519338414243</updated>
-    </task>
     <task id="LOCAL-00008" summary="Added on TestHelpPage test case which tests the different components of the help page. Currently, have to debug why some of the pages are causing the test to fail and have to go in comment on what is being tested and why Thread.sleep() is used although it isn't suggested.">
       <created>1519369418529</created>
       <option name="number" value="00008" />
@@ -928,7 +921,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523045694412</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="Fixed setproperty, and going to see if this fixed the problem">
+      <created>1523068991787</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1523068991787</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -964,7 +964,7 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="709" y="24" width="657" height="744" extended-state="4" />
+    <frame x="52" y="-4" width="1315" height="773" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -979,7 +979,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0045801527" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.002284844" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Learn" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1000,7 +1000,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added on new test pdf file, to add on some more complicated user scenarios" />
     <MESSAGE value="Merge remote-tracking branch 'remotes/origin/Header_Addition' into Header_Addition&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml" />
     <MESSAGE value="Added on 2 user scenarios of a 2 page spanning table and a 5 page spanning table. The 5 page spanning table scenario is running into an internal error, and after confirming with Ben testing out the scenario as well, this may be something we may have to further look into." />
     <MESSAGE value="Added on inclusive/exclusive user scenarios for the the one_stop_voting_sit_list_nov2012 pdf file" />
@@ -1025,7 +1024,8 @@
     <MESSAGE value="going back to original pom file" />
     <MESSAGE value="re-added on chrome settings to the travis file. Seems like the extra things I had put to the pom file is what was causing the problem" />
     <MESSAGE value="Added on the system.setproperty to see if that will fix the issue with the exception being thrown" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added on the system.setproperty to see if that will fix the issue with the exception being thrown" />
+    <MESSAGE value="Fixed setproperty, and going to see if this fixed the problem" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed setproperty, and going to see if this fixed the problem" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1221,8 +1221,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="22" column="56" lean-forward="false" selection-start-line="22" selection-start-column="56" selection-end-line="22" selection-end-column="56" />
+        <state relative-caret-position="270">
+          <caret line="26" column="48" lean-forward="true" selection-start-line="26" selection-start-column="48" selection-end-line="26" selection-end-column="48" />
           <folding />
         </state>
       </provider>
