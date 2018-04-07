@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -18,10 +19,15 @@ import static junit.framework.TestCase.assertTrue;
 //@author: SM  modified: 2/22/18
 public class TestAboutPage {
     WebDriver driver;
+
     @Test
     public void startWebDriver(){
-        System.setProperty("webdriver.chrome.driver","/SeleniumChrome/chromedriver.exe");
-        driver = new ChromeDriver();
+        System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("headless");
+        options.addArguments("window-size=1200x600");
+
+        driver = new ChromeDriver(options);
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 100);
