@@ -18,6 +18,7 @@ install:
   # download and use jruby
   - wget https://repo1.maven.org/maven2/org/jruby/jruby-dist/9.1.16.0/jruby-dist-9.1.16.0-bin.zip
   - mv jruby-dist-9.1.16.0-bin.zip ~/
+  - mv ~/
   - unzip jruby-dist-9.1.16.0-bin.zip
   # start the server
   - git clone https://github.com/redmyers/484_P7_1-GUI.git
