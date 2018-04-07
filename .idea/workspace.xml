@@ -82,7 +82,7 @@
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="334">
-              <caret line="20" column="9" lean-forward="false" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="9" />
+              <caret line="20" column="40" lean-forward="false" selection-start-line="20" selection-start-column="40" selection-end-line="20" selection-end-column="40" />
               <folding />
             </state>
           </provider>
@@ -594,13 +594,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00022" summary="Added on some beginning test cases for eu-002.pdf, testing for the regex search disabled button">
-      <created>1521868628829</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1521868628829</updated>
-    </task>
     <task id="LOCAL-00023" summary="Added on a new method to test for incorrect inputs for pattern after and pattern before">
       <created>1521926671143</created>
       <option name="number" value="00023" />
@@ -937,7 +930,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523144683347</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="Noticed that i was setting the path of jruby from a wrong location match again">
+      <created>1523144841417</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1523144841417</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1059,7 +1059,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated pom file, need to find a way to put a parent tag (?)" />
     <MESSAGE value="updated release info on pom file" />
     <MESSAGE value="took off certain lines that were giving an exit code of 1 in the travis file, going to see if that will arise new problems" />
     <MESSAGE value="added on chrome addon from what was recommended on the travis documentation page" />
@@ -1084,7 +1083,8 @@
     <MESSAGE value="Added on jruby info to the travis file" />
     <MESSAGE value="Added on jruby info to the travis file again" />
     <MESSAGE value="Noticed that i was setting the path of jruby from a wrong location match" />
-    <option name="LAST_COMMIT_MESSAGE" value="Noticed that i was setting the path of jruby from a wrong location match" />
+    <MESSAGE value="Noticed that i was setting the path of jruby from a wrong location match again" />
+    <option name="LAST_COMMIT_MESSAGE" value="Noticed that i was setting the path of jruby from a wrong location match again" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1279,7 +1279,7 @@
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="334">
-          <caret line="20" column="9" lean-forward="false" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="9" />
+          <caret line="20" column="40" lean-forward="false" selection-start-line="20" selection-start-column="40" selection-end-line="20" selection-end-column="40" />
           <folding />
         </state>
       </provider>
