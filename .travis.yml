@@ -14,7 +14,7 @@ before_install:
   - sudo chmod a+x /usr/local/bin/chromedriver
   # start the server
   - git clone https://github.com/redmyers/484_P7_1-GUI.git
-  - git checkout Regex_Front_End
+  - git checkout origin/Header_Addition
   - gem install bundler
   - bundle install
   - jruby -S jbundle install
