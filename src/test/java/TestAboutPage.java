@@ -22,7 +22,7 @@ public class TestAboutPage {
 
     @Test
     public void startWebDriver(){
-        System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
+        System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless");
         options.addArguments("window-size=1200x600");
