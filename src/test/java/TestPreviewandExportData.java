@@ -3,7 +3,8 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -21,18 +22,23 @@ import static org.junit.Assert.assertFalse;
 // For this test case, eu_002.pdf is utilized.
 // @author SM modified: 3/10/18
 public class TestPreviewandExportData {
-    public void PageRefresh() throws InterruptedException {
+    private void PageRefresh() throws InterruptedException {
         //menu options did not fully load
-        Thread.sleep(500);
+        Thread.sleep(1000);
         //refresh the page
-        while(driver.findElements( By.id("restore-detected-tables")).size() == 0) driver.navigate().refresh();
-        Thread.sleep(500);
-
+        while(driver.findElements( By.id("restore-detected-tables")).size() == 0) {
+            driver.navigate().refresh();
+            Thread.sleep(700);
+        }
     }
     WebDriver driver;
     @Test
     public void startWebDriver() throws InterruptedException {
-        driver = new FirefoxDriver();
+        System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("headless");
+
+        driver = new ChromeDriver(options);
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 100);
@@ -46,9 +52,9 @@ public class TestPreviewandExportData {
         //navigates to the extraction page and checks that it is in the extraction page
         By extract_name = By.linkText("Extract Data");
         WebElement extract_button = wait.until(ExpectedConditions.visibilityOfElementLocated(extract_name));
-       // Thread.sleep(1000);
+        Thread.sleep(1000);
         extract_button.click();
-       // Thread.sleep(1000);
+        Thread.sleep(1000);
 
         PageRefresh();
         //clicks on the Autodetect Tables and waits for Tabula to detect something (this will not be extensively tested
@@ -73,7 +79,7 @@ public class TestPreviewandExportData {
         assertTrue("Failed, couldn't find Extraction page", regex_options_string.equals(regex_options.getText()));
         driver.navigate().back();
         //counts the number of rows displayed when the stream button is set to default and compares the row count
-       // Thread.sleep(1000);
+        Thread.sleep(1000);
         List<WebElement> stream_rows = driver.findElements(By.className("detection-row"));
         int stream_count = stream_rows.size();
         int stream_hc_count = 38;
@@ -81,7 +87,7 @@ public class TestPreviewandExportData {
 
         By lattice_id = By.id("spreadsheet-method-btn");
         WebElement lattice_button = wait.until(ExpectedConditions.elementToBeClickable(lattice_id));
-       // Thread.sleep(1000);
+        Thread.sleep(1000);
         lattice_button.click();
         List<WebElement> lattice_rows = driver.findElements(By.className("detection-row"));
         int lattice_count = lattice_rows.size();
