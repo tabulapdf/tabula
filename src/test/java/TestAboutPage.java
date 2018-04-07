@@ -25,7 +25,6 @@ public class TestAboutPage {
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless");
-        options.addArguments("window-size=1200x600");
 
         driver = new ChromeDriver(options);
         driver.get("http://127.0.0.1:9292/");
@@ -57,7 +56,7 @@ public class TestAboutPage {
             By Manuel_text = By.linkText("Manuel Aristarán");
             WebElement Manuel_link = wait.until(ExpectedConditions.elementToBeClickable(Manuel_text));
             Manuel_link.click();
-            Thread.sleep(4000);
+            Thread.sleep(3000);
 
             By Mike_text = By.linkText("Mike Tigas");
             WebElement Mike_link = wait.until(ExpectedConditions.elementToBeClickable(Mike_text));
@@ -135,7 +134,6 @@ public class TestAboutPage {
 
         }catch(Exception e){
             System.out.print(e);
-
         }
     }
     @After

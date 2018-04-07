@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -22,9 +23,22 @@ import static junit.framework.TestCase.assertTrue;
 // @author SM modified: 3/6/18
 public class TestExtractionPage {
     WebDriver driver;
+    private void PageRefresh() throws InterruptedException {
+        //menu options did not fully load
+        Thread.sleep(1000);
+        //refresh the page
+        while(driver.findElements( By.id("restore-detected-tables")).size() == 0) {
+            driver.navigate().refresh();
+            Thread.sleep(700);
+        }
+    }
     @Test
     public void startWebDriver() throws InterruptedException{
-        driver = new ChromeDriver();
+        System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("headless");
+
+        driver = new ChromeDriver(options);
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 200);
@@ -42,29 +56,20 @@ public class TestExtractionPage {
             driver.manage().timeouts().pageLoadTimeout(300, TimeUnit.SECONDS);
 
             //menu options did not fully load
-            if(driver.findElements( By.id("restore-detected-tables")).size() == 0){
-                //refresh the page
-                driver.navigate().refresh();
-            }
-            if(driver.findElements(By.id("thumbnail-list")).size() == 0){
-                //refresh the page
-                driver.navigate().refresh();
-            }
+            PageRefresh();
+
             String regex_options_string = "Regex Options";
             By regex_options_title = By.id("regex_options_title");
             WebElement regex_options = wait.until(ExpectedConditions.visibilityOfElementLocated(regex_options_title));
             driver.manage().timeouts().pageLoadTimeout(200, TimeUnit.SECONDS);
             assertTrue("Failed, couldn't find Extraction page", regex_options_string.equals(regex_options.getText()));
-            //Thread.sleep(5000);
             //checking that the PDF outline sidebar is visible
             By sidebar_title = By.id("sidebar");
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
-            //Thread.sleep(2000);
             assertTrue("PDF sidebar is not visible in Extraction page", driver.findElement(sidebar_title).isDisplayed());
             //clicking PDF outline button and checking if sidebar is not visible
             By pdf_outline_id = By.id("pdf_outline_title");
             WebElement pdf_outline_button = wait.until(ExpectedConditions.visibilityOfElementLocated(pdf_outline_id));
-            //Thread.sleep(2000);
             pdf_outline_button.click();
             By sidebar_check = By.id("sidebar");
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
@@ -91,13 +96,11 @@ public class TestExtractionPage {
             regex_options_button.click();
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             assertFalse("Regex Options sidebar is visible in Extraction page", regex_command_string.equals(regex_command.getText()));
-           // Thread.sleep(2000);
 
             //waits for the templates button and then clicks on it, and checks that the templates content appears
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             By templates_name = By.id("templates_title");
             WebElement templates_button = wait.until(ExpectedConditions.elementToBeClickable(templates_name));
-          //  Thread.sleep(2000);
             templates_button.click();
             String templates_list_string = "Load templates:";
             By templates_list_title = By.id("loaded_templates_title");

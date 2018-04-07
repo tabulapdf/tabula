@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -15,8 +16,12 @@ import static junit.framework.TestCase.assertTrue;
 public class TestMyTemplatesPage {
     WebDriver driver;
     @Test
-    public void startWebDriver() throws InterruptedException {
-        driver = new ChromeDriver();
+    public void startWebDriver(){
+        System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("headless");
+
+        driver = new ChromeDriver(options);
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 100);
