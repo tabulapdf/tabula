@@ -12,16 +12,16 @@ before_install:
   - unzip chromedriver_linux64.zip
   - sudo mv chromedriver /usr/local/bin
   - sudo chmod a+x /usr/local/bin/chromedriver
-  # download and use jruby
-  - wget https://repo1.maven.org/maven2/org/jruby/jruby-dist/9.1.16.0/jruby-dist-9.1.16.0-bin.zip
-  - unzip jruby-dist-9.1.16.0-bin
-  - export PATH=~/jruby/bin:$PATH
 
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
+  # download and use jruby
+  - wget https://repo1.maven.org/maven2/org/jruby/jruby-dist/9.1.16.0/jruby-dist-9.1.16.0-bin.zip
+  - unzip jruby-dist-9.1.16.0-bin
   # start the server
   - git clone https://github.com/redmyers/484_P7_1-GUI.git
   - git checkout origin/Header_Addition
+  - export PATH=~/jruby/bin:$PATH
   - gem install bundler
   - bundle install
   - jruby -S jbundle install

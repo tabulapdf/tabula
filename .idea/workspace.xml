@@ -81,8 +81,8 @@
       <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="17" column="33" lean-forward="false" selection-start-line="17" selection-start-column="33" selection-end-line="17" selection-end-column="33" />
+            <state relative-caret-position="388">
+              <caret line="23" column="2" lean-forward="false" selection-start-line="23" selection-start-column="2" selection-end-line="23" selection-end-column="2" />
               <folding />
             </state>
           </provider>
@@ -594,13 +594,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00019" summary="Added on pathname of the geckodriver in one of the test case files">
-      <created>1520968351169</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1520968351169</updated>
-    </task>
     <task id="LOCAL-00020" summary="Added on more commands before the script for the travis file, testing to see if it will work">
       <created>1521051824260</created>
       <option name="number" value="00020" />
@@ -937,7 +930,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523135562140</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="Added on jruby info to the travis file">
+      <created>1523143975215</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1523143975215</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1059,7 +1059,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated the pom file" />
     <MESSAGE value="updated the pom file again" />
     <MESSAGE value="updated to latest version on the pom file with maven" />
     <MESSAGE value="updated pom file, need to find a way to put a parent tag (?)" />
@@ -1084,7 +1083,8 @@
     <MESSAGE value="Committing changes to the workspace file again" />
     <MESSAGE value="added on more lines to the travis file to test if it will run the test correctly. Current got the chromedriver to run for majority of the test cases" />
     <MESSAGE value="Fixed error on the line that checks out a branch" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed error on the line that checks out a branch" />
+    <MESSAGE value="Added on jruby info to the travis file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added on jruby info to the travis file" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1278,8 +1278,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="17" column="33" lean-forward="false" selection-start-line="17" selection-start-column="33" selection-end-line="17" selection-end-column="33" />
+        <state relative-caret-position="388">
+          <caret line="23" column="2" lean-forward="false" selection-start-line="23" selection-start-column="2" selection-end-line="23" selection-end-column="2" />
           <folding />
         </state>
       </provider>
