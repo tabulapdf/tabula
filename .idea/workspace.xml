@@ -81,8 +81,8 @@
       <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="388">
-              <caret line="23" column="2" lean-forward="false" selection-start-line="23" selection-start-column="2" selection-end-line="23" selection-end-column="2" />
+            <state relative-caret-position="316">
+              <caret line="19" column="34" lean-forward="false" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -594,13 +594,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00020" summary="Added on more commands before the script for the travis file, testing to see if it will work">
-      <created>1521051824260</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1521051824260</updated>
-    </task>
     <task id="LOCAL-00021" summary="Changed for all test cases so far to use ChromeDriver as opposed to FirefoxDriver, added on a better solution for calling the pdf file in order to utilize it in the test cases, as well as being able to delete the file once done.">
       <created>1521592347676</created>
       <option name="number" value="00021" />
@@ -937,7 +930,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523143975215</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="Added on jruby info to the travis file again">
+      <created>1523144260100</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1523144260100</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -982,7 +982,7 @@
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2897898" sideWeight="0.1873572" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.042042043" sideWeight="0.1873572" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.09009009" sideWeight="0.83092153" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.042042043" sideWeight="0.8126428" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
@@ -1059,7 +1059,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated the pom file again" />
     <MESSAGE value="updated to latest version on the pom file with maven" />
     <MESSAGE value="updated pom file, need to find a way to put a parent tag (?)" />
     <MESSAGE value="updated release info on pom file" />
@@ -1084,7 +1083,8 @@
     <MESSAGE value="added on more lines to the travis file to test if it will run the test correctly. Current got the chromedriver to run for majority of the test cases" />
     <MESSAGE value="Fixed error on the line that checks out a branch" />
     <MESSAGE value="Added on jruby info to the travis file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added on jruby info to the travis file" />
+    <MESSAGE value="Added on jruby info to the travis file again" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added on jruby info to the travis file again" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1278,8 +1278,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="388">
-          <caret line="23" column="2" lean-forward="false" selection-start-line="23" selection-start-column="2" selection-end-line="23" selection-end-column="2" />
+        <state relative-caret-position="316">
+          <caret line="19" column="34" lean-forward="false" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
           <folding />
         </state>
       </provider>
