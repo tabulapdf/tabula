@@ -7,7 +7,9 @@ before_install:
   - gem install bundler
   - gem install jbundler
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
-install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
+
+install:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
 jdk:
   - oraclejdk8
   - openjdk7
