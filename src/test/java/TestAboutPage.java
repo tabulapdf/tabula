@@ -20,7 +20,7 @@ public class TestAboutPage {
     WebDriver driver;
     @Test
     public void startWebDriver(){
-        System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver","C:/usr/local/bin/chromedriver.exe");
         driver = new ChromeDriver();
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
