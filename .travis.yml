@@ -27,6 +27,7 @@ install:
   - gem install bundler
   - bundle install
   - jruby -S jbundle install
+  - jbundle update
   - jruby -G -r jbundler -S rackup
 jdk:
   - oraclejdk8
