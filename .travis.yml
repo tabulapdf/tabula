@@ -17,10 +17,17 @@ before_install:
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
 
 install:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
-  # start the server
+  #create the back-end jar
+  - git clone https://github.com/redmyers/484_P7_1-Java.git
+  - cd 484_P7_1-Java
+  - mvn clean compile assembly:single
+  - cd ..
+  #- mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V #comment out for now
+  #get the un-released back-end jar and install to local mvn repo
   - git clone https://github.com/redmyers/484_P7_1-GUI.git
   - git checkout origin/Header_Addition
+  - cd 484_P7_1-GUI
+  -mvn install:install-file -Dfile=target/tabula-1.0.2-SNAPSHOT.jar -DgroupId=technology.tabula -DartifactId=tabula -Dversion=<version>-SNAPSHOT -Dpackaging=jar -DpomFile=pom.xml
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
   - gem install bundler
   - bundle install
