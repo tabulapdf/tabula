@@ -25,6 +25,7 @@ install:
   - git checkout origin/Header_Addition
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
   - gem install bundler
+  - gem install jbundler
   - bundle install
   - jruby -S jbundle install
   - jbundle update
