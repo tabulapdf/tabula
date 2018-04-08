@@ -25,7 +25,7 @@ install:
   - gem install bundler
   - bundle install
   - gem install jbundler
-    - bundle update jar-dependencies
+  - bundle update jar-dependencies
   - jruby -S jbundle install
   - jbundle update
   - jruby -G -r jbundler -S rackup
