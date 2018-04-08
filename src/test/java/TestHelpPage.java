@@ -51,7 +51,7 @@ public class TestHelpPage {
             // section, then it checks if it found the corresponding title for that section
             By howtotabula = By.linkText("How To Use Tabula");
             //JUST A TEST...WebElement howto_link = wait.until(ExpectedConditions.visibilityOfElementLocated(howtotabula));
-            howto_link.click();
+            //howto_link.click();
             String help_title2 = "How to Use Tabula";
             By tabulahelp_id2 = By.id("tabulahelp");
             WebElement helptabula2 = wait.until(ExpectedConditions.visibilityOfElementLocated(tabulahelp_id2));
