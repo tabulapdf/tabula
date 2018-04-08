@@ -27,8 +27,8 @@ install:
   - cd /home/travis/build/redmyers
   #- mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V #comment out for now
   #get the un-released back-end jar and install to local mvn repo
-  - git clone https://github.com/redmyers/484_P7_1-GUI.git
-  - git checkout origin/Header_Addition
+  #- git clone https://github.com/redmyers/484_P7_1-GUI.git
+  #- git checkout origin/Header_Addition
   - cd 484_P7_1-GUI
   - mvn install:install-file -Dfile=target/tabula-1.0.2-SNAPSHOT-jar-with-dependencies.jar -DgroupId=technology.tabula -DartifactId=tabula -Dversion=1.0.2-SNAPSHOT -Dpackaging=jar -DpomFile=pom.xml
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
