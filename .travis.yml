@@ -23,6 +23,7 @@ install:
   # start the server
   - git clone https://github.com/redmyers/484_P7_1-GUI.git
   - git checkout origin/Header_Addition
+  - export PATH=~/jruby-9.1.16.0/bin:$PATH
   - gem install bundler
   - bundle install
   - jruby -S jbundle install
