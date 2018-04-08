@@ -4,10 +4,6 @@ addons:
   chrome: stable
 before_install:
   - gem update --system
-  - gem install bundler
-  - bundle install
-  - gem install jbundler
-  - bundle update jar-dependencies
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9292 http://localhost &
   # google chrome standalone driver
   - wget http://chromedriver.storage.googleapis.com/2.37/chromedriver_linux64.zip
@@ -26,6 +22,10 @@ install:
   - git clone https://github.com/redmyers/484_P7_1-GUI.git
   - git checkout origin/Header_Addition
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
+  - gem install bundler
+  - bundle install
+  - gem install jbundler
+    - bundle update jar-dependencies
   - jruby -S jbundle install
   - jbundle update
   - jruby -G -r jbundler -S rackup
