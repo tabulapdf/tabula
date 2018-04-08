@@ -18,13 +18,14 @@ before_install:
 
 install:
   #create the back-end jar
+  - cd /home/travis/build/redmyers
   - pwd
   - git clone https://github.com/redmyers/484_P7_1-Java.git
   - cd 484_P7_1-Java
   - mvn clean compile assembly:single
   - pwd
   - cd /home/travis/build/redmyers
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V #comment out for now
+  #- mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V #comment out for now
   #get the un-released back-end jar and install to local mvn repo
   - git clone https://github.com/redmyers/484_P7_1-GUI.git
   - git checkout origin/Header_Addition
