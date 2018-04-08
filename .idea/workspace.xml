@@ -81,8 +81,8 @@
       <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="17" column="29" lean-forward="false" selection-start-line="17" selection-start-column="29" selection-end-line="17" selection-end-column="29" />
+            <state relative-caret-position="468">
+              <caret line="26" column="23" lean-forward="true" selection-start-line="26" selection-start-column="23" selection-end-line="26" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -595,13 +595,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00027" summary="Noticed some issues with the refresh method I had for the test classes, have changed it for it to only refresh when the menu bar disappears. Doesn't necessary hurt if the pdf bar or pdf view is not present since it doesn't affect the test cases. Will be updating this method to previous test cases that need it. Also implemented a more correct way to verify tabula is gathering the correct data based on the output">
-      <created>1522044035277</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1522044035277</updated>
-    </task>
     <task id="LOCAL-00028" summary="Fixed up and cleaned up some prior test cases that utilize the refreshpage method, as well as added on the extra data verification for regex inputs. Will move on to the next set of user scenarios">
       <created>1522046480325</created>
       <option name="number" value="00028" />
@@ -938,7 +931,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523149545872</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <task id="LOCAL-00076" summary="Another smal error with the jruby info">
+      <created>1523149863294</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1523149863294</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1060,7 +1060,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added on chrome addon from what was recommended on the travis documentation page" />
     <MESSAGE value="added on more commands to the install and before_install sections" />
     <MESSAGE value="took off the jbundle update line off the travis file" />
     <MESSAGE value="deleted some lines in the travis file regarding the set up of the gui repo" />
@@ -1085,7 +1084,8 @@
     <MESSAGE value="Noticed that i was setting the path of jruby from a wrong location match again" />
     <MESSAGE value="Trying to fix the jruby lines of code" />
     <MESSAGE value="changed the jdk info by mistake" />
-    <option name="LAST_COMMIT_MESSAGE" value="changed the jdk info by mistake" />
+    <MESSAGE value="Another smal error with the jruby info" />
+    <option name="LAST_COMMIT_MESSAGE" value="Another smal error with the jruby info" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1279,8 +1279,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="17" column="29" lean-forward="false" selection-start-line="17" selection-start-column="29" selection-end-line="17" selection-end-column="29" />
+        <state relative-caret-position="468">
+          <caret line="26" column="23" lean-forward="true" selection-start-line="26" selection-start-column="23" selection-end-line="26" selection-end-column="23" />
           <folding />
         </state>
       </provider>
