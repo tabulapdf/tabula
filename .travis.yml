@@ -26,7 +26,7 @@ install:
   - bundle install
   - bundle update jar-dependencies
   - gem install jbundler
-  - jruby -S jbundle install
+  - jruby -S jbundle install --debug #Trying to figure out what in the devil is going on...
   - jbundle update
   - jruby -G -r jbundler -S rackup
 jdk:
