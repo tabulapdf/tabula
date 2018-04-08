@@ -27,7 +27,7 @@ install:
   - git checkout origin/Header_Addition
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
   - jruby -S jbundle install
-  - jbundler update
+  - jbundle update
   - jruby -G -r jbundler -S rackup
 jdk:
   - openjdk8
