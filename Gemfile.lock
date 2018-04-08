@@ -29,7 +29,7 @@ GEM
     equalizer (0.0.11)
     ffi (1.9.18-java)
     ice_nine (0.11.2)
-    jar-dependencies (0.3.10)
+    jar-dependencies (0.3.12)
     jbundler (0.9.3)
       bundler (~> 1.5)
       jar-dependencies (~> 0.3)
@@ -71,7 +71,7 @@ DEPENDENCIES
   bootstrap-sass (~> 3.2.0)
   compass
   cuba (~> 3.8.1)
-  jar-dependencies (= 0.3.10)
+  jar-dependencies (= 0.3.12)
   jbundler (~> 0.9.3)
   jruby-jars (= 9.1.12.0)
   rack (~> 2.0.3)

@@ -5,6 +5,7 @@ addons:
 before_install:
   - gem update --system
   - gem install bundler
+  - bundle install
   - gem install jbundler
   - bundle update jar-dependencies
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9292 http://localhost &
@@ -25,11 +26,8 @@ install:
   - git clone https://github.com/redmyers/484_P7_1-GUI.git
   - git checkout origin/Header_Addition
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
-  - gem install bundler
-  - gem install jbundler
-  - bundle install
-  - bundle update jar-dependencies
   - jruby -S jbundle install
+  - jbundler update
   - jruby -G -r jbundler -S rackup
 jdk:
   - openjdk8
