@@ -24,8 +24,8 @@ install:
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
   - gem install bundler
   - bundle install
-  - gem install jbundler
   - bundle update jar-dependencies
+  - gem install jbundler
   - jruby -S jbundle install
   - jbundle update
   - jruby -G -r jbundler -S rackup
