@@ -32,6 +32,7 @@ public class TestExtractionPage {
             Thread.sleep(700);
         }
     }
+
     @Test
     public void startWebDriver() throws InterruptedException{
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
