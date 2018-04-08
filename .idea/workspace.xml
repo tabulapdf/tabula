@@ -81,8 +81,8 @@
       <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="298">
-              <caret line="18" column="32" lean-forward="false" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
+            <state relative-caret-position="418">
+              <caret line="30" column="14" lean-forward="true" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -595,13 +595,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00025" summary="Added on more test scenarios of inputting a common word and a correct input to pattern before and pattern after">
-      <created>1522017195592</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1522017195592</updated>
-    </task>
     <task id="LOCAL-00026" summary="mMade another method to eliminate some redundant code and fixed up some previous test cases">
       <created>1522021675572</created>
       <option name="number" value="00026" />
@@ -938,7 +931,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523145690609</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="Trying to fix the jruby lines of code">
+      <created>1523149383212</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1523149383212</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1060,7 +1060,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated release info on pom file" />
     <MESSAGE value="took off certain lines that were giving an exit code of 1 in the travis file, going to see if that will arise new problems" />
     <MESSAGE value="added on chrome addon from what was recommended on the travis documentation page" />
     <MESSAGE value="added on more commands to the install and before_install sections" />
@@ -1085,7 +1084,8 @@
     <MESSAGE value="Added on jruby info to the travis file again" />
     <MESSAGE value="Noticed that i was setting the path of jruby from a wrong location match" />
     <MESSAGE value="Noticed that i was setting the path of jruby from a wrong location match again" />
-    <option name="LAST_COMMIT_MESSAGE" value="Noticed that i was setting the path of jruby from a wrong location match again" />
+    <MESSAGE value="Trying to fix the jruby lines of code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Trying to fix the jruby lines of code" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1279,8 +1279,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="18" column="32" lean-forward="false" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
+        <state relative-caret-position="418">
+          <caret line="30" column="14" lean-forward="true" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
           <folding />
         </state>
       </provider>

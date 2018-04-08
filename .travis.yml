@@ -28,7 +28,7 @@ install:
   - jruby -S jbundle install
   - jruby -G -r jbundler -S rackup
 jdk:
-  - oraclejdk80
+  - oraclejdk8
   - openjdk7
 script:
   - mvn test -Dgpg.skip=true
