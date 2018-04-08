@@ -4,7 +4,7 @@ addons:
   chrome: stable
 before_install:
   - gem update --system
-  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9292 http://localhost &
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9290 http://localhost &
   # google chrome standalone driver
   - wget http://chromedriver.storage.googleapis.com/2.37/chromedriver_linux64.zip
   - unzip chromedriver_linux64.zip
