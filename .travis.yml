@@ -30,7 +30,9 @@ install:
   - cd 484_P7_1-GUI
   - git checkout Header_Addition
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
-  - ls
+  - gem install bundler
+  - bundle install
+  - jruby -S jbundle install
   - bash run.sh &
   - sleep 5
   #get the un-released back-end jar and install to local mvn repo
@@ -43,6 +45,7 @@ jdk:
   - oraclejdk8
 script:
   - mvn test -Dgpg.skip=true
+  - xvfb-run make test
 notifications:
   email: false
 
