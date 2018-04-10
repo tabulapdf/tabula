@@ -6,7 +6,7 @@ before_install:
   - gem update --system
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   # google chrome standalone driver
-  - wget http://chromedriver.storage.googleapis.com/2.37/chromedriver_linux64.zip
+  - wget http://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip
   - unzip chromedriver_linux64.zip
   - sudo mv chromedriver /usr/local/bin
   - sudo chmod a+x /usr/local/bin/chromedriver
@@ -22,9 +22,7 @@ before_install:
   - git checkout Header_Back_End
   - mvn clean compile assembly:single
   - mvn install:install-file -Dfile=target/tabula-1.0.2-SNAPSHOT-jar-with-dependencies.jar -DgroupId=technology.tabula -DartifactId=tabula -Dversion=1.0.2-SNAPSHOT -Dpackaging=jar -DpomFile=pom.xml
-
-install:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
+  # start server via GUI repo
   - cd ~/
   - git clone https://github.com/redmyers/484_P7_1-GUI.git
   - cd 484_P7_1-GUI
@@ -35,11 +33,9 @@ install:
   - jruby -S jbundle install
   - bash run.sh &
   - sleep 5
-  #get the un-released back-end jar and install to local mvn repo
-  #cd /home/travis/build/redmyers/484_P7_1-GUI
-  #bundle update jar-dependencies
-  #gem install jbundler
-  #jbundle update
+install:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
+
 jdk:
   - openjdk8
   - oraclejdk8
