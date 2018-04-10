@@ -4,9 +4,7 @@ addons:
   chrome: stable
 before_install:
   - gem update --system
-  - gem install bundler
-  - gem install jbundler
-  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9292 http://localhost &
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   # google chrome standalone driver
   - wget http://chromedriver.storage.googleapis.com/2.37/chromedriver_linux64.zip
   - unzip chromedriver_linux64.zip
@@ -19,18 +17,32 @@ before_install:
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
 
 install:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
-  # start the server
-  - git clone https://github.com/redmyers/484_P7_1-GUI.git
-  - git checkout origin/Header_Addition
+  #create the back-end jar
+  - cd /home/travis/build/redmyers
+  - pwd
+  - git clone https://github.com/redmyers/484_P7_1-Java.git
+  - cd 484_P7_1-Java
+  - mvn clean compile assembly:single
+  - pwd
+  - cd /home/travis/build/redmyers
+  #- mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V #comment out for now
+  #get the un-released back-end jar and install to local mvn repo
+  #- git clone https://github.com/redmyers/484_P7_1-GUI.git
+  #- git checkout origin/Header_Addition
+  - cd 484_P7_1-Java
+  - mvn install:install-file -Dfile=target/tabula-1.0.2-SNAPSHOT-jar-with-dependencies.jar -DgroupId=technology.tabula -DartifactId=tabula -Dversion=1.0.2-SNAPSHOT -Dpackaging=jar -DpomFile=pom.xml
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
+  - cd /home/travis/build/redmyers/484_P7_1-GUI
   - gem install bundler
   - bundle install
-  - jruby -S jbundle install
+  - bundle update jar-dependencies
+  - gem install jbundler
+  - jruby -S jbundle install --debug #Trying to figure out what is going on...
+  - jbundle update
   - jruby -G -r jbundler -S rackup
 jdk:
+  - openjdk8
   - oraclejdk8
-  - openjdk7
 script:
   - mvn test -Dgpg.skip=true
 notifications:
