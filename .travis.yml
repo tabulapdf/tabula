@@ -28,7 +28,7 @@ install:
   - cd ~/
   - git clone https://github.com/redmyers/484_P7_1-GUI.git
   - cd 484_P7_1-GUI
-  - git checkout origin/Header_Addition
+  - git checkout Header_Addition
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
   - bash run.sh &
   - sleep 5
