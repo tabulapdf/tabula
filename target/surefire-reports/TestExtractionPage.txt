@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: TestExtractionPage
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.446 sec - in TestExtractionPage
