@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
+    <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="Adding curl command">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/.travis.yml" afterPath="$PROJECT_DIR$/.travis.yml" />
+      <change beforePath="$PROJECT_DIR$/.jbundler/classpath.rb" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-03-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-10-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-13-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-14-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-20-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-22-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-23-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-24-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-25-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-26-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-27-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-02-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-03-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-07-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-08-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-09-2018.txt" afterPath="" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -58,8 +74,8 @@
       <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="282">
-              <caret line="18" column="25" lean-forward="false" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
+            <state relative-caret-position="120">
+              <caret line="9" column="17" lean-forward="true" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -505,13 +521,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00064" summary="Committing changes to the workspace file">
-      <created>1523134330297</created>
-      <option name="number" value="00064" />
-      <option name="presentableId" value="LOCAL-00064" />
-      <option name="project" value="LOCAL" />
-      <updated>1523134330297</updated>
-    </task>
     <task id="LOCAL-00065" summary="Committing changes to the workspace file again">
       <created>1523134369968</created>
       <option name="number" value="00065" />
@@ -848,7 +857,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523378440231</updated>
     </task>
-    <option name="localTasksCounter" value="113" />
+    <task id="LOCAL-00113" summary="Adding curl command">
+      <created>1523379936028</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1523379936028</updated>
+    </task>
+    <option name="localTasksCounter" value="114" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -949,7 +965,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="DOn't know why there is a current error with fetching this log file, going to try again" />
     <MESSAGE value="TestAboutPage is now using headless mode" />
     <MESSAGE value="Added on more to the before part of the travis file" />
     <MESSAGE value="error with the version of the chrome driver" />
@@ -974,7 +989,8 @@
     <MESSAGE value="Moved a lot of the commands to the run.sh file to see if that will make a difference" />
     <MESSAGE value="Made minor changes to the run.sh file and travis file to see if i can give it enough time to start the server" />
     <MESSAGE value="Increased sleep time" />
-    <option name="LAST_COMMIT_MESSAGE" value="Increased sleep time" />
+    <MESSAGE value="Adding curl command" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding curl command" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -983,15 +999,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="13" column="29" lean-forward="false" selection-start-line="13" selection-start-column="29" selection-end-line="13" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java" />
@@ -1162,10 +1169,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/ExtractionLog_04-10-2018.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExtractionLog_04-02-2018.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExtractionLog_03-03-2018.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="18" column="25" lean-forward="false" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
+        <state relative-caret-position="120">
+          <caret line="9" column="17" lean-forward="true" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
           <folding />
         </state>
       </provider>
