@@ -67,6 +67,7 @@ public class TestEU_002 {
         driver = new ChromeDriver(options);
         driver.get(Tabula_url);
         driver.manage().window().maximize();
+        
         String filePath = "/home/slmendez/484_P7_1-GUI/src/test/pdf/eu-002.pdf"; //
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
