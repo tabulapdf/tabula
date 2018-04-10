@@ -9,7 +9,7 @@ do
  printf "Return value of curl:%d","$res"
  sleep 5s #Sleep for 5 seconds in between curl calls...
  iter=$iter-1;
- printf "Iteration #:%d","$iter")
+ printf "Iteration #:%d","$iter"
 done
 
 exit $res
