@@ -24,6 +24,7 @@ before_install:
   - mvn install:install-file -Dfile=target/tabula-1.0.2-SNAPSHOT-jar-with-dependencies.jar -DgroupId=technology.tabula -DartifactId=tabula -Dversion=1.0.2-SNAPSHOT -Dpackaging=jar -DpomFile=pom.xml
 
 install:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
   - cd ~/
   - git clone https://github.com/redmyers/484_P7_1-GUI.git
   - cd 484_P7_1-GUI
@@ -33,7 +34,6 @@ install:
   - bundle install
   - jruby -S jbundle install
   - jruby -G -r jbundler -S rackup &
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
   #get the un-released back-end jar and install to local mvn repo
   #cd /home/travis/build/redmyers/484_P7_1-GUI
   #bundle update jar-dependencies
