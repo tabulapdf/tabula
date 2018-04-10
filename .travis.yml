@@ -30,10 +30,7 @@ install:
   - cd 484_P7_1-GUI
   - git checkout origin/Header_Addition
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
-  - gem install bundler
-  - bundle install
-  - jruby -S jbundle install
-  - jruby -G -r jbundler -S rackup &
+  - bash run.sh &
   - sleep 5
   #get the un-released back-end jar and install to local mvn repo
   #cd /home/travis/build/redmyers/484_P7_1-GUI
