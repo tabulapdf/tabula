@@ -4,6 +4,7 @@
     <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/.travis.yml" afterPath="$PROJECT_DIR$/.travis.yml" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestEU_002.java" afterPath="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -39,8 +40,8 @@
       <file leaf-file-name="TestEU_002.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="140">
-              <caret line="441" column="18" lean-forward="false" selection-start-line="436" selection-start-column="18" selection-end-line="441" selection-end-column="18" />
+            <state relative-caret-position="257">
+              <caret line="537" column="20" lean-forward="false" selection-start-line="537" selection-start-column="20" selection-end-line="537" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -49,8 +50,8 @@
       <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="410">
-              <caret line="38" column="3" lean-forward="false" selection-start-line="38" selection-start-column="3" selection-end-line="38" selection-end-column="3" />
+            <state relative-caret-position="86">
+              <caret line="20" column="17" lean-forward="true" selection-start-line="20" selection-start-column="17" selection-end-line="20" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -565,13 +566,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00033" summary="Added on 2 user scenarios of a 2 page spanning table and a 5 page spanning table. The 5 page spanning table scenario is running into an internal error, and after confirming with Ben testing out the scenario as well, this may be something we may have to further look into.">
-      <created>1522164443838</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1522164443838</updated>
-    </task>
     <task id="LOCAL-00034" summary="Added on inclusive/exclusive user scenarios for the the one_stop_voting_sit_list_nov2012 pdf file">
       <created>1522168422551</created>
       <option name="number" value="00034" />
@@ -908,7 +902,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523331432545</updated>
     </task>
-    <option name="localTasksCounter" value="82" />
+    <task id="LOCAL-00082" summary="made some more changes..">
+      <created>1523332002009</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1523332002009</updated>
+    </task>
+    <option name="localTasksCounter" value="83" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1009,7 +1010,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="going back to original pom file" />
     <MESSAGE value="re-added on chrome settings to the travis file. Seems like the extra things I had put to the pom file is what was causing the problem" />
     <MESSAGE value="Added on the system.setproperty to see if that will fix the issue with the exception being thrown" />
     <MESSAGE value="Fixed setproperty, and going to see if this fixed the problem" />
@@ -1034,7 +1034,8 @@
     <MESSAGE value="Added on the test of multiple regex searches and the test case for vertical tables" />
     <MESSAGE value="Deleted some of the pwd lines on the travis file" />
     <MESSAGE value="moved the back-end jar to before_install and commented out all the GUI repo stuff to see if that is working" />
-    <option name="LAST_COMMIT_MESSAGE" value="moved the back-end jar to before_install and commented out all the GUI repo stuff to see if that is working" />
+    <MESSAGE value="made some more changes.." />
+    <option name="LAST_COMMIT_MESSAGE" value="made some more changes.." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1212,16 +1213,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="441" column="18" lean-forward="false" selection-start-line="436" selection-start-column="18" selection-end-line="441" selection-end-column="18" />
+        <state relative-caret-position="257">
+          <caret line="537" column="20" lean-forward="false" selection-start-line="537" selection-start-column="20" selection-end-line="537" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="410">
-          <caret line="38" column="3" lean-forward="false" selection-start-line="38" selection-start-column="3" selection-end-line="38" selection-end-column="3" />
+        <state relative-caret-position="86">
+          <caret line="20" column="17" lean-forward="true" selection-start-line="20" selection-start-column="17" selection-end-line="20" selection-end-column="17" />
           <folding />
         </state>
       </provider>

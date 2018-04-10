@@ -534,6 +534,10 @@ public class TestEU_002 {
         driver.navigate().back();
         Thread.sleep(500);
     }
+    @Test
+    public void Test{
+
+    }
     @AfterClass
     public static void TearDown(){
         //navigates back and deletes the pdf utilized
