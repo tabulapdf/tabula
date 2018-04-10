@@ -535,7 +535,15 @@ public class TestEU_002 {
         Thread.sleep(500);
     }
     @Test
-    public void Test{
+    public void TestBeforeandAfterforMultiTables{
+
+    }
+    @Test
+    public void TestBeforeandAfterforMultiTables{
+
+    }
+    @Test
+    public void TestBeforeandAfterforMultiTables{
 
     }
     @AfterClass
