@@ -11,10 +11,9 @@ before_install:
   - sudo mv chromedriver /usr/local/bin
   - sudo chmod a+x /usr/local/bin/chromedriver
   # download and use jruby
-  - cd ~/
   - wget https://repo1.maven.org/maven2/org/jruby/jruby-dist/9.1.16.0/jruby-dist-9.1.16.0-bin.zip
   - unzip jruby-dist-9.1.16.0-bin.zip
-  - sudo mv jruby-9.1.16.0 ~/
+  - mv jruby-9.1.16.0 ~/
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
   # create back-end jar
   - cd ~/
