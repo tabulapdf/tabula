@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 gem update --system
 res=1;
-iter=10;
+iter=20;
 while [[ "$res" -ne 0 ]] && [[ "$iter" -gt 0 ]]
 do
  iter=$((iter-1));
@@ -9,7 +9,7 @@ do
  curl -s http://localhost:9292/
  res=$?
  printf "Return value of curl:%d\n" "$res"
- sleep 5s #Sleep for 5 seconds in between curl calls...
+ sleep 30s #Sleep for 5 seconds in between curl calls...
 done
 
 if [[ "$res" -ne 0 ]]
