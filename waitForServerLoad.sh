@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 gem update --system
 res=1;
-iter=20;
+num_iter=100
+iter="$num_iter";
 while [[ "$res" -ne 0 ]] && [[ "$iter" -gt 0 ]]
 do
  iter=$((iter-1));
- printf "Iteration #%d\n" "$((10-$iter))"
+ printf "Iteration #%d\n" "$(($num_iter-$iter))"
  curl -s http://localhost:9292/
  res=$?
  printf "Return value of curl:%d\n" "$res"
- sleep 30s #Sleep for 5 seconds in between curl calls...
+ sleep 1m #Sleep for a minute in between curl calls...
 done
 
 if [[ "$res" -ne 0 ]]
