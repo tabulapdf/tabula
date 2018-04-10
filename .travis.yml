@@ -8,7 +8,7 @@ before_install:
   # "sh -e /etc/init.d/xvfb start"
   # sleep 5
   - bash run.sh &
-  - bash run waitForServerLoad.sh
+  - bash waitForServerLoad.sh
   - curl http://localhost:9292
   - res=$?
   - echo $res
