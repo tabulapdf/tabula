@@ -1,39 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/appbundler_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/appbundler_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_findbugs_jsr305_1_3_9.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_findbugs_jsr305_1_3_9.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpclient_4_5_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpclient_4_5_3.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_10.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_10.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_edge_driver_3_11_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_edge_driver_3_11_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_api_3_11_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_api_3_11_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okhttp3_okhttp_3_9_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okhttp3_okhttp_3_9_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_support_3_11_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_support_3_11_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_1_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_7_9.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_7_9.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_23_6_jre.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_23_6_jre.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_opentest4j_opentest4j_1_0_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_opentest4j_opentest4j_1_0_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpcore_4_4_6.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpcore_4_4_6.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_ie_driver_3_11_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_ie_driver_3_11_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_firefox_driver_3_11_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_firefox_driver_3_11_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_java_3_11_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_java_3_11_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_codehaus_mojo_animal_sniffer_annotations_1_14.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_codehaus_mojo_animal_sniffer_annotations_1_14.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_j2objc_j2objc_annotations_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_j2objc_j2objc_annotations_1_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_12.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_12.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_checkerframework_checker_compat_qual_2_0_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_checkerframework_checker_compat_qual_2_0_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_remote_driver_3_11_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_remote_driver_3_11_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_0_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_0_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_chrome_driver_3_11_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_chrome_driver_3_11_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okio_okio_1_13_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okio_okio_1_13_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_safari_driver_3_11_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_safari_driver_3_11_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_gson_gson_2_8_2.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_gson_gson_2_8_2.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_opera_driver_3_11_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_opera_driver_3_11_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_exec_1_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_exec_1_3.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_errorprone_error_prone_annotations_2_1_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_errorprone_error_prone_annotations_2_1_3.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_1_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_1_0.xml" />
+    <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="Adding curl command">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/.jbundler/classpath.rb" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-03-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-10-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-13-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-14-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-20-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-22-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-23-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-24-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-25-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-26-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-27-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-02-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-03-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-07-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-08-2018.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-09-2018.txt" afterPath="" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -53,21 +39,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="TestAboutPage.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java">
+      <file leaf-file-name="TestOneStopVotingSiteListNov2012.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="697">
-              <caret line="53" column="0" lean-forward="false" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
+            <state relative-caret-position="0">
+              <caret line="0" column="2" lean-forward="false" selection-start-line="0" selection-start-column="2" selection-end-line="0" selection-end-column="2" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TestHelpPage.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java">
+      <file leaf-file-name="TestEU_002.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="663">
-              <caret line="52" column="12" lean-forward="false" selection-start-line="52" selection-start-column="12" selection-end-line="52" selection-end-column="12" />
+            <state relative-caret-position="244">
+              <caret line="69" column="0" lean-forward="false" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -75,14 +61,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TestExtractionPage.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/TestExtractionPage.java">
+      <file leaf-file-name="TestAboutPage.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="133">
+              <caret line="23" column="33" lean-forward="true" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -90,18 +74,18 @@
       <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="354">
-              <caret line="40" column="18" lean-forward="false" selection-start-line="40" selection-start-column="18" selection-end-line="40" selection-end-column="18" />
+            <state relative-caret-position="120">
+              <caret line="9" column="17" lean-forward="true" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="config.ru" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config.ru">
+      <file leaf-file-name="run.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/run.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="969">
-              <caret line="57" column="0" lean-forward="false" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
+            <state relative-caret-position="396">
+              <caret line="22" column="54" lean-forward="false" selection-start-line="22" selection-start-column="54" selection-end-line="22" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -133,9 +117,8 @@
       <find>pattern_before_input</find>
       <find>SYSTE</find>
       <find>inclusi</find>
-      <find>jdk</find>
-      <find>git clone</find>
-      <find>gem</find>
+      <find>0</find>
+      <find>DskipTests=true</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/src/test/java</dir>
@@ -157,16 +140,16 @@
         <option value="$PROJECT_DIR$/src/test/java/TestHomeScreen.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestSuite_Components.java" />
         <option value="$PROJECT_DIR$/src/test/java/WatchmanTest.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestAboutPage.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/test/java/TestExtractionPage.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestHomePage.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestAboutPage.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestExtractionPage.java" />
-        <option value="$PROJECT_DIR$/Gemfile" />
-        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
+        <option value="$PROJECT_DIR$/run.sh" />
         <option value="$PROJECT_DIR$/.travis.yml" />
       </list>
     </option>
@@ -176,12 +159,6 @@
       <run-configuration type="JUnit" name="TestAboutPage.startWebDriver" />
     </enabled-run-configurations>
   </component>
-  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsGulpfileManager">
-    <detection-done>true</detection-done>
-    <sorting>DEFINITION_ORDER</sorting>
-  </component>
   <component name="MavenImportPreferences">
     <option name="importingSettings">
       <MavenImportingSettings>
@@ -190,16 +167,16 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="201" />
-    <option name="y" value="-8" />
-    <option name="width" value="873" />
-    <option name="height" value="723" />
+    <option name="x" value="625" />
+    <option name="y" value="113" />
+    <option name="width" value="875" />
+    <option name="height" value="738" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
+    <navigator proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -212,27 +189,11 @@
       <manualOrder />
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="484_P7_1-GUI" type="b2602c69:ProjectViewProjectNode" />
-              <item name="484_P7_1-GUI" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scratches" />
-      <pane id="Scope" />
-      <pane id="AndroidView" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="SDKs" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="Downloaded.Files.Path.Enabled" value="false" />
@@ -241,7 +202,6 @@
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
     <property name="ChangesBrowser.SHOW_FLATTEN" value="false" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
@@ -263,46 +223,27 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.TestExtractionPage">
-    <configuration name="All in 484_P7_1-GUI" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="484_P7_1-GUI" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="package" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
+  <component name="RunManager" selected="JUnit.TestEU_002.TestVerticalTable">
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <module />
     </configuration>
-    <configuration name="TestAboutPage" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration default="true" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="484_P7_1-GUI" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestAboutPage" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
+      <module name="" />
       <envs />
-      <patterns />
     </configuration>
     <configuration name="TestAboutPage.startWebDriver" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
@@ -324,15 +265,95 @@
       <envs />
       <patterns />
     </configuration>
-    <configuration name="TestExtractionPage" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="TestEU_002" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="484_P7_1-GUI" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestExtractionPage" />
+      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
       <option name="METHOD_NAME" />
       <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="TestEU_002.TestCaseSensitivity" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="484_P7_1-GUI" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
+      <option name="METHOD_NAME" value="TestCaseSensitivity" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="TestEU_002.TestMultipleRegexSearches" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="484_P7_1-GUI" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
+      <option name="METHOD_NAME" value="TestMultipleRegexSearches" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="TestEU_002.TestTextBasedImage" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="484_P7_1-GUI" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
+      <option name="METHOD_NAME" value="TestTextBasedImage" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="TestEU_002.TestVerticalTable" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="484_P7_1-GUI" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
+      <option name="METHOD_NAME" value="TestVerticalTable" />
+      <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
@@ -384,35 +405,15 @@
       <envs />
       <patterns />
     </configuration>
-    <configuration name="TestPreviewandExportData" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="484_P7_1-GUI" />
+      <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestPreviewandExportData" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
       <option name="METHOD_NAME" />
       <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-    </configuration>
-    <configuration name="TestPreviewandExportData.startWebDriver" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="484_P7_1-GUI" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestPreviewandExportData" />
-      <option name="METHOD_NAME" value="startWebDriver" />
-      <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
@@ -444,53 +445,6 @@
           </MavenRunnerParameters>
         </option>
       </MavenSettings>
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <module />
-    </configuration>
-    <configuration default="true" type="Application" factoryName="Application">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="" />
-      <envs />
-    </configuration>
-    <configuration default="true" type="JUnit" factoryName="JUnit">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-    </configuration>
-    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
-      <module name="" />
-      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
-      <option name="PROGRAM_PARAMETERS" />
-      <predefined_log_file id="idea.log" enabled="true" />
     </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
@@ -526,22 +480,30 @@
       <properties />
       <listeners />
     </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file id="idea.log" enabled="true" />
+    </configuration>
     <list size="9">
       <item index="0" class="java.lang.String" itemvalue="JUnit.TestAboutPage.startWebDriver" />
-      <item index="1" class="java.lang.String" itemvalue="JUnit.TestHelpPage" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.TestHelpPage.startWebDriver" />
+      <item index="1" class="java.lang.String" itemvalue="JUnit.TestHelpPage.startWebDriver" />
+      <item index="2" class="java.lang.String" itemvalue="JUnit.TestHelpPage" />
       <item index="3" class="java.lang.String" itemvalue="Maven.Unnamed" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.TestPreviewandExportData" />
-      <item index="5" class="java.lang.String" itemvalue="JUnit.TestPreviewandExportData.startWebDriver" />
-      <item index="6" class="java.lang.String" itemvalue="JUnit.TestAboutPage" />
-      <item index="7" class="java.lang.String" itemvalue="JUnit.All in 484_P7_1-GUI" />
-      <item index="8" class="java.lang.String" itemvalue="JUnit.TestExtractionPage" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestCaseSensitivity" />
+      <item index="5" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestTextBasedImage" />
+      <item index="6" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestMultipleRegexSearches" />
+      <item index="7" class="java.lang.String" itemvalue="JUnit.TestEU_002" />
+      <item index="8" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestVerticalTable" />
     </list>
     <recent_temporary>
-      <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.TestExtractionPage" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.All in 484_P7_1-GUI" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.TestAboutPage" />
+      <list size="5">
+        <item index="0" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestVerticalTable" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestMultipleRegexSearches" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.TestEU_002" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestTextBasedImage" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.TestEU_002.TestCaseSensitivity" />
       </list>
     </recent_temporary>
   </component>
@@ -558,266 +520,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
-      <workItem from="1523156492840" duration="3288000" />
-    </task>
-    <task id="LOCAL-00028" summary="Fixed up and cleaned up some prior test cases that utilize the refreshpage method, as well as added on the extra data verification for regex inputs. Will move on to the next set of user scenarios">
-      <created>1522046480325</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1522046480325</updated>
-    </task>
-    <task id="LOCAL-00029" summary="Got rid of more redundant code, updated the pom file, and added on 3 more test scenarios that use inclusive">
-      <created>1522127587309</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1522127587309</updated>
-    </task>
-    <task id="LOCAL-00030" summary="Added on test case that tests a text-based image and verifies it's data">
-      <created>1522129745836</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1522129745836</updated>
-    </task>
-    <task id="LOCAL-00031" summary="Added on new test pdf file, to add on some more complicated user scenarios">
-      <created>1522131141278</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1522131141278</updated>
-    </task>
-    <task id="LOCAL-00032" summary="Merge remote-tracking branch 'remotes/origin/Header_Addition' into Header_Addition&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml">
-      <created>1522154920557</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1522154920557</updated>
-    </task>
-    <task id="LOCAL-00033" summary="Added on 2 user scenarios of a 2 page spanning table and a 5 page spanning table. The 5 page spanning table scenario is running into an internal error, and after confirming with Ben testing out the scenario as well, this may be something we may have to further look into.">
-      <created>1522164443838</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1522164443838</updated>
-    </task>
-    <task id="LOCAL-00034" summary="Added on inclusive/exclusive user scenarios for the the one_stop_voting_sit_list_nov2012 pdf file">
-      <created>1522168422551</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1522168422551</updated>
-    </task>
-    <task id="LOCAL-00035" summary="Added on 3 test cases for case-sensitivity of the eu-002.pdf file. Will move on to work on the test case for multiple regex searches">
-      <created>1522708795612</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1522708795612</updated>
-    </task>
-    <task id="LOCAL-00036" summary="Added on a method to deal with inclusive clicks">
-      <created>1522710904198</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1522710904198</updated>
-    </task>
-    <task id="LOCAL-00037" summary="Added on a test case for multiple regex searches, have to go back in and fix the current error it has when verifying data">
-      <created>1522711586517</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1522711586517</updated>
-    </task>
-    <task id="LOCAL-00038" summary="Went back to default settings for travis, will go in and fix them">
-      <created>1522964721897</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1522964721897</updated>
-    </task>
-    <task id="LOCAL-00039" summary="Made changes to the travis file">
-      <created>1522965042579</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1522965042579</updated>
-    </task>
-    <task id="LOCAL-00040" summary="Added on another line to the script section of the travis file">
-      <created>1522985997704</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1522985997704</updated>
-    </task>
-    <task id="LOCAL-00041" summary="Made slight change to the script">
-      <created>1522986266829</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1522986266829</updated>
-    </task>
-    <task id="LOCAL-00042" summary="updated the pom file">
-      <created>1522989147696</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1522989147696</updated>
-    </task>
-    <task id="LOCAL-00043" summary="updated the pom file again">
-      <created>1522989575169</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1522989575169</updated>
-    </task>
-    <task id="LOCAL-00044" summary="updated to latest version on the pom file with maven">
-      <created>1522990556578</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1522990556578</updated>
-    </task>
-    <task id="LOCAL-00045" summary="updated pom file, need to find a way to put a parent tag (?)">
-      <created>1522992861187</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1522992861187</updated>
-    </task>
-    <task id="LOCAL-00046" summary="updated release info on pom file">
-      <created>1522995064465</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1522995064465</updated>
-    </task>
-    <task id="LOCAL-00047" summary="took off certain lines that were giving an exit code of 1 in the travis file, going to see if that will arise new problems">
-      <created>1523034053074</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1523034053074</updated>
-    </task>
-    <task id="LOCAL-00048" summary="added on chrome addon from what was recommended on the travis documentation page">
-      <created>1523034528425</created>
-      <option name="number" value="00048" />
-      <option name="presentableId" value="LOCAL-00048" />
-      <option name="project" value="LOCAL" />
-      <updated>1523034528425</updated>
-    </task>
-    <task id="LOCAL-00049" summary="added on more commands to the install and before_install sections">
-      <created>1523036445048</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
-      <option name="project" value="LOCAL" />
-      <updated>1523036445048</updated>
-    </task>
-    <task id="LOCAL-00050" summary="took off the jbundle update line off the travis file">
-      <created>1523036641988</created>
-      <option name="number" value="00050" />
-      <option name="presentableId" value="LOCAL-00050" />
-      <option name="project" value="LOCAL" />
-      <updated>1523036641989</updated>
-    </task>
-    <task id="LOCAL-00051" summary="deleted some lines in the travis file regarding the set up of the gui repo">
-      <created>1523036853927</created>
-      <option name="number" value="00051" />
-      <option name="presentableId" value="LOCAL-00051" />
-      <option name="project" value="LOCAL" />
-      <updated>1523036853927</updated>
-    </task>
-    <task id="LOCAL-00052" summary="trying to see why travis-ci is not at least seeing the test cases">
-      <created>1523037459806</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1523037459806</updated>
-    </task>
-    <task id="LOCAL-00053" summary="going back to original pom file">
-      <created>1523038524091</created>
-      <option name="number" value="00053" />
-      <option name="presentableId" value="LOCAL-00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1523038524091</updated>
-    </task>
-    <task id="LOCAL-00054" summary="re-added on chrome settings to the travis file. Seems like the extra things I had put to the pom file is what was causing the problem">
-      <created>1523038808148</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1523038808148</updated>
-    </task>
-    <task id="LOCAL-00055" summary="Added on the system.setproperty to see if that will fix the issue with the exception being thrown">
-      <created>1523045694412</created>
-      <option name="number" value="00055" />
-      <option name="presentableId" value="LOCAL-00055" />
-      <option name="project" value="LOCAL" />
-      <updated>1523045694412</updated>
-    </task>
-    <task id="LOCAL-00056" summary="Fixed setproperty, and going to see if this fixed the problem">
-      <created>1523068991787</created>
-      <option name="number" value="00056" />
-      <option name="presentableId" value="LOCAL-00056" />
-      <option name="project" value="LOCAL" />
-      <updated>1523068991787</updated>
-    </task>
-    <task id="LOCAL-00057" summary="Trying the setproperty again">
-      <created>1523073811355</created>
-      <option name="number" value="00057" />
-      <option name="presentableId" value="LOCAL-00057" />
-      <option name="project" value="LOCAL" />
-      <updated>1523073811355</updated>
-    </task>
-    <task id="LOCAL-00058" summary="Trying to fix this setProperty again">
-      <created>1523074625278</created>
-      <option name="number" value="00058" />
-      <option name="presentableId" value="LOCAL-00058" />
-      <option name="project" value="LOCAL" />
-      <updated>1523074625278</updated>
-    </task>
-    <task id="LOCAL-00059" summary="DOn't know why there is a current error with fetching this log file, going to try again">
-      <created>1523074863751</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1523074863751</updated>
-    </task>
-    <task id="LOCAL-00060" summary="TestAboutPage is now using headless mode">
-      <created>1523083234827</created>
-      <option name="number" value="00060" />
-      <option name="presentableId" value="LOCAL-00060" />
-      <option name="project" value="LOCAL" />
-      <updated>1523083234827</updated>
-    </task>
-    <task id="LOCAL-00061" summary="TestAboutPage is now using headless mode">
-      <created>1523083519699</created>
-      <option name="number" value="00061" />
-      <option name="presentableId" value="LOCAL-00061" />
-      <option name="project" value="LOCAL" />
-      <updated>1523083519700</updated>
-    </task>
-    <task id="LOCAL-00062" summary="Added on more to the before part of the travis file">
-      <created>1523118121521</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1523118121521</updated>
-    </task>
-    <task id="LOCAL-00063" summary="error with the version of the chrome driver">
-      <created>1523118256772</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
-      <option name="project" value="LOCAL" />
-      <updated>1523118256772</updated>
-    </task>
-    <task id="LOCAL-00064" summary="Committing changes to the workspace file">
-      <created>1523134330297</created>
-      <option name="number" value="00064" />
-      <option name="presentableId" value="LOCAL-00064" />
-      <option name="project" value="LOCAL" />
-      <updated>1523134330297</updated>
     </task>
     <task id="LOCAL-00065" summary="Committing changes to the workspace file again">
       <created>1523134369968</created>
@@ -903,91 +605,331 @@
       <option name="project" value="LOCAL" />
       <updated>1523149863294</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="Another smal error with the jruby info">
+      <created>1523151561761</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1523151561761</updated>
+    </task>
+    <task id="LOCAL-00078" summary="Fixed errors for TestPreviewandExportData test case and TestHelpPage test cases, before they were both failing for the most part.">
+      <created>1523166878865</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1523166878865</updated>
+    </task>
+    <task id="LOCAL-00079" summary="Added on the test of multiple regex searches and the test case for vertical tables">
+      <created>1523329522974</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1523329522976</updated>
+    </task>
+    <task id="LOCAL-00080" summary="Deleted some of the pwd lines on the travis file">
+      <created>1523330950860</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1523330950860</updated>
+    </task>
+    <task id="LOCAL-00081" summary="moved the back-end jar to before_install and commented out all the GUI repo stuff to see if that is working">
+      <created>1523331432544</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1523331432545</updated>
+    </task>
+    <task id="LOCAL-00082" summary="made some more changes..">
+      <created>1523332002009</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1523332002009</updated>
+    </task>
+    <task id="LOCAL-00083" summary="made some more changes..">
+      <created>1523332447683</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1523332447683</updated>
+    </task>
+    <task id="LOCAL-00084" summary="made some more changes..">
+      <created>1523333615287</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1523333615287</updated>
+    </task>
+    <task id="LOCAL-00085" summary="made some more changes..">
+      <created>1523333873797</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1523333873798</updated>
+    </task>
+    <task id="LOCAL-00086" summary="made some more changes..">
+      <created>1523334061104</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1523334061104</updated>
+    </task>
+    <task id="LOCAL-00087" summary="made some more changes..">
+      <created>1523334593249</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1523334593249</updated>
+    </task>
+    <task id="LOCAL-00088" summary="made some more changes..">
+      <created>1523335396352</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1523335396352</updated>
+    </task>
+    <task id="LOCAL-00089" summary="made some more changes..">
+      <created>1523336146407</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1523336146407</updated>
+    </task>
+    <task id="LOCAL-00090" summary="made some more changes..">
+      <created>1523336459447</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1523336459447</updated>
+    </task>
+    <task id="LOCAL-00091" summary="made some more changes..">
+      <created>1523337134847</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1523337134847</updated>
+    </task>
+    <task id="LOCAL-00092" summary="made some more changes..">
+      <created>1523337420240</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1523337420240</updated>
+    </task>
+    <task id="LOCAL-00093" summary="made some more changes..">
+      <created>1523337715436</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1523337715436</updated>
+    </task>
+    <task id="LOCAL-00094" summary="made some more changes..">
+      <created>1523337768591</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1523337768591</updated>
+    </task>
+    <task id="LOCAL-00095" summary="made some more changes..">
+      <created>1523338072146</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1523338072146</updated>
+    </task>
+    <task id="LOCAL-00096" summary="made some more changes..">
+      <created>1523338131482</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1523338131482</updated>
+    </task>
+    <task id="LOCAL-00097" summary="made some more changes..">
+      <created>1523340044592</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1523340044593</updated>
+    </task>
+    <task id="LOCAL-00098" summary="made some more changes..">
+      <created>1523340301864</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1523340301864</updated>
+    </task>
+    <task id="LOCAL-00099" summary="made some more changes..">
+      <created>1523340730875</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1523340730875</updated>
+    </task>
+    <task id="LOCAL-00100" summary="made some more changes..">
+      <created>1523341448023</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1523341448023</updated>
+    </task>
+    <task id="LOCAL-00101" summary="Added on xvfb for the GUI to the travis file, also the server is running on travis now!">
+      <created>1523363739431</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1523363739432</updated>
+    </task>
+    <task id="LOCAL-00102" summary="Added on xvfb for the GUI to the travis file, also the server is running on travis now!">
+      <created>1523364548164</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1523364548165</updated>
+    </task>
+    <task id="LOCAL-00103" summary="Added on xvfb for the GUI to the travis file">
+      <created>1523365150425</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1523365150425</updated>
+    </task>
+    <task id="LOCAL-00104" summary="Added on xvfb for the GUI to the travis file">
+      <created>1523365193165</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1523365193166</updated>
+    </task>
+    <task id="LOCAL-00105" summary="Added on xvfb for the GUI to the travis file">
+      <created>1523370916563</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1523370916563</updated>
+    </task>
+    <task id="LOCAL-00106" summary="Added on xvfb for the GUI to the travis file">
+      <created>1523371195281</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1523371195281</updated>
+    </task>
+    <task id="LOCAL-00107" summary="Added on xvfb for the GUI to the travis file">
+      <created>1523372303398</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1523372303398</updated>
+    </task>
+    <task id="LOCAL-00108" summary="Added on xvfb for the GUI to the travis file">
+      <created>1523374721389</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1523374721389</updated>
+    </task>
+    <task id="LOCAL-00109" summary="Moved a lot of the commands to the run.sh file to see if that will make a difference">
+      <created>1523375046324</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1523375046324</updated>
+    </task>
+    <task id="LOCAL-00110" summary="Made minor changes to the run.sh file and travis file to see if i can give it enough time to start the server">
+      <created>1523376290785</created>
+      <option name="number" value="00110" />
+      <option name="presentableId" value="LOCAL-00110" />
+      <option name="project" value="LOCAL" />
+      <updated>1523376290786</updated>
+    </task>
+    <task id="LOCAL-00111" summary="Made minor changes to the run.sh file and travis file to see if i can give it enough time to start the server">
+      <created>1523377212191</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1523377212192</updated>
+    </task>
+    <task id="LOCAL-00112" summary="Increased sleep time">
+      <created>1523378440231</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1523378440231</updated>
+    </task>
+    <task id="LOCAL-00113" summary="Adding curl command">
+      <created>1523379936028</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1523379936028</updated>
+    </task>
+    <option name="localTasksCounter" value="114" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestMyTemplatesPage - 2018.04.07 at 13h 13m 10s.xml">
-      <configuration name="TestMyTemplatesPage" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestMultipleRegexSearches - 2018.04.08 at 02h 26m 48s.xml">
+      <configuration name="TestEU_002.TestMultipleRegexSearches" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestOneStopVotingSiteListNov2012 - 2018.04.07 at 13h 13m 59s.xml">
-      <configuration name="TestOneStopVotingSiteListNov2012" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestMultipleRegexSearches - 2018.04.08 at 02h 28m 50s.xml">
+      <configuration name="TestEU_002.TestMultipleRegexSearches" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestPreviewandExportData - 2018.04.07 at 13h 16m 28s.xml">
-      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestMultipleRegexSearches - 2018.04.08 at 02h 30m 05s.xml">
+      <configuration name="TestEU_002.TestMultipleRegexSearches" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestPreviewandExportData - 2018.04.07 at 13h 17m 05s.xml">
-      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestMultipleRegexSearches - 2018.04.08 at 02h 31m 51s.xml">
+      <configuration name="TestEU_002.TestMultipleRegexSearches" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestPreviewandExportData - 2018.04.07 at 13h 18m 11s.xml">
-      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestMultipleRegexSearches - 2018.04.09 at 22h 30m 11s.xml">
+      <configuration name="TestEU_002.TestMultipleRegexSearches" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestPreviewandExportData - 2018.04.07 at 13h 18m 24s.xml">
-      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestTextBasedImage - 2018.04.08 at 02h 20m 34s.xml">
+      <configuration name="TestEU_002.TestTextBasedImage" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestPreviewandExportData - 2018.04.07 at 13h 18m 38s.xml">
-      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestVerticalTable - 2018.04.09 at 22h 40m 57s.xml">
+      <configuration name="TestEU_002.TestVerticalTable" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestPreviewandExportData - 2018.04.07 at 13h 18m 50s.xml">
-      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestVerticalTable - 2018.04.09 at 23h 07m 18s.xml">
+      <configuration name="TestEU_002.TestVerticalTable" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestPreviewandExportData - 2018.04.07 at 13h 19m 11s.xml">
-      <configuration name="TestPreviewandExportData" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestVerticalTable - 2018.04.10 at 09h 52m 43s.xml">
+      <configuration name="TestEU_002.TestVerticalTable" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestPreviewandExportData_startWebDriver - 2018.04.07 at 13h 16m 50s.xml">
-      <configuration name="TestPreviewandExportData.startWebDriver" configurationId="JUnit" />
+    <history-entry file="TestEU_002_TestVerticalTable - 2018.04.10 at 09h 53m 22s.xml">
+      <configuration name="TestEU_002.TestVerticalTable" configurationId="JUnit" />
     </history-entry>
-  </component>
-  <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3288000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="52" y="-4" width="1315" height="773" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32732734" sideWeight="0.1873572" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13063063" sideWeight="0.8126428" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.09009009" sideWeight="0.83092153" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.329429" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3978979" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32732734" sideWeight="0.1873572" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3978979" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.045045044" sideWeight="0.48819497" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13063063" sideWeight="0.8126428" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.09009009" sideWeight="0.83092153" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.039039038" sideWeight="0.19649658" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.12162162" sideWeight="0.81111956" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.039039038" sideWeight="0.80350345" order="2" side_tool="false" content_ui="tabs" x="53" y="238" width="1313" height="288" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.329429" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Learn" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3978979" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1019,24 +961,10 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
     </layout-to-restore>
   </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
-  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added on more commands to the install and before_install sections" />
-    <MESSAGE value="took off the jbundle update line off the travis file" />
-    <MESSAGE value="deleted some lines in the travis file regarding the set up of the gui repo" />
-    <MESSAGE value="trying to see why travis-ci is not at least seeing the test cases" />
-    <MESSAGE value="going back to original pom file" />
-    <MESSAGE value="re-added on chrome settings to the travis file. Seems like the extra things I had put to the pom file is what was causing the problem" />
-    <MESSAGE value="Added on the system.setproperty to see if that will fix the issue with the exception being thrown" />
-    <MESSAGE value="Fixed setproperty, and going to see if this fixed the problem" />
-    <MESSAGE value="Trying the setproperty again" />
-    <MESSAGE value="Trying to fix this setProperty again" />
-    <MESSAGE value="DOn't know why there is a current error with fetching this log file, going to try again" />
     <MESSAGE value="TestAboutPage is now using headless mode" />
     <MESSAGE value="Added on more to the before part of the travis file" />
     <MESSAGE value="error with the version of the chrome driver" />
@@ -1051,15 +979,28 @@
     <MESSAGE value="Trying to fix the jruby lines of code" />
     <MESSAGE value="changed the jdk info by mistake" />
     <MESSAGE value="Another smal error with the jruby info" />
-    <option name="LAST_COMMIT_MESSAGE" value="Another smal error with the jruby info" />
+    <MESSAGE value="Fixed errors for TestPreviewandExportData test case and TestHelpPage test cases, before they were both failing for the most part." />
+    <MESSAGE value="Added on the test of multiple regex searches and the test case for vertical tables" />
+    <MESSAGE value="Deleted some of the pwd lines on the travis file" />
+    <MESSAGE value="moved the back-end jar to before_install and commented out all the GUI repo stuff to see if that is working" />
+    <MESSAGE value="made some more changes.." />
+    <MESSAGE value="Added on xvfb for the GUI to the travis file, also the server is running on travis now!" />
+    <MESSAGE value="Added on xvfb for the GUI to the travis file" />
+    <MESSAGE value="Moved a lot of the commands to the run.sh file to see if that will make a difference" />
+    <MESSAGE value="Made minor changes to the run.sh file and travis file to see if i can give it enough time to start the server" />
+    <MESSAGE value="Increased sleep time" />
+    <MESSAGE value="Adding curl command" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding curl command" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="19" />
+      <option name="time" value="22" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java" />
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
@@ -1105,7 +1046,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ExtractionLog_03-10-2018.txt" />
+    <entry file="file://$PROJECT_DIR$/ExtractionLog_03-10-2018.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/classes/test/484_P7_1-GUI/TestPreviewandExportData.class" />
     <entry file="file://$PROJECT_DIR$/484_P7_1-GUI.iml">
       <provider selected="true" editor-type-id="text-editor">
@@ -1114,15 +1061,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Rakefile">
+    <entry file="file://$PROJECT_DIR$/src/test/java/WatchmanTest.java" />
+    <entry file="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-remote-driver/3.9.0/selenium-remote-driver-3.9.0.jar!/org/openqa/selenium/remote/RemoteWebDriver.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="8" column="21" lean-forward="true" selection-start-line="8" selection-start-column="21" selection-end-line="8" selection-end-column="21" />
+        <state relative-caret-position="60">
+          <caret line="527" column="0" lean-forward="false" selection-start-line="527" selection-start-column="0" selection-end-line="527" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/WatchmanTest.java" />
-    <entry file="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-remote-driver/3.9.0/selenium-remote-driver-3.9.0.jar!/org/openqa/selenium/remote/RemoteWebDriver.class" />
     <entry file="file://$PROJECT_DIR$/.ruby-version">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
@@ -1144,117 +1090,113 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2907">
-          <caret line="176" column="0" lean-forward="false" selection-start-line="176" selection-start-column="0" selection-end-line="176" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="26" column="2" lean-forward="false" selection-start-line="26" selection-start-column="2" selection-end-line="26" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Launch4j/src/net/sf/launch4j/config/ConfigPersister.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="202">
-          <caret line="222" column="26" lean-forward="false" selection-start-line="222" selection-start-column="26" selection-end-line="222" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bin/rake">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="20" column="33" lean-forward="false" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.jbundler/classpath.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="27" column="0" lean-forward="false" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Jarfile.lock">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="20" lean-forward="false" selection-start-line="6" selection-start-column="20" selection-end-line="6" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Jarfile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Gemfile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="35" lean-forward="false" selection-start-line="11" selection-start-column="35" selection-end-line="11" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="663">
-          <caret line="52" column="12" lean-forward="false" selection-start-line="52" selection-start-column="12" selection-end-line="52" selection-end-column="12" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="53" column="0" lean-forward="false" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="517">
+          <caret line="44" column="80" lean-forward="true" selection-start-line="44" selection-start-column="80" selection-end-line="44" selection-end-column="80" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestExtractionPage.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="48" column="13" lean-forward="true" selection-start-line="48" selection-start-column="13" selection-end-line="48" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="278">
+          <caret line="30" column="8" lean-forward="false" selection-start-line="30" selection-start-column="8" selection-end-line="30" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Rakefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="8" column="21" lean-forward="true" selection-start-line="8" selection-start-column="21" selection-end-line="8" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Dockerfile">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="2" lean-forward="false" selection-start-line="0" selection-start-column="2" selection-end-line="0" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="244">
+          <caret line="69" column="0" lean-forward="false" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config.ru">
+    <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="969">
-          <caret line="57" column="0" lean-forward="false" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
+        <state relative-caret-position="108">
+          <caret line="6" column="7" lean-forward="false" selection-start-line="6" selection-start-column="5" selection-end-line="6" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="23" column="33" lean-forward="true" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="22" column="54" lean-forward="false" selection-start-line="22" selection-start-column="54" selection-end-line="22" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExtractionLog_04-10-2018.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExtractionLog_04-02-2018.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExtractionLog_03-03-2018.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="354">
-          <caret line="40" column="18" lean-forward="false" selection-start-line="40" selection-start-column="18" selection-end-line="40" selection-end-column="18" />
+        <state relative-caret-position="120">
+          <caret line="9" column="17" lean-forward="true" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
           <folding />
         </state>
       </provider>
