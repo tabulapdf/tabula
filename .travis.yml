@@ -22,8 +22,6 @@ before_install:
   - git checkout Header_Back_End
   - mvn clean compile assembly:single
   - mvn install:install-file -Dfile=target/tabula-1.0.2-SNAPSHOT-jar-with-dependencies.jar -DgroupId=technology.tabula -DartifactId=tabula -Dversion=1.0.2-SNAPSHOT -Dpackaging=jar -DpomFile=pom.xml
-  - export PATH=~/jruby-9.1.16.0/bin:$PATH
-  - jbundle update
 
 install:
   #mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V #comment out for now
