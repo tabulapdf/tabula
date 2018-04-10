@@ -1,26 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="Adding curl command">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/.jbundler/classpath.rb" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-03-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-10-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-13-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-14-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-20-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-22-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-23-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-24-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-25-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-26-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_03-27-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-02-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-03-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-07-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-08-2018.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/ExtractionLog_04-09-2018.txt" afterPath="" />
-    </list>
+    <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -74,8 +55,8 @@
       <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="9" column="17" lean-forward="true" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+            <state relative-caret-position="156">
+              <caret line="11" column="10" lean-forward="true" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -521,13 +502,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00065" summary="Committing changes to the workspace file again">
-      <created>1523134369968</created>
-      <option name="number" value="00065" />
-      <option name="presentableId" value="LOCAL-00065" />
-      <option name="project" value="LOCAL" />
-      <updated>1523134369968</updated>
-    </task>
     <task id="LOCAL-00066" summary="added on more lines to the travis file to test if it will run the test correctly. Current got the chromedriver to run for majority of the test cases">
       <created>1523135226049</created>
       <option name="number" value="00066" />
@@ -864,7 +838,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523379936028</updated>
     </task>
-    <option name="localTasksCounter" value="114" />
+    <task id="LOCAL-00114" summary="Changes">
+      <created>1523380957142</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1523380957142</updated>
+    </task>
+    <option name="localTasksCounter" value="115" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -901,7 +882,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="52" y="-4" width="1315" height="773" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -965,7 +945,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="TestAboutPage is now using headless mode" />
     <MESSAGE value="Added on more to the before part of the travis file" />
     <MESSAGE value="error with the version of the chrome driver" />
     <MESSAGE value="Committing changes to the workspace file" />
@@ -990,7 +969,8 @@
     <MESSAGE value="Made minor changes to the run.sh file and travis file to see if i can give it enough time to start the server" />
     <MESSAGE value="Increased sleep time" />
     <MESSAGE value="Adding curl command" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding curl command" />
+    <MESSAGE value="Changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1195,8 +1175,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="9" column="17" lean-forward="true" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+        <state relative-caret-position="156">
+          <caret line="11" column="10" lean-forward="true" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
           <folding />
         </state>
       </provider>
