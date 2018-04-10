@@ -34,6 +34,7 @@ install:
   - bundle install
   - jruby -S jbundle install
   - jruby -G -r jbundler -S rackup &
+  - sleep 5
   #get the un-released back-end jar and install to local mvn repo
   #cd /home/travis/build/redmyers/484_P7_1-GUI
   #bundle update jar-dependencies
