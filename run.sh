@@ -20,5 +20,5 @@ git checkout Header_Addition
 export PATH=~/jruby-9.1.16.0/bin:$PATH
 gem install bundler
 bundle install
-jruby -S jbundle installjruby -G -r jbundler -S rackup
+jruby -S jbundle install jruby -G -r jbundler -S rackup
 
