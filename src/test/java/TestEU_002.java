@@ -39,7 +39,7 @@ public class TestEU_002 {
         By regex_search_id = By.id("regex-search");
         WebElement regex_button = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id));
         regex_button.click();
-        Thread.sleep(600);
+        Thread.sleep(800);
     }
     private void PatternInputStrings(String pattern_before, String pattern_after){
         By pattern_before_input = By.id("pattern_before");
@@ -61,7 +61,7 @@ public class TestEU_002 {
     public static void SetUp() throws InterruptedException {
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
-       // options.addArguments("headless");
+        options.addArguments("headless");
 
         //set up of chromdriver and navigation to the url, as well as uploading of the pdf file
         driver = new ChromeDriver(options);
@@ -444,12 +444,35 @@ public class TestEU_002 {
         WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
         extract_button.click();
         PageRefresh();
-
         //Test for vertical table
+        PatternInputStrings("Preperation", "Presentation");
+        ClickRegexButton();
+        Thread.sleep(1000);
+        String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
+        Boolean regex_result;
+        if(result.equals("0")){ regex_result = true;} //if true, there are zero matches
+        else{ regex_result = false;}
+        assertTrue("Failed, Tabula found a match for a vertical table",
+                regex_result);
+        driver.navigate().refresh();
 
+        //Test of a different vertical table
+        PageRefresh();
+        PatternInputStrings("Impacts", "Lack of interest");
+        ClickRegexButton();
+        Thread.sleep(1000);
+        String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
+        Boolean regex_result2;
+        if(result2.equals("0")){ regex_result2 = true;} //if true, there are zero matches
+        else{ regex_result2 = false;}
+        assertTrue("Failed, Tabula found a match for a vertical table",
+                regex_result2);
+        driver.navigate().back();
+        Thread.sleep(500);
     }
     @Test
     public void TestMultipleRegexSearches() throws InterruptedException{
+        //Tests for 2 regex search results
         //navigates to the extraction page and checks that it is in the extraction page
         WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
         extract_button.click();
@@ -460,28 +483,54 @@ public class TestEU_002 {
         ClickRegexButton();
         String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'2')]")).getText();
         Boolean regex_result;
-        if(result.equals("2")){ regex_result = true;} //if true, there are zero matches
+        if(result.equals("2")){ regex_result = true;} //if true, there are 2 matches
         else{ regex_result = false;}
         PreviewandExportDatapg();
         Thread.sleep(600);
 
         String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                 "'Impacts on participating pupils')]")).getText();
-        System.out.print(result_data);
         Boolean regex_data;
         if(result_data.equals("Impacts on participating pupils")){ regex_data = true;}
         else{ regex_data = false;}
         String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Knowledge/appreciation of school')]")).getText();
-        System.out.print(result_data2);
         Boolean regex_data2;
         if(result_data2.equals("Knowledge/appreciation of school system and")){ regex_data2 = true;}
         else{ regex_data2 = false;}
         Boolean final_results;
         if(regex_result && regex_data && regex_data2){ final_results = true;}
         else{final_results = false;}
+        Thread.sleep(500);
         assertTrue("Failed, Tabula didn't find the 2 regex matches", final_results);
         driver.navigate().refresh();
+
+        //Test for 3 regex search results
         PageRefresh();
+        PatternInputStrings("Knowledge", "Foreign");
+        InclusiveButtons(true, true);
+        ClickRegexButton();
+        String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'3')]")).getText();
+        Boolean regex_result3;
+        if(result2.equals("3")){ regex_result3 = true;} //if true, there are 3 matches
+        else{ regex_result3 = false;}
+        PreviewandExportDatapg();
+        Thread.sleep(600);
+        
+        String result_data3 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                "'Knowledge and awareness')]")).getText();
+        Boolean regex_data3;
+        if(result_data3.equals("Knowledge and awareness of different cultures")){ regex_data3 = true;}
+        else{ regex_data3 = false;}
+        String result_data4 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Foreign language')]")).getText();
+        Boolean regex_data4;
+        if(result_data4.equals("Foreign language competence")){ regex_data4 = true;}
+        else{ regex_data4 = false;}
+        Boolean final_results2;
+        if(regex_result3 && regex_data3 && regex_data4){ final_results2 = true;}
+        else{final_results2 = false;}
+        Thread.sleep(500);
+        assertTrue("Failed, Tabula didn't find the 3 regex matches", final_results2);
+        driver.navigate().back();
         driver.navigate().back();
         Thread.sleep(500);
     }
