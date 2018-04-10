@@ -40,7 +40,7 @@ jdk:
   - openjdk8
   - oraclejdk8
 script:
-  - mvn test -Dgpg.skip=true
+  # mvn test -Dgpg.skip=true
 notifications:
   email: false
 
