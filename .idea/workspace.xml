@@ -49,8 +49,8 @@
       <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="381">
-              <caret line="34" column="3" lean-forward="false" selection-start-line="34" selection-start-column="3" selection-end-line="34" selection-end-column="3" />
+            <state relative-caret-position="410">
+              <caret line="38" column="3" lean-forward="false" selection-start-line="38" selection-start-column="3" selection-end-line="38" selection-end-column="3" />
               <folding />
             </state>
           </provider>
@@ -83,6 +83,7 @@
       <find>SYSTE</find>
       <find>inclusi</find>
       <find>0</find>
+      <find>DskipTests=true</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/src/test/java</dir>
@@ -130,10 +131,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="52" />
-    <option name="y" value="-4" />
-    <option name="width" value="1315" />
-    <option name="height" value="773" />
+    <option name="x" value="51" />
+    <option name="y" value="10" />
+    <option name="width" value="875" />
+    <option name="height" value="745" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -564,13 +565,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00032" summary="Merge remote-tracking branch 'remotes/origin/Header_Addition' into Header_Addition&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml">
-      <created>1522154920557</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1522154920557</updated>
-    </task>
     <task id="LOCAL-00033" summary="Added on 2 user scenarios of a 2 page spanning table and a 5 page spanning table. The 5 page spanning table scenario is running into an internal error, and after confirming with Ben testing out the scenario as well, this may be something we may have to further look into.">
       <created>1522164443838</created>
       <option name="number" value="00033" />
@@ -907,7 +901,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523330950860</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="moved the back-end jar to before_install and commented out all the GUI repo stuff to see if that is working">
+      <created>1523331432544</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1523331432545</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1008,7 +1009,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="trying to see why travis-ci is not at least seeing the test cases" />
     <MESSAGE value="going back to original pom file" />
     <MESSAGE value="re-added on chrome settings to the travis file. Seems like the extra things I had put to the pom file is what was causing the problem" />
     <MESSAGE value="Added on the system.setproperty to see if that will fix the issue with the exception being thrown" />
@@ -1033,7 +1033,8 @@
     <MESSAGE value="Fixed errors for TestPreviewandExportData test case and TestHelpPage test cases, before they were both failing for the most part." />
     <MESSAGE value="Added on the test of multiple regex searches and the test case for vertical tables" />
     <MESSAGE value="Deleted some of the pwd lines on the travis file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Deleted some of the pwd lines on the travis file" />
+    <MESSAGE value="moved the back-end jar to before_install and commented out all the GUI repo stuff to see if that is working" />
+    <option name="LAST_COMMIT_MESSAGE" value="moved the back-end jar to before_install and commented out all the GUI repo stuff to see if that is working" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1219,8 +1220,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="381">
-          <caret line="34" column="3" lean-forward="false" selection-start-line="34" selection-start-column="3" selection-end-line="34" selection-end-column="3" />
+        <state relative-caret-position="410">
+          <caret line="38" column="3" lean-forward="false" selection-start-line="38" selection-start-column="3" selection-end-line="38" selection-end-column="3" />
           <folding />
         </state>
       </provider>
