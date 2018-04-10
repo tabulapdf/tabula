@@ -3,19 +3,18 @@ language: java
 addons:
   chrome: stable
 before_install:
-  - gem update --system
+  # GUI
+  # "export DISPLAY=:99.0"
+  # "sh -e /etc/init.d/xvfb start"
+  # sleep 5
+  - bash run.sh &
+  - sleep 20
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   # google chrome standalone driver
   - wget http://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip
   - unzip chromedriver_linux64.zip
   - sudo mv chromedriver /usr/local/bin
   - sudo chmod a+x /usr/local/bin/chromedriver
-  # GUI
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 5
-  - bash run.sh &
-  - sleep 5
 
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
@@ -25,6 +24,7 @@ jdk:
   - oraclejdk8
 script:
   - mvn test -Dgpg.skip=true
+  - xvfb-run make test
 notifications:
   email: false
 
