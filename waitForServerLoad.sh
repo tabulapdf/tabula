@@ -7,7 +7,7 @@ do
  curl http::localhost:9292
  res=$?
  printf "Return value of curl:%d","$res"
- sleep(1)
+ sleep 5s #Sleep for 5 seconds in between curl calls...
  iter=$iter-1;
  printf "Iteration #:%d","$iter")
 done
