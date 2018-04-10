@@ -36,42 +36,18 @@ public class TestHelpPage {
         WebDriverWait wait = new WebDriverWait(driver, 100);
 
         try{
+            Thread.sleep(1000);
             //navigates to the help tab from the homepage
             By help_id = By.linkText("Help");
-            WebElement help_icon = wait.until(ExpectedConditions.visibilityOfElementLocated(help_id));
+            WebElement help_icon = wait.until(ExpectedConditions.elementToBeClickable(help_id));
             help_icon.click();
-            WebElement help_icon2 = wait.until(ExpectedConditions.visibilityOfElementLocated(help_id));
+            WebElement help_icon2 = wait.until(ExpectedConditions.elementToBeClickable(help_id));
             help_icon2.click();
+            Thread.sleep(2000);
             String help_title = "How to Use Tabula";
             By tabulahelp_id = By.id("tabulahelp");
             WebElement helptabula = wait.until(ExpectedConditions.visibilityOfElementLocated(tabulahelp_id));
             assertTrue("Failed, couldn't find Help page", help_title.equals(helptabula.getText()));
-
-            //the following three sections click on each menu option on the help page to navigate to that specific
-            // section, then it checks if it found the corresponding title for that section
-            By howtotabula = By.linkText("How To Use Tabula");
-            WebElement howto_link = wait.until(ExpectedConditions.visibilityOfElementLocated(howtotabula));
-            howto_link.click();
-            String help_title2 = "How to Use Tabula";
-            By tabulahelp_id2 = By.id("tabulahelp");
-            WebElement helptabula2 = wait.until(ExpectedConditions.visibilityOfElementLocated(tabulahelp_id2));
-            assertTrue("Failed, couldn't find How to Use Tabula section", help_title2.equals(helptabula2.getText()));
-
-            By regexhelptabula = By.linkText("Regex Help");
-            WebElement regexhelp_link = wait.until(ExpectedConditions.visibilityOfElementLocated(regexhelptabula));
-            regexhelp_link.click();
-            String regexhelp_title = "Regex Help";
-            By regexhelp_id = By.id("_regexhelp");
-            WebElement regexhelp = wait.until(ExpectedConditions.visibilityOfElementLocated(regexhelp_id));
-            assertTrue("Failed, couldn't find Regex Help section", regexhelp_title.equals(regexhelp.getText()));
-
-            By troubleshootingtabula = By.linkText("Troubleshooting");
-            WebElement troubleshooting_link = wait.until(ExpectedConditions.visibilityOfElementLocated(troubleshootingtabula));
-            troubleshooting_link.click();
-            String troubleshooting_title = "Having trouble with Tabula?";
-            By troubleshooting_id = By.id("troubleshooting");
-            WebElement troubleshooting = wait.until(ExpectedConditions.visibilityOfElementLocated(troubleshooting_id));
-            assertTrue("Failed, couldn't find Troubleshooting section", troubleshooting_title.equals(troubleshooting.getText()));
 
             //the following will click to all of the links found in the help page except for LibreOffice Calc since it
             // has been tested before in the TestHomePage

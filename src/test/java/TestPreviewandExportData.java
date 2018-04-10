@@ -36,13 +36,13 @@ public class TestPreviewandExportData {
     public void startWebDriver() throws InterruptedException {
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("headless");
+        //options.addArguments("headless");
 
         driver = new ChromeDriver(options);
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 100);
-        String filePath = "/home/slmendez/484_P7_1-GUI/src/test/pdf/eu-002.pdf"; //
+        String filePath = "/home/slmendez/484_P7_1-GUI/src/test/pdf/eu-002.pdf";
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
         Thread.sleep(1000);
@@ -51,7 +51,7 @@ public class TestPreviewandExportData {
     try{
         //navigates to the extraction page and checks that it is in the extraction page
         By extract_name = By.linkText("Extract Data");
-        WebElement extract_button = wait.until(ExpectedConditions.visibilityOfElementLocated(extract_name));
+        WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(extract_name));
         Thread.sleep(1000);
         extract_button.click();
         Thread.sleep(1000);
@@ -89,6 +89,7 @@ public class TestPreviewandExportData {
         WebElement lattice_button = wait.until(ExpectedConditions.elementToBeClickable(lattice_id));
         Thread.sleep(1000);
         lattice_button.click();
+        Thread.sleep(1000);
         List<WebElement> lattice_rows = driver.findElements(By.className("detection-row"));
         int lattice_count = lattice_rows.size();
         int lattice_hc_count = 7;
