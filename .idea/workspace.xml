@@ -4,7 +4,6 @@
     <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/.travis.yml" afterPath="$PROJECT_DIR$/.travis.yml" />
-      <change beforePath="$PROJECT_DIR$/run.sh" afterPath="$PROJECT_DIR$/run.sh" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -59,8 +58,8 @@
       <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="10" column="12" lean-forward="false" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="12" />
+            <state relative-caret-position="282">
+              <caret line="18" column="25" lean-forward="false" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -506,13 +505,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00063" summary="error with the version of the chrome driver">
-      <created>1523118256772</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
-      <option name="project" value="LOCAL" />
-      <updated>1523118256772</updated>
-    </task>
     <task id="LOCAL-00064" summary="Committing changes to the workspace file">
       <created>1523134330297</created>
       <option name="number" value="00064" />
@@ -849,7 +841,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523377212192</updated>
     </task>
-    <option name="localTasksCounter" value="112" />
+    <task id="LOCAL-00112" summary="Increased sleep time">
+      <created>1523378440231</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1523378440231</updated>
+    </task>
+    <option name="localTasksCounter" value="113" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -950,7 +949,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Trying to fix this setProperty again" />
     <MESSAGE value="DOn't know why there is a current error with fetching this log file, going to try again" />
     <MESSAGE value="TestAboutPage is now using headless mode" />
     <MESSAGE value="Added on more to the before part of the travis file" />
@@ -975,7 +973,8 @@
     <MESSAGE value="Added on xvfb for the GUI to the travis file" />
     <MESSAGE value="Moved a lot of the commands to the run.sh file to see if that will make a difference" />
     <MESSAGE value="Made minor changes to the run.sh file and travis file to see if i can give it enough time to start the server" />
-    <option name="LAST_COMMIT_MESSAGE" value="Made minor changes to the run.sh file and travis file to see if i can give it enough time to start the server" />
+    <MESSAGE value="Increased sleep time" />
+    <option name="LAST_COMMIT_MESSAGE" value="Increased sleep time" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1165,8 +1164,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="10" column="12" lean-forward="false" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="12" />
+        <state relative-caret-position="282">
+          <caret line="18" column="25" lean-forward="false" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
           <folding />
         </state>
       </provider>
