@@ -28,7 +28,7 @@ public class TestHelpPage {
     public void startWebDriver(){
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
-        //options.addArguments("headless");
+        options.addArguments("headless");
 
         driver = new ChromeDriver(options);
         driver.get("http://127.0.0.1:9292/");
