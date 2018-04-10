@@ -4,13 +4,14 @@ addons:
   chrome: stable
 before_install:
   - gem update --system
-  # google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
-  # google chrome standalone driver
-  # wget http://chromedriver.storage.googleapis.com/2.37/chromedriver_linux64.zip
-  # unzip chromedriver_linux64.zip
-  # sudo mv chromedriver /usr/local/bin
-  # sudo chmod a+x /usr/local/bin/chromedriver
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+  - google chrome standalone driver
+  - wget http://chromedriver.storage.googleapis.com/2.37/chromedriver_linux64.zip
+  - unzip chromedriver_linux64.zip
+  - sudo mv chromedriver /usr/local/bin
+  - sudo chmod a+x /usr/local/bin/chromedriver
   # download and use jruby
+  - cd ~/
   - wget https://repo1.maven.org/maven2/org/jruby/jruby-dist/9.1.16.0/jruby-dist-9.1.16.0-bin.zip
   - unzip jruby-dist-9.1.16.0-bin.zip
   - sudo mv jruby-9.1.16.0 ~/
@@ -32,8 +33,7 @@ install:
   - gem install bundler
   - bundle install
   - jruby -S jbundle install
-  - jruby -G -r jbundler -S rackup
-  #mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
   #get the un-released back-end jar and install to local mvn repo
   #cd /home/travis/build/redmyers/484_P7_1-GUI
   #bundle update jar-dependencies
@@ -43,7 +43,8 @@ jdk:
   - openjdk8
   - oraclejdk8
 script:
-  # mvn test -Dgpg.skip=true
+  - jruby -G -r jbundler -S rackup &
+  - mvn test -Dgpg.skip=true
 notifications:
   email: false
 
