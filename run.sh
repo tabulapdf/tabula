@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+gem update --system
 # download and use jruby
 wget https://repo1.maven.org/maven2/org/jruby/jruby-dist/9.1.16.0/jruby-dist-9.1.16.0-bin.zip
 unzip jruby-dist-9.1.16.0-bin.zip
