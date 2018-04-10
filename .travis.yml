@@ -32,6 +32,7 @@ install:
   - gem install bundler
   - bundle install
   - jruby -S jbundle install
+  - jruby -G -r jbundler -S rackup &
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
   #get the un-released back-end jar and install to local mvn repo
   #cd /home/travis/build/redmyers/484_P7_1-GUI
@@ -42,7 +43,6 @@ jdk:
   - openjdk8
   - oraclejdk8
 script:
-  - jruby -G -r jbundler -S rackup &
   - mvn test -Dgpg.skip=true
 notifications:
   email: false
