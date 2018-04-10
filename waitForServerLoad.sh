@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 gem update --system
 res=1;
-while "$res" -ne 0
+iter=10;
+while "$res" -ne 0 && $"iter" -ne 0
 do
  curl http::localhost:9292
  res=$?
- echo "Return value of curl..."
- echo res
+ printf "Return value of curl:%d","$res"
+ sleep(1)
+ iter=$iter-1;
+ printf "Iteration #:%d","$iter")
 done
 
 exit $res
