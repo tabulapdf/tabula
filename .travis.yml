@@ -15,6 +15,9 @@ before_install:
   - unzip jruby-dist-9.1.16.0-bin.zip
   - mv jruby-9.1.16.0 ~/
   - export PATH=~/jruby-9.1.16.0/bin:$PATH
+  # GUI
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
   # create back-end jar
   - cd ~/
   - git clone https://github.com/redmyers/484_P7_1-Java.git
@@ -33,6 +36,7 @@ before_install:
   - jruby -S jbundle install
   - bash run.sh &
   - sleep 5
+
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
 
@@ -41,7 +45,6 @@ jdk:
   - oraclejdk8
 script:
   - mvn test -Dgpg.skip=true
-  - xvfb-run make test
 notifications:
   email: false
 
