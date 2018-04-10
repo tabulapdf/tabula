@@ -8,7 +8,10 @@ before_install:
   # "sh -e /etc/init.d/xvfb start"
   # sleep 5
   - bash run.sh &
-  - sleep 50
+  - curl http://localhost:9292
+  - res=$?
+  - echo $res
+  - sleep 3
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   # google chrome standalone driver
   - wget http://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip
