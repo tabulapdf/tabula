@@ -25,6 +25,7 @@ public class TestAboutPage {
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless");
+        options.addArguments("no-sandbox");
 
         driver = new ChromeDriver(options);
         driver.get("http://127.0.0.1:9292/");
