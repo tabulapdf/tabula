@@ -18,7 +18,8 @@ before_install:
   - sudo chmod a+x /usr/local/bin/chromedriver
 
 install:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
+ # - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
+ 
 
 jdk:
   - openjdk8
