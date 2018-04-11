@@ -4,9 +4,9 @@ addons:
   chrome: stable
 before_install:
   # GUI
-  # "export DISPLAY=:99.0"
-  # "sh -e /etc/init.d/xvfb start"
-  # sleep 5
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 5
   - bash run.sh &
   - sleep 100
   - bash waitForServerLoad.sh
