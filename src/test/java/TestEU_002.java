@@ -62,6 +62,8 @@ public class TestEU_002 {
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless");
+        options.addArguments("no-sandbox");
+
 
         //set up of chromdriver and navigation to the url, as well as uploading of the pdf file
         driver = new ChromeDriver(options);
