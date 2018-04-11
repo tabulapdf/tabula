@@ -1,29 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="Adding curl command">
+    <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/.travis.yml" afterPath="$PROJECT_DIR$/.travis.yml" />
-      <change beforePath="$PROJECT_DIR$/target/484_P7_1-GUI-1.0-SNAPSHOT.jar" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-TestAboutPage.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-TestEU_002.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-TestExtractionPage.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-TestHelpPage.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-TestHomePage.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-TestMyTemplatesPage.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-TestPreviewandExportData.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TestAboutPage.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TestEU_002.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TestExtractionPage.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TestHelpPage.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TestHomePage.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TestMyTemplatesPage.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TestPreviewandExportData.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/TestEU_002.class" afterPath="$PROJECT_DIR$/target/test-classes/TestEU_002.class" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/TestOneStopVotingSiteListNov2012.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestAboutPage.java" afterPath="$PROJECT_DIR$/src/test/java/TestAboutPage.java" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestEU_002.java" afterPath="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestExtractionPage.java" afterPath="$PROJECT_DIR$/src/test/java/TestExtractionPage.java" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestHelpPage.java" afterPath="$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestHomePage.java" afterPath="$PROJECT_DIR$/src/test/java/TestHomePage.java" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java" afterPath="$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" afterPath="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -53,11 +40,31 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="TestPreviewandExportData.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="126">
+              <caret line="22" column="31" lean-forward="true" selection-start-line="22" selection-start-column="31" selection-end-line="22" selection-end-column="31" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TestMyTemplatesPage.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="234">
+              <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="TestEU_002.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="66" column="32" lean-forward="true" selection-start-line="66" selection-start-column="32" selection-end-line="66" selection-end-column="32" />
+            <state relative-caret-position="172">
+              <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -68,18 +75,18 @@
       <file leaf-file-name="TestAboutPage.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="23" column="33" lean-forward="false" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
+            <state relative-caret-position="205">
+              <caret line="27" column="18" lean-forward="true" selection-start-line="27" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
+      <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="92">
-              <caret line="8" column="3" lean-forward="false" selection-start-line="8" selection-start-column="3" selection-end-line="8" selection-end-column="3" />
+            <state relative-caret-position="236">
+              <caret line="16" column="9" lean-forward="false" selection-start-line="16" selection-start-column="9" selection-end-line="16" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -145,18 +152,18 @@
         <option value="$PROJECT_DIR$/src/test/java/TestSuite_Components.java" />
         <option value="$PROJECT_DIR$/src/test/java/WatchmanTest.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/test/java/TestExtractionPage.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestHomePage.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestAboutPage.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
         <option value="$PROJECT_DIR$/run.sh" />
         <option value="$PROJECT_DIR$/waitForServerLoad" />
         <option value="$PROJECT_DIR$/waitForServerLoad.sh" />
         <option value="$PROJECT_DIR$/.travis.yml" />
+        <option value="$PROJECT_DIR$/src/test/java/TestAboutPage.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestExtractionPage.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestHomePage.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" />
       </list>
     </option>
   </component>
@@ -655,13 +662,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00066" summary="added on more lines to the travis file to test if it will run the test correctly. Current got the chromedriver to run for majority of the test cases">
-      <created>1523135226049</created>
-      <option name="number" value="00066" />
-      <option name="presentableId" value="LOCAL-00066" />
-      <option name="project" value="LOCAL" />
-      <updated>1523135226049</updated>
-    </task>
     <task id="LOCAL-00067" summary="Fixed error on the line that checks out a branch">
       <created>1523135562140</created>
       <option name="number" value="00067" />
@@ -998,7 +998,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523380957142</updated>
     </task>
-    <option name="localTasksCounter" value="115" />
+    <task id="LOCAL-00115" summary="Adding curl command">
+      <created>1523415838350</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1523415838350</updated>
+    </task>
+    <option name="localTasksCounter" value="116" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1147,9 +1154,9 @@
     <MESSAGE value="Moved a lot of the commands to the run.sh file to see if that will make a difference" />
     <MESSAGE value="Made minor changes to the run.sh file and travis file to see if i can give it enough time to start the server" />
     <MESSAGE value="Increased sleep time" />
-    <MESSAGE value="Adding curl command" />
     <MESSAGE value="Changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes" />
+    <MESSAGE value="Adding curl command" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding curl command" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1221,41 +1228,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1944">
-          <caret line="120" column="33" lean-forward="false" selection-start-line="120" selection-start-column="33" selection-end-line="120" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="517">
-          <caret line="44" column="80" lean-forward="true" selection-start-line="44" selection-start-column="80" selection-end-line="44" selection-end-column="80" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestExtractionPage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="663">
-          <caret line="50" column="0" lean-forward="false" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Rakefile">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
@@ -1270,26 +1242,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="2" lean-forward="false" selection-start-line="0" selection-start-column="2" selection-end-line="0" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="108">
           <caret line="6" column="7" lean-forward="false" selection-start-line="6" selection-start-column="5" selection-end-line="6" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="23" column="33" lean-forward="false" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
           <folding />
         </state>
       </provider>
@@ -1314,20 +1270,80 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.travis.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="236">
+          <caret line="16" column="9" lean-forward="false" selection-start-line="16" selection-start-column="9" selection-end-line="16" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="205">
+          <caret line="27" column="18" lean-forward="true" selection-start-line="27" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="66" column="32" lean-forward="true" selection-start-line="66" selection-start-column="32" selection-end-line="66" selection-end-column="32" />
+        <state relative-caret-position="172">
+          <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.travis.yml">
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestExtractionPage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="92">
-          <caret line="8" column="3" lean-forward="false" selection-start-line="8" selection-start-column="3" selection-end-line="8" selection-end-column="3" />
+        <state relative-caret-position="217">
+          <caret line="40" column="43" lean-forward="false" selection-start-line="40" selection-start-column="43" selection-end-line="40" selection-end-column="43" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="338">
+          <caret line="32" column="0" lean-forward="false" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestMyTemplatesPage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="2" lean-forward="false" selection-start-line="0" selection-start-column="2" selection-end-line="0" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="22" column="31" lean-forward="true" selection-start-line="22" selection-start-column="31" selection-end-line="22" selection-end-column="31" />
           <folding />
         </state>
       </provider>
