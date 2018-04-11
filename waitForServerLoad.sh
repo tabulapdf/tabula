@@ -15,7 +15,9 @@ done
 
 if [[ "$res" -ne 0 ]]
 then
-  printf "Connection could not be made to server...\n"
+  printf "CONNECTION COULD NOT BE MADE TO SERVER...\n"
+else
+  printf "CONNECTION MADE TO SERVER: BEGINNING TEST CASES...\n"
 fi
 
 exit $res
