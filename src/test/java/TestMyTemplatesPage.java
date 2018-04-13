@@ -64,8 +64,8 @@ public class TestMyTemplatesPage {
             Thread.sleep(1000);
 
         }catch(Exception e){
+            System.out.print("TestMyTemplatesPage failed.");
             System.out.print(e);
-
         }
     }
         //whether the test case passes or not, the instance of the browser will close
