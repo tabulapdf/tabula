@@ -1525,7 +1525,10 @@ Tabula.RegexCollectionView = Backbone.View.extend({
       return selections_rendered.get(matching_area).every(function(subsection){
         console.log('SUBSECTION:');
         console.log(subsection);
-        return subsection.attributes.checkOverlaps();})}))
+         return true;})}))
+
+        // return subsection.attributes.checkOverlaps();})}))
+
       {
       this.collection.add(new Tabula.RegexResultModel({
         pattern_before: search_results["_regex_before_table"]["pattern"],
@@ -1536,14 +1539,22 @@ Tabula.RegexCollectionView = Backbone.View.extend({
       }));
     }
     else{
-     alert('Requested regex search will overlap with an already performed search. Please restructure your search' +
-       ' and try again');
+     //TODO: figure out perhaps a cleaner way to do this?? Shirley's going to look into this I think..
+     alert('TODO: Figure out what the user should see here about overlaps');
      selections_rendered.forEach(function(matching_area){
        matching_area.forEach(function(subsection){
          subsection.attributes.remove();
+         //TODO-need to figure out how to call regex remove from here...
        });
       })
     }
+
+   // console.log("Counted Matches:" + num_matches);
+   // console.log(search_results["_matching_areas"]);
+   // console.log("Rendered results:");
+   // console.log(rendered_results);
+
+
 
 
   }});
