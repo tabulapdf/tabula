@@ -4,8 +4,7 @@
     <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/.travis.yml" afterPath="$PROJECT_DIR$/.travis.yml" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/technology/tabula/TestPreviewandExportData.java" afterPath="$PROJECT_DIR$/src/test/java/technology/tabula/TestPreviewandExportData.java" />
-      <change beforePath="$PROJECT_DIR$/waitForServerLoad.sh" afterPath="$PROJECT_DIR$/waitForServerLoad.sh" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/technology/tabula/TestPreviewandExportData.class" afterPath="$PROJECT_DIR$/target/test-classes/technology/tabula/TestPreviewandExportData.class" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -67,11 +66,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="false">
+      <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="576">
-              <caret line="32" column="0" lean-forward="true" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+            <state relative-caret-position="180">
+              <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -87,7 +86,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="waitForServerLoad.sh" pinned="false" current-in-tab="true">
+      <file leaf-file-name="waitForServerLoad.sh" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/waitForServerLoad.sh">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="407">
@@ -159,9 +158,9 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" />
         <option value="$PROJECT_DIR$/src/test/java/technology/tabula/TestPreviewandExportData.java" />
-        <option value="$PROJECT_DIR$/.travis.yml" />
         <option value="$PROJECT_DIR$/run.sh" />
         <option value="$PROJECT_DIR$/waitForServerLoad.sh" />
+        <option value="$PROJECT_DIR$/.travis.yml" />
       </list>
     </option>
   </component>
@@ -555,13 +554,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
     </task>
-    <task id="LOCAL-00070" summary="Noticed that i was setting the path of jruby from a wrong location match">
-      <created>1523144683347</created>
-      <option name="number" value="00070" />
-      <option name="presentableId" value="LOCAL-00070" />
-      <option name="project" value="LOCAL" />
-      <updated>1523144683347</updated>
-    </task>
     <task id="LOCAL-00071" summary="Noticed that i was setting the path of jruby from a wrong location match again">
       <created>1523144841417</created>
       <option name="number" value="00071" />
@@ -898,7 +890,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523656715897</updated>
     </task>
-    <option name="localTasksCounter" value="119" />
+    <task id="LOCAL-00119" summary="Trying to see why it's getting stuck in waitForSeverLoad">
+      <created>1523658490839</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
+      <option name="project" value="LOCAL" />
+      <updated>1523658490839</updated>
+    </task>
+    <option name="localTasksCounter" value="120" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1003,7 +1002,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Committing changes to the workspace file" />
     <MESSAGE value="Committing changes to the workspace file again" />
     <MESSAGE value="added on more lines to the travis file to test if it will run the test correctly. Current got the chromedriver to run for majority of the test cases" />
     <MESSAGE value="Fixed error on the line that checks out a branch" />
@@ -1028,7 +1026,8 @@
     <MESSAGE value="Adding curl command" />
     <MESSAGE value="Made changes to the test cases by adding an argument to for no-sandbox" />
     <MESSAGE value="Trying to see the location of the pdf files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Trying to see the location of the pdf files" />
+    <MESSAGE value="Trying to see why it's getting stuck in waitForSeverLoad" />
+    <option name="LAST_COMMIT_MESSAGE" value="Trying to see why it's getting stuck in waitForSeverLoad" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1193,14 +1192,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.travis.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="576">
-          <caret line="32" column="0" lean-forward="true" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/run.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="407">
@@ -1213,6 +1204,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="407">
           <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.travis.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
           <folding />
         </state>
       </provider>
