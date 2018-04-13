@@ -21,4 +21,3 @@ else
 fi
 
 exit $res
-
