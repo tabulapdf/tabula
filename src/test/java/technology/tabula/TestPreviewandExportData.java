@@ -64,7 +64,8 @@ public class TestPreviewandExportData {
       //  ((RemoteWebDriver)driver).setFileDetector(new LocalFileDetector());
         WebDriverWait wait = new WebDriverWait(driver, 100);
         Thread.sleep(1000);
-        String filePath = "./eu-002.pdf";
+        String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
+        String location = "/home/slmendez/484_P7_1-GUI/src/test/pdf/eu-002.pdf";
         //File eu_002 = new File(filePath);
         //final Page data2 = getPage(filePath, 2);
         //docInQuestion = PDDocument.load(eu_002);
