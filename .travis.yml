@@ -8,7 +8,7 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 5
   - bash run.sh &
-  - sleep 120
+  - sleep 100
   - bash waitForServerLoad.sh
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   # google chrome standalone driver
@@ -18,7 +18,7 @@ before_install:
   - sudo chmod a+x /usr/local/bin/chromedriver
 
 install:
- # - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
+ - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
 
 
 jdk:
