@@ -3,6 +3,7 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/com/levigo/jbig2/levigo-jbig2-imageio/2.0/levigo-jbig2-imageio-2.0.jar!/" />
     </CLASSES>
+    <JAVADOC />
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/com/levigo/jbig2/levigo-jbig2-imageio/2.0/levigo-jbig2-imageio-2.0-sources.jar!/" />
     </SOURCES>

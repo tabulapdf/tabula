@@ -3,6 +3,7 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/net/sf/jsi/jsi/1.1.0-SNAPSHOT/jsi-1.1.0-20140821.200056-4.jar!/" />
     </CLASSES>
+    <JAVADOC />
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/net/sf/jsi/jsi/1.1.0-SNAPSHOT/jsi-1.1.0-20140821.200056-4-sources.jar!/" />
     </SOURCES>

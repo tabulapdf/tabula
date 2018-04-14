@@ -3,6 +3,7 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/org/bouncycastle/bcmail-jdk15on/1.56/bcmail-jdk15on-1.56.jar!/" />
     </CLASSES>
+    <JAVADOC />
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/org/bouncycastle/bcmail-jdk15on/1.56/bcmail-jdk15on-1.56-sources.jar!/" />
     </SOURCES>
