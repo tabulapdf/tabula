@@ -569,4 +569,3 @@ public class TestEU_002 {
         driver.switchTo().alert().accept();
         driver.quit();
     }}
-    //TODO: ") causes an error on Tabula
