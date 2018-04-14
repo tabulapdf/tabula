@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 gem update --system
 res=1;
-num_iter=100
+num_iter=20
 iter="$num_iter";
 while [[ "$res" -ne 0 ]] && [[ "$iter" -gt 0 ]]
 do
