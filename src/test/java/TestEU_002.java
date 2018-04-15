@@ -6,8 +6,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -19,7 +22,8 @@ import static org.junit.Assert.assertFalse;
 public class TestEU_002 {
     private static WebDriver driver;
     private static String Tabula_url = "http://127.0.0.1:9292/";
-    private WebDriverWait wait = new WebDriverWait(driver, 100);
+    private WebDriverWait wait = new WebDriverWait(driver, 1000);
+    Actions actions = new Actions(driver);
 
     private void PageRefresh() throws InterruptedException {
         //menu options did not fully load
@@ -47,21 +51,22 @@ public class TestEU_002 {
         driver.findElement(pattern_before_input).sendKeys(pattern_before);
         driver.findElement(pattern_after_input).sendKeys(pattern_after);
     }
-    private void InclusiveButtons(boolean patternbefore, boolean patternafter) throws InterruptedException {
+    private void InclusiveButtons(boolean patternbefore, boolean patternafter){
         WebElement inclusive_before_btn = driver.findElement(By.id("include_pattern_before"));
         WebElement inclusive_after_btn = driver.findElement(By.id("include_pattern_after"));
         if (patternbefore){
-            inclusive_before_btn.click();
+            actions.moveToElement(inclusive_before_btn).click().build().perform();
+
         }
         if(patternafter){
-            inclusive_after_btn.click();
+            actions.moveToElement(inclusive_after_btn).click().build().perform();
         }
     }
     @BeforeClass
     public static void SetUp() throws InterruptedException {
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("headless");
+        //options.addArguments("headless");
         options.addArguments("no-sandbox");
 
         //set up of chromdriver and navigation to the url, as well as uploading of the pdf file
@@ -562,7 +567,58 @@ public class TestEU_002 {
         driver.navigate().back();
         Thread.sleep(500);
     }
-    @AfterClass
+    @Test
+    public void TestMultiCombinationRegexSearches() throws InterruptedException{
+        //Tests for a combination of regex searches: spanning pages, non-inclusive, and inclusive
+        //navigates to the extraction page and checks that it is in the extraction page
+        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+        extract_button.click();
+        PageRefresh();
+
+        PatternInputStrings("Table 5", "Table 6");
+        ClickRegexButton();
+        Thread.sleep(600);
+        PatternInputStrings("Impacts", "Impacts");
+        InclusiveButtons(true, true);
+        ClickRegexButton();
+        Thread.sleep(600);
+        PatternInputStrings("Impacts on the school", "Chart 4");
+        InclusiveButtons(false, true);
+        ClickRegexButton();
+        Thread.sleep(600);
+        //checks that there are 3 regex results
+        List<WebElement> regex_rows = driver.findElements(By.className("regex-result"));
+        int regex_count = regex_rows.size();
+        int regex_hc_count = 3;
+        assertTrue("Failed, number of rows, from the Stream option, did not match", (regex_hc_count == regex_count));
+
+        PreviewandExportDatapg();
+        Thread.sleep(600);
+        String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                "'Correlations between')]")).getText();
+        Boolean regex_data;
+        if(result_data.equals("Correlations between the extent of participation of pupils in project activities and the")){
+            regex_data = true;}
+        else{ regex_data = false;}
+        String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Chart')]")).getText();
+        Boolean regex_data2;
+        if(result_data2.equals("Chart 4")){ regex_data2 = true;}
+        else{ regex_data2 = false;}
+        Boolean final_results;
+        if(regex_data && regex_data2){ final_results = true;}
+        else{final_results = false;}
+        assertTrue("Failed, Tabula found no match for inclusive for pattern before and non-inclusive for " +
+                "pattern after", final_results);
+
+        driver.navigate().back();
+        driver.navigate().back();
+        Thread.sleep(500);
+    }
+    @Test
+    public void TestMultiPageTables() throws InterruptedException {
+    
+    }
+        @AfterClass
     public static void TearDown(){
         //navigates back and deletes the pdf utilized
         driver.findElement(By.id("delete_pdf")).click();

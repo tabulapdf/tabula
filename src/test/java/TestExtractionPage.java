@@ -16,7 +16,6 @@ import static junit.framework.TestCase.assertTrue;
 // What it doesn't test are the individual URL links in the regex tabs, since those same links are already tested in
 // the TestHelpPage and TestHomePage test cases, as well as the Autodetect Tables button and the Preview & Export Data
 // button are not tested since their functionality will be tested in other test cases.
-// TODO: currently, A better way to call the pdf has been changed; need to find a way to not use the absolute pathname
 // For this test case, eu_002.pdf is utilized.
 // @author SM modified: 3/6/18
 public class TestExtractionPage {
