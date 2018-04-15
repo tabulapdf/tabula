@@ -16,7 +16,6 @@ import static org.junit.Assert.assertFalse;
 //Test of Tabula's Preview and Export Data page, including the links and buttons on the page. Expect for two buttons,
 // the export button that triggers a pop-up window and the copy to clipboard button that is seen as disabled whenever
 // on remote control but enabled when manually tested.
-// TODO: currently, A better way to call the pdf has been changed; need to find a way to not use the absolute pathname
 // For this test case, eu_002.pdf is utilized.
 // @author SM modified: 3/10/18
 public class TestPreviewandExportData {
