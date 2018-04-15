@@ -656,12 +656,86 @@ public class TestEU_002 {
     }
     @Test
     public void TestOverlapRegexSearch() throws InterruptedException {
+        //Test for overlapping regex searches
+        //navigates to the extraction page and checks that it is in the extraction page
+        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+        extract_button.click();
+        PageRefresh();
+
+        PatternInputStrings("Table 5", "Impacts on");
+        ClickRegexButton();
+        Thread.sleep(600);
+        PatternInputStrings("Table 6", "School climate");
+        InclusiveButtons(false, true);
+        ClickRegexButton();
+        Thread.sleep(600);
+        driver.switchTo().alert().accept(); //accept error pop-up window
+        //Checks that there is only one regex result, since it shouldn't had allowed for 2 results to appear since the
+        // 2nd one causes an overlap
+        String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
+        Boolean regex_result;
+        if(result.equals("1")){ regex_result = true;} //if true, there are zero matches
+        else{ regex_result = false;}
+        assertTrue("Failed, Tabula found found more than one match for an overlap regex search",
+                regex_result);
+
         driver.navigate().back();
         driver.navigate().back();
         Thread.sleep(500);
     }
     @Test
     public void TestOverlapRegexSearchwithAutoDetect() throws InterruptedException {
+        //Test for overlapping regex searches with autodetect first
+        //navigates to the extraction page and checks that it is in the extraction page
+        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+        extract_button.click();
+        PageRefresh();
+
+        By autodetect_id = By.id("restore-detected-tables");
+        WebElement autodetect_button = driver.findElement(autodetect_id);
+        autodetect_button.click();
+        PatternInputStrings("Table 6", "School climate");
+        InclusiveButtons(false, true);
+        ClickRegexButton();
+        Thread.sleep(600);
+        driver.switchTo().alert().accept(); //accept error pop-up window
+        //Checks that there is only one regex result, since it shouldn't had allowed for 2 results to appear since the
+        // 2nd one causes an overlap
+        String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
+        Boolean regex_result;
+        if(result.equals("1")){ regex_result = true;} //if true, there are zero matches
+        else{ regex_result = false;}
+        assertTrue("Failed, Tabula found more than one match for an overlap regex search with autodetect first",
+                regex_result);
+        driver.navigate().back();
+        driver.navigate().back();
+        Thread.sleep(500);
+    }
+    @Test
+    public void TestDuplicateOverlapRegexSearch() throws InterruptedException {
+        //Test for a duplicate overlapping regex search
+        //navigates to the extraction page and checks that it is in the extraction page
+        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+        extract_button.click();
+        PageRefresh();
+        PatternInputStrings("Table 5", "Table 6");
+        InclusiveButtons(true, true);
+        ClickRegexButton();
+        Thread.sleep(600);
+        PatternInputStrings("Table 5", "Table 6");
+        InclusiveButtons(true, true);
+        ClickRegexButton();
+        Thread.sleep(600);
+        driver.switchTo().alert().accept(); //accept error pop-up window
+        //Checks that there is only one regex result, since it shouldn't had allowed for 2 results to appear since the
+        // 2nd one causes a duplicate overlap
+        String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
+        Boolean regex_result;
+        if(result.equals("1")){ regex_result = true;} //if true, there are zero matches
+        else{ regex_result = false;}
+        assertTrue("Failed, Tabula found more than one match for a duplicate overlap regex search",
+                regex_result);
+
         driver.navigate().back();
         driver.navigate().back();
         Thread.sleep(500);
