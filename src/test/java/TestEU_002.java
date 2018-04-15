@@ -66,7 +66,7 @@ public class TestEU_002 {
     public static void SetUp() throws InterruptedException {
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
-        //options.addArguments("headless");
+        options.addArguments("headless");
         options.addArguments("no-sandbox");
 
         //set up of chromdriver and navigation to the url, as well as uploading of the pdf file
@@ -590,7 +590,7 @@ public class TestEU_002 {
         List<WebElement> regex_rows = driver.findElements(By.className("regex-result"));
         int regex_count = regex_rows.size();
         int regex_hc_count = 3;
-        assertTrue("Failed, number of rows, from the Stream option, did not match", (regex_hc_count == regex_count));
+        assertTrue("Failed, number of rows of the regex results are not correct", (regex_hc_count == regex_count));
 
         PreviewandExportDatapg();
         Thread.sleep(600);
@@ -607,8 +607,7 @@ public class TestEU_002 {
         Boolean final_results;
         if(regex_data && regex_data2){ final_results = true;}
         else{final_results = false;}
-        assertTrue("Failed, Tabula found no match for inclusive for pattern before and non-inclusive for " +
-                "pattern after", final_results);
+        assertTrue("Failed, Tabula found no matches for multi combination of regex searches", final_results);
 
         driver.navigate().back();
         driver.navigate().back();
@@ -616,9 +615,58 @@ public class TestEU_002 {
     }
     @Test
     public void TestMultiPageTables() throws InterruptedException {
-    
+        //Test for a multi spanning page (2 page table)
+        //navigates to the extraction page and checks that it is in the extraction page
+        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+        extract_button.click();
+        PageRefresh();
+
+        PatternInputStrings("Table 5", "Question 4.9");
+        InclusiveButtons(false, true);
+        ClickRegexButton();
+        Thread.sleep(600);
+        String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
+        Boolean regex_result;
+        if (result.equals("1")) {
+            regex_result = true;
+        } //if true, there is 1 match
+        else {
+            regex_result = false;
+        }
+        PreviewandExportDatapg();
+        Thread.sleep(600);
+        String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                "'Correlations')]")).getText();
+        Boolean regex_data;
+        if(result_data.equals("Correlations between the extent of participation of pupils in project activities and the")){
+            regex_data = true;}
+        else{ regex_data = false;}
+        String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Question')]")).getText();
+        Boolean regex_data2;
+        if(result_data2.equals("Question 4.9: Overall, how satisfied are you with the outcomes and impacts of the Comenius project?")){ regex_data2 = true;}
+        else{ regex_data2 = false;}
+        Boolean final_results;
+        if(regex_result && regex_data && regex_data2){ final_results = true;}
+        else{final_results = false;}
+        assertTrue("Failed, Tabula found no match for the multi-page table", final_results);
+
+        driver.navigate().back();
+        driver.navigate().back();
+        Thread.sleep(500);
     }
-        @AfterClass
+    @Test
+    public void TestOverlapRegexSearch() throws InterruptedException {
+        driver.navigate().back();
+        driver.navigate().back();
+        Thread.sleep(500);
+    }
+    @Test
+    public void TestOverlapRegexSearchwithAutoDetect() throws InterruptedException {
+        driver.navigate().back();
+        driver.navigate().back();
+        Thread.sleep(500);
+    }
+    @AfterClass
     public static void TearDown(){
         //navigates back and deletes the pdf utilized
         driver.findElement(By.id("delete_pdf")).click();
