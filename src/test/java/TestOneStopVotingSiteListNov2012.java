@@ -1,4 +1,4 @@
-/*
+
 //Test of the One_Stop_Voting_Site_List_Nov2012 pdf file.
 // TODO: currently, I do not know how to directly call a pdf file so I can use it for the test cases without manually
 //  using the windows explorer to retrieve it. For now, the pdf will be preloaded onto Tabula for testing.
@@ -249,4 +249,3 @@ public class TestOneStopVotingSiteListNov2012 {
         driver.quit();
     }
 }
-*/
