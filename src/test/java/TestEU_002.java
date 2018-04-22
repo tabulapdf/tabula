@@ -1,5 +1,5 @@
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -20,9 +20,8 @@ import static org.junit.Assert.assertFalse;
 //  using the windows explorer to retrieve it. For now, the pdf will be preloaded onto Tabula for testing.
 
 public class TestEU_002 {
-    private static WebDriver driver;
-    private static String Tabula_url = "http://127.0.0.1:9292/";
-    private WebDriverWait wait = new WebDriverWait(driver, 1000);
+    private WebDriver driver;
+    private String Tabula_url = "http://127.0.0.1:9292/";
     Actions actions = new Actions(driver);
 
     private void PageRefresh() throws InterruptedException {
@@ -35,11 +34,13 @@ public class TestEU_002 {
         }
     }
     private void PreviewandExportDatapg(){
+        WebDriverWait wait = new WebDriverWait(driver, 100);
         By previewandexport_id = By.id("all-data");
         WebElement previewandexport_button = wait.until(ExpectedConditions.visibilityOfElementLocated(previewandexport_id));
         previewandexport_button.click();
     }
     private void ClickRegexButton() throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(driver, 100);
         By regex_search_id = By.id("regex-search");
         WebElement regex_button = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id));
         regex_button.click();
@@ -62,8 +63,8 @@ public class TestEU_002 {
             actions.moveToElement(inclusive_after_btn).click().build().perform();
         }
     }
-    @BeforeClass
-    public static void SetUp() throws InterruptedException {
+    @Before
+    public void SetUp(){
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless");
@@ -77,10 +78,8 @@ public class TestEU_002 {
         String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
-        Thread.sleep(1000);
         WebElement import_btn = driver.findElement(By.id("import_file"));
         import_btn.click();
-        Thread.sleep(700);
     }
     @Test
     public void TestHalfRegexInputsforPatternBeforeandPatternAfter(){
@@ -230,7 +229,7 @@ public class TestEU_002 {
             if(regex_result2 && regex_data3 && regex_data4){ final_results2 = true;}
             else{final_results2 = false;}
             assertTrue("Failed, Tabula found no match/correct match for a common input for pattern before and " +
-                            "correct input for pattern after", final_results2);
+                    "correct input for pattern after", final_results2);
             driver.navigate().refresh();
             PageRefresh();
 
@@ -432,10 +431,10 @@ public class TestEU_002 {
             Boolean regex_data2;
             if (result_data2.equals("EU-25/EFTA: Middle (AT, BE, DE, LI, LU, NL)")) {
                 regex_data2 = true; }
-                else { regex_data2 = false; }
+            else { regex_data2 = false; }
             Boolean final_results;
             if (regex_result && regex_data && regex_data2) { final_results = true; }
-                else { final_results = false; }
+            else { final_results = false; }
             assertTrue("Failed, Tabula could not find the text-based image", final_results);
 
             driver.navigate().back();
@@ -740,8 +739,8 @@ public class TestEU_002 {
         driver.navigate().back();
         Thread.sleep(500);
     }
-    @AfterClass
-    public static void TearDown(){
+    @After
+    public void TearDown(){
         //navigates back and deletes the pdf utilized
         driver.findElement(By.id("delete_pdf")).click();
         driver.switchTo().alert().accept();
