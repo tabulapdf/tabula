@@ -6,8 +6,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -19,7 +22,8 @@ import static org.junit.Assert.assertFalse;
 public class TestEU_002 {
     private static WebDriver driver;
     private static String Tabula_url = "http://127.0.0.1:9292/";
-    private WebDriverWait wait = new WebDriverWait(driver, 100);
+    private WebDriverWait wait = new WebDriverWait(driver, 1000);
+    Actions actions = new Actions(driver);
 
     private void PageRefresh() throws InterruptedException {
         //menu options did not fully load
@@ -47,14 +51,15 @@ public class TestEU_002 {
         driver.findElement(pattern_before_input).sendKeys(pattern_before);
         driver.findElement(pattern_after_input).sendKeys(pattern_after);
     }
-    private void InclusiveButtons(boolean patternbefore, boolean patternafter) throws InterruptedException {
+    private void InclusiveButtons(boolean patternbefore, boolean patternafter){
         WebElement inclusive_before_btn = driver.findElement(By.id("include_pattern_before"));
         WebElement inclusive_after_btn = driver.findElement(By.id("include_pattern_after"));
         if (patternbefore){
-            inclusive_before_btn.click();
+            actions.moveToElement(inclusive_before_btn).click().build().perform();
+
         }
         if(patternafter){
-            inclusive_after_btn.click();
+            actions.moveToElement(inclusive_after_btn).click().build().perform();
         }
     }
     @BeforeClass
@@ -562,6 +567,179 @@ public class TestEU_002 {
         driver.navigate().back();
         Thread.sleep(500);
     }
+    @Test
+    public void TestMultiCombinationRegexSearches() throws InterruptedException{
+        //Tests for a combination of regex searches: spanning pages, non-inclusive, and inclusive
+        //navigates to the extraction page and checks that it is in the extraction page
+        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+        extract_button.click();
+        PageRefresh();
+
+        PatternInputStrings("Table 5", "Table 6");
+        ClickRegexButton();
+        Thread.sleep(600);
+        PatternInputStrings("Impacts", "Impacts");
+        InclusiveButtons(true, true);
+        ClickRegexButton();
+        Thread.sleep(600);
+        PatternInputStrings("Impacts on the school", "Chart 4");
+        InclusiveButtons(false, true);
+        ClickRegexButton();
+        Thread.sleep(600);
+        //checks that there are 3 regex results
+        List<WebElement> regex_rows = driver.findElements(By.className("regex-result"));
+        int regex_count = regex_rows.size();
+        int regex_hc_count = 3;
+        assertTrue("Failed, number of rows of the regex results are not correct", (regex_hc_count == regex_count));
+
+        PreviewandExportDatapg();
+        Thread.sleep(600);
+        String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                "'Correlations between')]")).getText();
+        Boolean regex_data;
+        if(result_data.equals("Correlations between the extent of participation of pupils in project activities and the")){
+            regex_data = true;}
+        else{ regex_data = false;}
+        String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Chart')]")).getText();
+        Boolean regex_data2;
+        if(result_data2.equals("Chart 4")){ regex_data2 = true;}
+        else{ regex_data2 = false;}
+        Boolean final_results;
+        if(regex_data && regex_data2){ final_results = true;}
+        else{final_results = false;}
+        assertTrue("Failed, Tabula found no matches for multi combination of regex searches", final_results);
+
+        driver.navigate().back();
+        driver.navigate().back();
+        Thread.sleep(500);
+    }
+    @Test
+    public void TestMultiPageTables() throws InterruptedException {
+        //Test for a multi spanning page (2 page table)
+        //navigates to the extraction page and checks that it is in the extraction page
+        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+        extract_button.click();
+        PageRefresh();
+
+        PatternInputStrings("Table 5", "Question 4.9");
+        InclusiveButtons(false, true);
+        ClickRegexButton();
+        Thread.sleep(600);
+        String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
+        Boolean regex_result;
+        if (result.equals("1")) {
+            regex_result = true;
+        } //if true, there is 1 match
+        else {
+            regex_result = false;
+        }
+        PreviewandExportDatapg();
+        Thread.sleep(600);
+        String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                "'Correlations')]")).getText();
+        Boolean regex_data;
+        if(result_data.equals("Correlations between the extent of participation of pupils in project activities and the")){
+            regex_data = true;}
+        else{ regex_data = false;}
+        String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Question')]")).getText();
+        Boolean regex_data2;
+        if(result_data2.equals("Question 4.9: Overall, how satisfied are you with the outcomes and impacts of the Comenius project?")){ regex_data2 = true;}
+        else{ regex_data2 = false;}
+        Boolean final_results;
+        if(regex_result && regex_data && regex_data2){ final_results = true;}
+        else{final_results = false;}
+        assertTrue("Failed, Tabula found no match for the multi-page table", final_results);
+
+        driver.navigate().back();
+        driver.navigate().back();
+        Thread.sleep(500);
+    }
+    @Test
+    public void TestOverlapRegexSearch() throws InterruptedException {
+        //Test for overlapping regex searches
+        //navigates to the extraction page and checks that it is in the extraction page
+        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+        extract_button.click();
+        PageRefresh();
+
+        PatternInputStrings("Table 5", "Impacts on");
+        ClickRegexButton();
+        Thread.sleep(600);
+        PatternInputStrings("Table 6", "School climate");
+        InclusiveButtons(false, true);
+        ClickRegexButton();
+        Thread.sleep(600);
+        driver.switchTo().alert().accept(); //accept error pop-up window
+        //Checks that there is only one regex result, since it shouldn't had allowed for 2 results to appear since the
+        // 2nd one causes an overlap
+        String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
+        Boolean regex_result;
+        if(result.equals("1")){ regex_result = true;} //if true, there are zero matches
+        else{ regex_result = false;}
+        assertTrue("Failed, Tabula found found more than one match for an overlap regex search",
+                regex_result);
+
+        driver.navigate().back();
+        driver.navigate().back();
+        Thread.sleep(500);
+    }
+    @Test
+    public void TestOverlapRegexSearchwithAutoDetect() throws InterruptedException {
+        //Test for overlapping regex searches with autodetect first
+        //navigates to the extraction page and checks that it is in the extraction page
+        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+        extract_button.click();
+        PageRefresh();
+
+        By autodetect_id = By.id("restore-detected-tables");
+        WebElement autodetect_button = driver.findElement(autodetect_id);
+        autodetect_button.click();
+        PatternInputStrings("Table 6", "School climate");
+        InclusiveButtons(false, true);
+        ClickRegexButton();
+        Thread.sleep(600);
+        driver.switchTo().alert().accept(); //accept error pop-up window
+        //Checks that there is only one regex result, since it shouldn't had allowed for 2 results to appear since the
+        // 2nd one causes an overlap
+        String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
+        Boolean regex_result;
+        if(result.equals("1")){ regex_result = true;} //if true, there are zero matches
+        else{ regex_result = false;}
+        assertTrue("Failed, Tabula found more than one match for an overlap regex search with autodetect first",
+                regex_result);
+        driver.navigate().back();
+        driver.navigate().back();
+        Thread.sleep(500);
+    }
+    @Test
+    public void TestDuplicateOverlapRegexSearch() throws InterruptedException {
+        //Test for a duplicate overlapping regex search
+        //navigates to the extraction page and checks that it is in the extraction page
+        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
+        extract_button.click();
+        PageRefresh();
+        PatternInputStrings("Table 5", "Table 6");
+        InclusiveButtons(true, true);
+        ClickRegexButton();
+        Thread.sleep(600);
+        PatternInputStrings("Table 5", "Table 6");
+        InclusiveButtons(true, true);
+        ClickRegexButton();
+        Thread.sleep(600);
+        driver.switchTo().alert().accept(); //accept error pop-up window
+        //Checks that there is only one regex result, since it shouldn't had allowed for 2 results to appear since the
+        // 2nd one causes a duplicate overlap
+        String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
+        Boolean regex_result;
+        if(result.equals("1")){ regex_result = true;} //if true, there are zero matches
+        else{ regex_result = false;}
+        assertTrue("Failed, Tabula found more than one match for a duplicate overlap regex search",
+                regex_result);
+
+        driver.navigate().back();
+        driver.navigate().back();
+        Thread.sleep(500);
+    }
     @AfterClass
     public static void TearDown(){
         //navigates back and deletes the pdf utilized
@@ -569,4 +747,3 @@ public class TestEU_002 {
         driver.switchTo().alert().accept();
         driver.quit();
     }}
-    //TODO: ") causes an error on Tabula
