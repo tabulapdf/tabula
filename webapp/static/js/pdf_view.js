@@ -1373,13 +1373,17 @@ Tabula.RegexCollectionView = Backbone.View.extend({
             //TODO: Refactor below to remove code redundancies if time permits...
 
             element.areas_removed.forEach(function (matching_area_to_remove) {
-              //console.log("Matching Area To Remove:");
-              //console.log(matching_area_to_remove);
+              console.log("Matching Area To Remove:");
+              console.log(matching_area_to_remove);
               var front_end_match = _.find(Array.from(query_to_update.attributes.selections_rendered.keys()), function (key_match) {
                 return _.isEqual(key_match, matching_area_to_remove);
               });
               query_to_update.attributes.selections_rendered.get(front_end_match).forEach(function (subsection) {
-                subsection.attributes.remove();
+                console.log("Subsection attributes:");
+                console.log(subsection.attributes);
+                  if(subsection.attributes.hasOwnProperty('remove')){
+                    subsection.attributes.remove();
+                  }
               });
               query_to_update.attributes.matching_areas.splice(front_end_match, 1);
               query_to_update.attributes.selections_rendered.delete(front_end_match);
@@ -1419,8 +1423,15 @@ Tabula.RegexCollectionView = Backbone.View.extend({
           });
 
 
+          console.log("New Subsections:");
           if(new_subsections.models.every(function(subsection){
-            return subsection.attributes.checkOverlaps();
+            console.log("New Subsection:");
+            if(subsection.attributes.hasOwnProperty('checkOverlaps')){
+              return subsection.attributes.checkOverlaps();
+            }
+            else{
+              return true;
+            }
             })===false){
 
             //Resetting the header,footer info to previous state, as current state violates desired behavior
@@ -1581,7 +1592,9 @@ Tabula.RegexResultView = Backbone.View.extend({
     this.model.attributes.selections_rendered.forEach(function(matching_area){
 
       matching_area.forEach(function(subsection){
-        subsection.attributes.remove();
+        if(subsection.attributes.hasOwnProperty('remove')){
+          subsection.attributes.remove();
+        }
       });
     });
     //Removing the reference to the corresponding RegexResultModel
