@@ -31,7 +31,7 @@
     resizing: false,
 
     enableHeaderResize: function(event){
-      //console.log("In enableHeaderResize:");
+      console.log("In enableHeaderResize:");
       if(this.resizing == false) {
         this.height_on_start_of_resize = parseInt(this.$el.css('height'));
         this.resizing = true;
