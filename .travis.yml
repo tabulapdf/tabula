@@ -26,7 +26,6 @@ jdk:
   - oraclejdk8
 script:
   - mvn test -Dgpg.skip=true
-  - xvfb-run make test
 notifications:
   email: false
 

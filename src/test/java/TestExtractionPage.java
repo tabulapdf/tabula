@@ -7,9 +7,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.util.concurrent.TimeUnit;
-
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
@@ -18,7 +16,6 @@ import static junit.framework.TestCase.assertTrue;
 // What it doesn't test are the individual URL links in the regex tabs, since those same links are already tested in
 // the TestHelpPage and TestHomePage test cases, as well as the Autodetect Tables button and the Preview & Export Data
 // button are not tested since their functionality will be tested in other test cases.
-// TODO: currently, A better way to call the pdf has been changed; need to find a way to not use the absolute pathname
 // For this test case, eu_002.pdf is utilized.
 // @author SM modified: 3/6/18
 public class TestExtractionPage {
@@ -44,7 +41,7 @@ public class TestExtractionPage {
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 200);
-        String filePath = "/home/slmendez/484_P7_1-GUI/src/test/pdf/eu-002.pdf"; //
+        String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
         Thread.sleep(1000);
@@ -62,7 +59,7 @@ public class TestExtractionPage {
 
             String regex_options_string = "Regex Options";
             By regex_options_title = By.id("regex_options_title");
-            WebElement regex_options = wait.until(ExpectedConditions.visibilityOfElementLocated(regex_options_title));
+            WebElement regex_options = wait.until(ExpectedConditions.elementToBeClickable(regex_options_title));
             driver.manage().timeouts().pageLoadTimeout(200, TimeUnit.SECONDS);
             assertTrue("Failed, couldn't find Extraction page", regex_options_string.equals(regex_options.getText()));
             //checking that the PDF outline sidebar is visible
@@ -71,7 +68,7 @@ public class TestExtractionPage {
             assertTrue("PDF sidebar is not visible in Extraction page", driver.findElement(sidebar_title).isDisplayed());
             //clicking PDF outline button and checking if sidebar is not visible
             By pdf_outline_id = By.id("pdf_outline_title");
-            WebElement pdf_outline_button = wait.until(ExpectedConditions.visibilityOfElementLocated(pdf_outline_id));
+            WebElement pdf_outline_button = wait.until(ExpectedConditions.elementToBeClickable(pdf_outline_id));
             pdf_outline_button.click();
             By sidebar_check = By.id("sidebar");
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
@@ -79,7 +76,7 @@ public class TestExtractionPage {
 
             //Checks regex Options bar is visible via text
             By regex_command_title = By.id("regex_command_title");
-            WebElement regex_command = wait.until(ExpectedConditions.visibilityOfElementLocated(regex_command_title));
+            WebElement regex_command = wait.until(ExpectedConditions.elementToBeClickable(regex_command_title));
             String regex_command_string = "Regex Command";
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             assertTrue("Regex Options sidebar is not visible in Extraction page", regex_command_string.equals(regex_command.getText()));
@@ -89,12 +86,12 @@ public class TestExtractionPage {
             WebElement regex_guide_tab = wait.until(ExpectedConditions.elementToBeClickable(regex_guide_name));
             regex_guide_tab.click();
             By regex_guide_id = By.id("regex_guide");
-            WebElement regex_guide = wait.until(ExpectedConditions.visibilityOfElementLocated(regex_guide_id));
+            WebElement regex_guide = wait.until(ExpectedConditions.elementToBeClickable(regex_guide_id));
             String regex_guide_string = "Regex Guide";
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             assertTrue("Regex Guide tab is not visible in Extraction page", regex_guide_string.equals(regex_guide.getText()));
             By regex_options_ttle = By.id("regex_options_title");
-            WebElement regex_options_button = wait.until(ExpectedConditions.visibilityOfElementLocated(regex_options_ttle));
+            WebElement regex_options_button = wait.until(ExpectedConditions.elementToBeClickable(regex_options_ttle));
             regex_options_button.click();
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             assertFalse("Regex Options sidebar is visible in Extraction page", regex_command_string.equals(regex_command.getText()));
@@ -106,7 +103,7 @@ public class TestExtractionPage {
             templates_button.click();
             String templates_list_string = "Load templates:";
             By templates_list_title = By.id("loaded_templates_title");
-            WebElement templates_list = wait.until(ExpectedConditions.visibilityOfElementLocated(templates_list_title));
+            WebElement templates_list = wait.until(ExpectedConditions.elementToBeClickable(templates_list_title));
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             assertTrue("Failed, couldn't find Templates List in Extraction page", templates_list_string.equals(templates_list.getText()));
 
