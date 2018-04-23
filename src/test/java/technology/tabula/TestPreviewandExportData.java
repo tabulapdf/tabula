@@ -1,6 +1,5 @@
 package technology.tabula;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -11,8 +10,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +23,6 @@ import static org.junit.Assert.assertFalse;
 // For this test case, eu_002.pdf is utilized.
 // @author SM modified: 3/10/18
 public class TestPreviewandExportData {
-    PDDocument docInQuestion = new PDDocument();
     private void PageRefresh() throws InterruptedException {
         //menu options did not fully load
         Thread.sleep(1000);
@@ -36,23 +32,9 @@ public class TestPreviewandExportData {
             Thread.sleep(700);
         }
     }
-    public static Page getPage(String path, int pageNumber) throws IOException {
-        ObjectExtractor oe = null;
-        try {
-            PDDocument document = PDDocument
-                    .load(new File(path));
-            oe = new ObjectExtractor(document);
-            Page page = oe.extract(pageNumber);
-            return page;
-        }finally {
-            if (oe != null)
-                oe.close();
-        }
-    }
     WebDriver driver;
     @Test
-    public void startWebDriver() throws InterruptedException, IOException {
-        //WebDriver driver = new RemoteWebDriver(new java.net.URL("http://localhost:4444/wd/hub"), DesiredCapabilities.chrome());
+    public void startWebDriver(){
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless");
@@ -61,25 +43,17 @@ public class TestPreviewandExportData {
         driver = new ChromeDriver(options);
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
-      //  ((RemoteWebDriver)driver).setFileDetector(new LocalFileDetector());
         WebDriverWait wait = new WebDriverWait(driver, 100);
-        Thread.sleep(1000);
         String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
-        String location = "/home/slmendez/484_P7_1-GUI/src/test/pdf/eu-002.pdf";
-        //File eu_002 = new File(filePath);
-        //final Page data2 = getPage(filePath, 2);
-        //docInQuestion = PDDocument.load(eu_002);
-        //Thread.sleep(4000);
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
-        Thread.sleep(1000);
         WebElement import_btn = driver.findElement(By.id("import_file"));
         import_btn.click();
     try{
+        Thread.sleep(1000);
         //navigates to the extraction page and checks that it is in the extraction page
         By extract_name = By.linkText("Extract Data");
         WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(extract_name));
-        Thread.sleep(1000);
         extract_button.click();
         Thread.sleep(1000);
 
@@ -92,7 +66,7 @@ public class TestPreviewandExportData {
         driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
 
         By previewandexport_id = By.id("all-data");
-        WebElement previewandexport_button = wait.until(ExpectedConditions.visibilityOfElementLocated(previewandexport_id));
+        WebElement previewandexport_button = wait.until(ExpectedConditions.elementToBeClickable(previewandexport_id));
         previewandexport_button.click();
 
         By revise_selections_id = By.id("revise-selections");

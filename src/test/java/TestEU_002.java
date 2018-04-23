@@ -64,13 +64,12 @@ public class TestEU_002 {
         options.addArguments("headless");
         options.addArguments("no-sandbox");
 
-
         //set up of chromdriver and navigation to the url, as well as uploading of the pdf file
         driver = new ChromeDriver(options);
         driver.get(Tabula_url);
         driver.manage().window().maximize();
 
-        String filePath = "/home/slmendez/484_P7_1-GUI/src/test/pdf/eu-002.pdf"; //
+        String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
         Thread.sleep(1000);
