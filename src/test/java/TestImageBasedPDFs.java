@@ -10,7 +10,10 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.concurrent.TimeUnit;
-
+//TestImageBasedPDFs contains 3 different test cases that attempt to upload 3 different types of pdf files that contain
+// an image of some sort.
+//Test cases in this file: Test4BuckCAPPart2PDF, TestAllenCSAtablePDF, and TestCliffsidePDF
+//@author SM; 4/21/18
 public class TestImageBasedPDFs {
     private WebDriver driver;
     private String Tabula_url = "http://127.0.0.1:9292/";
@@ -31,10 +34,11 @@ public class TestImageBasedPDFs {
     @Test
     public void Test4BuckCAPPart2PDF(){
         try {
+            //Attempts to upload pdf file
             WebDriverWait wait = new WebDriverWait(driver, 500);
             String filePath = System.getProperty("user.dir") + "/src/test/pdf/4._Buck_CAP_Part_2_Appx_A_partial.pdf";
             WebElement chooseFile = driver.findElement(By.id("file"));
-            chooseFile.sendKeys(filePath);
+            chooseFile.sendKeys(filePath);//sends pdf path location
             WebElement import_btn = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("import_file"))));
             import_btn.click();
             Thread.sleep(15000);
@@ -47,10 +51,11 @@ public class TestImageBasedPDFs {
     @Test
     public void TestAllenCSAtablePDF(){
         try {
+            //Attempts to upload pdf file
             WebDriverWait wait = new WebDriverWait(driver, 500);
             String filePath = System.getProperty("user.dir") + "/src/test/pdf/Allen_CSA_table_6-9_gradients.pdf";
             WebElement chooseFile = driver.findElement(By.id("file"));
-            chooseFile.sendKeys(filePath);
+            chooseFile.sendKeys(filePath); //sends pdf path location
             WebElement import_btn = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("import_file"))));
             import_btn.click();
             Thread.sleep(15000);
@@ -63,11 +68,11 @@ public class TestImageBasedPDFs {
     @Test
     public void TestCliffsidePDF(){
         try {
+            //Attempts to upload pdf file
             WebDriverWait wait = new WebDriverWait(driver, 500);
-
             String filePath = System.getProperty("user.dir") + "/src/test/pdf/Cliffside_CSA_Report_NCDENR_Submittal.pdf";
             WebElement chooseFile = driver.findElement(By.id("file"));
-            chooseFile.sendKeys(filePath);
+            chooseFile.sendKeys(filePath); //sends pdf path location
             WebElement import_btn = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("import_file"))));
             import_btn.click();
             Thread.sleep(15000);
