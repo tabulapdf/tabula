@@ -604,6 +604,7 @@ public class TestEU_002 {
             Thread.sleep(500);
             assertTrue("Failed, Tabula didn't find the 3 regex matches", final_results2);
             driver.navigate().back();
+            Thread.sleep(500);
             driver.navigate().back();
             Thread.sleep(500);
             DeletePDF();
@@ -611,74 +612,6 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
-   /* @Test
-    public void TestMultiCombinationRegexSearches(){
-        try {
-            //Tests for a combination of regex searches: spanning pages, non-inclusive, and inclusive
-            UploadPDF();
-            PageRefresh();
-
-            PatternInputStrings("Table 5", "Table 6");
-            ClickRegexButton();
-            Thread.sleep(1000);
-            PreviewandExportDatapg();
-            driver.navigate().back();
-            PatternInputStrings("Impacts", "Impacts");
-            InclusiveButtons(false, true);
-            Thread.sleep(5000);
-            ClickRegexButton();
-            Thread.sleep(700);
-            PreviewandExportDatapg();
-            driver.navigate().back();
-            PatternInputStrings("Impacts on the school", "Chart 4");
-            InclusiveButtons(false, true);
-            Thread.sleep(5000);
-            ClickRegexButton();
-            Thread.sleep(700);
-            PreviewandExportDatapg();
-            driver.navigate().back();
-            Thread.sleep(700);
-            //checks that there are 3 regex results
-            List<WebElement> regex_rows = driver.findElements(By.className("regex-result"));
-            int regex_count = regex_rows.size();
-            int regex_hc_count = 3;
-            assertTrue("Failed, number of rows of the regex results are not correct", (regex_hc_count == regex_count));
-
-            PreviewandExportDatapg();
-            Thread.sleep(600);
-            String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
-                    "'Correlations between')]")).getText();
-            Boolean regex_data;
-            if (result_data.equals("Correlations between the extent of participation of pupils in project activities and the")) {
-                regex_data = true;
-            } else {
-                regex_data = false;
-            }
-            Thread.sleep(600);
-            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Chart')]")).getText();
-            Boolean regex_data2;
-            if (result_data2.equals("Chart 4")) {
-                regex_data2 = true;
-            } else {
-                regex_data2 = false;
-            }
-            Boolean final_results;
-            if (regex_data && regex_data2) {
-                final_results = true;
-            } else {
-                final_results = false;
-            }
-            Thread.sleep(600);
-            assertTrue("Failed, Tabula found no matches for multi combination of regex searches", final_results);
-
-            driver.navigate().back();
-            driver.navigate().back();
-            Thread.sleep(500);
-            DeletePDF();
-        }catch (Exception e){
-            System.out.print(e);
-        }
-    }*/
     @Test
     public void TestMultiPageTables(){
         try {
@@ -763,23 +696,23 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
-    /*@Test
-    public void TestOverlapRegexSearchwithAutoDetect() throws InterruptedException {
+    @Test
+    public void TestDuplicateOverlapRegexSearch(){
         try {
-            //Test for overlapping regex searches with autodetect first
+            //Test for a duplicate overlapping regex search
             UploadPDF();
             PageRefresh();
-
-            By autodetect_id = By.id("restore-detected-tables");
-            WebElement autodetect_button = driver.findElement(autodetect_id);
-            autodetect_button.click();
+            PatternInputStrings("Table 5", "Table 6");
+            InclusiveButtons(true, true);
+            ClickRegexButton();
             Thread.sleep(600);
-            PatternInputStrings("Table 6", "School climate");
+            PatternInputStrings("Table 5", "Table 6");
+            InclusiveButtons(true, true);
             ClickRegexButton();
             Thread.sleep(600);
             driver.switchTo().alert().accept(); //accept error pop-up window
             //Checks that there is only one regex result, since it shouldn't had allowed for 2 results to appear since the
-            // 2nd one causes an overlap
+            // 2nd one causes a duplicate overlap
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result;
             if (result.equals("1")) {
@@ -788,42 +721,17 @@ public class TestEU_002 {
             else {
                 regex_result = false;
             }
-            assertTrue("Failed, Tabula found more than one match for an overlap regex search with autodetect first",
+            assertTrue("Failed, Tabula found more than one match for a duplicate overlap regex search",
                     regex_result);
+
             driver.navigate().back();
+            Thread.sleep(500);
             driver.navigate().back();
             Thread.sleep(500);
             DeletePDF();
         }catch (Exception e){
             System.out.print(e);
         }
-    } */
-    @Test
-    public void TestDuplicateOverlapRegexSearch() throws InterruptedException {
-        //Test for a duplicate overlapping regex search
-        //navigates to the extraction page and checks that it is in the extraction page
-        PageRefresh();
-        PatternInputStrings("Table 5", "Table 6");
-        InclusiveButtons(true, true);
-        ClickRegexButton();
-        Thread.sleep(600);
-        PatternInputStrings("Table 5", "Table 6");
-        InclusiveButtons(true, true);
-        ClickRegexButton();
-        Thread.sleep(600);
-        driver.switchTo().alert().accept(); //accept error pop-up window
-        //Checks that there is only one regex result, since it shouldn't had allowed for 2 results to appear since the
-        // 2nd one causes a duplicate overlap
-        String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
-        Boolean regex_result;
-        if(result.equals("1")){ regex_result = true;} //if true, there are zero matches
-        else{ regex_result = false;}
-        assertTrue("Failed, Tabula found more than one match for a duplicate overlap regex search",
-                regex_result);
-
-        driver.navigate().back();
-        driver.navigate().back();
-        Thread.sleep(500);
     }
     private void TestRegexSyntax(){
 
