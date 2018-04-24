@@ -60,7 +60,6 @@ class RegexQueryMetaData
     @doc_ID=docID
     @regex_searches=[]
 
-    @filter_area = nil #Page margins are initially not set
 
     unless @file.nil?
       @file.close() #TODO: figure out if a warning should be thrown here....

@@ -256,10 +256,10 @@ public class TestNCHouse2017StatPack {
             driver.switchTo().alert().accept(); //accept error pop-up window
             //Checks that there is only one regex result, since it shouldn't had allowed for 2 results to appear since the
             // 2nd one causes an overlap
-            List<WebElement> stream_rows = driver.findElements(By.className("regex-result"));
-            int stream_count = stream_rows.size();
-            int stream_hc_count = 38;
-            assertTrue("Failed, number of rows, from the Stream option, did not match", (stream_hc_count == stream_count ));
+            List<WebElement> regex_rows = driver.findElements(By.className("regex-result-row"));
+            int regex_count = regex_rows.size();
+            int regex_count1 = 1;
+            assertTrue("Failed, number of rows, from the Stream option, did not match", (regex_count1 == regex_count ));
 
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result;
