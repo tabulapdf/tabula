@@ -453,8 +453,16 @@ Cuba.define do
     on "pdf/:file_id/data" do |file_id|
       pdf_path = Tabula::Workspace.instance.get_document_path(file_id)
 
+      puts 'DO I GET HERE BEFORE THE CRASH??'
+
       coords = JSON.load(req.params['coords'])
+
+      puts 'COORDS:'
+      puts coords
+
       coords.sort_by! do |coord_set|
+        puts 'coord_set:'
+        puts coord_set
         [
          coord_set['page'],
          [coord_set['y1'], coord_set['y2']].min.to_i / 10,
