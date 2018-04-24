@@ -71,7 +71,7 @@ public class TestOneStopVotingSiteListNov2012 {
         driver.switchTo().alert().accept();
     }
     @BeforeClass
-    public static void SetUp() throws InterruptedException {
+    public static void SetUp(){
         //set up of chromdriver and navigation to the url, as well as uploading of the pdf file
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();

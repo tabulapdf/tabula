@@ -66,6 +66,7 @@ public class TestEU_002 {
         WebElement import_btn = driver.findElement(By.id("import_file"));
         import_btn.click();
         Thread.sleep(5000);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("restore-detected-tables")));
     }
     private void DeletePDF(){
         //navigates back and deletes the pdf utilized
@@ -689,7 +690,6 @@ public class TestEU_002 {
                     regex_result);
 
             driver.navigate().back();
-            driver.navigate().back();
             Thread.sleep(500);
             DeletePDF();
         }catch (Exception e){
@@ -724,8 +724,6 @@ public class TestEU_002 {
             assertTrue("Failed, Tabula found more than one match for a duplicate overlap regex search",
                     regex_result);
 
-            driver.navigate().back();
-            Thread.sleep(500);
             driver.navigate().back();
             Thread.sleep(500);
             DeletePDF();
