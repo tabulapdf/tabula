@@ -560,7 +560,7 @@ Cuba.define do
 
         regex_cli_string = ""
         if !regex_query_meta_data.regex_searches.empty?
-          regex_cli_string="-r '#{regex_cli_option}'"
+          regex_cli_string="-x '#{regex_cli_option}'"
         end
 
         drawn_boxes_cli_string=""
