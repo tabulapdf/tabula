@@ -68,8 +68,6 @@ public class TestNCHouse2017StatPack {
         import_btn.click();
         Thread.sleep(5000);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("restore-detected-tables")));
-     //   while(driver.findElements(By.id("restore-detected-tables")).size() == 0) {
-     //   }
     }
     private void DeletePDF(){
         //navigates back and deletes the pdf utilized
