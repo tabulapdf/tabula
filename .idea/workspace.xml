@@ -3,10 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/BuckCAPPart2ApprxA_partial.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/TestExhibit_1.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/TestEU_002.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/TestEU_002.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/TestImageBasedPDFs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/TestImageBasedPDFs.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/pdf/Exhibit-1.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestExhibit_1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/TestExhibit_1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/pdf/Mar_4,_2016_10_0_53_PM_ESTRE_Missing_Voter_for_3-4-16_Redacted.pdf" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -26,11 +26,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="TestEU_002.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TestEU_002.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="11934">
-              <caret line="678" column="11" selection-start-line="678" selection-start-column="11" selection-end-line="678" selection-end-column="11" />
+            <state relative-caret-position="128">
+              <caret line="397" column="12" lean-forward="true" selection-start-line="397" selection-start-column="12" selection-end-line="397" selection-end-column="12" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -41,17 +41,26 @@
       <file leaf-file-name="TestExhibit_1.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestExhibit_1.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1332">
-              <caret line="87" column="44" selection-start-line="87" selection-start-column="44" selection-end-line="87" selection-end-column="44" />
+            <state relative-caret-position="134">
+              <caret line="79" selection-start-line="79" selection-end-line="82" selection-end-column="37" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TestImageBasedPDFs.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TestOneStopVotingSiteListNov2012.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="144">
+              <caret line="21" column="45" selection-start-line="21" selection-start-column="45" selection-end-line="21" selection-end-column="45" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TestImageBasedPDFs.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestImageBasedPDFs.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="16">
-              <caret line="41" column="23" selection-start-line="41" selection-start-column="23" selection-end-line="41" selection-end-column="23" />
+            <state relative-caret-position="305">
+              <caret line="30" column="44" lean-forward="true" selection-start-line="30" selection-start-column="44" selection-end-line="30" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -126,14 +135,14 @@
         <option value="$PROJECT_DIR$/src/test/java/TestPreviewandDataPage.java" />
         <option value="$PROJECT_DIR$/.travis.yml" />
         <option value="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestExtractionPage.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/test/java/Test4/BuckCAPPart2ApprxA_partial.java" />
         <option value="$PROJECT_DIR$/src/test/java/BuckCAPPart2ApprxA_partial.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestImageBasedPDFs.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestExhibit_1.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
       </list>
     </option>
   </component>
@@ -156,10 +165,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="528" />
-    <option name="y" value="222" />
+    <option name="x" value="241" />
+    <option name="y" value="-4" />
     <option name="width" value="838" />
-    <option name="height" value="716" />
+    <option name="height" value="709" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -193,9 +202,20 @@
             <path>
               <item name="484_P7_1-GUI" type="b2602c69:ProjectViewProjectNode" />
               <item name="484_P7_1-GUI" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="484_P7_1-GUI" type="b2602c69:ProjectViewProjectNode" />
+              <item name="484_P7_1-GUI" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="484_P7_1-GUI" type="b2602c69:ProjectViewProjectNode" />
+              <item name="484_P7_1-GUI" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="js" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -226,6 +246,119 @@
       <recent name="" />
     </key>
   </component>
+  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
+    <UpdatedFiles>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Updated from server" />
+        <option name="myStatusName" value="Changed on server" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="CHANGED_ON_SERVER" />
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated" />
+          <option name="myStatusName" value="Changed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UPDATED" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/appbundler_1_0.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/Jarfile.lock</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/webapp/static/js/HeaderView.js</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/webapp/static/js/pdf_view.js</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Created" />
+          <option name="myStatusName" value="Created" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CREATED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Deleted" />
+          <option name="myStatusName" value="Deleted" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="true" />
+          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Restored" />
+          <option name="myStatusName" value="Will be restored" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="RESTORED" />
+        </FILE-GROUP>
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Modified" />
+        <option name="myStatusName" value="Modified" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MODIFIED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Skipped" />
+        <option name="myStatusName" value="Skipped" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SKIPPED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with conflicts" />
+        <option name="myStatusName" value="Will be merged with conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_CONFLICTS" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with tree conflicts" />
+        <option name="myStatusName" value="Merged with tree conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with property conflicts" />
+        <option name="myStatusName" value="Will be merged with property conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged" />
+        <option name="myStatusName" value="Will be merged" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Not in repository" />
+        <option name="myStatusName" value="Not in repository" />
+        <option name="mySupportsDeletion" value="true" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="UNKNOWN" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally added" />
+        <option name="myStatusName" value="Locally added" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_ADDED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally removed" />
+        <option name="myStatusName" value="Locally removed" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_REMOVED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Switched" />
+        <option name="myStatusName" value="Switched" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SWITCHED" />
+      </FILE-GROUP>
+    </UpdatedFiles>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -238,7 +371,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.TestImageBasedPDFs">
+  <component name="RunManager" selected="JUnit.TestEU_002">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="HEIGHT" value="0" />
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
@@ -270,40 +403,6 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
       <option name="MAIN_CLASS_NAME" value="TestEU_002" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <patterns />
-    </configuration>
-    <configuration name="TestEU_002.TestOverlapRegexSearchwithAutoDetect" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="484_P7_1-GUI" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
-      <option name="METHOD_NAME" value="TestOverlapRegexSearchwithAutoDetect" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <patterns />
-    </configuration>
-    <configuration name="TestExhibit_1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="484_P7_1-GUI" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestExhibit_1" />
       <option name="METHOD_NAME" />
       <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea" />
@@ -374,6 +473,40 @@
       <option name="MAIN_CLASS_NAME" value="TestImageBasedPDFs" />
       <option name="METHOD_NAME" />
       <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="TestOneStopVotingSiteListNov2012" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="484_P7_1-GUI" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestOneStopVotingSiteListNov2012" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="TestOneStopVotingSiteListNov2012.TestMultiPageTables" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="484_P7_1-GUI" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TestOneStopVotingSiteListNov2012" />
+      <option name="METHOD_NAME" value="TestMultiPageTables" />
+      <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
@@ -462,18 +595,18 @@
       <item itemvalue="JUnit.TestHelpPage.startWebDriver" />
       <item itemvalue="Maven.Unnamed" />
       <item itemvalue="JUnit.TestExhibit_1.TestMultipleRegexSyntax" />
-      <item itemvalue="JUnit.TestEU_002" />
-      <item itemvalue="JUnit.TestEU_002.TestOverlapRegexSearchwithAutoDetect" />
-      <item itemvalue="JUnit.TestExhibit_1" />
       <item itemvalue="JUnit.TestImageBasedPDFs" />
+      <item itemvalue="JUnit.TestOneStopVotingSiteListNov2012" />
+      <item itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestMultiPageTables" />
+      <item itemvalue="JUnit.TestEU_002" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.TestEU_002" />
+        <item itemvalue="JUnit.TestOneStopVotingSiteListNov2012.TestMultiPageTables" />
+        <item itemvalue="JUnit.TestOneStopVotingSiteListNov2012" />
         <item itemvalue="JUnit.TestImageBasedPDFs" />
         <item itemvalue="JUnit.TestExhibit_1.TestMultipleRegexSyntax" />
-        <item itemvalue="JUnit.TestExhibit_1" />
-        <item itemvalue="JUnit.TestEU_002.TestOverlapRegexSearchwithAutoDetect" />
-        <item itemvalue="JUnit.TestEU_002" />
       </list>
     </recent_temporary>
   </component>
@@ -487,13 +620,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
-    </task>
-    <task id="LOCAL-00082" summary="made some more changes..">
-      <created>1523332002009</created>
-      <option name="number" value="00082" />
-      <option name="presentableId" value="LOCAL-00082" />
-      <option name="project" value="LOCAL" />
-      <updated>1523332002009</updated>
     </task>
     <task id="LOCAL-00083" summary="made some more changes..">
       <created>1523332447683</created>
@@ -831,39 +957,46 @@
       <option name="project" value="LOCAL" />
       <updated>1524357104750</updated>
     </task>
-    <option name="localTasksCounter" value="131" />
+    <task id="LOCAL-00131" summary="Updating Ross' changes and pushing some of the new test cases. Having a weird issue with EU_002 that I will go back in and fix. Moving on to working on the remaining test cases.">
+      <created>1524522486683</created>
+      <option name="number" value="00131" />
+      <option name="presentableId" value="LOCAL-00131" />
+      <option name="project" value="LOCAL" />
+      <updated>1524522486705</updated>
+    </task>
+    <option name="localTasksCounter" value="132" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestEU_002 - 2018.04.22 at 15h 21m 08s.xml">
+    <history-entry file="TestEU_002 - 2018.04.23 at 20h 33m 54s.xml">
       <configuration name="TestEU_002" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002 - 2018.04.22 at 15h 21m 30s.xml">
+    <history-entry file="TestEU_002 - 2018.04.23 at 20h 34m 15s.xml">
       <configuration name="TestEU_002" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002 - 2018.04.22 at 15h 27m 40s.xml">
+    <history-entry file="TestEU_002 - 2018.04.23 at 20h 35m 49s.xml">
       <configuration name="TestEU_002" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002 - 2018.04.22 at 15h 32m 59s.xml">
+    <history-entry file="TestEU_002 - 2018.04.23 at 20h 37m 58s.xml">
       <configuration name="TestEU_002" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002 - 2018.04.22 at 15h 39m 44s.xml">
+    <history-entry file="TestEU_002 - 2018.04.23 at 20h 38m 48s.xml">
       <configuration name="TestEU_002" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002_TestOverlapRegexSearchwithAutoDetect - 2018.04.22 at 15h 40m 08s.xml">
-      <configuration name="TestEU_002.TestOverlapRegexSearchwithAutoDetect" configurationId="JUnit" />
+    <history-entry file="TestEU_002 - 2018.04.23 at 20h 40m 10s.xml">
+      <configuration name="TestEU_002" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestExhibit_1 - 2018.04.22 at 16h 47m 17s.xml">
-      <configuration name="TestExhibit_1" configurationId="JUnit" />
+    <history-entry file="TestEU_002 - 2018.04.23 at 20h 40m 58s.xml">
+      <configuration name="TestEU_002" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestExhibit_1_TestMultipleRegexSyntax - 2018.04.22 at 16h 59m 04s.xml">
-      <configuration name="TestExhibit_1.TestMultipleRegexSyntax" configurationId="JUnit" />
+    <history-entry file="TestEU_002 - 2018.04.23 at 20h 41m 49s.xml">
+      <configuration name="TestEU_002" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestExhibit_1_TestMultipleRegexSyntax - 2018.04.22 at 17h 00m 28s.xml">
-      <configuration name="TestExhibit_1.TestMultipleRegexSyntax" configurationId="JUnit" />
+    <history-entry file="TestEU_002 - 2018.04.23 at 20h 43m 41s.xml">
+      <configuration name="TestEU_002" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestExhibit_1_TestMultipleRegexSyntax - 2018.04.22 at 17h 01m 43s.xml">
-      <configuration name="TestExhibit_1.TestMultipleRegexSyntax" configurationId="JUnit" />
+    <history-entry file="TestEU_002 - 2018.04.23 at 20h 44m 16s.xml">
+      <configuration name="TestEU_002" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
@@ -879,7 +1012,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="52" y="-11" width="1315" height="780" extended-state="6" />
+    <frame x="52" y="-4" width="1315" height="773" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
@@ -890,12 +1023,12 @@
       <window_info anchor="right" id="Capture Analysis" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.19649658" side_tool="true" weight="0.3003003" />
       <window_info anchor="right" id="Maven Projects" order="5" />
-      <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.81111956" weight="0.12162162" />
-      <window_info active="true" anchor="bottom" x="53" y="238" width="1313" height="288" id="Run" order="2" sideWeight="0.80350345" visible="true" weight="0.19728915" />
+      <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.81111956" weight="0.067771085" />
+      <window_info active="true" anchor="bottom" x="53" y="238" width="1313" height="288" id="Run" order="2" sideWeight="0.80350345" visible="true" weight="0.73945785" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="3" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.07996953" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.11500381" />
       <window_info id="Learn" order="5" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -953,7 +1086,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed errors for TestPreviewandExportData test case and TestHelpPage test cases, before they were both failing for the most part." />
     <MESSAGE value="Added on the test of multiple regex searches and the test case for vertical tables" />
     <MESSAGE value="Deleted some of the pwd lines on the travis file" />
     <MESSAGE value="moved the back-end jar to before_install and commented out all the GUI repo stuff to see if that is working" />
@@ -978,7 +1110,8 @@
     <MESSAGE value="Adding on the rest of the pdf files that will be tested and will work on a list of the specific test cases that the rest of the pdf files will be tested with. Lastly, have to work on the last round off test cases that incorporate header and footer" />
     <MESSAGE value="Added on the shall and may pdf files that will be tested and added on the things that Manuel suggested to change in the front-end. Have a written outline of the certain test cases that will target the shall and may files, and will wrap up that implementation." />
     <MESSAGE value="Completed 3 test cases that attempt to upload 3 different types of pdf files that contain an embedded picture in them of some type." />
-    <option name="LAST_COMMIT_MESSAGE" value="Completed 3 test cases that attempt to upload 3 different types of pdf files that contain an embedded picture in them of some type." />
+    <MESSAGE value="Updating Ross' changes and pushing some of the new test cases. Having a weird issue with EU_002 that I will go back in and fix. Moving on to working on the remaining test cases." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updating Ross' changes and pushing some of the new test cases. Having a weird issue with EU_002 that I will go back in and fix. Moving on to working on the remaining test cases." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -986,15 +1119,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestExhibit_1.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1584">
-          <caret line="88" column="33" selection-start-line="88" selection-start-column="33" selection-end-line="88" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java" />
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java" />
@@ -1087,13 +1211,6 @@
     <entry file="file://$PROJECT_DIR$/target/test-classes/technology/tabula/TestPreviewandExportData.class" />
     <entry file="file://$PROJECT_DIR$/target/test-classes/TestAboutPage.class" />
     <entry file="file://$PROJECT_DIR$/target/test-classes/TestEU_002.class" />
-    <entry file="file://$PROJECT_DIR$/webapp/static/js/pdf_view.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="1518" selection-start-line="1518" selection-end-line="1518" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/technology/tabula/TestPreviewandExportData.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -1152,27 +1269,49 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
+    <entry file="file://$PROJECT_DIR$/webapp/static/js/HeaderView.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11934">
-          <caret line="678" column="11" selection-start-line="678" selection-start-column="11" selection-end-line="678" selection-end-column="11" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="144">
+          <caret line="21" column="45" selection-start-line="21" selection-start-column="45" selection-end-line="21" selection-end-column="45" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestExhibit_1.java">
+    <entry file="file://$PROJECT_DIR$/webapp/static/js/regexSelection.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1332">
-          <caret line="87" column="44" selection-start-line="87" selection-start-column="44" selection-end-line="87" selection-end-column="44" />
+        <state relative-caret-position="-90" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/static/js/pdf_view.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2827">
+          <caret line="70" selection-start-line="70" selection-end-line="70" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestImageBasedPDFs.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16">
-          <caret line="41" column="23" selection-start-line="41" selection-start-column="23" selection-end-line="41" selection-end-column="23" />
+        <state relative-caret-position="305">
+          <caret line="30" column="44" lean-forward="true" selection-start-line="30" selection-start-column="44" selection-end-line="30" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestExhibit_1.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="134">
+          <caret line="79" selection-start-line="79" selection-end-line="82" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="128">
+          <caret line="397" column="12" lean-forward="true" selection-start-line="397" selection-start-column="12" selection-end-line="397" selection-end-column="12" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
