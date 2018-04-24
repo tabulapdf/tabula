@@ -173,23 +173,11 @@ public class TestOneStopVotingSiteListNov2012 {
         }
     }
     @Test
-    public void MultiRegexResults(){
-
-    }
-    @Test
-    public void TestMultiCombinationRegexSearches(){
-
-    }
-    @Test
     public void TestOverlapRegexSearch(){
 
     }
     @Test
     public void TestImage(){
-
-    }
-    @Test
-    public void TestFooterandHeaderwithRegex(){
 
     }
     @AfterClass
