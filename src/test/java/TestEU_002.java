@@ -86,8 +86,6 @@ public class TestEU_002 {
     public void TestHalfRegexInputsforPatternBeforeandPatternAfter(){
         try {
             //navigates to the extraction page and checks that it is in the extraction page
-            WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
-            extract_button.click();
             PageRefresh();
 
             //Test that checks that the regex search button is disabled after entering "Table 5" in pattern_before and
@@ -120,10 +118,7 @@ public class TestEU_002 {
     public void TestWrongInputsforBeforePatternandAfterPattern(){
         try{
             //navigates to the extraction page and checks that it is in the extraction page
-            WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
-            extract_button.click();
             PageRefresh();
-
             //Test that inputs an incorrect input for pattern before and incorrect input for pattern after
             PatternInputStrings("ksgjlk", "fgfsgs");
             ClickRegexButton();
@@ -172,8 +167,6 @@ public class TestEU_002 {
     public void TestCommonWordInputforPatternBeforeandPatternAfter(){
         try{
             //navigates to the extraction page and checks that it is in the extraction page
-            WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
-            extract_button.click();
             PageRefresh();
 
             //Tests pattern before and pattern after with a common input found in the pdf
@@ -230,7 +223,7 @@ public class TestEU_002 {
             if(regex_result2 && regex_data3 && regex_data4){ final_results2 = true;}
             else{final_results2 = false;}
             assertTrue("Failed, Tabula found no match/correct match for a common input for pattern before and " +
-                            "correct input for pattern after", final_results2);
+                    "correct input for pattern after", final_results2);
             driver.navigate().refresh();
             PageRefresh();
 
@@ -268,8 +261,6 @@ public class TestEU_002 {
     public void TestInclusiveInputsforPatternBeforeandPatternAfter() {
         try{
             //navigates to the extraction page and checks that it is in the extraction page
-            WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
-            extract_button.click();
             PageRefresh();
 
             //Tests for inclusive for pattern before and non-inclusive for pattern after
@@ -360,8 +351,6 @@ public class TestEU_002 {
     @Test
     public void TestCaseSensitivity() throws InterruptedException{
         //navigates to the extraction page and checks that it is in the extraction page
-        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
-        extract_button.click();
         PageRefresh();
 
         //Test case sensitive input for pattern before and correct input for pattern after
@@ -410,8 +399,6 @@ public class TestEU_002 {
     public void TestTextBasedImage(){
         try {
             //navigates to the extraction page and checks that it is in the extraction page
-            WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
-            extract_button.click();
             PageRefresh();
 
             //Test to get only the text-based image to appear in the preview and export data page
@@ -432,10 +419,10 @@ public class TestEU_002 {
             Boolean regex_data2;
             if (result_data2.equals("EU-25/EFTA: Middle (AT, BE, DE, LI, LU, NL)")) {
                 regex_data2 = true; }
-                else { regex_data2 = false; }
+            else { regex_data2 = false; }
             Boolean final_results;
             if (regex_result && regex_data && regex_data2) { final_results = true; }
-                else { final_results = false; }
+            else { final_results = false; }
             assertTrue("Failed, Tabula could not find the text-based image", final_results);
 
             driver.navigate().back();
@@ -448,8 +435,6 @@ public class TestEU_002 {
     @Test
     public void TestVerticalTable() throws InterruptedException{
         //navigates to the extraction page and checks that it is in the extraction page
-        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
-        extract_button.click();
         PageRefresh();
         //Test for vertical table
         PatternInputStrings("Preperation", "Presentation");
@@ -481,8 +466,6 @@ public class TestEU_002 {
     public void TestMultipleRegexSearches() throws InterruptedException {
         //Tests for 2 regex search results
         //navigates to the extraction page and checks that it is in the extraction page
-        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
-        extract_button.click();
         PageRefresh();
 
         PatternInputStrings("Impacts", "Knowledge");
@@ -571,8 +554,6 @@ public class TestEU_002 {
     public void TestMultiCombinationRegexSearches() throws InterruptedException{
         //Tests for a combination of regex searches: spanning pages, non-inclusive, and inclusive
         //navigates to the extraction page and checks that it is in the extraction page
-        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
-        extract_button.click();
         PageRefresh();
 
         PatternInputStrings("Table 5", "Table 6");
@@ -617,8 +598,6 @@ public class TestEU_002 {
     public void TestMultiPageTables() throws InterruptedException {
         //Test for a multi spanning page (2 page table)
         //navigates to the extraction page and checks that it is in the extraction page
-        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
-        extract_button.click();
         PageRefresh();
 
         PatternInputStrings("Table 5", "Question 4.9");
@@ -658,8 +637,6 @@ public class TestEU_002 {
     public void TestOverlapRegexSearch() throws InterruptedException {
         //Test for overlapping regex searches
         //navigates to the extraction page and checks that it is in the extraction page
-        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
-        extract_button.click();
         PageRefresh();
 
         PatternInputStrings("Table 5", "Impacts on");
@@ -687,8 +664,6 @@ public class TestEU_002 {
     public void TestOverlapRegexSearchwithAutoDetect() throws InterruptedException {
         //Test for overlapping regex searches with autodetect first
         //navigates to the extraction page and checks that it is in the extraction page
-        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
-        extract_button.click();
         PageRefresh();
 
         By autodetect_id = By.id("restore-detected-tables");
@@ -715,8 +690,6 @@ public class TestEU_002 {
     public void TestDuplicateOverlapRegexSearch() throws InterruptedException {
         //Test for a duplicate overlapping regex search
         //navigates to the extraction page and checks that it is in the extraction page
-        WebElement extract_button = driver.findElement(By.linkText("Extract Data"));
-        extract_button.click();
         PageRefresh();
         PatternInputStrings("Table 5", "Table 6");
         InclusiveButtons(true, true);
@@ -746,4 +719,5 @@ public class TestEU_002 {
         driver.findElement(By.id("delete_pdf")).click();
         driver.switchTo().alert().accept();
         driver.quit();
-    }}
+    }
+}
