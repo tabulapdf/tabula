@@ -60,6 +60,19 @@ public class TestEU_002 {
             actions.moveToElement(inclusive_after_btn).click().build().perform();
         }
     }
+    private void UploadPDF() throws InterruptedException {
+        String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
+        WebElement chooseFile = driver.findElement(By.id("file"));
+        chooseFile.sendKeys(filePath);
+        Thread.sleep(1000);
+        WebElement import_btn = driver.findElement(By.id("import_file"));
+        import_btn.click();
+        Thread.sleep(5000);
+      //  WebDriverWait wait = new WebDriverWait(driver, 100);
+        //navigating to the extraction page after uploading the file
+       // WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.linkText("Extract Data"))));
+       // extract_button.click();
+    }
     @BeforeClass
     public static void SetUp() throws InterruptedException {
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
@@ -76,18 +89,7 @@ public class TestEU_002 {
     @Test
     public void TestHalfRegexInputsforPatternBeforeandPatternAfter(){
         try {
-            String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
-            WebElement chooseFile = driver.findElement(By.id("file"));
-            chooseFile.sendKeys(filePath);
-            Thread.sleep(1000);
-            WebElement import_btn = driver.findElement(By.id("import_file"));
-            import_btn.click();
-            Thread.sleep(5000);
-            WebDriverWait wait = new WebDriverWait(driver, 100);
-            //navigating to the extraction page after uploading the file
-            WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.linkText("Extract Data"))));
-            extract_button.click();
-            //navigates to the extraction page and checks that it is in the extraction page
+            UploadPDF();
             PageRefresh();
 
             //Test that checks that the regex search button is disabled after entering "Table 5" in pattern_before and
@@ -119,17 +121,7 @@ public class TestEU_002 {
     @Test
     public void TestWrongInputsforBeforePatternandAfterPattern(){
         try{
-            String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
-            WebElement chooseFile = driver.findElement(By.id("file"));
-            chooseFile.sendKeys(filePath);
-            Thread.sleep(1000);
-            WebElement import_btn = driver.findElement(By.id("import_file"));
-            import_btn.click();
-            Thread.sleep(5000);
-            WebDriverWait wait = new WebDriverWait(driver, 100);
-            //navigating to the extraction page after uploading the file
-            WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.linkText("Extract Data"))));
-            extract_button.click();
+            UploadPDF();
             PageRefresh();
             //Test that inputs an incorrect input for pattern before and incorrect input for pattern after
             PatternInputStrings("ksgjlk", "fgfsgs");
@@ -178,17 +170,7 @@ public class TestEU_002 {
     @Test
     public void TestCommonWordInputforPatternBeforeandPatternAfter(){
         try{
-            String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
-            WebElement chooseFile = driver.findElement(By.id("file"));
-            chooseFile.sendKeys(filePath);
-            Thread.sleep(1000);
-            WebElement import_btn = driver.findElement(By.id("import_file"));
-            import_btn.click();
-            Thread.sleep(5000);
-            WebDriverWait wait = new WebDriverWait(driver, 100);
-            //navigating to the extraction page after uploading the file
-            WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.linkText("Extract Data"))));
-            extract_button.click();
+            UploadPDF();
             PageRefresh();
 
             //Tests pattern before and pattern after with a common input found in the pdf
@@ -282,17 +264,7 @@ public class TestEU_002 {
     @Test
     public void TestInclusiveInputsforPatternBeforeandPatternAfter() {
         try{
-            String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
-            WebElement chooseFile = driver.findElement(By.id("file"));
-            chooseFile.sendKeys(filePath);
-            Thread.sleep(1000);
-            WebElement import_btn = driver.findElement(By.id("import_file"));
-            import_btn.click();
-            Thread.sleep(5000);
-            WebDriverWait wait = new WebDriverWait(driver, 100);
-            //navigating to the extraction page after uploading the file
-            WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.linkText("Extract Data"))));
-            extract_button.click();
+            UploadPDF();
             PageRefresh();
 
             //Tests for inclusive for pattern before and non-inclusive for pattern after
@@ -380,9 +352,9 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
-    /*@Test
+    @Test
     public void TestCaseSensitivity() throws InterruptedException{
-        //navigates to the extraction page and checks that it is in the extraction page
+        UploadPDF();
         PageRefresh();
 
         //Test case sensitive input for pattern before and correct input for pattern after
@@ -430,7 +402,7 @@ public class TestEU_002 {
     @Test
     public void TestTextBasedImage(){
         try {
-            //navigates to the extraction page and checks that it is in the extraction page
+            UploadPDF();
             PageRefresh();
 
             //Test to get only the text-based image to appear in the preview and export data page
@@ -447,7 +419,6 @@ public class TestEU_002 {
             if (result_data.equals("Total")) { regex_data = true; }
             else { regex_data = false; }
             String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'EU-25/EFTA: Middle')]")).getText();
-            System.out.print(result_data2);
             Boolean regex_data2;
             if (result_data2.equals("EU-25/EFTA: Middle (AT, BE, DE, LI, LU, NL)")) {
                 regex_data2 = true; }
@@ -494,7 +465,7 @@ public class TestEU_002 {
         driver.navigate().back();
         Thread.sleep(500);
     }
-    @Test
+    /*@Test
     public void TestMultipleRegexSearches() throws InterruptedException {
         //Tests for 2 regex search results
         //navigates to the extraction page and checks that it is in the extraction page
