@@ -1,15 +1,15 @@
 ---
 :runtime:
 - technology.tabula:tabula:jar:1.0.2-SNAPSHOT
-- org.apache.pdfbox:fontbox:jar:2.0.9
 - org.apache.commons:commons-csv:jar:1.4
 - commons-cli:commons-cli:jar:1.4
 - org.bouncycastle:bcprov-jdk15on:jar:1.56
+- org.apache.pdfbox:fontbox:jar:2.0.8
 - jline:jline:jar:2.11
 - org.slf4j:slf4j-simple:jar:1.7.25
+- org.apache.pdfbox:pdfbox:jar:2.0.8
 - org.bouncycastle:bcmail-jdk15on:jar:1.56
 - org.bouncycastle:bcpkix-jdk15on:jar:1.56
-- org.apache.pdfbox:pdfbox:jar:2.0.9
 - org.slf4j:slf4j-api:jar:1.7.25
 - commons-logging:commons-logging:jar:1.2
 - com.google.code.gson:gson:jar:2.8.0

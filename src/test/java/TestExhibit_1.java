@@ -67,7 +67,7 @@ public class TestExhibit_1 {
         driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 100);
 
-        String filePath = System.getProperty("user.dir") + "/src/test/pdf/NC_HOUSE_2017_Stat_Pack_8.21.17.pdf";
+        String filePath = System.getProperty("user.dir") + "/src/test/pdf/One_Stop_Voting_Site_List_Nov2012.pdf";
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
         WebElement import_btn = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("import_file"))));
