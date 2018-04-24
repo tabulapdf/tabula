@@ -10,7 +10,7 @@ echo 'CLONING BACK END REPO...'
 cd ~/
 git clone https://github.com/redmyers/484_P7_1-Java.git
 cd 484_P7_1-Java
-git checkout Header_Back_End
+git checkout Up_To_This_Point
 echo 'CREATING BACK-END JAR...'
 mvn clean compile assembly:single
 mvn install:install-file -Dfile=target/tabula-1.0.2-SNAPSHOT-jar-with-dependencies.jar -DgroupId=technology.tabula -DartifactId=tabula -Dversion=1.0.2-SNAPSHOT -Dpackaging=jar -DpomFile=pom.xml
