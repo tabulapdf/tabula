@@ -10,8 +10,6 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.List;
-
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
@@ -74,17 +72,21 @@ public class TestEU_002 {
         driver.get(Tabula_url);
         driver.manage().window().maximize();
 
-        String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
-        WebElement chooseFile = driver.findElement(By.id("file"));
-        chooseFile.sendKeys(filePath);
-        Thread.sleep(1000);
-        WebElement import_btn = driver.findElement(By.id("import_file"));
-        import_btn.click();
-        Thread.sleep(700);
     }
     @Test
     public void TestHalfRegexInputsforPatternBeforeandPatternAfter(){
         try {
+            String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
+            WebElement chooseFile = driver.findElement(By.id("file"));
+            chooseFile.sendKeys(filePath);
+            Thread.sleep(1000);
+            WebElement import_btn = driver.findElement(By.id("import_file"));
+            import_btn.click();
+            Thread.sleep(5000);
+            WebDriverWait wait = new WebDriverWait(driver, 100);
+            //navigating to the extraction page after uploading the file
+            WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.linkText("Extract Data"))));
+            extract_button.click();
             //navigates to the extraction page and checks that it is in the extraction page
             PageRefresh();
 
@@ -117,7 +119,17 @@ public class TestEU_002 {
     @Test
     public void TestWrongInputsforBeforePatternandAfterPattern(){
         try{
-            //navigates to the extraction page and checks that it is in the extraction page
+            String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
+            WebElement chooseFile = driver.findElement(By.id("file"));
+            chooseFile.sendKeys(filePath);
+            Thread.sleep(1000);
+            WebElement import_btn = driver.findElement(By.id("import_file"));
+            import_btn.click();
+            Thread.sleep(5000);
+            WebDriverWait wait = new WebDriverWait(driver, 100);
+            //navigating to the extraction page after uploading the file
+            WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.linkText("Extract Data"))));
+            extract_button.click();
             PageRefresh();
             //Test that inputs an incorrect input for pattern before and incorrect input for pattern after
             PatternInputStrings("ksgjlk", "fgfsgs");
@@ -166,7 +178,17 @@ public class TestEU_002 {
     @Test
     public void TestCommonWordInputforPatternBeforeandPatternAfter(){
         try{
-            //navigates to the extraction page and checks that it is in the extraction page
+            String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
+            WebElement chooseFile = driver.findElement(By.id("file"));
+            chooseFile.sendKeys(filePath);
+            Thread.sleep(1000);
+            WebElement import_btn = driver.findElement(By.id("import_file"));
+            import_btn.click();
+            Thread.sleep(5000);
+            WebDriverWait wait = new WebDriverWait(driver, 100);
+            //navigating to the extraction page after uploading the file
+            WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.linkText("Extract Data"))));
+            extract_button.click();
             PageRefresh();
 
             //Tests pattern before and pattern after with a common input found in the pdf
@@ -260,7 +282,17 @@ public class TestEU_002 {
     @Test
     public void TestInclusiveInputsforPatternBeforeandPatternAfter() {
         try{
-            //navigates to the extraction page and checks that it is in the extraction page
+            String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
+            WebElement chooseFile = driver.findElement(By.id("file"));
+            chooseFile.sendKeys(filePath);
+            Thread.sleep(1000);
+            WebElement import_btn = driver.findElement(By.id("import_file"));
+            import_btn.click();
+            Thread.sleep(5000);
+            WebDriverWait wait = new WebDriverWait(driver, 100);
+            //navigating to the extraction page after uploading the file
+            WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.linkText("Extract Data"))));
+            extract_button.click();
             PageRefresh();
 
             //Tests for inclusive for pattern before and non-inclusive for pattern after
@@ -348,7 +380,7 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
-    @Test
+    /*@Test
     public void TestCaseSensitivity() throws InterruptedException{
         //navigates to the extraction page and checks that it is in the extraction page
         PageRefresh();
@@ -712,7 +744,7 @@ public class TestEU_002 {
         driver.navigate().back();
         driver.navigate().back();
         Thread.sleep(500);
-    }
+    }*/
     @AfterClass
     public static void TearDown(){
         //navigates back and deletes the pdf utilized
