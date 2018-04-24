@@ -66,7 +66,10 @@ public class TestNCHouse2017StatPack {
         Thread.sleep(1000);
         WebElement import_btn = driver.findElement(By.id("import_file"));
         import_btn.click();
-        Thread.sleep(10000);
+        Thread.sleep(5000);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("restore-detected-tables")));
+     //   while(driver.findElements(By.id("restore-detected-tables")).size() == 0) {
+     //   }
     }
     private void DeletePDF(){
         //navigates back and deletes the pdf utilized
@@ -77,7 +80,7 @@ public class TestNCHouse2017StatPack {
     public static void SetUp(){
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("headless");
+       // options.addArguments("headless");
         options.addArguments("no-sandbox");
 
         //set up of chromdriver and navigation to the url, as well as uploading of the pdf file
