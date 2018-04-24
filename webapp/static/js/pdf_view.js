@@ -96,7 +96,7 @@ Tabula.Selection = Backbone.Model.extend({
       y1: rp.top * scale,
       y2: (rp.top + rp.height) * scale,
       width: rp.width * scale, // not used by Tabula right now, but used in the UI elsewhere
-      height: rp.height * scale, // not used by Tabula right now, but used in the UI elsewhere
+      height: rp.height * scale // not used by Tabula right now, but used in the UI elsewhere
     });
   },
 
@@ -1397,9 +1397,13 @@ Tabula.RegexCollectionView = Backbone.View.extend({
               Object.keys(matching_area_to_add).forEach(function (page_number) {
                 console.log("Page Number:" + page_number);
                 matching_area_to_add[page_number].forEach(function (subsection) {
+                  console.log('SUBSECTION:');
+                  console.log(subsection);
                     var new_subsection = Tabula.pdf_view.renderSelection({
                       x1: subsection._area['x'],
                       y1: subsection._area['y'],
+                      x2: subsection._area['x']+subsection._area['width'],
+                      y2: subsection._area['y']+subsection._area['height'],
                       width: subsection._area['width'],
                       height: subsection._area['height'],
                       page_number: subsection._page_num,
@@ -1508,8 +1512,8 @@ Tabula.RegexCollectionView = Backbone.View.extend({
   },
   process_result: function (search_results) {
 
-    //console.log("In process_result:");
-    //console.log(search_results);
+    console.log("In process_result:");
+    console.log(search_results);
 
     var selections_rendered = new Map();
     search_results["_matching_areas"].forEach(function(matching_area){
@@ -1519,6 +1523,8 @@ Tabula.RegexCollectionView = Backbone.View.extend({
           selections_rendered.get(matching_area).add(Tabula.pdf_view.renderSelection({
             x1: regex_rect._area['x'],
             y1: regex_rect._area['y'],
+            x2: regex_rect._area['x']+regex_rect._area['width'],
+            y2: regex_rect._area['y']+regex_rect._area['height'],
             width: regex_rect._area['width'],
             height: regex_rect._area['height'],
             page_number: regex_rect._page_num,
@@ -1534,9 +1540,13 @@ Tabula.RegexCollectionView = Backbone.View.extend({
 
     if(Array.from(selections_rendered.keys()).every(function(matching_area){
       return selections_rendered.get(matching_area).every(function(subsection){
-        console.log('SUBSECTION:');
-        console.log(subsection);
-        return subsection.attributes.checkOverlaps();})}))
+        if(subsection.attributes.hasOwnProperty('checkOverlaps')){
+          return subsection.attributes.checkOverlaps();
+        }
+        else{
+          return true;
+        }
+        })}))
       {
       this.collection.add(new Tabula.RegexResultModel({
         pattern_before: search_results["_regex_before_table"]["pattern"],
