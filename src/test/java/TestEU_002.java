@@ -731,9 +731,9 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
-    private void TestRegexSyntax(){
+    /*private void TestRegexSyntax(){
 
-    }
+    } */
     @AfterClass
     public static void TearDown(){
         driver.quit();

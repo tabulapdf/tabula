@@ -52,12 +52,9 @@ public class TestNCHouse2017StatPack {
         WebElement inclusive_before_btn = new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_before"))));
         WebElement inclusive_after_btn = new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_after"))));
         if (patternbefore){
-            inclusive_before_btn.click();
-        }
-
+            inclusive_before_btn.click(); }
         if(patternafter){
-            inclusive_after_btn.click();
-        }
+            inclusive_after_btn.click(); }
     }
     private void UploadPDF() throws InterruptedException {
         String filePath = System.getProperty("user.dir") + "/src/test/pdf/NC_HOUSE_2017_Stat_Pack_8.21.17.pdf";
@@ -283,10 +280,10 @@ public class TestNCHouse2017StatPack {
             System.out.print(e);
         }
     }
-    @Test
+   /* @Test
     public void TestRegexSyntax(){
 
-    }
+    } */
     @AfterClass
     public static void TearDown(){
         driver.quit();
