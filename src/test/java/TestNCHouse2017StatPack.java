@@ -78,7 +78,7 @@ public class TestNCHouse2017StatPack {
     public static void SetUp(){
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
-       // options.addArguments("headless");
+        options.addArguments("headless");
         options.addArguments("no-sandbox");
 
         //set up of chromdriver and navigation to the url, as well as uploading of the pdf file
@@ -210,14 +210,12 @@ public class TestNCHouse2017StatPack {
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                     "'1')]")).getText();
             Boolean regex_data;
-            System.out.print(result_data);
             if (result_data.equals("1")) {
                 regex_data = true;
             } else {
                 regex_data = false;
             }
             String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'District Rep Rep % Dem Dem % Lib Lib %')]")).getText();
-            System.out.print(result_data2);
             Boolean regex_data2;
             if (result_data2.equals("District Rep Rep % Dem Dem % Lib Lib % Write-In Write-In %")) {
                 regex_data2 = true;
@@ -257,18 +255,26 @@ public class TestNCHouse2017StatPack {
             driver.switchTo().alert().accept(); //accept error pop-up window
             //Checks that there is only one regex result, since it shouldn't had allowed for 2 results to appear since the
             // 2nd one causes an overlap
-            List<WebElement> regex_rows = driver.findElements(By.className("regex-result-row"));
+            Thread.sleep(2000);
+            List<WebElement> regex_rows = driver.findElements(By.className("regex-result"));
             int regex_count = regex_rows.size();
             int regex_count1 = 1;
-            assertTrue("Failed, number of rows, from the Stream option, did not match", (regex_count1 == regex_count ));
-
-            String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
-            Boolean regex_result;
-            if(result.equals("1")){ regex_result = true;} //if true, there are zero matches
-            else{ regex_result = false;}
-            assertTrue("Failed, Tabula found found more than one match for an overlap regex search",
-                    regex_result);
-
+            assertTrue("Failed, Tabula found more than one match for an overlap regex search", (regex_count1 == regex_count ));
+            PreviewandExportDatapg();
+            Thread.sleep(5000);
+            String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                    "'83')]")).getText();
+            Boolean regex_data;
+            if (result_data.equals("83")) { regex_data = true;
+            } else { regex_data = false; }
+            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'120')]")).getText();
+            Boolean regex_data2;
+            if (result_data2.equals("120")) { regex_data2 = true;
+            } else { regex_data2 = false; }
+            Boolean final_results;
+            if (regex_data && regex_data2) { final_results = true;
+            } else { final_results = false; }
+            assertTrue("Failed, Tabula found no match for the multi-page table", final_results);
             driver.navigate().back();
             driver.navigate().back();
             Thread.sleep(500);

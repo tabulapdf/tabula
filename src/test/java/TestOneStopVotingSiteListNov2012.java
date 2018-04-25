@@ -75,7 +75,7 @@ public class TestOneStopVotingSiteListNov2012 {
         //set up of chromdriver and navigation to the url, as well as uploading of the pdf file
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
-       // options.addArguments("headless");
+        options.addArguments("headless");
 
         driver = new ChromeDriver(options);
         driver.get(Tabula_url);
