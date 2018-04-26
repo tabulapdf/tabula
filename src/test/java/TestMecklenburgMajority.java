@@ -13,8 +13,8 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
 
-//Test of the One_Stop_Voting_Site_List_Nov2012 pdf file.
-public class TestOneStopVotingSiteListNov2012 {
+public class TestMecklenburgMajority {
+    //Test of the One_Stop_Voting_Site_List_Nov2012 pdf file.
     private static WebDriver driver;
     private static String Tabula_url = "http://127.0.0.1:9292/";
     private WebDriverWait wait = new WebDriverWait(driver, 100);
@@ -25,8 +25,7 @@ public class TestOneStopVotingSiteListNov2012 {
         //refresh the page
         while(driver.findElements( By.id("restore-detected-tables")).size() == 0) {
             driver.navigate().refresh();
-            Thread.sleep(700);
-        }
+            Thread.sleep(700); }
     }
     private void PreviewandExportDatapg(){
         By previewandexport_id = By.id("all-data");
@@ -50,7 +49,7 @@ public class TestOneStopVotingSiteListNov2012 {
         WebElement inclusive_after_btn = new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_after"))));
         if (patternbefore){
             inclusive_before_btn.click(); }
-        if(patternafter){
+            if(patternafter){
             inclusive_after_btn.click(); }
     }
     private void UploadPDF() throws InterruptedException {
@@ -85,7 +84,6 @@ public class TestOneStopVotingSiteListNov2012 {
         try {
             UploadPDF();
             PageRefresh();
-
             //Test of regex input with inclusive for pattern before for a table of 2 pages in length
             PatternInputStrings("JEFFERSON", "BRUNSWICK");
             InclusiveButtons(true, false);
@@ -103,8 +101,7 @@ public class TestOneStopVotingSiteListNov2012 {
             PreviewandExportDatapg();
             Thread.sleep(5000);
             //verify data extraction
-            String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
-                    "'JEFFERSON')]")).getText();
+            String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," + "'JEFFERSON')]")).getText();
             Boolean regex_data;
             if (result_data.equals("JEFFERSON, NC 28640")) {
                 regex_data = true;
@@ -170,10 +167,10 @@ public class TestOneStopVotingSiteListNov2012 {
             driver.navigate().back();
             Thread.sleep(500);
             DeletePDF();
-        }catch (Exception e){
-            System.out.print(e);
+            }catch (Exception e){
+                System.out.print(e);
+            }
         }
-    }
     @Test
     public void TestInclusivePatternswithRegexSearches() {
         try{
@@ -205,7 +202,7 @@ public class TestOneStopVotingSiteListNov2012 {
             if(regex_result && regex_data && regex_data2){ final_results = true;}
             else{final_results = false;}
             assertTrue("Failed, Tabula found no match for inclusive for pattern before and non-inclusive for " +
-                    "pattern after", final_results);
+                        "pattern after", final_results);
             driver.navigate().refresh();
             PageRefresh();
 
@@ -268,9 +265,9 @@ public class TestOneStopVotingSiteListNov2012 {
             driver.navigate().back();
             Thread.sleep(500);
             DeletePDF();
-        }catch(Exception e){
-            System.out.print(e);
-        }
+            }catch(Exception e){
+                System.out.print(e);
+            }
     }
     @Test
     public void TestOverlapRegexSearch() {
@@ -314,16 +311,17 @@ public class TestOneStopVotingSiteListNov2012 {
             driver.navigate().back();
             Thread.sleep(500);
             DeletePDF();
-        }catch (Exception e){
-            System.out.print(e);
-        }
+            }catch (Exception e){
+                System.out.print(e);
+            }
     }
-   /* @Test
-    public void TestRegexSyntax(){
+    /* @Test
+        public void TestRegexSyntax(){
 
-    }*/
+    } */
     @AfterClass
     public static void TearDown(){
         driver.quit();
+        }
     }
-}
+
