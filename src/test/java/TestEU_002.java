@@ -48,8 +48,10 @@ public class TestEU_002 {
         driver.findElement(pattern_after_input).sendKeys(pattern_after);
     }
     private void InclusiveButtons(boolean patternbefore, boolean patternafter){
-        WebElement inclusive_before_btn = new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_before"))));
-        WebElement inclusive_after_btn = new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_after"))));
+        WebElement inclusive_before_btn = new WebDriverWait(driver, 30).
+                until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_before"))));
+        WebElement inclusive_after_btn = new WebDriverWait(driver, 30).
+                until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_after"))));
         if (patternbefore){
             inclusive_before_btn.click();
         }
@@ -190,7 +192,8 @@ public class TestEU_002 {
             else{ regex_result = false;}
             PreviewandExportDatapg();
             Thread.sleep(600);
-            String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Knowledge')]")).getText();
+            String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Knowledge')]"))
+                    .getText();
             Boolean regex_data;
             if(result_data.equals("Knowledge and awareness of different cultures")){ regex_data = true;}
             else{ regex_data = false;}
@@ -323,7 +326,8 @@ public class TestEU_002 {
             if(result_data3.equals("school")){ regex_data3 = true;}
             else{ regex_data3 = false;}
             Thread.sleep(600);
-            String result_data4 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'International')]")).getText();
+            String result_data4 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                    "'International')]")).getText();
             Boolean regex_data4;
             if(result_data4.equals("International mobility of pupils")){ regex_data4 = true;}
             else{ regex_data4 = false;}
@@ -352,7 +356,8 @@ public class TestEU_002 {
             if(result_data5.equals("European/International dimension of the")){ regex_data5 = true;}
             else{ regex_data5 = false;}
             Thread.sleep(600);
-            String result_data6 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Training')]")).getText();
+            String result_data6 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Training')]"))
+                    .getText();
             Boolean regex_data6;
             if(result_data6.equals("Training of teachers")){ regex_data6 = true;}
             else{ regex_data6 = false;}
@@ -454,7 +459,8 @@ public class TestEU_002 {
             if (result_data.equals("Total")) { regex_data = true; }
             else { regex_data = false; }
             Thread.sleep(600);
-            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'EU-25/EFTA: Middle')]")).getText();
+            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                    "'EU-25/EFTA: Middle')]")).getText();
             Boolean regex_data2;
             if (result_data2.equals("EU-25/EFTA: Middle (AT, BE, DE, LI, LU, NL)")) {
                 regex_data2 = true; }
@@ -546,7 +552,8 @@ public class TestEU_002 {
                 regex_data = false;
             }
             Thread.sleep(600);
-            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Knowledge/appreciation of school')]")).getText();
+            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                    "'Knowledge/appreciation of school')]")).getText();
             Boolean regex_data2;
             if (result_data2.equals("Knowledge/appreciation of school system and")) {
                 regex_data2 = true;
@@ -589,7 +596,8 @@ public class TestEU_002 {
                 regex_data3 = false;
             }
             Thread.sleep(600);
-            String result_data4 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Foreign language')]")).getText();
+            String result_data4 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                    "'Foreign language')]")).getText();
             Boolean regex_data4;
             if (result_data4.equals("Foreign language competence")) {
                 regex_data4 = true;
@@ -642,9 +650,11 @@ public class TestEU_002 {
             } else {
                 regex_data = false;
             }
-            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Question')]")).getText();
+            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                    "'Question')]")).getText();
             Boolean regex_data2;
-            if (result_data2.equals("Question 4.9: Overall, how satisfied are you with the outcomes and impacts of the Comenius project?")) {
+            if (result_data2.equals("Question 4.9: Overall, how satisfied are you with the outcomes and impacts of " +
+                    "the Comenius project?")) {
                 regex_data2 = true;
             } else {
                 regex_data2 = false;
@@ -731,9 +741,6 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
-    /*private void TestRegexSyntax(){
-
-    } */
     @AfterClass
     public static void TearDown(){
         driver.quit();

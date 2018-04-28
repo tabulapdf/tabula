@@ -38,7 +38,8 @@ public class TestNCHouse2017StatPack {
     }
     private void ClickRegexButton() throws InterruptedException {
         By regex_search_id = By.id("regex-search");
-        WebElement regex_button = new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(regex_search_id));
+        WebElement regex_button = new WebDriverWait(driver, 30).until(ExpectedConditions.
+                elementToBeClickable(regex_search_id));
         regex_button.click();
         Thread.sleep(800);
     }
@@ -49,8 +50,10 @@ public class TestNCHouse2017StatPack {
         driver.findElement(pattern_after_input).sendKeys(pattern_after);
     }
     private void InclusiveButtons(boolean patternbefore, boolean patternafter){
-        WebElement inclusive_before_btn = new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_before"))));
-        WebElement inclusive_after_btn = new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_after"))));
+        WebElement inclusive_before_btn = new WebDriverWait(driver, 30).
+                until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_before"))));
+        WebElement inclusive_after_btn = new WebDriverWait(driver, 30).
+                until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_after"))));
         if (patternbefore){
             inclusive_before_btn.click(); }
         if(patternafter){
@@ -107,7 +110,8 @@ public class TestNCHouse2017StatPack {
             if(result_data.equals("2017 House Redistricting Plan: Population Deviation")){ regex_data = true;}
             else{ regex_data = false;}
             Thread.sleep(600);
-            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'District')]")).getText();
+            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                    "'District')]")).getText();
             Boolean regex_data2;
             if(result_data2.equals("District 2010 Pop")){ regex_data2 = true;}
             else{ regex_data2 = false;}
@@ -161,12 +165,14 @@ public class TestNCHouse2017StatPack {
             else{ regex_result4 = false;}
             PreviewandExportDatapg();
             Thread.sleep(5000);
-            String result_data5 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'2017 House Redistricting Plan: Population Deviation')]")).getText();
+            String result_data5 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                    "'2017 House Redistricting Plan: Population Deviation')]")).getText();
             Boolean regex_data5;
             if(result_data5.equals("2017 House Redistricting Plan: Population Deviation")){ regex_data5 = true;}
             else{ regex_data5 = false;}
             Thread.sleep(600);
-            String result_data6 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'105 22,913 55.44% 17,133 41.45% 1,287 3.11%')]")).getText();
+            String result_data6 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                    "'105 22,913 55.44% 17,133 41.45% 1,287 3.11%')]")).getText();
             Boolean regex_data6;
             if(result_data6.equals("105 22,913 55.44% 17,133 41.45% 1,287 3.11%")){ regex_data6 = true;}
             else{ regex_data6 = false;}
@@ -212,7 +218,8 @@ public class TestNCHouse2017StatPack {
             } else {
                 regex_data = false;
             }
-            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'District Rep Rep % Dem Dem % Lib Lib %')]")).getText();
+            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
+                    "'District Rep Rep % Dem Dem % Lib Lib %')]")).getText();
             Boolean regex_data2;
             if (result_data2.equals("District Rep Rep % Dem Dem % Lib Lib % Write-In Write-In %")) {
                 regex_data2 = true;
@@ -256,7 +263,8 @@ public class TestNCHouse2017StatPack {
             List<WebElement> regex_rows = driver.findElements(By.className("regex-result"));
             int regex_count = regex_rows.size();
             int regex_count1 = 1;
-            assertTrue("Failed, Tabula found more than one match for an overlap regex search", (regex_count1 == regex_count ));
+            assertTrue("Failed, Tabula found more than one match for an overlap regex search",
+                    (regex_count1 == regex_count ));
             PreviewandExportDatapg();
             Thread.sleep(5000);
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
@@ -280,10 +288,6 @@ public class TestNCHouse2017StatPack {
             System.out.print(e);
         }
     }
-   /* @Test
-    public void TestRegexSyntax(){
-
-    } */
     @AfterClass
     public static void TearDown(){
         driver.quit();
