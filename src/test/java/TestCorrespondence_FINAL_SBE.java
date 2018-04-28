@@ -13,8 +13,8 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
 
-//Test of the One_Stop_Voting_Site_List_Nov2012 pdf file.
-public class TestOneStopVotingSiteListNov2012 {
+public class TestCorrespondence_FINAL_SBE {
+    //Test of the Mecklenburg.Majority pdf file.
     private static WebDriver driver;
     private static String Tabula_url = "http://127.0.0.1:9292/";
     private WebDriverWait wait = new WebDriverWait(driver, 100);
@@ -25,8 +25,7 @@ public class TestOneStopVotingSiteListNov2012 {
         //refresh the page
         while(driver.findElements( By.id("restore-detected-tables")).size() == 0) {
             driver.navigate().refresh();
-            Thread.sleep(700);
-        }
+            Thread.sleep(700); }
     }
     private void PreviewandExportDatapg(){
         By previewandexport_id = By.id("all-data");
@@ -46,24 +45,25 @@ public class TestOneStopVotingSiteListNov2012 {
         driver.findElement(pattern_after_input).sendKeys(pattern_after);
     }
     private void InclusiveButtons(boolean patternbefore, boolean patternafter){
-        WebElement inclusive_before_btn = new WebDriverWait(driver, 30).until(ExpectedConditions.
-                elementToBeClickable(driver.findElement(By.id("include_pattern_before"))));
-        WebElement inclusive_after_btn = new WebDriverWait(driver, 30).until(ExpectedConditions.
-                elementToBeClickable(driver.findElement(By.id("include_pattern_after"))));
+        WebElement inclusive_before_btn = new WebDriverWait(driver, 30).
+                until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_before"))));
+        WebElement inclusive_after_btn = new WebDriverWait(driver, 30).
+                until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_after"))));
         if (patternbefore){
             inclusive_before_btn.click(); }
         if(patternafter){
             inclusive_after_btn.click(); }
     }
     private void UploadPDF() throws InterruptedException {
-        String filePath = "/home/slmendez/484_P7_1-GUI/src/test/pdf/One_Stop_Voting_Site_List_Nov2012.pdf"; //
+        String filePath = "/home/slmendez/484_P7_1-GUI/src/test/pdf/" +
+                "Correspondence_FINAL_SBE_one-stop_plans_adopted_for_non-unanimous_countiespdf.pdf"; //
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
         Thread.sleep(1000);
         WebElement import_btn = driver.findElement(By.id("import_file"));
         import_btn.click();
         Thread.sleep(5000);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("restore-detected-tables")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("templates_title")));
     }
     private void DeletePDF(){
         //navigates back and deletes the pdf utilized
@@ -87,35 +87,34 @@ public class TestOneStopVotingSiteListNov2012 {
         try {
             UploadPDF();
             PageRefresh();
-
-            //Test of regex input with inclusive for pattern before for a table of 2 pages in length
-            PatternInputStrings("JEFFERSON", "BRUNSWICK");
+            //Test of regex input with inclusive for pattern before for a table of 3 pages in length
+            PatternInputStrings("From:", "From:");
             InclusiveButtons(true, false);
             ClickRegexButton();
-            Thread.sleep(5000);
-            //Confirm a result shows up in the regex search table
-            String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
+            //Confirm search found
+            String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'5')]")).getText();
             Boolean regex_result;
-            if (result.equals("1")) {
+            if (result.equals("5")) {
                 regex_result = true;
             } //if true, there are zero matches
             else {
                 regex_result = false;
             }
             PreviewandExportDatapg();
-            Thread.sleep(5000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
             //verify data extraction
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
-                    "'JEFFERSON')]")).getText();
+                    "'From: Bucholtz, Tracy L </O=EXCHANGELABS/OU=EXCHANGE ADMINISTRATIVE')]")).getText();
             Boolean regex_data;
-            if (result_data.equals("JEFFERSON, NC 28640")) {
+            if (result_data.equals("From: Bucholtz, Tracy L </O=EXCHANGELABS/OU=EXCHANGE ADMINISTRATIVE")) {
                 regex_data = true;
             } else {
                 regex_data = false;
             }
-            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'DUBLIN')]")).getText();
+            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'disclosed to third parties.')]")).getText();
             Boolean regex_data2;
-            if (result_data2.equals("DUBLIN, NC 28332")) {
+            if (result_data2.equals("disclosed to third parties.")) {
                 regex_data2 = true;
             } else {
                 regex_data2 = false;
@@ -126,51 +125,8 @@ public class TestOneStopVotingSiteListNov2012 {
             } else {
                 final_results = false;
             }
-            assertTrue("Failed, regex found no match for inclusive input for pattern before for a 2 page length table"
+            assertTrue("Failed, regex found no match for inclusive input for pattern before for a 3 page length table"
                     , final_results);
-            driver.navigate().refresh();
-            PageRefresh();
-
-            //Test of regex input with inclusive for pattern after for a table of 5 pages in length
-            PatternInputStrings("CHEROKEE", "CUMBERLAND");
-            InclusiveButtons(true, true);
-            ClickRegexButton();
-            Thread.sleep(5000);
-            String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
-            Boolean regex_result3;
-            if (result3.equals("1")) {
-                regex_result3 = true;
-            } //if true, there are zero matches
-            else {
-                regex_result3 = false;
-            }
-            PreviewandExportDatapg();
-            Thread.sleep(5000);
-            String result_data5 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
-                    "'CHEROKEE')]")).getText();
-            Boolean regex_data5;
-            if (result_data5.equals("CHEROKEE COUNTY BOARD OF ELECTIONS OFFICE")) {
-                regex_data5 = true;
-            } else {
-                regex_data5 = false;
-            }
-            String result_data6 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
-                    "'CUMBERLAND')]")).getText();
-            Boolean regex_data6;
-            if (result_data6.equals("CUMBERLAND")) {
-                regex_data6 = true;
-            } else {
-                regex_data6 = false;
-            }
-            Boolean final_results3;
-            if (regex_result3 && regex_data5 && regex_data6) {
-                final_results3 = true;
-            } else {
-                final_results3 = false;
-            }
-            assertTrue("Failed, Tabula found no match for a multi page table spanning more than 2 pages",
-                    final_results3);
-
             driver.navigate().back();
             driver.navigate().back();
             Thread.sleep(500);
@@ -186,27 +142,25 @@ public class TestOneStopVotingSiteListNov2012 {
             PageRefresh();
 
             //Tests for inclusive for pattern before and non-inclusive for pattern after
-            PatternInputStrings("COUNTY","COUNTY");
+            PatternInputStrings("To:","To:");
             InclusiveButtons(true, false);
             ClickRegexButton();
-            Thread.sleep(5000);
-            String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'69')]")).
-                    getText();
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
+            String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'5')]")).getText();
             Boolean regex_result;
-            if(result.equals("69")){ regex_result = true;} //if true, there are zero matches
+            if(result.equals("5")){ regex_result = true;} //if true, there are zero matches
             else{ regex_result = false;}
             PreviewandExportDatapg();
-            Thread.sleep(4000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
-                    "'County')]")).getText();
+                    "'To: Watson, Herman L </o=ExchangeLabs/ou=Exchange Administrative Group')]")).getText();
             Boolean regex_data;
-            if(result_data.equals("County")){ regex_data = true;}
+            if(result_data.equals("To: Watson, Herman L </o=ExchangeLabs/ou=Exchange Administrative Group")){ regex_data = true;}
             else{ regex_data = false;}
             Thread.sleep(600);
-            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
-                    "'Thursday, November 1')]")).getText();
+            String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Sent: Monday, February 08, 2016 5:31 PM')]")).getText();
             Boolean regex_data2;
-            if(result_data2.equals("Thursday, November 1 - Friday, November 2")){ regex_data2 = true;}
+            if(result_data2.equals("Sent: Monday, February 08, 2016 5:31 PM")){ regex_data2 = true;}
             else{ regex_data2 = false;}
             Boolean final_results;
             if(regex_result && regex_data && regex_data2){ final_results = true;}
@@ -217,26 +171,26 @@ public class TestOneStopVotingSiteListNov2012 {
             PageRefresh();
 
             //Tests for non-inclusive for pattern before and inclusive for pattern after
-            PatternInputStrings("Thursday", "Saturday");
+            PatternInputStrings("From:", "Subject:");
             InclusiveButtons(false, true);
             ClickRegexButton();
-            Thread.sleep(10000);
-            String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'326')]")).getText();
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
+            String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'10')]")).getText();
             Boolean regex_result3;
-            if(result2.equals("326")){ regex_result3 = true;} //if true, there are zero matches
+            if(result2.equals("10")){ regex_result3 = true;} //if true, there are zero matches
             else{ regex_result3 = false;}
             PreviewandExportDatapg();
-            Thread.sleep(4000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
             String result_data3 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
-                    "'Monday, October 22 - Friday, October 26')]")).getText();
+                    "'Sent: Tuesday, February 09, 2016 1:45 PM')]")).getText();
             Boolean regex_data3;
-            if(result_data3.equals("Monday, October 22 - Friday, October 26")){ regex_data3 = true;}
+            if(result_data3.equals("Sent: Tuesday, February 09, 2016 1:45 PM")){ regex_data3 = true;}
             else{ regex_data3 = false;}
             Thread.sleep(1000);
             String result_data4 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
-                    "'225 WEST MAIN ST')]")).getText();
+                    "'Subject: Voters')]")).getText();
             Boolean regex_data4;
-            if(result_data4.equals("225 WEST MAIN ST")){ regex_data4 = true;}
+            if(result_data4.equals("Subject: Voters")){ regex_data4 = true;}
             else{ regex_data4 = false;}
             Boolean final_results2;
             if(regex_result3 && regex_data3 && regex_data4){ final_results2 = true;}
@@ -247,26 +201,24 @@ public class TestOneStopVotingSiteListNov2012 {
             PageRefresh();
 
             //Tests for inclusive for pattern before and for pattern after
-            PatternInputStrings("8:00","7:00");
+            PatternInputStrings("office","cell");
             InclusiveButtons(true, true);
-            Thread.sleep(500);
             ClickRegexButton();
-            Thread.sleep(4000);
-            String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'68')]")).getText();
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
+            String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'4')]")).getText();
             Boolean regex_result4;
-            if(result3.equals("68")){ regex_result4 = true;} //if true, there are zero matches
+            if(result3.equals("4")){ regex_result4 = true;} //if true, there are zero matches
             else{ regex_result4 = false;}
             PreviewandExportDatapg();
-            Thread.sleep(5000);
-            String result_data5 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
-                    "'Friday, October 19')]")).getText();
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
+            String result_data5 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'919 861 3235 office')]")).getText();
             Boolean regex_data5;
-            if(result_data5.equals("Friday, October 19")){ regex_data5 = true;}
+            if(result_data5.equals("919 861 3235 office")){ regex_data5 = true;}
             else{ regex_data5 = false;}
             Thread.sleep(700);
-            String result_data6 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'YANCEY')]")).getText();
+            String result_data6 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'919 218 4480 cell')]")).getText();
             Boolean regex_data6;
-            if(result_data6.equals("YANCEY")){ regex_data6 = true;}
+            if(result_data6.equals("919 218 4480 cell")){ regex_data6 = true;}
             else{ regex_data6 = false;}
             Boolean final_results3;
             if(regex_result4 && regex_data5 && regex_data6){ final_results3 = true;}
@@ -288,11 +240,11 @@ public class TestOneStopVotingSiteListNov2012 {
             UploadPDF();
             PageRefresh();
 
-            PatternInputStrings("BERTIE", "CABARRUS");
+            PatternInputStrings("From:", "Raleigh");
             InclusiveButtons(true, false);
             ClickRegexButton();
-            Thread.sleep(5000);
-            PatternInputStrings("ANSON", "BUNCOMBE");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
+            PatternInputStrings("Tracy", "Tracy");
             InclusiveButtons(false, true);
             ClickRegexButton();
             Thread.sleep(5000);
@@ -303,19 +255,18 @@ public class TestOneStopVotingSiteListNov2012 {
             List<WebElement> regex_rows = driver.findElements(By.className("regex-result"));
             int regex_count = regex_rows.size();
             int regex_count1 = 1;
-            assertTrue("Failed, Tabula found more than one match for an overlap regex search",
-                    (regex_count1 == regex_count ));
+            assertTrue("Failed, Tabula found more than one match for an overlap regex search", (regex_count1 == regex_count ));
             PreviewandExportDatapg();
-            Thread.sleep(5000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
-                    "'MORGANTON, NC 28655')]")).getText();
+                    "'From: Bucholtz, Tracy L </O=EXCHANGELABS/OU=EXCHANGE ADMINISTRATIVE')]")).getText();
             Boolean regex_data;
-            if (result_data.equals("MORGANTON, NC 28655")) { regex_data = true;
+            if (result_data.equals("From: Bucholtz, Tracy L </O=EXCHANGELABS/OU=EXCHANGE ADMINISTRATIVE")) { regex_data = true;
             } else { regex_data = false; }
             String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
-                    "'BERTIE COUNTY BOARD OF')]")).getText();
+                    "'3123 MSC')]")).getText();
             Boolean regex_data2;
-            if (result_data2.equals("BERTIE COUNTY BOARD OF ELECTIONS OFFICE")) { regex_data2 = true;
+            if (result_data2.equals("3123 MSC")) { regex_data2 = true;
             } else { regex_data2 = false; }
             Boolean final_results;
             if (regex_data && regex_data2) { final_results = true;
