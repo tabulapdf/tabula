@@ -6,7 +6,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -283,17 +282,9 @@ public class TestCorrespondence_FINAL_SBE {
 
             PatternInputStrings("Dear", "Edgecombe County");
             InclusiveButtons(true, false);
-           // ClickRegexButton();
+            ClickRegexButton();
             Thread.sleep(600);
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
-
-            By regex_search_id = By.id("regex-search");
-            WebElement regex_button = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id));
-
-            Actions resetView = new Actions(driver);
-            resetView.moveToElement(regex_button).perform();
-
-
             PatternInputStrings("Bladen County", "Craven County");
             InclusiveButtons(false, true);
             ClickRegexButton();
