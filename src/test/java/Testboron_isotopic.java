@@ -31,6 +31,7 @@ public class Testboron_isotopic {
         By previewandexport_id = By.id("all-data");
         WebElement previewandexport_button = wait.until(ExpectedConditions.visibilityOfElementLocated(previewandexport_id));
         previewandexport_button.click();
+
     }
     private void ClickRegexButton() throws InterruptedException {
         By regex_search_id = By.id("regex-search");

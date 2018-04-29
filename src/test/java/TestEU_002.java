@@ -12,15 +12,15 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-//Test of the eu_002 pdf file.
-// TODO: currently, I do not know how to directly call a pdf file so I can use it for the test cases without manually
-//  using the windows explorer to retrieve it. For now, the pdf will be preloaded onto Tabula for testing.
+//Test of the eu_002 pdf file, it will go through various user scenarios to test the functionality of the regex
+// implementation (spanning pages, multiple search results, inclusive and non-inclusive, and overlap)
 
 public class TestEU_002 {
     private static WebDriver driver;
     private static String Tabula_url = "http://127.0.0.1:9292/";
     private WebDriverWait wait = new WebDriverWait(driver, 1000);
 
+    //will continue to refresh the page until it sees one of the buttons appear inthe menu option of the extraction page
     private void PageRefresh() throws InterruptedException {
         //menu options did not fully load
         Thread.sleep(1000);
@@ -30,24 +30,28 @@ public class TestEU_002 {
             Thread.sleep(700);
         }
     }
+    //will navigate and wait for the data to appear in the preview and export data page
     private void PreviewandExportDatapg(){
         By previewandexport_id = By.id("all-data");
         WebElement previewandexport_button = wait.until(ExpectedConditions.visibilityOfElementLocated(previewandexport_id));
         previewandexport_button.click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
     }
+    //will wait for the regex button to become clickable and then click the regex button
     private void ClickRegexButton() throws InterruptedException {
         By regex_search_id = By.id("regex-search");
         WebElement regex_button = new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(regex_search_id));
         regex_button.click();
         Thread.sleep(800);
     }
+    //send regex inputs to the corresponding pattern type
     private void PatternInputStrings(String pattern_before, String pattern_after){
         By pattern_before_input = By.id("pattern_before");
         By pattern_after_input = By.id("pattern_after");
         driver.findElement(pattern_before_input).sendKeys(pattern_before);
         driver.findElement(pattern_after_input).sendKeys(pattern_after);
     }
+    //send corresponding info of inclusive to the pattern type
     private void InclusiveButtons(boolean patternbefore, boolean patternafter){
         WebElement inclusive_before_btn = new WebDriverWait(driver, 30).
                 until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_before"))));
@@ -61,6 +65,7 @@ public class TestEU_002 {
             inclusive_after_btn.click();
         }
     }
+    //go on and upload the pdf file
     private void UploadPDF() throws InterruptedException {
         String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
         WebElement chooseFile = driver.findElement(By.id("file"));
@@ -71,13 +76,15 @@ public class TestEU_002 {
         Thread.sleep(5000);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("restore-detected-tables")));
     }
+    //delete the pdf file
     private void DeletePDF(){
         //navigates back and deletes the pdf utilized
         driver.findElement(By.id("delete_pdf")).click();
         driver.switchTo().alert().accept();
     }
+    //instantiation of the Tabula
     @BeforeClass
-    public static void SetUp() throws InterruptedException {
+    public static void SetUp(){
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless");
@@ -89,6 +96,7 @@ public class TestEU_002 {
         driver.manage().window().maximize();
 
     }
+    //test for 2 different cases of only filling one of the regex inputs and checking that it didn't enable the regex button
     @Test
     public void TestHalfRegexInputsforPatternBeforeandPatternAfter(){
         try {
@@ -110,7 +118,6 @@ public class TestEU_002 {
             // clicking the regex search button
             By pattern_after_input = By.id("pattern_after");
             driver.findElement(pattern_after_input).sendKeys("Chart 5");
-            //Thread.sleep(500);
             By regex_search_id2 = By.id("regex-search");
             Thread.sleep(600);
             assertFalse("Failed, regex search button is enabled", driver.findElement(regex_search_id2).isEnabled());
@@ -124,6 +131,8 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
+    //Test of 3 different instances of either one of the inputs being wrong or both of the inputs being wrong and
+    // checking that it gave a regex result of zero
     @Test
     public void TestWrongInputsforBeforePatternandAfterPattern(){
         try{
@@ -132,7 +141,7 @@ public class TestEU_002 {
             //Test that inputs an incorrect input for pattern before and incorrect input for pattern after
             PatternInputStrings("ksgjlk", "fgfsgs");
             ClickRegexButton();
-            Thread.sleep(1000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
             Boolean regex_result;
             if(result.equals("0")){ regex_result = true;} //if true, there are zero matches
@@ -145,7 +154,7 @@ public class TestEU_002 {
             //Test inputs correct input for pattern after and incorrect input for pattern before
             PatternInputStrings("jflaksl","Table 6" );
             ClickRegexButton();
-            Thread.sleep(1000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
             Boolean regex_result2;
             if(result2.equals("0")){ regex_result2 = true;} //if true, there are zero matches
@@ -158,7 +167,7 @@ public class TestEU_002 {
             //Test inputs incorrect input for pattern after and correct input for pattern before
             PatternInputStrings("Table 5","glslkgf");
             ClickRegexButton();
-            Thread.sleep(1000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
             Boolean regex_result3;
             if(result3.equals("0")){ regex_result3 = true;} //if true, there are zero matches
@@ -174,6 +183,7 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
+    //test of 3 different instances of inputting the same word for both regex inputs for one or the other or for both inputs
     @Test
     public void TestCommonWordInputforPatternBeforeandPatternAfter(){
         try{
@@ -192,7 +202,6 @@ public class TestEU_002 {
             if(result.equals("1")){ regex_result = true;} //if true, there are zero matches
             else{ regex_result = false;}
             PreviewandExportDatapg();
-            Thread.sleep(600);
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Knowledge')]"))
                     .getText();
             Boolean regex_data;
@@ -218,13 +227,12 @@ public class TestEU_002 {
             //Tests pattern before with a common input found in the pdf and pattern after with a correct input
             PatternInputStrings("Impacts", "Impacts on participating teachers");
             ClickRegexButton();
-            Thread.sleep(1000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result2;
             if(result2.equals("1")){ regex_result2 = true;}
             else{ regex_result2 = false;}
             PreviewandExportDatapg();
-            Thread.sleep(600);
             String result_data3 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Knowledge')]")).getText();
             Boolean regex_data3;
             if(result_data3.equals("Knowledge and awareness of different cultures")){ regex_data3 = true;}
@@ -245,13 +253,12 @@ public class TestEU_002 {
             //Tests pattern before with a correct input and pattern after with a common input found in the pdf
             PatternInputStrings("Impacts on participating pupils","Impacts");
             ClickRegexButton();
-            Thread.sleep(600);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result3;
             if(result3.equals("1")){ regex_result3 = true;} //if true, there are zero matches
             else{ regex_result3 = false;}
             PreviewandExportDatapg();
-            Thread.sleep(600);
             String result_data5 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Knowledge')]")).getText();
             Boolean regex_data5;
             if(result_data5.equals("Knowledge and awareness of different cultures")){ regex_data5 = true;}
@@ -275,6 +282,7 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
+    //test of 3 different instances for including inclusiveness for one or the other or for both inputs
     @Test
     public void TestInclusiveInputsforPatternBeforeandPatternAfter() {
         try{
@@ -285,13 +293,12 @@ public class TestEU_002 {
             PatternInputStrings("European/International","International");
             InclusiveButtons(true, false);
             ClickRegexButton();
-            Thread.sleep(600);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result;
             if(result.equals("1")){ regex_result = true;} //if true, there are zero matches
             else{ regex_result = false;}
             PreviewandExportDatapg();
-            Thread.sleep(600);
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                     "'European/International')]")).getText();
             Boolean regex_data;
@@ -314,13 +321,12 @@ public class TestEU_002 {
             PatternInputStrings("European/International", "International");
             InclusiveButtons(false, true);
             ClickRegexButton();
-            Thread.sleep(600);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result3;
             if(result2.equals("1")){ regex_result3 = true;} //if true, there are zero matches
             else{ regex_result3 = false;}
             PreviewandExportDatapg();
-            Thread.sleep(600);
             String result_data3 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                     "'school')]")).getText();
             Boolean regex_data3;
@@ -345,13 +351,12 @@ public class TestEU_002 {
             InclusiveButtons(true, true);
             Thread.sleep(500);
             ClickRegexButton();
-            Thread.sleep(600);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result4;
             if(result3.equals("1")){ regex_result4 = true;} //if true, there are zero matches
             else{ regex_result4 = false;}
             PreviewandExportDatapg();
-            Thread.sleep(600);
             String result_data5 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'European/International')]")).getText();
             Boolean regex_data5;
             if(result_data5.equals("European/International dimension of the")){ regex_data5 = true;}
@@ -375,6 +380,8 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
+    //test of 3 instances where one or the other or both instances are inputted a correct input but with the wrong or
+    // right cause sensitivity
     @Test
     public void TestCaseSensitivity(){
         try {
@@ -384,7 +391,7 @@ public class TestEU_002 {
             //Test case sensitive input for pattern before and correct input for pattern after
             PatternInputStrings("knowledge and awareness", "Self competence");
             ClickRegexButton();
-            Thread.sleep(1000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
             //check that there is 0 results in the regex table
             Boolean regex_result;
@@ -402,7 +409,8 @@ public class TestEU_002 {
             //Test case sensitive input for pattern after and correct input for pattern before
             PatternInputStrings("Knowledge and awareness", "self competence");
             ClickRegexButton();
-            Thread.sleep(1000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
+
             String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
             //check that there is 0 results in the regex table
             Boolean regex_result2;
@@ -420,7 +428,7 @@ public class TestEU_002 {
             //Test case sensitive input for both pattern before and pattern after
             PatternInputStrings("knowledge and awareness", "self competence");
             ClickRegexButton();
-            Thread.sleep(1000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
             //check that there is 0 results in the regex table
             Boolean regex_result3;
@@ -439,6 +447,7 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
+    //test of getting the text based image to display it's data in a linear form
     @Test
     public void TestTextBasedImage(){
         try {
@@ -448,13 +457,13 @@ public class TestEU_002 {
             //Test to get only the text-based image to appear in the preview and export data page
             PatternInputStrings("satisfied", "Question");
             ClickRegexButton();
-            Thread.sleep(600);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
+
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result;
             if (result.equals("1")) { regex_result = true; } //if true, there are zero matches
             else { regex_result = false; }
             PreviewandExportDatapg();
-            Thread.sleep(600);
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'Total')]")).getText();
             Boolean regex_data;
             if (result_data.equals("Total")) { regex_data = true; }
@@ -479,15 +488,17 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
+    //test of two instances trying to get a horizontal table to appear
     @Test
-    public void TestVerticalTable() throws InterruptedException{
+    public void TestHorizontalTable(){
         try {
             UploadPDF();
             PageRefresh();
             //Test for vertical table
             PatternInputStrings("Preperation", "Presentation");
             ClickRegexButton();
-            Thread.sleep(1000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
+
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
             Boolean regex_result;
             if (result.equals("0")) {
@@ -504,7 +515,7 @@ public class TestEU_002 {
             PageRefresh();
             PatternInputStrings("Impacts", "Lack of interest");
             ClickRegexButton();
-            Thread.sleep(1000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'0')]")).getText();
             Boolean regex_result2;
             if (result2.equals("0")) {
@@ -522,8 +533,9 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
+    //test of two instances to get multiple regex results
     @Test
-    public void TestMultipleRegexSearches() throws InterruptedException {
+    public void TestMultipleRegexSearches(){
         try {
             //Tests for 2 regex search results
             UploadPDF();
@@ -532,7 +544,8 @@ public class TestEU_002 {
             PatternInputStrings("Impacts", "Knowledge");
             InclusiveButtons(true, true);
             ClickRegexButton();
-            Thread.sleep(600);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
+
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'2')]")).getText();
             Boolean regex_result;
             if (result.equals("2")) {
@@ -542,8 +555,6 @@ public class TestEU_002 {
                 regex_result = false;
             }
             PreviewandExportDatapg();
-            Thread.sleep(600);
-
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                     "'Impacts on participating pupils')]")).getText();
             Boolean regex_data;
@@ -576,7 +587,8 @@ public class TestEU_002 {
             PatternInputStrings("Knowledge", "Foreign");
             InclusiveButtons(true, true);
             ClickRegexButton();
-            Thread.sleep(600);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
+
             String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'3')]")).getText();
             Boolean regex_result3;
             if (result2.equals("3")) {
@@ -586,8 +598,6 @@ public class TestEU_002 {
                 regex_result3 = false;
             }
             PreviewandExportDatapg();
-            Thread.sleep(600);
-
             String result_data3 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                     "'Knowledge and awareness')]")).getText();
             Boolean regex_data3;
@@ -622,6 +632,7 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
+    //test of a multipage spanning table
     @Test
     public void TestMultiPageTables(){
         try {
@@ -632,7 +643,7 @@ public class TestEU_002 {
             PatternInputStrings("Table 5", "Question 4.9");
             InclusiveButtons(false, true);
             ClickRegexButton();
-            Thread.sleep(600);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'1')]")).getText();
             Boolean regex_result;
             if (result.equals("1")) {
@@ -642,7 +653,6 @@ public class TestEU_002 {
                 regex_result = false;
             }
             PreviewandExportDatapg();
-            Thread.sleep(600);
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                     "'Correlations')]")).getText();
             Boolean regex_data;
@@ -676,6 +686,7 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
+    //test of an overlap attempt, and then checking that overlap was detected
     @Test
     public void TestOverlapRegexSearch() {
         try{
@@ -707,6 +718,7 @@ public class TestEU_002 {
             System.out.print(e);
         }
     }
+    //test checking duplication of inputting the same regex searches twice to see if it will caught it
     @Test
     public void TestDuplicateOverlapRegexSearch(){
         try {
