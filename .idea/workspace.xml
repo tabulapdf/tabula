@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="Added on test cases for Mecklenburg.Majority pdf file. Will wrap up the last two pdf files, starting to work on the Correspondence_FINAL_SBE pdf file">
+    <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/TestCorrespondence_FINAL_SBE.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/TestCorrespondence_FINAL_SBE.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/TestEU_002.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/TestEU_002.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/Testboron_isotopic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Testboron_isotopic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestNCHouse2017StatPack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/TestNCHouse2017StatPack.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -28,22 +27,17 @@
       <file leaf-file-name="TestEU_002.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="36" column="97" selection-start-line="36" selection-start-column="97" selection-end-line="36" selection-end-column="97" />
+            <state relative-caret-position="110">
+              <caret line="140" column="21" lean-forward="true" selection-start-line="140" selection-start-column="21" selection-end-line="140" selection-end-column="21" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Testboron_isotopic.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/test/java/Testboron_isotopic.java">
+      <file leaf-file-name="TestNCHouse2017StatPack.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/test/java/TestNCHouse2017StatPack.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="99" column="24" lean-forward="true" selection-start-line="99" selection-start-column="24" selection-end-line="99" selection-end-column="24" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#16686#16687#0" expanded="true" />
-                <element signature="e#16715#16716#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="917">
+              <caret line="306" lean-forward="true" selection-start-line="306" selection-end-line="306" />
             </state>
           </provider>
         </entry>
@@ -60,17 +54,8 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>SYSTE</find>
-      <find>inclusi</find>
-      <find>0</find>
-      <find>DskipTests=true</find>
-      <find>src/test/pdf/eu-002.pdf</find>
-      <find>new</find>
-      <find>jline</find>
-      <find>testmult</find>
       <find>InclusiveButtons</find>
       <find>multipl</find>
-      <find>multi</find>
       <find>auto</find>
       <find>actions</find>
       <find>inclusivebut</find>
@@ -90,6 +75,15 @@
       <find />
       <find>system.o</find>
       <find>overl</find>
+      <find>throws</find>
+      <find>clickr</find>
+      <find>multi</find>
+      <find>click</find>
+      <find>previ</find>
+      <find>preview</find>
+      <find>previewan</find>
+      <find>previewand</find>
+      <find>clickre</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/src/test/java</dir>
@@ -126,13 +120,13 @@
         <option value="$PROJECT_DIR$/webapp/tabula_web.rb" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/webapp/index.html" />
-        <option value="$PROJECT_DIR$/src/test/java/TestNCHouse2017StatPack.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestFeb_9_2016.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestMecklenburgMajority.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestCorrespondence_FINAL_SBE.java" />
-        <option value="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
         <option value="$PROJECT_DIR$/src/test/java/Testboron_isotopic.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestNCHouse2017StatPack.java" />
       </list>
     </option>
   </component>
@@ -205,7 +199,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.Testboron_isotopic">
+  <component name="RunManager" selected="JUnit.TestNCHouse2017StatPack">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="HEIGHT" value="0" />
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
@@ -231,14 +225,14 @@
       </option>
       <patterns />
     </configuration>
-    <configuration name="TestCorrespondence_FINAL_SBE.TestOverlapRegexSearch" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="TestEU_002" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="484_P7_1-GUI" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestCorrespondence_FINAL_SBE" />
-      <option name="METHOD_NAME" value="TestOverlapRegexSearch" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
@@ -282,12 +276,12 @@
       </option>
       <patterns />
     </configuration>
-    <configuration name="Testboron_isotopic" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="TestNCHouse2017StatPack" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="484_P7_1-GUI" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="Testboron_isotopic" />
+      <option name="MAIN_CLASS_NAME" value="TestNCHouse2017StatPack" />
       <option name="METHOD_NAME" />
       <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea" />
@@ -299,14 +293,14 @@
       </option>
       <patterns />
     </configuration>
-    <configuration name="Testboron_isotopic.TestInclusivePatternswithRegexSearches" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="TestOneStopVotingSiteListNov2012" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="484_P7_1-GUI" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="Testboron_isotopic" />
-      <option name="METHOD_NAME" value="TestInclusivePatternswithRegexSearches" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="MAIN_CLASS_NAME" value="TestOneStopVotingSiteListNov2012" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
@@ -316,14 +310,14 @@
       </option>
       <patterns />
     </configuration>
-    <configuration name="Testboron_isotopic.TestMultiPageTables" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Testboron_isotopic" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="484_P7_1-GUI" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
       <option name="MAIN_CLASS_NAME" value="Testboron_isotopic" />
-      <option name="METHOD_NAME" value="TestMultiPageTables" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
@@ -428,19 +422,19 @@
       <item itemvalue="JUnit.TestHelpPage" />
       <item itemvalue="JUnit.TestHelpPage.startWebDriver" />
       <item itemvalue="Maven.Unnamed" />
-      <item itemvalue="JUnit.TestCorrespondence_FINAL_SBE.TestOverlapRegexSearch" />
-      <item itemvalue="JUnit.Testboron_isotopic.TestMultiPageTables" />
-      <item itemvalue="JUnit.Testboron_isotopic.TestInclusivePatternswithRegexSearches" />
       <item itemvalue="JUnit.Testboron_isotopic.TestOverlapRegexSearch" />
       <item itemvalue="JUnit.Testboron_isotopic" />
+      <item itemvalue="JUnit.TestEU_002" />
+      <item itemvalue="JUnit.TestOneStopVotingSiteListNov2012" />
+      <item itemvalue="JUnit.TestNCHouse2017StatPack" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.TestNCHouse2017StatPack" />
+        <item itemvalue="JUnit.TestOneStopVotingSiteListNov2012" />
+        <item itemvalue="JUnit.TestEU_002" />
         <item itemvalue="JUnit.Testboron_isotopic" />
         <item itemvalue="JUnit.Testboron_isotopic.TestOverlapRegexSearch" />
-        <item itemvalue="JUnit.Testboron_isotopic.TestInclusivePatternswithRegexSearches" />
-        <item itemvalue="JUnit.Testboron_isotopic.TestMultiPageTables" />
-        <item itemvalue="JUnit.TestCorrespondence_FINAL_SBE.TestOverlapRegexSearch" />
       </list>
     </recent_temporary>
   </component>
@@ -455,27 +449,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
       <workItem from="1524571866987" duration="2123000" />
-    </task>
-    <task id="LOCAL-00090" summary="made some more changes..">
-      <created>1523336459447</created>
-      <option name="number" value="00090" />
-      <option name="presentableId" value="LOCAL-00090" />
-      <option name="project" value="LOCAL" />
-      <updated>1523336459447</updated>
-    </task>
-    <task id="LOCAL-00091" summary="made some more changes..">
-      <created>1523337134847</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
-      <option name="project" value="LOCAL" />
-      <updated>1523337134847</updated>
-    </task>
-    <task id="LOCAL-00092" summary="made some more changes..">
-      <created>1523337420240</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
-      <option name="project" value="LOCAL" />
-      <updated>1523337420240</updated>
     </task>
     <task id="LOCAL-00093" summary="made some more changes..">
       <created>1523337715436</created>
@@ -799,39 +772,60 @@
       <option name="project" value="LOCAL" />
       <updated>1524896917885</updated>
     </task>
-    <option name="localTasksCounter" value="139" />
+    <task id="LOCAL-00139" summary="Finishing up the test cases, going to go in and fix the ones with exceptions thrown">
+      <created>1524965974263</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1524965974264</updated>
+    </task>
+    <task id="LOCAL-00140" summary="Got rid of some of the thread.sleep() for the eu_002 case">
+      <created>1524970427635</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1524970427635</updated>
+    </task>
+    <task id="LOCAL-00141" summary="Got rid of thread.sleep() for the onestopvotinglistnov2012">
+      <created>1524971531385</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1524971531385</updated>
+    </task>
+    <option name="localTasksCounter" value="142" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestFeb_9_2016_TestOverlapRegexSearch - 2018.04.28 at 02h 10m 20s.xml">
-      <configuration name="TestFeb_9_2016.TestOverlapRegexSearch" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestCorrespondence_FINAL_SBE_TestMultiPageTables - 2018.04.28 at 14h 33m 43s.xml">
-      <configuration name="TestCorrespondence_FINAL_SBE.TestMultiPageTables" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestCorrespondence_FINAL_SBE_TestInclusivePatternswithRegexSearches - 2018.04.28 at 14h 45m 25s.xml">
-      <configuration name="TestCorrespondence_FINAL_SBE.TestInclusivePatternswithRegexSearches" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestCorrespondence_FINAL_SBE_TestOverlapRegexSearch - 2018.04.28 at 15h 32m 42s.xml">
-      <configuration name="TestCorrespondence_FINAL_SBE.TestOverlapRegexSearch" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestCorrespondence_FINAL_SBE_TestOverlapRegexSearch - 2018.04.28 at 15h 34m 34s.xml">
-      <configuration name="TestCorrespondence_FINAL_SBE.TestOverlapRegexSearch" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestCorrespondence_FINAL_SBE_TestOverlapRegexSearch - 2018.04.28 at 15h 37m 26s.xml">
-      <configuration name="TestCorrespondence_FINAL_SBE.TestOverlapRegexSearch" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="Testboron_isotopic_TestMultiPageTables - 2018.04.28 at 20h 57m 23s.xml">
-      <configuration name="Testboron_isotopic.TestMultiPageTables" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="Testboron_isotopic_TestInclusivePatternswithRegexSearches - 2018.04.28 at 21h 20m 03s.xml">
-      <configuration name="Testboron_isotopic.TestInclusivePatternswithRegexSearches" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="Testboron_isotopic_TestOverlapRegexSearch - 2018.04.28 at 21h 24m 34s.xml">
-      <configuration name="Testboron_isotopic.TestOverlapRegexSearch" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="Testboron_isotopic - 2018.04.28 at 21h 36m 32s.xml">
+    <history-entry file="Testboron_isotopic - 2018.04.28 at 21h 37m 52s.xml">
       <configuration name="Testboron_isotopic" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestEU_002 - 2018.04.28 at 21h 43m 25s.xml">
+      <configuration name="TestEU_002" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestEU_002 - 2018.04.28 at 21h 49m 54s.xml">
+      <configuration name="TestEU_002" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestEU_002 - 2018.04.28 at 22h 51m 21s.xml">
+      <configuration name="TestEU_002" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestOneStopVotingSiteListNov2012 - 2018.04.28 at 22h 58m 21s.xml">
+      <configuration name="TestOneStopVotingSiteListNov2012" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestOneStopVotingSiteListNov2012 - 2018.04.28 at 23h 03m 44s.xml">
+      <configuration name="TestOneStopVotingSiteListNov2012" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestOneStopVotingSiteListNov2012 - 2018.04.28 at 23h 08m 31s.xml">
+      <configuration name="TestOneStopVotingSiteListNov2012" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestNCHouse2017StatPack - 2018.04.28 at 23h 22m 08s.xml">
+      <configuration name="TestNCHouse2017StatPack" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestNCHouse2017StatPack - 2018.04.28 at 23h 27m 48s.xml">
+      <configuration name="TestNCHouse2017StatPack" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestNCHouse2017StatPack - 2018.04.28 at 23h 33m 35s.xml">
+      <configuration name="TestNCHouse2017StatPack" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
@@ -848,7 +842,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="52" y="-11" width="1315" height="780" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -859,7 +852,7 @@
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.12109672" side_tool="true" weight="0.51054215" />
       <window_info anchor="right" id="Maven Projects" order="7" />
       <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.49809596" weight="0.74698794" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.87890327" visible="true" weight="0.44578314" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.87890327" visible="true" weight="0.26807228" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info id="Capture Tool" order="7" />
       <window_info id="Designer" order="3" />
@@ -922,9 +915,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Made minor changes to the run.sh file and travis file to see if i can give it enough time to start the server" />
-    <MESSAGE value="Increased sleep time" />
-    <MESSAGE value="Changes" />
     <MESSAGE value="Adding curl command" />
     <MESSAGE value="Made changes to the test cases by adding an argument to for no-sandbox" />
     <MESSAGE value="Trying to see the location of the pdf files" />
@@ -947,11 +937,14 @@
     <MESSAGE value="FIxed up the overlap test case for the HCHouse2017StatPack, will need to go back for the last test case for all the pdf files being tested. Moving on to OneStopVotingSiteListNov2012 file" />
     <MESSAGE value="Fixed up the multiple searches test cases that was failing because it couldn't find the words, moving on to work on Mecklenburg.Majority.pdf file" />
     <MESSAGE value="Added on test cases for Mecklenburg.Majority pdf file. Will wrap up the last two pdf files, starting to work on the Correspondence_FINAL_SBE pdf file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added on test cases for Mecklenburg.Majority pdf file. Will wrap up the last two pdf files, starting to work on the Correspondence_FINAL_SBE pdf file" />
+    <MESSAGE value="Finishing up the test cases, going to go in and fix the ones with exceptions thrown" />
+    <MESSAGE value="Got rid of some of the thread.sleep() for the eu_002 case" />
+    <MESSAGE value="Got rid of thread.sleep() for the onestopvotinglistnov2012" />
+    <option name="LAST_COMMIT_MESSAGE" value="Got rid of thread.sleep() for the onestopvotinglistnov2012" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="38" />
+      <option name="time" value="39" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -1036,13 +1029,6 @@
     <entry file="file://$PROJECT_DIR$/target/test-classes/TestAboutPage.class" />
     <entry file="file://$PROJECT_DIR$/target/test-classes/TestEU_002.class" />
     <entry file="file://$PROJECT_DIR$/src/test/java/technology/tabula/TestPreviewandExportData.java" />
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestExtractionPage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="60" column="52" selection-start-line="60" selection-end-line="61" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/com/google/guava/guava/23.6-jre/guava-23.6-jre.jar!/com/google/common/base/Preconditions.class" />
     <entry file="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-support/3.11.0/selenium-support-3.11.0.jar!/org/openqa/selenium/support/ui/FluentWait.class" />
     <entry file="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-support/3.11.0/selenium-support-3.11.0.jar!/org/openqa/selenium/support/ui/WebDriverWait.class" />
@@ -1101,13 +1087,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="57" column="29" selection-start-line="57" selection-start-column="29" selection-end-line="57" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="296">
@@ -1116,13 +1095,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/Test4/BuckCAPPart2ApprxA_partial.java" />
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestNCHouse2017StatPack.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="20" column="1" selection-start-line="20" selection-start-column="1" selection-end-line="293" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestFeb_9_2016.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2044">
@@ -1149,22 +1121,43 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="36" column="97" selection-start-line="36" selection-start-column="97" selection-end-line="36" selection-end-column="97" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/Testboron_isotopic.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="99" column="24" lean-forward="true" selection-start-line="99" selection-start-column="24" selection-end-line="99" selection-end-column="24" />
+        <state relative-caret-position="178">
+          <caret line="94" column="80" selection-start-line="94" selection-start-column="80" selection-end-line="94" selection-end-column="80" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#16686#16687#0" expanded="true" />
             <element signature="e#16715#16716#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestExtractionPage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="19" column="13" lean-forward="true" selection-start-line="19" selection-end-line="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="230">
+          <caret line="296" column="49" lean-forward="true" selection-start-line="296" selection-start-column="49" selection-end-line="296" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="140" column="21" lean-forward="true" selection-start-line="140" selection-start-column="21" selection-end-line="140" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestNCHouse2017StatPack.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="917">
+          <caret line="306" lean-forward="true" selection-start-line="306" selection-end-line="306" />
         </state>
       </provider>
     </entry>
