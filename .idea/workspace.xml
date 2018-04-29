@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="">
+    <list default="true" id="2a02f4d6-181c-40f7-b543-61a818720f0d" name="Default" comment="Added on test cases for Mecklenburg.Majority pdf file. Will wrap up the last two pdf files, starting to work on the Correspondence_FINAL_SBE pdf file">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/TestNCHouse2017StatPack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/TestNCHouse2017StatPack.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestCorrespondence_FINAL_SBE.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/TestCorrespondence_FINAL_SBE.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/TestEU_002.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/TestEU_002.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Testboron_isotopic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Testboron_isotopic.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -26,30 +28,22 @@
       <file leaf-file-name="TestEU_002.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="12528">
-              <caret line="708" column="25" selection-start-line="708" selection-start-column="25" selection-end-line="708" selection-end-column="25" />
+            <state relative-caret-position="180">
+              <caret line="36" column="97" selection-start-line="36" selection-start-column="97" selection-end-line="36" selection-end-column="97" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TestNCHouse2017StatPack.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/test/java/TestNCHouse2017StatPack.java">
+      <file leaf-file-name="Testboron_isotopic.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/test/java/Testboron_isotopic.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="281" column="15" lean-forward="true" selection-start-line="281" selection-start-column="15" selection-end-line="281" selection-end-column="15" />
+            <state relative-caret-position="190">
+              <caret line="99" column="24" lean-forward="true" selection-start-line="99" selection-start-column="24" selection-end-line="99" selection-end-column="24" />
               <folding>
-                <element signature="e#13396#13397#0" expanded="true" />
-                <element signature="e#13425#13426#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#16686#16687#0" expanded="true" />
+                <element signature="e#16715#16716#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TestOneStopVotingSiteListNov2012.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -66,10 +60,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>regex_search_id</find>
-      <find>system</find>
-      <find>regex-search</find>
-      <find>pattern_before_input</find>
       <find>SYSTE</find>
       <find>inclusi</find>
       <find>0</find>
@@ -96,6 +86,10 @@
       <find>replace</find>
       <find>regex-result</find>
       <find>renderSelection:</find>
+      <find>system.</find>
+      <find />
+      <find>system.o</find>
+      <find>overl</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/src/test/java</dir>
@@ -130,11 +124,15 @@
         <option value="$PROJECT_DIR$/src/test/java/TestExhibit_1.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestPreviewandExportData.java" />
         <option value="$PROJECT_DIR$/webapp/tabula_web.rb" />
-        <option value="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/webapp/index.html" />
-        <option value="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
         <option value="$PROJECT_DIR$/src/test/java/TestNCHouse2017StatPack.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestFeb_9_2016.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestMecklenburgMajority.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestCorrespondence_FINAL_SBE.java" />
+        <option value="$PROJECT_DIR$/src/test/java/TestEU_002.java" />
+        <option value="$PROJECT_DIR$/src/test/java/Testboron_isotopic.java" />
       </list>
     </option>
   </component>
@@ -158,9 +156,9 @@
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="528" />
-    <option name="y" value="163" />
+    <option name="y" value="197" />
     <option name="width" value="838" />
-    <option name="height" value="709" />
+    <option name="height" value="702" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -169,40 +167,7 @@
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="484_P7_1-GUI" type="b2602c69:ProjectViewProjectNode" />
-              <item name="484_P7_1-GUI" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="484_P7_1-GUI" type="b2602c69:ProjectViewProjectNode" />
-              <item name="484_P7_1-GUI" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="484_P7_1-GUI" type="b2602c69:ProjectViewProjectNode" />
-              <item name="484_P7_1-GUI" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="484_P7_1-GUI" type="b2602c69:ProjectViewProjectNode" />
-              <item name="484_P7_1-GUI" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
-      <pane id="AndroidView" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="ChangesTree.GroupingKeys" value="directory&#10;module" />
@@ -240,7 +205,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.TestNCHouse2017StatPack.TestOverlapRegexSearch">
+  <component name="RunManager" selected="JUnit.Testboron_isotopic">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="HEIGHT" value="0" />
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
@@ -266,14 +231,14 @@
       </option>
       <patterns />
     </configuration>
-    <configuration name="TestEU_002" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="TestCorrespondence_FINAL_SBE.TestOverlapRegexSearch" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="484_P7_1-GUI" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="MAIN_CLASS_NAME" value="TestCorrespondence_FINAL_SBE" />
+      <option name="METHOD_NAME" value="TestOverlapRegexSearch" />
+      <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
@@ -282,26 +247,6 @@
         <value defaultName="singleModule" />
       </option>
       <patterns />
-    </configuration>
-    <configuration name="TestEU_002,TestDuplicateOverlapRegexSearch and 1 more" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="484_P7_1-GUI" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestEU_002" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="pattern" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <patterns>
-        <pattern testClass="TestEU_002,TestDuplicateOverlapRegexSearch" />
-        <pattern testClass="TestEU_002,TestOverlapRegexSearch" />
-      </patterns>
     </configuration>
     <configuration name="TestHelpPage" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
       <module name="484_P7_1-GUI" />
@@ -337,12 +282,29 @@
       </option>
       <patterns />
     </configuration>
-    <configuration name="TestNCHouse2017StatPack.TestInclusivePatternswithRegexSearches" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Testboron_isotopic" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="484_P7_1-GUI" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestNCHouse2017StatPack" />
+      <option name="MAIN_CLASS_NAME" value="Testboron_isotopic" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="Testboron_isotopic.TestInclusivePatternswithRegexSearches" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="484_P7_1-GUI" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="Testboron_isotopic" />
       <option name="METHOD_NAME" value="TestInclusivePatternswithRegexSearches" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
@@ -354,12 +316,12 @@
       </option>
       <patterns />
     </configuration>
-    <configuration name="TestNCHouse2017StatPack.TestMultiPageTables" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Testboron_isotopic.TestMultiPageTables" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="484_P7_1-GUI" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestNCHouse2017StatPack" />
+      <option name="MAIN_CLASS_NAME" value="Testboron_isotopic" />
       <option name="METHOD_NAME" value="TestMultiPageTables" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
@@ -371,12 +333,12 @@
       </option>
       <patterns />
     </configuration>
-    <configuration name="TestNCHouse2017StatPack.TestOverlapRegexSearch" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Testboron_isotopic.TestOverlapRegexSearch" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="484_P7_1-GUI" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="TestNCHouse2017StatPack" />
+      <option name="MAIN_CLASS_NAME" value="Testboron_isotopic" />
       <option name="METHOD_NAME" value="TestOverlapRegexSearch" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
@@ -466,19 +428,19 @@
       <item itemvalue="JUnit.TestHelpPage" />
       <item itemvalue="JUnit.TestHelpPage.startWebDriver" />
       <item itemvalue="Maven.Unnamed" />
-      <item itemvalue="JUnit.TestNCHouse2017StatPack.TestInclusivePatternswithRegexSearches" />
-      <item itemvalue="JUnit.TestEU_002" />
-      <item itemvalue="JUnit.TestEU_002,TestDuplicateOverlapRegexSearch and 1 more" />
-      <item itemvalue="JUnit.TestNCHouse2017StatPack.TestMultiPageTables" />
-      <item itemvalue="JUnit.TestNCHouse2017StatPack.TestOverlapRegexSearch" />
+      <item itemvalue="JUnit.TestCorrespondence_FINAL_SBE.TestOverlapRegexSearch" />
+      <item itemvalue="JUnit.Testboron_isotopic.TestMultiPageTables" />
+      <item itemvalue="JUnit.Testboron_isotopic.TestInclusivePatternswithRegexSearches" />
+      <item itemvalue="JUnit.Testboron_isotopic.TestOverlapRegexSearch" />
+      <item itemvalue="JUnit.Testboron_isotopic" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.TestNCHouse2017StatPack.TestOverlapRegexSearch" />
-        <item itemvalue="JUnit.TestNCHouse2017StatPack.TestMultiPageTables" />
-        <item itemvalue="JUnit.TestNCHouse2017StatPack.TestInclusivePatternswithRegexSearches" />
-        <item itemvalue="JUnit.TestEU_002,TestDuplicateOverlapRegexSearch and 1 more" />
-        <item itemvalue="JUnit.TestEU_002" />
+        <item itemvalue="JUnit.Testboron_isotopic" />
+        <item itemvalue="JUnit.Testboron_isotopic.TestOverlapRegexSearch" />
+        <item itemvalue="JUnit.Testboron_isotopic.TestInclusivePatternswithRegexSearches" />
+        <item itemvalue="JUnit.Testboron_isotopic.TestMultiPageTables" />
+        <item itemvalue="JUnit.TestCorrespondence_FINAL_SBE.TestOverlapRegexSearch" />
       </list>
     </recent_temporary>
   </component>
@@ -493,27 +455,6 @@
       <option name="presentableId" value="Default" />
       <updated>1517886949024</updated>
       <workItem from="1524571866987" duration="2123000" />
-    </task>
-    <task id="LOCAL-00087" summary="made some more changes..">
-      <created>1523334593249</created>
-      <option name="number" value="00087" />
-      <option name="presentableId" value="LOCAL-00087" />
-      <option name="project" value="LOCAL" />
-      <updated>1523334593249</updated>
-    </task>
-    <task id="LOCAL-00088" summary="made some more changes..">
-      <created>1523335396352</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
-      <option name="project" value="LOCAL" />
-      <updated>1523335396352</updated>
-    </task>
-    <task id="LOCAL-00089" summary="made some more changes..">
-      <created>1523336146407</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
-      <option name="project" value="LOCAL" />
-      <updated>1523336146407</updated>
     </task>
     <task id="LOCAL-00090" summary="made some more changes..">
       <created>1523336459447</created>
@@ -837,39 +778,60 @@
       <option name="project" value="LOCAL" />
       <updated>1524598474924</updated>
     </task>
-    <option name="localTasksCounter" value="136" />
+    <task id="LOCAL-00136" summary="FIxed up the overlap test case for the HCHouse2017StatPack, will need to go back for the last test case for all the pdf files being tested. Moving on to OneStopVotingSiteListNov2012 file">
+      <created>1524636573566</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1524636573567</updated>
+    </task>
+    <task id="LOCAL-00137" summary="Fixed up the multiple searches test cases that was failing because it couldn't find the words, moving on to work on Mecklenburg.Majority.pdf file">
+      <created>1524764869361</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1524764869362</updated>
+    </task>
+    <task id="LOCAL-00138" summary="Added on test cases for Mecklenburg.Majority pdf file. Will wrap up the last two pdf files, starting to work on the Correspondence_FINAL_SBE pdf file">
+      <created>1524896917884</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1524896917885</updated>
+    </task>
+    <option name="localTasksCounter" value="139" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestEU_002 - 2018.04.24 at 15h 14m 14s.xml">
-      <configuration name="TestEU_002" configurationId="JUnit" />
+    <history-entry file="TestFeb_9_2016_TestOverlapRegexSearch - 2018.04.28 at 02h 10m 20s.xml">
+      <configuration name="TestFeb_9_2016.TestOverlapRegexSearch" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002,TestDuplicateOverlapRegexSearch_and_1_more - 2018.04.24 at 15h 15m 00s.xml">
-      <configuration name="TestEU_002,TestDuplicateOverlapRegexSearch and 1 more" configurationId="JUnit" />
+    <history-entry file="TestCorrespondence_FINAL_SBE_TestMultiPageTables - 2018.04.28 at 14h 33m 43s.xml">
+      <configuration name="TestCorrespondence_FINAL_SBE.TestMultiPageTables" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestEU_002,TestDuplicateOverlapRegexSearch_and_1_more - 2018.04.24 at 15h 16m 12s.xml">
-      <configuration name="TestEU_002,TestDuplicateOverlapRegexSearch and 1 more" configurationId="JUnit" />
+    <history-entry file="TestCorrespondence_FINAL_SBE_TestInclusivePatternswithRegexSearches - 2018.04.28 at 14h 45m 25s.xml">
+      <configuration name="TestCorrespondence_FINAL_SBE.TestInclusivePatternswithRegexSearches" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestNCHouse2017StatPack_TestInclusivePatternswithRegexSearches - 2018.04.25 at 00h 56m 28s.xml">
-      <configuration name="TestNCHouse2017StatPack.TestInclusivePatternswithRegexSearches" configurationId="JUnit" />
+    <history-entry file="TestCorrespondence_FINAL_SBE_TestOverlapRegexSearch - 2018.04.28 at 15h 32m 42s.xml">
+      <configuration name="TestCorrespondence_FINAL_SBE.TestOverlapRegexSearch" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestNCHouse2017StatPack_TestInclusivePatternswithRegexSearches - 2018.04.25 at 00h 58m 15s.xml">
-      <configuration name="TestNCHouse2017StatPack.TestInclusivePatternswithRegexSearches" configurationId="JUnit" />
+    <history-entry file="TestCorrespondence_FINAL_SBE_TestOverlapRegexSearch - 2018.04.28 at 15h 34m 34s.xml">
+      <configuration name="TestCorrespondence_FINAL_SBE.TestOverlapRegexSearch" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestNCHouse2017StatPack_TestMultiPageTables - 2018.04.25 at 01h 03m 18s.xml">
-      <configuration name="TestNCHouse2017StatPack.TestMultiPageTables" configurationId="JUnit" />
+    <history-entry file="TestCorrespondence_FINAL_SBE_TestOverlapRegexSearch - 2018.04.28 at 15h 37m 26s.xml">
+      <configuration name="TestCorrespondence_FINAL_SBE.TestOverlapRegexSearch" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestNCHouse2017StatPack_TestOverlapRegexSearch - 2018.04.25 at 01h 21m 25s.xml">
-      <configuration name="TestNCHouse2017StatPack.TestOverlapRegexSearch" configurationId="JUnit" />
+    <history-entry file="Testboron_isotopic_TestMultiPageTables - 2018.04.28 at 20h 57m 23s.xml">
+      <configuration name="Testboron_isotopic.TestMultiPageTables" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestNCHouse2017StatPack_TestOverlapRegexSearch - 2018.04.25 at 01h 27m 46s.xml">
-      <configuration name="TestNCHouse2017StatPack.TestOverlapRegexSearch" configurationId="JUnit" />
+    <history-entry file="Testboron_isotopic_TestInclusivePatternswithRegexSearches - 2018.04.28 at 21h 20m 03s.xml">
+      <configuration name="Testboron_isotopic.TestInclusivePatternswithRegexSearches" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestNCHouse2017StatPack_TestOverlapRegexSearch - 2018.04.25 at 01h 30m 19s.xml">
-      <configuration name="TestNCHouse2017StatPack.TestOverlapRegexSearch" configurationId="JUnit" />
+    <history-entry file="Testboron_isotopic_TestOverlapRegexSearch - 2018.04.28 at 21h 24m 34s.xml">
+      <configuration name="Testboron_isotopic.TestOverlapRegexSearch" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestNCHouse2017StatPack_TestOverlapRegexSearch - 2018.04.25 at 01h 54m 00s.xml">
-      <configuration name="TestNCHouse2017StatPack.TestOverlapRegexSearch" configurationId="JUnit" />
+    <history-entry file="Testboron_isotopic - 2018.04.28 at 21h 36m 32s.xml">
+      <configuration name="Testboron_isotopic" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
@@ -890,34 +852,65 @@
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.4996192" weight="0.04819277" />
-      <window_info anchor="right" id="Palette&#9;" order="3" />
+      <window_info anchor="bottom" id="Messages" order="11" sideWeight="0.4996192" weight="0.24548192" />
+      <window_info anchor="right" id="Palette&#9;" order="8" />
       <window_info id="Image Layers" order="2" />
-      <window_info anchor="right" id="Capture Analysis" order="3" />
+      <window_info anchor="right" id="Capture Analysis" order="4" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.12109672" side_tool="true" weight="0.51054215" />
-      <window_info anchor="right" id="Maven Projects" order="3" />
-      <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.49809596" weight="0.74698794" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.87890327" visible="true" weight="0.28765061" />
-      <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info id="Capture Tool" order="2" />
-      <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.048743337" />
-      <window_info id="Learn" order="2" />
+      <window_info anchor="right" id="Maven Projects" order="7" />
+      <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.49809596" weight="0.74698794" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.87890327" visible="true" weight="0.44578314" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info id="Capture Tool" order="7" />
+      <window_info id="Designer" order="3" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.32942554" />
+      <window_info id="Learn" order="5" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info id="UI Designer" order="2" />
-      <window_info anchor="right" id="Theme Preview" order="3" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info id="UI Designer" order="4" />
+      <window_info anchor="right" id="Theme Preview" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3990964" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Docker" order="10" show_stripe_button="false" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
-      <window_info anchor="right" id="Database" order="3" />
+      <window_info anchor="right" id="Database" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" />
     </layout>
+    <layout-to-restore>
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Capture Analysis" order="4" />
+      <window_info anchor="bottom" id="Docker" order="10" show_stripe_button="false" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.87890327" visible="true" weight="0.10391566" />
+      <window_info anchor="right" id="Theme Preview" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.32942554" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.49809596" weight="0.74698794" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Designer" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="right" id="Database" order="6" />
+      <window_info anchor="right" id="Palette&#9;" order="8" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3990964" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.12109672" side_tool="true" weight="0.51054215" />
+      <window_info id="Capture Tool" order="7" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Messages" order="11" sideWeight="0.4996192" weight="0.24548192" />
+      <window_info anchor="right" id="Maven Projects" order="7" />
+      <window_info id="Learn" order="5" />
+    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -929,9 +922,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added on xvfb for the GUI to the travis file, also the server is running on travis now!" />
-    <MESSAGE value="Added on xvfb for the GUI to the travis file" />
-    <MESSAGE value="Moved a lot of the commands to the run.sh file to see if that will make a difference" />
     <MESSAGE value="Made minor changes to the run.sh file and travis file to see if i can give it enough time to start the server" />
     <MESSAGE value="Increased sleep time" />
     <MESSAGE value="Changes" />
@@ -954,30 +944,17 @@
     <MESSAGE value="Getting a long lag again..trying to see if I can get the test case to wait until a regex result appears" />
     <MESSAGE value="Change to -x" />
     <MESSAGE value="Went back to old changes before changing the index.html for the regex-result row. Shouldn't be causing any problems" />
-    <option name="LAST_COMMIT_MESSAGE" value="Went back to old changes before changing the index.html for the regex-result row. Shouldn't be causing any problems" />
+    <MESSAGE value="FIxed up the overlap test case for the HCHouse2017StatPack, will need to go back for the last test case for all the pdf files being tested. Moving on to OneStopVotingSiteListNov2012 file" />
+    <MESSAGE value="Fixed up the multiple searches test cases that was failing because it couldn't find the words, moving on to work on Mecklenburg.Majority.pdf file" />
+    <MESSAGE value="Added on test cases for Mecklenburg.Majority pdf file. Will wrap up the last two pdf files, starting to work on the Correspondence_FINAL_SBE pdf file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added on test cases for Mecklenburg.Majority pdf file. Will wrap up the last two pdf files, starting to work on the Correspondence_FINAL_SBE pdf file" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="33" />
+      <option name="time" value="38" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1368">
-          <caret line="76" column="52" selection-start-line="76" selection-start-column="52" selection-end-line="76" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" column="15" lean-forward="true" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHelpPage.java" />
@@ -1059,13 +1036,6 @@
     <entry file="file://$PROJECT_DIR$/target/test-classes/TestAboutPage.class" />
     <entry file="file://$PROJECT_DIR$/target/test-classes/TestEU_002.class" />
     <entry file="file://$PROJECT_DIR$/src/test/java/technology/tabula/TestPreviewandExportData.java" />
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestExtractionPage.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="275">
@@ -1076,7 +1046,6 @@
     <entry file="jar://$MAVEN_REPOSITORY$/com/google/guava/guava/23.6-jre/guava-23.6-jre.jar!/com/google/common/base/Preconditions.class" />
     <entry file="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-support/3.11.0/selenium-support-3.11.0.jar!/org/openqa/selenium/support/ui/FluentWait.class" />
     <entry file="jar://$MAVEN_REPOSITORY$/org/seleniumhq/selenium/selenium-support/3.11.0/selenium-support-3.11.0.jar!/org/openqa/selenium/support/ui/WebDriverWait.class" />
-    <entry file="file://$PROJECT_DIR$/src/test/java/Test4/BuckCAPPart2ApprxA_partial.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestHomePage.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="308">
@@ -1132,27 +1101,69 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12528">
-          <caret line="708" column="25" selection-start-line="708" selection-start-column="25" selection-end-line="708" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/TestOneStopVotingSiteListNov2012.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
+        <state relative-caret-position="18">
+          <caret line="57" column="29" selection-start-line="57" selection-start-column="29" selection-end-line="57" selection-end-column="29" />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestAboutPage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="296">
+          <caret line="82" column="59" lean-forward="true" selection-start-line="82" selection-start-column="59" selection-end-line="82" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/Test4/BuckCAPPart2ApprxA_partial.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/TestNCHouse2017StatPack.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="281" column="15" lean-forward="true" selection-start-line="281" selection-start-column="15" selection-end-line="281" selection-end-column="15" />
+        <state relative-caret-position="126">
+          <caret line="20" column="1" selection-start-line="20" selection-start-column="1" selection-end-line="293" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestFeb_9_2016.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2044">
+          <caret line="116" column="18" selection-start-line="116" selection-start-column="18" selection-end-line="116" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestCorrespondence_FINAL_SBE.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="286" column="100" selection-start-line="286" selection-start-column="100" selection-end-line="286" selection-end-column="100" />
           <folding>
-            <element signature="e#13396#13397#0" expanded="true" />
-            <element signature="e#13425#13426#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#16695#16696#0" expanded="true" />
+            <element signature="e#16724#16725#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestMecklenburgMajority.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="169" column="24" selection-start-line="169" selection-start-column="24" selection-end-line="169" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestEU_002.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="36" column="97" selection-start-line="36" selection-start-column="97" selection-end-line="36" selection-end-column="97" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/Testboron_isotopic.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="99" column="24" lean-forward="true" selection-start-line="99" selection-start-column="24" selection-end-line="99" selection-end-column="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#16686#16687#0" expanded="true" />
+            <element signature="e#16715#16716#0" expanded="true" />
           </folding>
         </state>
       </provider>
