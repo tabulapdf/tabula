@@ -7,17 +7,18 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
+
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-//Test of Tabula's Preview and Export Data page, including the links and buttons on the page. Expect for two buttons,
-// the export button that triggers a pop-up window and the copy to clipboard button that is seen as disabled whenever
-// on remote control but enabled when manually tested.
+//Test of Tabula's Preview and Export Data page, including the links and buttons on both pages
+// that it navigates. For the preview page it toggles between the two different types to display data and
+// doesn't go into testing the preview's menu due to testing done already in the back-end on the different functionality.
 // For this test case, eu_002.pdf is utilized.
-// @author SM modified: 3/10/18
+// @author SM modified: 4/29/18
 public class TestPreviewandExportData {
     private void PageRefresh() throws InterruptedException {
         //menu options did not fully load
@@ -39,34 +40,27 @@ public class TestPreviewandExportData {
         driver = new ChromeDriver(options);
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
-        WebDriverWait wait = new WebDriverWait(driver, 100);
+        WebDriverWait wait = new WebDriverWait(driver, 500);
         String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
-        Thread.sleep(1000);
         WebElement import_btn = driver.findElement(By.id("import_file"));
         import_btn.click();
+        Thread.sleep(5000);
         try{
             //navigates to the extraction page and checks that it is in the extraction page
-            By extract_name = By.linkText("Extract Data");
-            WebElement extract_button = wait.until(ExpectedConditions.elementToBeClickable(extract_name));
-            //Thread.sleep(1000);
-            extract_button.click();
-            //Thread.sleep(1000);
-
             PageRefresh();
             //clicks on the Autodetect Tables and waits for Tabula to detect something (this will not be extensively tested
             // for the sake that this is just a component test) then it wait and click the Preview & Export Data button
             By autodetect_id = By.id("restore-detected-tables");
             WebElement autodetect_button = wait.until(ExpectedConditions.elementToBeClickable(autodetect_id));
             autodetect_button.click();
-            driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
-
+            Thread.sleep(600);
             By previewandexport_id = By.id("all-data");
-            WebElement previewandexport_button = wait.until(ExpectedConditions.elementToBeClickable(previewandexport_id));
+            WebElement previewandexport_button = driver.findElement(previewandexport_id);
             previewandexport_button.click();
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
 
-            driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             By revise_selections_id = By.id("revise-selections");
             WebElement revise_selections_button = wait.until(ExpectedConditions.elementToBeClickable(revise_selections_id));
             revise_selections_button.click();
@@ -88,10 +82,9 @@ public class TestPreviewandExportData {
 
             By lattice_id = By.id("spreadsheet-method-btn");
             WebElement lattice_button = wait.until(ExpectedConditions.elementToBeClickable(lattice_id));
-            //Thread.sleep(1000);
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             lattice_button.click();
-            //Thread.sleep(1000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             List<WebElement> lattice_rows = driver.findElements(By.className("detection-row"));
             int lattice_count = lattice_rows.size();
@@ -105,45 +98,9 @@ public class TestPreviewandExportData {
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
             assertFalse("Failed, couldn't find GitHub's sign-in page to view the report an issue page", driver.getCurrentUrl().equals(contact_url));
             driver.navigate().back();
-            //menu options did not fully load
-            PageRefresh();
-            By autodetect_id2 = By.id("restore-detected-tables");
-            WebElement autodetect_button2 = wait.until(ExpectedConditions.elementToBeClickable(autodetect_id2));
-            autodetect_button2.click();
-            driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
-            By previewandexport_id2 = By.id("all-data");
-            WebElement previewandexport_button2 = wait.until(ExpectedConditions.elementToBeClickable(previewandexport_id2));
-            previewandexport_button2.click();
-
-            By export_format_name = By.id("forms");
-            WebElement export_format_button = wait.until(ExpectedConditions.elementToBeClickable(export_format_name));
-            export_format_button.click();
-            By tsv_name = By.id("tsv");
-            String tsv = "TSV";
-            WebElement tsv_option = wait.until(ExpectedConditions.presenceOfElementLocated(tsv_name));
-            assertTrue("Failed, couldn't find Export Format options", tsv.equals(tsv_option.getText()));
-
-            By export_name = By.id("download-data");
-            wait.ignoring(NoSuchElementException.class);
-            WebElement export_button = wait.until(ExpectedConditions.presenceOfElementLocated(export_name));
-            assertTrue("Failed, couldn't find Export button", export_button.isDisplayed());
-            //export_button.click(); will not click on the export button because of the pop-up window issue it will bring
-
-            By log_file_name = By.id("log-file");
-            wait.ignoring(NoSuchElementException.class);
-            WebElement log_file_button = wait.until(ExpectedConditions.presenceOfElementLocated(log_file_name));
-            assertTrue("Failed, couldn't find Log File button", log_file_button.isDisplayed());
-            log_file_button.click(); //the button does nothing right now, when implementation has been added to it, it will
-            // affect the test case
-
-            //When manually tested, Copy to Clipboard button, it is not disabled and I'm allowed to click on it. However,
-            // after running the test various times on remote control, the copy to clipboard button is disabled. Hence, I
-            // will not include the testing of the button since the test is suppose to check if the button is clickable and
-            // it will fail at this present state.
-
-            //navigates back and deletes the pdf utilized
-            driver.navigate().back();
-            driver.navigate().back();
+            By navbar_class = By.className("navbar-brand");
+            WebElement navbar_icon = wait.until(ExpectedConditions.visibilityOfElementLocated(navbar_class));
+            navbar_icon.click();
             By delete_pdf = By.id("delete_pdf");
             WebElement delete_btn = wait.until(ExpectedConditions.elementToBeClickable(delete_pdf));
             delete_btn.click();
