@@ -14,11 +14,12 @@ import static org.junit.Assert.assertFalse;
 
 //Test of the eu_002 pdf file, it will go through various user scenarios to test the functionality of the regex
 // implementation (spanning pages, multiple search results, inclusive and non-inclusive, and overlap)
+// @author SM modified: 4/28/18
 
 public class TestEU_002 {
     private static WebDriver driver;
     private static String Tabula_url = "http://127.0.0.1:9292/";
-    private WebDriverWait wait = new WebDriverWait(driver, 1000);
+    private WebDriverWait wait = new WebDriverWait(driver, 500);
 
     //will continue to refresh the page until it sees one of the buttons appear inthe menu option of the extraction page
     private void PageRefresh() throws InterruptedException {
