@@ -67,7 +67,7 @@ public class TestFeb_9_2016 {
     }
     //go on and upload the pdf file
     private void UploadPDF() throws InterruptedException {
-        String filePath = "/home/slmendez/484_P7_1-GUI/src/test/pdf/Feb_9,_2016_1_4700_PM_ESTRE_Voters.pdf"; //
+        String filePath = System.getProperty("user.dir") + "/src/test/pdf/Feb_9,_2016_1_4700_PM_ESTRE_Voters.pdf";
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
         Thread.sleep(1000);
