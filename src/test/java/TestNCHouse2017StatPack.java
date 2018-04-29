@@ -13,15 +13,16 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
 
-//Test of the eu_002 pdf file.
-// TODO: currently, I do not know how to directly call a pdf file so I can use it for the test cases without manually
-//  using the windows explorer to retrieve it. For now, the pdf will be preloaded onto Tabula for testing.
+//Test of the NCHouse2017StatPack pdf file, it will go through various user scenarios to test the functionality of the regex
+// implementation (spanning pages, multiple search results, inclusive and non-inclusive, and overlap)
+// @author SM modified: 4/28/18
 
 public class TestNCHouse2017StatPack {
     private static WebDriver driver;
     private static String Tabula_url = "http://127.0.0.1:9292/";
-    private WebDriverWait wait = new WebDriverWait(driver, 1000);
+    private WebDriverWait wait = new WebDriverWait(driver, 500);
 
+    //will continue to refresh the page until it sees one of the buttons appear inthe menu option of the extraction page
     private void PageRefresh() throws InterruptedException {
         //menu options did not fully load
         Thread.sleep(1000);
@@ -31,11 +32,14 @@ public class TestNCHouse2017StatPack {
             Thread.sleep(700);
         }
     }
+    //will navigate and wait for the data to appear in the preview and export data page
     private void PreviewandExportDatapg(){
         By previewandexport_id = By.id("all-data");
         WebElement previewandexport_button = wait.until(ExpectedConditions.visibilityOfElementLocated(previewandexport_id));
         previewandexport_button.click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
     }
+    //will wait for the regex button to become clickable and then click the regex button
     private void ClickRegexButton() throws InterruptedException {
         By regex_search_id = By.id("regex-search");
         WebElement regex_button = new WebDriverWait(driver, 30).until(ExpectedConditions.
@@ -43,12 +47,14 @@ public class TestNCHouse2017StatPack {
         regex_button.click();
         Thread.sleep(800);
     }
+    //send regex inputs to the corresponding pattern type
     private void PatternInputStrings(String pattern_before, String pattern_after){
         By pattern_before_input = By.id("pattern_before");
         By pattern_after_input = By.id("pattern_after");
         driver.findElement(pattern_before_input).sendKeys(pattern_before);
         driver.findElement(pattern_after_input).sendKeys(pattern_after);
     }
+    //send corresponding info of inclusive to the pattern type
     private void InclusiveButtons(boolean patternbefore, boolean patternafter){
         WebElement inclusive_before_btn = new WebDriverWait(driver, 30).
                 until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_before"))));
@@ -59,6 +65,7 @@ public class TestNCHouse2017StatPack {
         if(patternafter){
             inclusive_after_btn.click(); }
     }
+    //go on and upload the pdf file
     private void UploadPDF() throws InterruptedException {
         String filePath = System.getProperty("user.dir") + "/src/test/pdf/NC_HOUSE_2017_Stat_Pack_8.21.17.pdf";
         WebElement chooseFile = driver.findElement(By.id("file"));
@@ -69,11 +76,13 @@ public class TestNCHouse2017StatPack {
         Thread.sleep(5000);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("restore-detected-tables")));
     }
+    //delete the pdf file
     private void DeletePDF(){
         //navigates back and deletes the pdf utilized
         driver.findElement(By.id("delete_pdf")).click();
         driver.switchTo().alert().accept();
     }
+    //instantiation of the Tabula
     @BeforeClass
     public static void SetUp(){
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
@@ -87,6 +96,8 @@ public class TestNCHouse2017StatPack {
         driver.manage().window().maximize();
 
     }
+    //test of 3 different instances of inputting regex searches with 3 different types of inclusive combinations to
+    // get multiple regex results
     @Test
     public void TestInclusivePatternswithRegexSearches() {
         try{
@@ -97,13 +108,13 @@ public class TestNCHouse2017StatPack {
             PatternInputStrings("2017 House Redistricting","69");
             InclusiveButtons(true, false);
             ClickRegexButton();
-            Thread.sleep(5000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
+            // Thread.sleep(5000);
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'14')]")).getText();
             Boolean regex_result;
             if(result.equals("14")){ regex_result = true;} //if true, there are zero matches
             else{ regex_result = false;}
             PreviewandExportDatapg();
-            Thread.sleep(4000);
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                     "'2017 House Redistricting Plan: Population Deviation')]")).getText();
             Boolean regex_data;
@@ -127,16 +138,15 @@ public class TestNCHouse2017StatPack {
             PatternInputStrings("2017 House Redistricting", "69");
             InclusiveButtons(false, true);
             ClickRegexButton();
-            Thread.sleep(5000);
+            //Thread.sleep(5000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'14')]")).getText();
             Boolean regex_result3;
             if(result2.equals("14")){ regex_result3 = true;} //if true, there are zero matches
             else{ regex_result3 = false;}
             PreviewandExportDatapg();
-            Thread.sleep(4000);
             String result_data3 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                     "'District')]")).getText();
-            System.out.print(result_data3);
             Boolean regex_data3;
             if(result_data3.equals("District")){ regex_data3 = true;}
             else{ regex_data3 = false;}
@@ -156,15 +166,15 @@ public class TestNCHouse2017StatPack {
             //Tests for inclusive for pattern before and for pattern after
             PatternInputStrings("2017 House Redistricting","69");
             InclusiveButtons(true, true);
-            Thread.sleep(500);
+           // Thread.sleep(500);
             ClickRegexButton();
-            Thread.sleep(4000);
+            //Thread.sleep(4000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'14')]")).getText();
             Boolean regex_result4;
             if(result3.equals("14")){ regex_result4 = true;} //if true, there are zero matches
             else{ regex_result4 = false;}
             PreviewandExportDatapg();
-            Thread.sleep(5000);
             String result_data5 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                     "'2017 House Redistricting Plan: Population Deviation')]")).getText();
             Boolean regex_data5;
@@ -189,6 +199,7 @@ public class TestNCHouse2017StatPack {
             System.out.print(e);
         }
     }
+    //test of 2 different instances of inputting regex to get a multi spanning table
     @Test
     public void TestMultiPageTables(){
         try {
@@ -199,7 +210,8 @@ public class TestNCHouse2017StatPack {
             PatternInputStrings("District", "District");
             InclusiveButtons(false, true);
             ClickRegexButton();
-            Thread.sleep(5000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
+            //  Thread.sleep(5000);
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'7')]")).getText();
             Boolean regex_result;
             if (result.equals("7")) {
@@ -209,7 +221,6 @@ public class TestNCHouse2017StatPack {
                 regex_result = false;
             }
             PreviewandExportDatapg();
-            Thread.sleep(5000);
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                     "'1')]")).getText();
             Boolean regex_data;
@@ -242,6 +253,7 @@ public class TestNCHouse2017StatPack {
             System.out.print(e);
         }
     }
+    //test of an overlapping instance where it checks that there is only one regex result after attempting an overlap
     @Test
     public void TestOverlapRegexSearch() {
         try{
@@ -266,7 +278,6 @@ public class TestNCHouse2017StatPack {
             assertTrue("Failed, Tabula found more than one match for an overlap regex search",
                     (regex_count1 == regex_count ));
             PreviewandExportDatapg();
-            Thread.sleep(5000);
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                     "'83')]")).getText();
             Boolean regex_data;

@@ -94,7 +94,7 @@ public class TestOneStopVotingSiteListNov2012 {
         driver.get(Tabula_url);
         driver.manage().window().maximize();
     }
-    //test of two instances to get multiple regex results
+    //test of 2 different instances of inputting regex to get a multi spanning table
     @Test
     public void TestMultiPageTables() {
         try {
@@ -190,6 +190,8 @@ public class TestOneStopVotingSiteListNov2012 {
             System.out.print(e);
         }
     }
+    //test of 3 different instances of inputting regex searches with 3 different types of inclusive combinations to
+    // get multiple regex results
     @Test
     public void TestInclusivePatternswithRegexSearches() {
         try{
@@ -288,6 +290,7 @@ public class TestOneStopVotingSiteListNov2012 {
             System.out.print(e);
         }
     }
+    //test of an overlapping instance where it checks that there is only one regex result after attempting an overlap
     @Test
     public void TestOverlapRegexSearch() {
         try{
