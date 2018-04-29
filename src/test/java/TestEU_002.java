@@ -83,7 +83,7 @@ public class TestEU_002 {
         driver.findElement(By.id("delete_pdf")).click();
         driver.switchTo().alert().accept();
     }
-    //instantiation of the Tabula
+    //instantiation of Tabula
     @BeforeClass
     public static void SetUp(){
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
