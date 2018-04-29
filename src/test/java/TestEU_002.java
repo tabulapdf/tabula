@@ -34,6 +34,7 @@ public class TestEU_002 {
         By previewandexport_id = By.id("all-data");
         WebElement previewandexport_button = wait.until(ExpectedConditions.visibilityOfElementLocated(previewandexport_id));
         previewandexport_button.click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
     }
     private void ClickRegexButton() throws InterruptedException {
         By regex_search_id = By.id("regex-search");
