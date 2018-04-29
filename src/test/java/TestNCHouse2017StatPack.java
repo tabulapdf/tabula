@@ -22,7 +22,7 @@ public class TestNCHouse2017StatPack {
     private static String Tabula_url = "http://127.0.0.1:9292/";
     private WebDriverWait wait = new WebDriverWait(driver, 500);
 
-    //will continue to refresh the page until it sees one of the buttons appear inthe menu option of the extraction page
+    //will continue to refresh the page until it sees one of the buttons appear in the menu option of the extraction page
     private void PageRefresh() throws InterruptedException {
         //menu options did not fully load
         Thread.sleep(1000);
@@ -82,7 +82,7 @@ public class TestNCHouse2017StatPack {
         driver.findElement(By.id("delete_pdf")).click();
         driver.switchTo().alert().accept();
     }
-    //instantiation of the Tabula
+    //instantiation of Tabula
     @BeforeClass
     public static void SetUp(){
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
@@ -138,7 +138,6 @@ public class TestNCHouse2017StatPack {
             PatternInputStrings("2017 House Redistricting", "69");
             InclusiveButtons(false, true);
             ClickRegexButton();
-            //Thread.sleep(5000);
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result2 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'14')]")).getText();
             Boolean regex_result3;
@@ -166,9 +165,7 @@ public class TestNCHouse2017StatPack {
             //Tests for inclusive for pattern before and for pattern after
             PatternInputStrings("2017 House Redistricting","69");
             InclusiveButtons(true, true);
-           // Thread.sleep(500);
             ClickRegexButton();
-            //Thread.sleep(4000);
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
             String result3 = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'14')]")).getText();
             Boolean regex_result4;
@@ -211,7 +208,6 @@ public class TestNCHouse2017StatPack {
             InclusiveButtons(false, true);
             ClickRegexButton();
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
-            //  Thread.sleep(5000);
             String result = driver.findElement(By.xpath(".//*[@class='regex-results-table']//td[contains(.,'7')]")).getText();
             Boolean regex_result;
             if (result.equals("7")) {

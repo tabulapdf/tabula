@@ -81,7 +81,7 @@ public class TestOneStopVotingSiteListNov2012 {
         driver.findElement(By.id("delete_pdf")).click();
         driver.switchTo().alert().accept();
     }
-    //instantiation of the Tabula
+    //instantiation of Tabula
     @BeforeClass
     public static void SetUp(){
         //set up of chromedriver and navigation to the url, as well as uploading of the pdf file

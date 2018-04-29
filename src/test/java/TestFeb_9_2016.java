@@ -12,38 +12,49 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
+//Test of the Feb_9_2016 pdf file, it will go through various user scenarios to test the functionality of the regex
+// implementation (spanning pages, multiple search results, inclusive and non-inclusive, and overlap)
+// @author SM modified: 4/28/18
 
 public class TestFeb_9_2016 {
-    //Test of the Mecklenburg.Majority pdf file.
+    //Test of the Feb_9_2016 pdf file.
     private static WebDriver driver;
     private static String Tabula_url = "http://127.0.0.1:9292/";
-    private WebDriverWait wait = new WebDriverWait(driver, 100);
+    private WebDriverWait wait = new WebDriverWait(driver, 500);
 
+    //will continue to refresh the page until it sees one of the buttons appear in the menu option of the extraction page
     private void PageRefresh() throws InterruptedException {
         //menu options did not fully load
         Thread.sleep(1000);
         //refresh the page
         while(driver.findElements( By.id("restore-detected-tables")).size() == 0) {
             driver.navigate().refresh();
-            Thread.sleep(700); }
+            Thread.sleep(700);
+        }
     }
+    //will navigate and wait for the data to appear in the preview and export data page
     private void PreviewandExportDatapg(){
         By previewandexport_id = By.id("all-data");
         WebElement previewandexport_button = wait.until(ExpectedConditions.visibilityOfElementLocated(previewandexport_id));
         previewandexport_button.click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
     }
+    //will wait for the regex button to become clickable and then click the regex button
     private void ClickRegexButton() throws InterruptedException {
         By regex_search_id = By.id("regex-search");
-        WebElement regex_button = wait.until(ExpectedConditions.elementToBeClickable(regex_search_id));
+        WebElement regex_button = new WebDriverWait(driver, 30).until(ExpectedConditions.
+                elementToBeClickable(regex_search_id));
         regex_button.click();
-        Thread.sleep(500);
+        Thread.sleep(800);
     }
+    //send regex inputs to the corresponding pattern type
     private void PatternInputStrings(String pattern_before, String pattern_after){
         By pattern_before_input = By.id("pattern_before");
         By pattern_after_input = By.id("pattern_after");
         driver.findElement(pattern_before_input).sendKeys(pattern_before);
         driver.findElement(pattern_after_input).sendKeys(pattern_after);
     }
+    //send corresponding info of inclusive to the pattern type
     private void InclusiveButtons(boolean patternbefore, boolean patternafter){
         WebElement inclusive_before_btn = new WebDriverWait(driver, 30).
                 until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("include_pattern_before"))));
@@ -54,6 +65,7 @@ public class TestFeb_9_2016 {
         if(patternafter){
             inclusive_after_btn.click(); }
     }
+    //go on and upload the pdf file
     private void UploadPDF() throws InterruptedException {
         String filePath = "/home/slmendez/484_P7_1-GUI/src/test/pdf/Feb_9,_2016_1_4700_PM_ESTRE_Voters.pdf"; //
         WebElement chooseFile = driver.findElement(By.id("file"));
@@ -64,14 +76,16 @@ public class TestFeb_9_2016 {
         Thread.sleep(5000);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("templates_title")));
     }
+    //delete the pdf file
     private void DeletePDF(){
         //navigates back and deletes the pdf utilized
         driver.findElement(By.id("delete_pdf")).click();
         driver.switchTo().alert().accept();
     }
+    //instantiation of Tabula
     @BeforeClass
     public static void SetUp(){
-        //set up of chromdriver and navigation to the url, as well as uploading of the pdf file
+        //set up of chromedriver and navigation to the url, as well as uploading of the pdf file
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless");
@@ -81,6 +95,7 @@ public class TestFeb_9_2016 {
         driver.get(Tabula_url);
         driver.manage().window().maximize();
     }
+    //test of 2 different instances of inputting regex to get a multi spanning table
     @Test
     public void TestMultiPageTables() {
         try {
@@ -101,7 +116,6 @@ public class TestFeb_9_2016 {
                 regex_result = false;
             }
             PreviewandExportDatapg();
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
             //verify data extraction
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                     "'From: Bucholtz, Tracy L </O=EXCHANGELABS/OU=EXCHANGE ADMINISTRATIVE')]")).getText();
@@ -134,6 +148,8 @@ public class TestFeb_9_2016 {
             System.out.print(e);
         }
     }
+    //test of 3 different instances of inputting regex searches with 3 different types of inclusive combinations to
+    // get multiple regex results
     @Test
     public void TestInclusivePatternswithRegexSearches() {
         try{
@@ -150,7 +166,6 @@ public class TestFeb_9_2016 {
             if(result.equals("5")){ regex_result = true;} //if true, there are zero matches
             else{ regex_result = false;}
             PreviewandExportDatapg();
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                     "'To: Watson, Herman L </o=ExchangeLabs/ou=Exchange Administrative Group')]")).getText();
             Boolean regex_data;
@@ -179,7 +194,6 @@ public class TestFeb_9_2016 {
             if(result2.equals("10")){ regex_result3 = true;} //if true, there are zero matches
             else{ regex_result3 = false;}
             PreviewandExportDatapg();
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
             String result_data3 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
                     "'Sent: Tuesday, February 09, 2016 1:45 PM')]")).getText();
             Boolean regex_data3;
@@ -209,7 +223,6 @@ public class TestFeb_9_2016 {
             if(result3.equals("4")){ regex_result4 = true;} //if true, there are zero matches
             else{ regex_result4 = false;}
             PreviewandExportDatapg();
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
             String result_data5 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.,'919 861 3235 office')]")).getText();
             Boolean regex_data5;
             if(result_data5.equals("919 861 3235 office")){ regex_data5 = true;}
@@ -232,6 +245,7 @@ public class TestFeb_9_2016 {
             System.out.print(e);
         }
     }
+    //test of an overlapping instance where it checks that there is only one regex result after attempting an overlap
     @Test
     public void TestOverlapRegexSearch() {
         try{
@@ -239,11 +253,11 @@ public class TestFeb_9_2016 {
             UploadPDF();
             PageRefresh();
 
-            PatternInputStrings("From:", "Raleigh");
+            PatternInputStrings("Raleigh", "Email");
             InclusiveButtons(true, false);
             ClickRegexButton();
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("regex-result")));
-            PatternInputStrings("Tracy", "Tracy");
+            PatternInputStrings("Raleigh", "From:");
             InclusiveButtons(false, true);
             ClickRegexButton();
             Thread.sleep(5000);
@@ -256,16 +270,15 @@ public class TestFeb_9_2016 {
             int regex_count1 = 1;
             assertTrue("Failed, Tabula found more than one match for an overlap regex search", (regex_count1 == regex_count ));
             PreviewandExportDatapg();
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("detection-row")));
             String result_data = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
-                    "'From: Bucholtz, Tracy L </O=EXCHANGELABS/OU=EXCHANGE ADMINISTRATIVE')]")).getText();
+                    "'Raleigh, NC 27699-3110')]")).getText();
             Boolean regex_data;
-            if (result_data.equals("From: Bucholtz, Tracy L </O=EXCHANGELABS/OU=EXCHANGE ADMINISTRATIVE")) { regex_data = true;
+            if (result_data.equals("Raleigh, NC 27699-3110")) { regex_data = true;
             } else { regex_data = false; }
             String result_data2 = driver.findElement(By.xpath(".//*[@id='extracted-table']//td[contains(.," +
-                    "'3123 MSC')]")).getText();
+                    "'Raleigh, NC 27699-3123')]")).getText();
             Boolean regex_data2;
-            if (result_data2.equals("3123 MSC")) { regex_data2 = true;
+            if (result_data2.equals("Raleigh, NC 27699-3123")) { regex_data2 = true;
             } else { regex_data2 = false; }
             Boolean final_results;
             if (regex_data && regex_data2) { final_results = true;
