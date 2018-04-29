@@ -67,8 +67,8 @@ public class TestCorrespondence_FINAL_SBE {
     }
     //go on and upload the pdf file
     private void UploadPDF() throws InterruptedException {
-        String filePath = "/home/slmendez/484_P7_1-GUI/src/test/pdf/" +
-                "Correspondence_FINAL_SBE_one-stop_plans_adopted_for_non-unanimous_countiespdf.pdf"; //
+        String filePath = System.getProperty("user.dir") +
+                "/src/test/pdf/Correspondence_FINAL_SBE_one-stop_plans_adopted_for_non-unanimous_countiespdf.pdf";
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
         Thread.sleep(1000);
