@@ -2,6 +2,14 @@
 require 'rubygems'
 require 'bundler'
 Bundler.require
+
+# Disable LittleCMS when running in JVM >= 1.8
+# https://pdfbox.apache.org/2.0/getting-started.html
+jvmajor, jvminor = java.lang.System.getProperty('java.specification.version').split('.')
+if !jvminor.nil? && jvminor.to_i >= 8
+  java.lang.System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider")
+end
+
 require_relative './webapp/tabula_settings.rb'
 require_relative './webapp/tabula_web.rb'
 
