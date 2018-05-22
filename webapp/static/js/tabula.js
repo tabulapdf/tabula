@@ -3,7 +3,7 @@ window.Tabula = Tabula || {};
 $.ajaxSetup({ cache: false }); // fixes a dumb issue where Internet Explorer caches Ajax requests. See https://github.com/tabulapdf/tabula/issues/408
 var base_uri = $('base').attr("href");
 
-Tabula.UI_VERSION = "1.2.0-2018-02-27"; // when we make releases, we should remember to up this.
+Tabula.UI_VERSION = "1.2.1-2018-05-22"; // when we make releases, we should remember to up this.
 // Add '-pre' to the end of this for a prerelease version; this will let
 // our "new version" check give you that channel.
 
