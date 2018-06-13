@@ -79,12 +79,8 @@ Tabula.Selection = Backbone.Model.extend({
   },
 
   updateCoords: function(){
-<<<<<<< HEAD
-    var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: this.get('page_number')});
-=======
 
     var page = Tabula.pdf_view.pdf_document.page_collection.at(this.get('page_number') - 1);
->>>>>>> e2547fc08e740f596f7c6801f7104729cb264a32
     var imageWidth = this.get('imageWidth');
 
     var original_pdf_width = page.get('width');
@@ -1854,11 +1850,7 @@ Tabula.ThumbnailView = Backbone.View.extend({ // one per page
   'events': {
     // on load, create an empty div with class 'selection-show' to be the selection thumbnail.
     'load .thumbnail-list li img': function() { $(this).after($('<div />', { class: 'selection-show'})); },
-<<<<<<< HEAD
-    'click .delete-page': 'deletePage',
-=======
      //'click i.delete-page': 'deletePage',
->>>>>>> e2547fc08e740f596f7c6801f7104729cb264a32
     'click a': 'scrollToPage'
   },
   tagName: 'li',
