@@ -35,12 +35,20 @@ GEM
       jar-dependencies (~> 0.3)
       maven-tools (~> 1.1)
       ruby-maven (~> 3.3, >= 3.3.8)
+<<<<<<< HEAD
     jruby-jars (9.1.15.0)
+=======
+    jruby-jars (9.1.12.0)
+>>>>>>> e2547fc08e740f596f7c6801f7104729cb264a32
     jruby-rack (1.1.21)
     maven-tools (1.1.6)
       virtus (~> 1.0)
     multi_json (1.12.2)
+<<<<<<< HEAD
     rack (2.0.4)
+=======
+    rack (2.0.3)
+>>>>>>> e2547fc08e740f596f7c6801f7104729cb264a32
     rake (12.3.0)
     rb-fsevent (0.10.2)
     rb-inotify (0.9.10)
@@ -65,18 +73,32 @@ GEM
 
 PLATFORMS
   java
+  x86-mingw32
 
 DEPENDENCIES
   bootstrap-sass (~> 3.2.0)
   compass
+<<<<<<< HEAD
   cuba (~> 3.9.2)
+=======
+  cuba (~> 3.8.1)
+>>>>>>> e2547fc08e740f596f7c6801f7104729cb264a32
   jar-dependencies (= 0.3.12)
   jbundler (~> 0.9.3)
   jruby-jars (= 9.1.15.0)
   rack (~> 2.0.4)
   rake
+<<<<<<< HEAD
   tilt (~> 2.0.8)
   warbler (~> 2.0.4)
 
 BUNDLED WITH
    1.16.0
+=======
+  ruby-maven
+  tilt (~> 2.0.7)
+  warbler (~> 2.0.3)
+
+BUNDLED WITH
+   1.16.1
+>>>>>>> e2547fc08e740f596f7c6801f7104729cb264a32

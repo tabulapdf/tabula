@@ -75,7 +75,7 @@ module Tabula
     end
 
     def move_file(path, document_id, filename)
-      FileUtils.mv(path, File.join(get_document_dir(document_id), filename))
+      FileUtils.mv(path, File.join(get_document_dir(document_id), filename),:noop=> false, :verbose=> true, :force=> true)
     end
 
 	def copy_file(path, document_id, filename)
@@ -101,10 +101,10 @@ module Tabula
 
       # write template metadata to workspace
       @workspace["templates"].insert(0,{
-                                      "name" => template_metadata["name"].gsub(".tabula-template.json", ""), 
+                                      "name" => template_metadata["name"].gsub(".tabula-template.json", ""),
                                       "selection_count" => template_metadata["selection_count"],
-                                      "page_count" => template_metadata["page_count"], 
-                                      "time" => template_metadata["time"], 
+                                      "page_count" => template_metadata["page_count"],
+                                      "time" => template_metadata["time"],
                                       "id" => template_metadata["id"]
                                     })
       # write template file to disk
