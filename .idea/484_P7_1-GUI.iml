@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="RUBY_MODULE" version="4">
+  <component name="ModuleRunConfigurationManager">
+    <shared />
+  </component>
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="axiom-types (v0.1.1, ruby-2.4.2-p198) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="bundler (v1.15.4, ruby-2.4.2-p198) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="coercible (v1.0.0, ruby-2.4.2-p198) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="descendants_tracker (v0.0.4, ruby-2.4.2-p198) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="equalizer (v0.0.11, ruby-2.4.2-p198) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="ice_nine (v0.11.2, ruby-2.4.2-p198) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="jbundler (v0.9.3, ruby-2.4.2-p198) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="maven-tools (v1.1.6, ruby-2.4.2-p198) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="ruby-maven (v3.3.12, ruby-2.4.2-p198) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="ruby-maven-libs (v3.3.9, ruby-2.4.2-p198) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="thread_safe (v0.3.6, ruby-2.4.2-p198) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="virtus (v1.0.5, ruby-2.4.2-p198) [gem]" level="application" />
+  </component>
+</module>
