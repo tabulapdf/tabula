@@ -83,7 +83,7 @@ task :jardist => [:create_version_file, :war] do |t|
     File.delete(output)
   end
 
-  IO.popen("zip -r9 #{output} tabula") { |f|
+  IO.popen("7z -r9 #{output} tabula") { |f|
     f.each { |line| puts line }
   }
   FileUtils.rm_rf(dist_dir)
@@ -141,7 +141,7 @@ task :macosx => [:create_version_file, :war] do |t|
     File.delete(output)
   end
 
-  IO.popen("zip -r9 #{output} tabula") { |f|
+  IO.popen("7z -r9 #{output} tabula") { |f|
     f.each { |line| puts line }
   }
   FileUtils.rm_rf(dist_dir)
@@ -212,7 +212,7 @@ task :windows => [:create_version_file, :war] do |t|
     File.delete(output)
   end
 
-  IO.popen("zip -r9 #{output} tabula") { |f|
+  IO.popen("7z -r9 #{output} tabula") { |f|
     f.each { |line| puts line }
   }
   FileUtils.rm_rf(dist_dir)
