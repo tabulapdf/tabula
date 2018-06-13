@@ -1144,7 +1144,6 @@ html {
 
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
   line-height: 1.428571429;
   color: #333333;
   background-color: #fff;
@@ -1285,7 +1284,7 @@ h3 .small, .h3 small,
 h4, .h4,
 h5, .h5,
 h6, .h6 {
-  margin-top: 10px;
+  margin-top: 0px;
   margin-bottom: 10px;
 }
 h4 small,
@@ -1484,7 +1483,7 @@ a.bg-danger:hover {
 ul,
 ol {
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 ul ul,
 ul ol,
@@ -1703,7 +1702,6 @@ pre code {
     width: 1170px;
   }
 }
-
 .container-fluid {
   margin-right: auto;
   margin-left: auto;
@@ -3430,9 +3428,11 @@ select[multiple].input-lg,
 .btn-success:active, .btn-success.active, .open > .btn-success.dropdown-toggle {
   background-image: none;
 }
+
+
 .btn-success.disabled, .btn-success.disabled:hover, .btn-success.disabled:focus, .btn-success.disabled:active, .btn-success.disabled.active, .btn-success[disabled], .btn-success[disabled]:hover, .btn-success[disabled]:focus, .btn-success[disabled]:active, .btn-success[disabled].active, fieldset[disabled] .btn-success, fieldset[disabled] .btn-success:hover, fieldset[disabled] .btn-success:focus, fieldset[disabled] .btn-success:active, fieldset[disabled] .btn-success.active {
-  background-color: #5cb85c;
-  border-color: #4cae4c;
+  background-color: #b82a4f;
+  border-color: #ae5437;
 }
 .btn-success .badge {
   color: #5cb85c;
@@ -4979,7 +4979,7 @@ a.badge:hover, a.badge:focus {
   color: inherit;
 }
 .jumbotron p {
-  margin-bottom: 15px;
+  margin-bottom: 0px;
   font-size: 21px;
   font-weight: 200;
 }
@@ -7133,6 +7133,24 @@ button.close {
   bottom: -35px;
 }
 
+.header-region{
+  position: absolute;
+  border: 3px solid rgba(41, 255, 52, 0.8);
+  background: rgba(31, 255, 32, 0.2);
+  box-sizing: border-box;
+}
+
+.footer-region{
+  position: absolute;
+  border: 3px solid rgba(19, 248, 255, 0.8);
+  background: rgba(15, 183, 255, 0.2);
+  box-sizing: border-box;
+}
+
+.header-region:hover, .footer-region:hover{
+  cursor: row-resize;
+}
+
 /* rectangularSelector.js classes */
 .selection-box, .table-region {
   position: absolute;
@@ -7140,6 +7158,14 @@ button.close {
   background: rgba(255, 87, 0, 0.2);
   box-sizing: border-box;
 }
+
+.regex-table-region {
+  position: absolute;
+  border: 1px dashed rgba(255, 172, 23, 0.8);
+  background: rgba(255, 150, 11, 0.2);
+  box-sizing: border-box;
+}
+
 .selection-box:hover, .table-region:hover {
   cursor: pointer;
 }
@@ -7151,66 +7177,70 @@ button.close {
   visibility: hidden;
 }
 
-.table-region {
+.table-region, .regex-table-region {
   top: 0;
   left: 0;
   z-index: 21;
 }
 
-div.table-region .resize-handle {
+div.table-region .fixed-handle, div.regex-table-region.fixed-handle {
   position: absolute;
 }
 
-div.table-region .n-border {
+div.table-region .resize-handle, div.regex-table-region.resize-handle {
+  position: absolute;
+}
+
+div.table-region .n-border, div.regex-table-region.n-border {
   width: calc(100% - 10px);
   top: -5px;
   left: 5px;
   height: 10px;
 }
 
-div.table-region .s-border {
+div.table-region .s-border, div.regex-table-region.s-border {
   width: calc(100% - 10px);
   bottom: -5px;
   left: 5px;
   height: 10px;
 }
 
-div.table-region .w-border {
+div.table-region .w-border, div.regex-table-region.w-border {
   height: calc(100% - 10px);
   left: -5px;
   top: 5px;
   width: 10px;
 }
 
-div.table-region .e-border {
+div.table-region .e-border, div.regex-table-region.e-border {
   height: calc(100% - 10px);
   top: 5px;
   right: -5px;
   width: 10px;
 }
 
-div.table-region .nw-border {
+div.table-region .nw-border, div.regex-table-region.nw-border {
   width: 10px;
   height: 10px;
   top: -5px;
   left: -5px;
 }
 
-div.table-region .ne-border {
+div.table-region .ne-border, div.regex-table-region.ne-border {
   width: 10px;
   height: 10px;
   top: -5px;
   right: -5px;
 }
 
-div.table-region .sw-border {
+div.table-region .sw-border, div.regex-table-region.sw-border {
   width: 10px;
   height: 10px;
   bottom: -5px;
   left: -5px;
 }
 
-div.table-region .se-border {
+div.table-region .se-border, div.regex-table-region.se-border {
   width: 10px;
   height: 10px;
   bottom: -5px;
@@ -7294,6 +7324,7 @@ body {
   color: #333333;
 }
 
+
 .navbar-default a.navbar-brand {
   padding-left: 30px;
   position: relative;
@@ -7340,7 +7371,7 @@ body {
 }
 
 form {
-  margin-bottom: 3em;
+  margin-bottom: 1em;
 }
 
 #file-list-container {
@@ -7424,17 +7455,18 @@ form {
 #sidebar {
   background: #eeeeee;
   width: 195px;
-  padding: 1em 0 0;
+  padding: 0em 0 0;
   height: calc(100% - 51px);
   text-align: center;
   overflow-y: scroll;
   overflow-x: hidden;
   position: fixed;
   left: 0;
-  top: 51px;
+  top: 104px;
   z-index: 2;
   -webkit-box-shadow: inset -0.25em 0 0.5em -0.25em rgba(0, 0, 0, 0.1);
   box-shadow: inset -0.25em 0 0.5em -0.25em rgba(0, 0, 0, 0.1);
+  height: 87%;
 }
 #sidebar h5 {
   border-top: 1px solid #777777;
@@ -7455,7 +7487,9 @@ form {
   margin: 0 auto 1.25em;
   display: block;
   width: 90%;
-  padding: 1em .5em .5em 1em;
+  padding-left: .5em;
+  padding-right: .5em;
+/*  padding: 1em .5em .5em 1em; */
   position: relative;
 }
 #sidebar .thumbnail-list .page img {
@@ -7492,14 +7526,16 @@ form {
 #control-panel {
   position: fixed;
   top: 50px;
-  left: 195px;
-  width: calc(100% - 200px);
+  left: 0px;
+  width: 100%;
   z-index: 101;
   /* gotta be >100, which is the max z-index for selections */
   background: #d9edf7;
   padding: 1em;
   -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.075);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.075);
+  padding-left: 5%;
+  padding-right: 5%;
 }
 #control-panel button {
   margin-right: 1.25em;
@@ -7541,6 +7577,20 @@ form {
   width: calc(100% - 200px);
   z-index: 1;
 }
+
+/*
+#pages-container {
+  width: 100%;
+  height: auto;
+   margin: 0 auto;
+   padding: 3px;
+   position: relative;
+   padding-right: 20%;
+}
+*/
+
+html.wait, html.wait * { cursor: wait !important; }
+
 #main-pane .pdf-page {
   position: relative;
 }
@@ -7550,9 +7600,7 @@ form {
 #main-pane .page {
   width: 100%;
   max-width: 800px;
-  min-width: 560px;
-  -webkit-box-shadow: 0 0 2em rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 2em rgba(0, 0, 0, 0.4);
+  min-width: 179px;
   position: relative;
   margin: 0 auto;
 }
@@ -7561,7 +7609,7 @@ form {
   display: block;
   width: 100%;
   max-width: 800px;
-  min-width: 560px;
+  min-width: 0px;
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -7766,4 +7814,39 @@ div.spinner {
   position: relative;
   top: 6px;
   margin-right: 5px;
+}
+.social_media_nav {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  width: 70%;
+  padding-bottom: 5px;
+}
+.navbar_1 .navbar-nav_1 {
+    display: inline-block;
+    float: none;
+}
+
+.navbar_1 .navbar-collapse_1 {
+    text-align: center;
+}
+#regex-container {
+  background: #eeeeee;
+  float: right;
+  right: 0px;
+  position: fixed;
+  top: 104px;
+  height:90%;
+  width: 230px;
+  display: inline;
+  overflow-y: scroll;
+  padding-bottom: 40px;
+}
+
+.regex-result:hover {
+  background: #ffc314;
+}
+
+.regex-result:hover {
+  background: #ffc314;
 }

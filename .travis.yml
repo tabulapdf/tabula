@@ -1,14 +1,31 @@
 sudo: false
-language: ruby
+language: java
+addons:
+  chrome: stable
 before_install:
-  - gem update --system
-  - gem install bundler
-  - gem install jbundler
-rvm:
-  - jruby-9.1.9.0
+  # GUI
+  # "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 5
+  - bash run.sh &
+  - sleep 100
+  - bash waitForServerLoad.sh
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+  # google chrome standalone driver
+  - wget http://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip
+  - unzip chromedriver_linux64.zip
+  - sudo mv chromedriver /usr/local/bin
+  - sudo chmod a+x /usr/local/bin/chromedriver
+
+install:
+# - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
+
+
 jdk:
+  - openjdk8
   - oraclejdk8
-  - openjdk7
-script: bundle exec jbundle install && bundle exec rake war && bundle exec rake jardist
+script:
+  - mvn test -Dgpg.skip=true
 notifications:
   email: false
+

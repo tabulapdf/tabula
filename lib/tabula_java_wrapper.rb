@@ -1,6 +1,14 @@
 java_import org.apache.pdfbox.pdmodel.PDDocument
 java_import org.apache.pdfbox.pdmodel.encryption.StandardDecryptionMaterial
 
+module JavaIO
+  include_package "java.io"
+end
+
+module Gson
+  include_package "com.google.gson"
+end
+
 class Java::TechnologyTabula::Table
   attr_accessor :spec_index
   def to_csv
@@ -25,11 +33,14 @@ end
 module Tabula
 
   def Tabula.extract_tables(pdf_path, specs, options={})
+    puts 'In extract_tables'
+    puts 'Options:'
+    puts options
     options = {
       :password => '',
       :detect_ruling_lines => true,
       :vertical_rulings => [],
-      :extraction_method => "guess",
+      :extraction_method => '',#"guess", Commenting out guess because of its variable behavior (GUI vs CLI)...
     }.merge(options)
 
     specs.each_with_index{|spec, i| spec["spec_index"] = i }
@@ -56,7 +67,7 @@ module Tabula
           table_extractor = use_spreadsheet_extraction_method ? sea : bea
           table_extractor.extract(area).each { |table| table.spec_index = spec["spec_index"]; y.yield table }
         end
-      end;
+      end
       extractor.close!
     end
 
@@ -108,3 +119,4 @@ module Tabula
     end
   end
 end
+
