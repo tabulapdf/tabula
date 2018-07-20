@@ -1,0 +1,11 @@
+Package: tabula
+Version: 1.2.1
+Maintainer: Mauricio Vargas <mvargas@dcc.uchile.cl>
+Section: utils
+Source: tabula
+Homepage: http://tabula.technology/
+Architecture: amd64
+Priority: optional
+Depends: default-jre
+Description: Application for data extraction.
+ Standalone open source application that helps extracting tables provided in PDFs.
