@@ -1,0 +1,6 @@
+#!/bin/bash
+
+printf '#!/bin/bash\njava -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Dtabula.openBrowser=true -jar /opt/tabula/tabula.jar\n' | tee /usr/bin/tabula
+chmod a+x /usr/bin/tabula
+
+printf '[Desktop Entry]\nName=Tabula\nVersion=1.2.1\nExec=/usr/bin/tabula\nComment=Application for data extraction\nIcon=/opt/tabula/icons/tabula.png\nType=Application\nTerminal=true\nStartupNotify=false\nEncoding=UTF-8\nCategories=Utility;\n' | tee '/usr/share/applications/tabula.desktop'

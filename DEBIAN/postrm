@@ -1,0 +1,6 @@
+#!/bin/bash
+
+case "$1" in (remove)
+	rm /usr/bin/tabula /usr/share/applications/tabula.desktop
+	rm -rf /opt/tabula
+esac
