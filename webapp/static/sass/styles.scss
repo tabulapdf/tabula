@@ -513,3 +513,57 @@ div.spinner {
 		margin-right: 5px;
 	}
 }
+
+/* social media bar, via NCSU 2018 */
+.social_media_nav {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  width: 70%;
+  padding-bottom: 5px;
+}
+.navbar_1 .navbar-nav_1 {
+    display: inline-block;
+    float: none;
+}
+
+.navbar_1 .navbar-collapse_1 {
+    text-align: center;
+}
+
+/* NCSU 2018 regex stuff */
+.header-region{
+  position: absolute;
+  border: 3px solid rgba(41, 255, 52, 0.8);
+  background: rgba(31, 255, 32, 0.2);
+  box-sizing: border-box;
+}
+
+.footer-region{
+  position: absolute;
+  border: 3px solid rgba(19, 248, 255, 0.8);
+  background: rgba(15, 183, 255, 0.2);
+  box-sizing: border-box;
+}
+
+.header-region:hover, .footer-region:hover{
+  cursor: row-resize;
+}
+
+
+#regex-container {
+  background: #eeeeee;
+  float: right;
+  right: 0px;
+  position: fixed;
+  top: 104px;
+  height:90%;
+  width: 230px;
+  display: inline;
+  overflow-y: scroll;
+  padding-bottom: 40px;
+}
+
+.regex-result:hover {
+  background: #ffc314;
+}

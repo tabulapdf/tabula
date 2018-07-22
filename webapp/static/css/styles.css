@@ -1144,6 +1144,7 @@ html {
 
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
   line-height: 1.428571429;
   color: #333333;
   background-color: #fff;
@@ -1284,7 +1285,7 @@ h3 .small, .h3 small,
 h4, .h4,
 h5, .h5,
 h6, .h6 {
-  margin-top: 0px;
+  margin-top: 10px;
   margin-bottom: 10px;
 }
 h4 small,
@@ -1483,7 +1484,7 @@ a.bg-danger:hover {
 ul,
 ol {
   margin-top: 0;
-  margin-bottom: 0px;
+  margin-bottom: 10px;
 }
 ul ul,
 ul ol,
@@ -1702,6 +1703,7 @@ pre code {
     width: 1170px;
   }
 }
+
 .container-fluid {
   margin-right: auto;
   margin-left: auto;
@@ -3428,11 +3430,9 @@ select[multiple].input-lg,
 .btn-success:active, .btn-success.active, .open > .btn-success.dropdown-toggle {
   background-image: none;
 }
-
-
 .btn-success.disabled, .btn-success.disabled:hover, .btn-success.disabled:focus, .btn-success.disabled:active, .btn-success.disabled.active, .btn-success[disabled], .btn-success[disabled]:hover, .btn-success[disabled]:focus, .btn-success[disabled]:active, .btn-success[disabled].active, fieldset[disabled] .btn-success, fieldset[disabled] .btn-success:hover, fieldset[disabled] .btn-success:focus, fieldset[disabled] .btn-success:active, fieldset[disabled] .btn-success.active {
-  background-color: #b82a4f;
-  border-color: #ae5437;
+  background-color: #5cb85c;
+  border-color: #4cae4c;
 }
 .btn-success .badge {
   color: #5cb85c;
@@ -4979,7 +4979,7 @@ a.badge:hover, a.badge:focus {
   color: inherit;
 }
 .jumbotron p {
-  margin-bottom: 0px;
+  margin-bottom: 15px;
   font-size: 21px;
   font-weight: 200;
 }
@@ -7133,24 +7133,6 @@ button.close {
   bottom: -35px;
 }
 
-.header-region{
-  position: absolute;
-  border: 3px solid rgba(41, 255, 52, 0.8);
-  background: rgba(31, 255, 32, 0.2);
-  box-sizing: border-box;
-}
-
-.footer-region{
-  position: absolute;
-  border: 3px solid rgba(19, 248, 255, 0.8);
-  background: rgba(15, 183, 255, 0.2);
-  box-sizing: border-box;
-}
-
-.header-region:hover, .footer-region:hover{
-  cursor: row-resize;
-}
-
 /* rectangularSelector.js classes */
 .selection-box, .table-region {
   position: absolute;
@@ -7158,16 +7140,15 @@ button.close {
   background: rgba(255, 87, 0, 0.2);
   box-sizing: border-box;
 }
+.selection-box:hover, .table-region:hover {
+  cursor: pointer;
+}
 
 .regex-table-region {
   position: absolute;
   border: 1px dashed rgba(255, 172, 23, 0.8);
   background: rgba(255, 150, 11, 0.2);
   box-sizing: border-box;
-}
-
-.selection-box:hover, .table-region:hover {
-  cursor: pointer;
 }
 
 .selection-box {
@@ -7181,6 +7162,10 @@ button.close {
   top: 0;
   left: 0;
   z-index: 21;
+}
+
+div.table-region .resize-handle {
+  position: absolute;
 }
 
 div.table-region .fixed-handle, div.regex-table-region.fixed-handle {
@@ -7324,7 +7309,6 @@ body {
   color: #333333;
 }
 
-
 .navbar-default a.navbar-brand {
   padding-left: 30px;
   position: relative;
@@ -7371,7 +7355,7 @@ body {
 }
 
 form {
-  margin-bottom: 1em;
+  margin-bottom: 3em;
 }
 
 #file-list-container {
@@ -7455,18 +7439,17 @@ form {
 #sidebar {
   background: #eeeeee;
   width: 195px;
-  padding: 0em 0 0;
+  padding: 1em 0 0;
   height: calc(100% - 51px);
   text-align: center;
   overflow-y: scroll;
   overflow-x: hidden;
   position: fixed;
   left: 0;
-  top: 104px;
+  top: 51px;
   z-index: 2;
   -webkit-box-shadow: inset -0.25em 0 0.5em -0.25em rgba(0, 0, 0, 0.1);
   box-shadow: inset -0.25em 0 0.5em -0.25em rgba(0, 0, 0, 0.1);
-  height: 87%;
 }
 #sidebar h5 {
   border-top: 1px solid #777777;
@@ -7487,9 +7470,7 @@ form {
   margin: 0 auto 1.25em;
   display: block;
   width: 90%;
-  padding-left: .5em;
-  padding-right: .5em;
-/*  padding: 1em .5em .5em 1em; */
+  padding: 1em .5em .5em 1em;
   position: relative;
 }
 #sidebar .thumbnail-list .page img {
@@ -7526,16 +7507,14 @@ form {
 #control-panel {
   position: fixed;
   top: 50px;
-  left: 0px;
-  width: 100%;
+  left: 195px;
+  width: calc(100% - 200px);
   z-index: 101;
   /* gotta be >100, which is the max z-index for selections */
   background: #d9edf7;
   padding: 1em;
   -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.075);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.075);
-  padding-left: 5%;
-  padding-right: 5%;
 }
 #control-panel button {
   margin-right: 1.25em;
@@ -7577,20 +7556,6 @@ form {
   width: calc(100% - 200px);
   z-index: 1;
 }
-
-/*
-#pages-container {
-  width: 100%;
-  height: auto;
-   margin: 0 auto;
-   padding: 3px;
-   position: relative;
-   padding-right: 20%;
-}
-*/
-
-html.wait, html.wait * { cursor: wait !important; }
-
 #main-pane .pdf-page {
   position: relative;
 }
@@ -7600,7 +7565,9 @@ html.wait, html.wait * { cursor: wait !important; }
 #main-pane .page {
   width: 100%;
   max-width: 800px;
-  min-width: 179px;
+  min-width: 560px;
+  -webkit-box-shadow: 0 0 2em rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 2em rgba(0, 0, 0, 0.4);
   position: relative;
   margin: 0 auto;
 }
@@ -7609,7 +7576,7 @@ html.wait, html.wait * { cursor: wait !important; }
   display: block;
   width: 100%;
   max-width: 800px;
-  min-width: 0px;
+  min-width: 560px;
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -7815,6 +7782,8 @@ div.spinner {
   top: 6px;
   margin-right: 5px;
 }
+
+/* social media bar, via NCSU 2018 */
 .social_media_nav {
   display: block;
   margin: 0 auto;
@@ -7822,29 +7791,46 @@ div.spinner {
   width: 70%;
   padding-bottom: 5px;
 }
+
 .navbar_1 .navbar-nav_1 {
-    display: inline-block;
-    float: none;
+  display: inline-block;
+  float: none;
 }
 
 .navbar_1 .navbar-collapse_1 {
-    text-align: center;
+  text-align: center;
 }
+
+/* NCSU 2018 regex stuff */
+.header-region {
+  position: absolute;
+  border: 3px solid rgba(41, 255, 52, 0.8);
+  background: rgba(31, 255, 32, 0.2);
+  box-sizing: border-box;
+}
+
+.footer-region {
+  position: absolute;
+  border: 3px solid rgba(19, 248, 255, 0.8);
+  background: rgba(15, 183, 255, 0.2);
+  box-sizing: border-box;
+}
+
+.header-region:hover, .footer-region:hover {
+  cursor: row-resize;
+}
+
 #regex-container {
   background: #eeeeee;
   float: right;
   right: 0px;
   position: fixed;
   top: 104px;
-  height:90%;
+  height: 90%;
   width: 230px;
   display: inline;
   overflow-y: scroll;
   padding-bottom: 40px;
-}
-
-.regex-result:hover {
-  background: #ffc314;
 }
 
 .regex-result:hover {
