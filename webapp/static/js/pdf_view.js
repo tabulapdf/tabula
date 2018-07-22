@@ -2397,15 +2397,16 @@ function roundTo(num, fancymathwordforthenumberofdigitsafterthedecimal){
   return Math.round(num * Math.pow(10, fancymathwordforthenumberofdigitsafterthedecimal)) / Math.pow(10, fancymathwordforthenumberofdigitsafterthedecimal);
 }
 
-function PDF_Outline_btn(){
-  var y = document.getElementById("sidebar");
-  if(y.style.display == "none"){
-    y.style.display = "inline";
-  }
-  else{
-    y.style.display = "none";
- }
-}
+// function PDF_Outline_btn(){
+//   var y = document.getElementById("sidebar");
+//   if(y.style.display == "none"){
+//     y.style.display = "inline";
+//   }
+//   else{
+//     y.style.display = "none";
+//  }
+// }
+
 function Regex_Options_btn(){
   var x = document.getElementById("regex-container");
   if(x.style.display == "none"){
