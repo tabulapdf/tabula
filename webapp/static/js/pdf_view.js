@@ -1580,7 +1580,7 @@ Tabula.RegexResultView = Backbone.View.extend({
   className: 'regex-result',
   model: Tabula.RegexResultModel,
   tagName: 'tr',
-  events: {'click':'remove_element_request'},
+  events: {'click .del':'remove_element_request'},
   initialize: function(data){
     //console.log('In Tabula.RegexResultView.initialize:');
     //console.log(data.model);

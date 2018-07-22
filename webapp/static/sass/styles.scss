@@ -561,9 +561,28 @@ div.spinner {
   width: 230px;
   display: inline;
   overflow-y: scroll;
+  padding-top: 20px;
   padding-bottom: 40px;
-}
 
-.regex-result:hover {
-  background: #ffc314;
+
+  .regex-result {
+    .del {
+      cursor: pointer;
+      &:hover {
+        background: #ffc314;
+      }
+    }  
+  }
+  .regex-results-table {
+    border: 1px solid gray;
+    width: 100%;
+
+    th {
+      padding: 5px;
+    } 
+    td {
+      border: 1px solid black;
+      padding: 3px;
+    }
+  }
 }

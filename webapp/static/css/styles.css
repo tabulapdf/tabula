@@ -7830,9 +7830,23 @@ div.spinner {
   width: 230px;
   display: inline;
   overflow-y: scroll;
+  padding-top: 20px;
   padding-bottom: 40px;
 }
-
-.regex-result:hover {
+#regex-container .regex-result .del {
+  cursor: pointer;
+}
+#regex-container .regex-result .del:hover {
   background: #ffc314;
+}
+#regex-container .regex-results-table {
+  border: 1px solid gray;
+  width: 100%;
+}
+#regex-container .regex-results-table th {
+  padding: 5px;
+}
+#regex-container .regex-results-table td {
+  border: 1px solid black;
+  padding: 3px;
 }

@@ -143,7 +143,7 @@
 
            <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
         <button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disabled_if_there_are_selections %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button>
-        <button type="button" class="btn btn-default" id="regex_options_title" onclick="Regex_Options_btn()"><span class="glyphicon glyphicon-list"></span> Regex Options</button>
+        <button type="button" class="btn btn-default" id="regex_options_title" onclick="Regex_Options_btn()"><span class="glyphicon glyphicon-list"></span> Select by Regex</button>
 
 
         <span style="float: right">
@@ -195,10 +195,8 @@
       <!-- TODO: abstract out commonalities of select/export page templates -->
       <script type="text/template" id="export-page-template">
         <div id="main-pane">
-            <div id="control-panel">
-            </div>
-
-           <h2>Preview of Extracted Tabular Data</h2>
+          <div id="control-panel" />
+          <h2>Preview of Extracted Tabular Data</h2>
             <div id="table-container">
             <% if(data.length){ %>
               <% _(data).each(function(table){ %>
@@ -235,77 +233,57 @@
         </div>
 
         <div id="main-pane">
-          <div id="control-panel">
-          </div>
-          <div id="pages-container">
-          </div>
+          <div id="control-panel" />
+          <div id="pages-container" />
           <div id="regex-container" > <!--container for regex options style="display: none;"-->
             <div class="container" style="width: 100%;">
 
-             <h4 id = "regex_options_title">Regex Options</h4>
-             <ul class="nav nav-tabs">
-               <li class="active regex-commands"><a data-toggle="tab" href="#home"><h7>Regex Input</h7></a></li>
-               <li><a data-toggle="tab" class="regex-guide" href="#menu1"><h7>Guide</h7></a></li>
-             </ul>
-             <div class="tab-content">
-               <div id="home" class="tab-pane fade in active">
-                 <p style="padding-left:10px;">
-                   <p></p>
-                    <h8> Here are some quick pointers for using </h8>
-                    <h8 >Tabula's regex feature:</h8>
-                    <ul style="padding-left:15px;">
-                      <li>Accepted regex commands follow the syntax for Java. For more information on Regex syntax for Java visit
-                        <a class="tutorialspoint" href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Tutorial's Point Regex Syntax</a>
-                          or visit the <a class="helppage" href="help">Help page</a>.</li>
-                      <li>Can specify case sensitivity by providing the upper and lowercase letter within a bracket.</li>
-                      <li>Only need to provide one backslash as an input character instead of two backslashes.</li>
-                    </ul>
-                  </p>
-                     <!-- Form for regex input-->
-                  <form id="regex_input_form" autocomplete="off">
-                    <label class="form-group" ></label>
-                      <h5><label class="col-form-label" id="regex_command_title" for="formGroupExampleInput">Regex Command</label></h5>
-                      <label><input type="checkbox" id="include_pattern_before" value=false> Inclusive? </label>
-                   <input type="text" class="form-control" id="pattern_before" placeholder="Pattern Before...">
-                   <label><input type="checkbox" id="include_pattern_after" value=false> Inclusive? </label>
-                   <input type="text" class="form-control" id="pattern_after" placeholder="Pattern After...">
+              <h4 id = "regex_options_title">Select Regions with Regex</h4>
+              <p>Enter a regular expression that matches the start and end of your table. To exclude header/footer text, drag the blue/green bumpers to cover it.</p>
+              <div id="home">
+                <form id="regex_input_form" autocomplete="off">
+                  <div>
+                    <label>Table Start</label>
+                    <input type="text" class="form-control" id="pattern_before" placeholder="Table Start Pattern...">
+                    <label><input type="checkbox" id="include_pattern_before" value=false> Include match in table? </label>
+                  </div>
+                  <div>
+                    <label>Table End</label>
+                    <input type="text" class="form-control" id="pattern_after" placeholder="Table End Pattern...">
+                    <label><input type="checkbox" id="include_pattern_after" value=false> Include match in table? </label>
+                  </div>
+                  <button type="button" id="regex-search" class="btn btn-default" disabled>Search</button>
+                </form>
+                
+                <h4>Searches</h4>
+                <p>Click to delete</p>
+                <table class="regex-results-table">
+                  <thead class="thead-inverse">
+                    <tr>
+                     <th>From&hellip;</th>
+                     <th>To</th>
+                     <th>Count</th>
+                    </tr>
+                  </thead>
+                  <tbody class="regex-results-list" />
+                </table>
 
-                   <button type="button" id="regex-search" class="btn btn-default" disabled>Search</button>
-                  </form>
-             <table class="regex-results-table">
-               <h5><b>Searches</b></h5>
-                     <thead class="thead-inverse">
-                       <tr>
-                         <td >Regex Before</td>
-                         <td >Regex After</td>
-                         <td >Matches</td>
-                       </tr>
-                     </thead>
-                      <tbody class="regex-results-list">
-                      </tbody>
-                       </table>
-                       <div style="padding-bottom:50px;">
-                   </div>
-                 </div>
-    <div id="menu1" class="tab-pane fade">
-        <h5 id ="regex_guide"><b>Regex Guide</b></h5>
-        <p>Providing a regex command can improve how Tabula is able to detect where the data lies within the pdf! </p>
-        <p>On the first tab, <b>Commands</b> you can click if the first command is inclusive or not.</p>
-        <ul style="padding-left: 15px;">
-          <li>Inclusive: The command is included</li>
-          <li>Exclusive: Not including the command</li>
-        </ul>
-        <p>Once you've inputted your command(s), you can click the <b>Search button</b>! You should see the result highlighted based on what Tabula believes
-           it understood on the pdf, located in the middle of the screen.</p>
-        <p>Additionally, below the <b>Search button</b> is an option to view the. This serves as a view to see how many results the regex comman(s) generates.</p>
-        <p>For more information on Regex syntax for Java visit
-        <a class="tutorialspoint" href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Tutorial's Point Regex Syntax</a>
-                or visit the <a href="help">Help page!</a></p>
-    </div>
-  </div>
-</div>
-</div>
-</div>
+                <hr />
+                <p style="padding-left:10px;">
+                 <p></p>
+                  <h5>Tips:</h5>
+                  <ul style="padding-left:15px;">
+                    <li>Regexes use <a class="tutorialspoint"  href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Java Syntax</a>.</li>
+                    <li>Case sensitive.</li>
+                    <li>All matches will be selected.</li>
+                    <li><a class="helppage" href="help#regex">More help on regexes</a>.</li>
+                  </ul>
+                </p>
+
+              </div>
+            </div>
+          </div>
+        </div>
         <nestedscript type="text/javascript" src="js/vendor/spin.min.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/SelectionPrototypes.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/HeaderView.js"></nestedscript>
@@ -322,6 +300,7 @@
           <td><%= pattern_before %></td>
           <td><%= pattern_after  %></td>
           <td><%= num_matches    %></td>
+          <td class="del">❌</td>
       </script>
 
 
@@ -623,29 +602,52 @@
           <!--Regex Help section -->
           <h1 id="helppage" name="help">Regex Help</h1>
           <div style="padding-left: 25px;">
-              <ul style="padding-left: 15px;">
+            <ul style="padding-left: 15px;">
                 <li>Providing a regex command can improve how Tabula is able to detect where the data lies within the pdf! </li>
                 <li>Currently, the type of accepted regex commands follow the syntax for Java. </li>
             </ul>
-           <h2>How to use Regex with Tabula</h2>
-          <ol style="padding-left: 15px;">
-             <li>Located in the Extraction page's Regex Options tab, you can click if the first command is inclusive or not.</li>
-            <ul>
-            <li>Inclusive: The command is included</li>
-            <li>Exclusive: Not including the command</li>
-          </ul>
-           <li>Once you've inputted your command(s), you can click the <b>Search button</b> located in the Extraction page's Regex Options tab.
-              You should see the result highlighted based on what Tabula believesit understood on the pdf, located in the middle of the screen.</li>
-          <li>Additionally, below the <b>Search button</b> is an option to view the amount of results found from the command(s) and you have the option
-                to delete the rectangle Tabula drew based of your input.</li>
-         </ol>
-         <h2>Don't know regex?</h2>
-          <ul style="padding-left: 15px;">
-            <li>For more information on regex syntax for Java visit <a class ="tutorialspoint" href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Tutorial's
-            Point Regex Syntax</a> </li>
-            <li>For help on how to use regex (not necessarily regex syntax for Java) you can visit <a href="https://regexr.com/">here</a>.</li>
-         </ul>
-    </div>
+            <h2>How to use Regex with Tabula</h2>
+            <ol style="padding-left: 15px;">
+              <li>Located in the Extraction page's Regex Options tab, you can click if the first command is inclusive or not.</li>
+              <ul>
+                <li>Inclusive: The command is included</li>
+                <li>Exclusive: Not including the command</li>
+              </ul>
+              <li>Once you've inputted your command(s), you can click the <b>Search button</b> located in the Extraction page's Regex Options tab.
+                You should see the result highlighted based on what Tabula believesit understood on the pdf, located in the middle of the screen.</li>
+              <li>Additionally, below the <b>Search button</b> is an option to view the amount of results found from the command(s) and you have the option to delete the rectangle Tabula drew based of your input.</li>
+            </ol>
+            <h2>Don't know regex?</h2>
+            <ul style="padding-left: 15px;">
+              <li>For more information on regex syntax for Java visit <a class ="tutorialspoint" href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Tutorial's
+              Point Regex Syntax</a> </li>
+              <li>For help on how to use regex (not necessarily regex syntax for Java) you can visit <a href="https://regexr.com/">here</a>.</li>
+            </ul>
+
+<!--         <h5 id ="regex_guide"><b>Regex Guide</b></h5>
+        <p>Providing a regex command can improve how Tabula is able to detect where the data lies within the pdf! </p>
+        <p>On the first tab, <b>Commands</b> you can click if the first command is inclusive or not.</p>
+        <ul style="padding-left: 15px;">
+          <li>Inclusive: The command is included</li>
+          <li>Exclusive: Not including the command</li>
+        </ul>
+        <p>Once you've inputted your command(s), you can click the <b>Search button</b>! You should see the result highlighted based on what Tabula believes
+           it understood on the pdf, located in the middle of the screen.</p>
+        <p>Additionally, below the <b>Search button</b> is an option to view the. This serves as a view to see how many results the regex comman(s) generates.</p>
+        <p>For more information on Regex syntax for Java visit
+        <a class="tutorialspoint" href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Tutorial's Point Regex Syntax</a>
+                or visit the <a href="help">Help page!</a></p>
+                  <h8> Here are some quick pointers for using Tabula's regex feature:</h8>
+                  <ul style="padding-left:15px;">
+                    <li>Accepted regex commands follow the syntax for Java. For more information on Regex syntax for Java visit
+                      <a class="tutorialspoint" href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Tutorial's Point Regex Syntax</a>
+                        or visit the <a class="helppage" href="help">Help page</a>.</li>
+                    <li>Can specify case sensitivity by providing the upper and lowercase letter within a bracket.</li>
+                    <li>Only need to provide one backslash as an input character instead of two backslashes.</li>
+                  </ul>
+
+ -->
+          </div>
           <p></p>
           <h1 id= "troubleshooting" name="trouble">Having trouble with Tabula?</h1>
           <ol>
