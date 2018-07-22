@@ -143,7 +143,7 @@
 
            <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
         <button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disabled_if_there_are_selections %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button>
-        <button type="button" class="btn btn-default" id="regex_options_title" onclick="Regex_Options_btn()"><span class="glyphicon glyphicon-list"></span> Select by Regex</button>
+        <button type="button" class="btn btn-default" id="regex_options_title" onclick="Regex_Options_btn()"><span class="glyphicon glyphicon-list"></span> Select by Text</button>
 
 
         <span style="float: right">
@@ -238,18 +238,18 @@
           <div id="regex-container" > <!--container for regex options style="display: none;"-->
             <div class="container" style="width: 100%;">
 
-              <h4 id = "regex_options_title">Select Regions with Regex</h4>
-              <p>Enter a regular expression that matches the start and end of your table. To exclude header/footer text, drag the blue/green bumpers to cover it.</p>
+              <h4 id = "regex_options_title">Select Regions with Text</h4>
+              <p>Select regions by searching with the the text that marks the start and end of the table.</p>
               <div id="home">
                 <form id="regex_input_form" autocomplete="off">
                   <div>
                     <label>Table Start</label>
-                    <input type="text" class="form-control" id="pattern_before" placeholder="Table Start Pattern...">
+                    <input type="text" class="form-control" id="pattern_before" placeholder="Table Start Text...">
                     <label><input type="checkbox" id="include_pattern_before" value=false> Include match in table? </label>
                   </div>
                   <div>
                     <label>Table End</label>
-                    <input type="text" class="form-control" id="pattern_after" placeholder="Table End Pattern...">
+                    <input type="text" class="form-control" id="pattern_after" placeholder="Table End Text...">
                     <label><input type="checkbox" id="include_pattern_after" value=false> Include match in table? </label>
                   </div>
                   <button type="button" id="regex-search" class="btn btn-default" disabled>Search</button>
@@ -273,10 +273,11 @@
                  <p></p>
                   <h5>Tips:</h5>
                   <ul style="padding-left:15px;">
-                    <li>Regexes use <a class="tutorialspoint"  href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Java Syntax</a>.</li>
                     <li>Case sensitive.</li>
                     <li>All matches will be selected.</li>
-                    <li><a class="helppage" href="help#regex">More help on regexes</a>.</li>
+                    <li>You can use <a class="tutorialspoint"  href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Regex Syntax (Java)</a>.</li>
+                    <li><a class="helppage" href="help#regex">More help on select by text</a>.</li>
+                    <li>To exclude header/footer regions from the search, drag the blue/green bumpers to cover the header/footer.</li>
                   </ul>
                 </p>
 
@@ -428,17 +429,6 @@
         </div> <!-- /container -->
 
         <p></p>
-        <!-- social media navigation bar at the bottom of the page, has twitter, open collective, and Tabula.Technology listed.-->
-        <div class="container">
-          <div class="navbar">
-          <ul class="nav nav-justified nav-tabs-justified" id="myNav">
-            <li><a href="https://twitter.com/tabulapdf?lang=en"><img src="../img/Twitter_Logo_Blue.png" width="30" height="30" class="tabulapdftwt">@TabulaPDF</a></li>
-            <li><a href="https://tabula.technology"><img src="/img/logo.png" width="30" height="30"> Tabula.Technology</a></li>
-            <li><a href="https://opencollective.com/tabulapdf"><img src="./img/open_collective.png" width="30" height="30"class = "tabulapdfoc">Tabulapdf</a></li>
-          </ul>
-          </div>
-        </div>
-
         <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
         <nestedscript type="text/javascript" src="js/vendor/upload-group.js"></nestedscript>
         <nestedscript type="text/javascript" src="js/vendor/jquery.tablesorter.min.js"></nestedscript>
@@ -509,17 +499,6 @@
           </div> <!-- /jumbotron -->
         </div> <!-- /container -->
         <p></p>
-          <!-- social media navigation bar at the bottom of the page, has twitter, open collective, and Tabula.Technology listed.-->
-          <div class="container">
-            <div class="navbar">
-            <ul class="nav nav-justified nav-tabs-justified" id="myNav">
-              <li><a href="https://twitter.com/tabulapdf?lang=en"><img src="../img/Twitter_Logo_Blue.png" width="30" height="30">@TabulaPDF</a></li>
-              <li><a href="https://tabula.technology"><img src="/img/logo.png" width="30" height="30">Tabula.Technology</a></li>
-              <li><a href="https://opencollective.com/tabulapdf"><img src="./img/open_collective.png" width="30" height="30">Tabulapdf</a></li>
-            </ul>
-            </div>
-          </div>
-
        </script>
 
       <script type="text/templates" id="templates-template">
@@ -579,99 +558,60 @@
       <script type="text/template" id="help-template">
         <div class="container">
           <!--navigation bar for subsections in the help page -->
-            <div class="navbar">
+          <div class="navbar">
             <ul class="nav nav-justified nav-tabs-justified" id="myNav">
               <li><a href="help#tabulahelp">How To Use Tabula</a></li>
-              <li><a href="help#regexhelp">Regex Help</a></li>
               <li><a href="help#troubleshooting">Troubleshooting</a></li>
+              <li><a href="help#regexhelp">Select By Text Help</a></li>
             </ul>
-            </div>
+          </div>
         <p></p><p></p>
           <div class="jumbotron help">
-          <h1 id="tabulahelp" name="howto">How to Use Tabula</h1>
-          <ol>
-            <li>Upload a PDF file containing a data table.</li>
-            <li>Select the table by clicking the top left corner of a table and dragging the mouse to the bottom right corner, until all of the data is included in the shaded selection area.</li>
-            <li>A window will then appear containing your data. Inspect the data to make sure it looks correct. If data is missing, you may have to slightly expand your selection.</li>
-            <li>Click the Download button.</li>
-            <li>Now you can work with your data as text file or a spreadsheet rather than a PDF! <br>
-            (You can open the downloaded file in Microsoft Excel or the free <a class="libreoffice_url" href="http://www.libreoffice.org/discover/calc/">LibreOffice Calc</a>)<p></p></li>
-          </ol>
-          <p>Note: Tabula only works on text-based PDFs, not scanned documents.</p>
-          <p></p>
-          <!--Regex Help section -->
-          <h1 id="helppage" name="help">Regex Help</h1>
-          <div style="padding-left: 25px;">
-            <ul style="padding-left: 15px;">
-                <li>Providing a regex command can improve how Tabula is able to detect where the data lies within the pdf! </li>
-                <li>Currently, the type of accepted regex commands follow the syntax for Java. </li>
-            </ul>
-            <h2>How to use Regex with Tabula</h2>
+            <div class="helpsection helpsteps">
+              <h1 id="tabulahelp" name="howto">How to Use Tabula</h1>
+              <ol>
+                <li>Upload a PDF file containing a data table.</li>
+                <li>Select the table by clicking the top left corner of a table and dragging the mouse to the bottom right corner, until all of the data is included in the shaded selection area.</li>
+                <li>A window will then appear containing your data. Inspect the data to make sure it looks correct. If data is missing, you may have to slightly expand your selection.</li>
+                <li>Click the Download button.</li>
+                <li>Now you can work with your data as text file or a spreadsheet rather than a PDF! <br>
+                (You can open the downloaded file in Microsoft Excel or the free <a class="libreoffice_url" href="http://www.libreoffice.org/discover/calc/">LibreOffice Calc</a>)<p></p></li>
+              </ol>
+              <p>Note: Tabula only works on text-based PDFs, not scanned documents.</p>
+            </div>
+            <div class="helpsection">
+              <h1 id= "troubleshooting" name="trouble">Having trouble with Tabula?</h1>
+              <ol>
+                <li><strong>Tabula said "Sorry, your PDF file is image-based" -- what does that mean?</strong> Your PDF does not have any embedded text. It might have been scanned from paper. Tabula is not able to extract any data from image-based PDFs. You can try OCRing the PDF with a tool like Adobe Acrobat Pro (paid), Tesseract, <a href="http://www.tobias-elze.de/pdfsandwich/">PDFSandwich</a> (Mac/Linux, free) or <a href="https://code.google.com/p/lime-ocr/">Lime OCR</a> (Windows, free) and then trying Tabula again.</li>
+                <li><strong>Some columns of my table are combined. What can I do?</strong> Tabula sometimes uses "streams" of whitespace to recreate your table's structure. If headers span multiple columns, they're probably causing a problem. Try excluding them from your selection (or selecting them separately). </li>
+                <li><strong>Some columns of my table are combined. And the headers aren't the problem! What <em>else</em> can I do?</strong> Tabula has two extraction methods. It tries to guess which one is right for document, but it's wrong sometimes. Try selecting the other (of "stream" and "lattice"), on the left in extraction mode, to see if that fixes the problem.</li>
+                <li><strong>Tabula helps, but my extracted data isn't in the layout I want! How can I fix <em>that</em>?</strong> Tabula tries to recreate the table structure of the original document. You can think of Tabula as a data <em>extraction</em> tool rather than a data <em>transformation</em> tool. If you want to clean and transform your exported CSV or TSV, tools such as <a href="http://openrefine.org/">OpenRefine</a> or a spreadsheet program might be a good place to start.</li>
+                <li><strong>Tabula's taking too long!</strong> Sorry! Tabula has to do a lot of weird math to reconstruct your table. Tabula's command-line counterpart, <a href="https://www.github.com/tabulapdf/tabula-extractor">tabula-extractor</a> is faster, but a little harder to use. You might give it a try.</li>
+                <li><strong>I had some other problem!</strong> Sorry! You can <a href="https://www.github.com/tabulapdf/tabula/issues/new">report it to us here</a>. Be sure to include your PDF, either as a link or attached to the issue -- or email it to <a href="about">one of the Tabula creators.</a> </li>
+              </ol>
+            </div>
+          <div class="helpsection regex-help">
+            <h1 id="helppage" name="help">Help with Select By Text (Regex)</h1>
+            <p>Select a region by providing the start and end text of your tables, instead of selecting each table by dragging a selection over it.<p>
+            <h2>How to Select By Text</h2>
             <ol style="padding-left: 15px;">
-              <li>Located in the Extraction page's Regex Options tab, you can click if the first command is inclusive or not.</li>
-              <ul>
-                <li>Inclusive: The command is included</li>
-                <li>Exclusive: Not including the command</li>
-              </ul>
-              <li>Once you've inputted your command(s), you can click the <b>Search button</b> located in the Extraction page's Regex Options tab.
-                You should see the result highlighted based on what Tabula believesit understood on the pdf, located in the middle of the screen.</li>
-              <li>Additionally, below the <b>Search button</b> is an option to view the amount of results found from the command(s) and you have the option to delete the rectangle Tabula drew based of your input.</li>
+              <li>Click the Select By Text button on the Extraction page's Regex Options tab.<li>
+              <li>Enter the text that marks the beginning of your table. If this text is part of the table and should be included in the table, check the "Include match in table?" box.</li>
+              <li>Likewise, enter the text that marks the end of your table. If this text is part of the table and should be included in the table, check the "Include match in table?" box.</li>
+              <li>Click the <b>Search button</b> located in the Extraction page's Regex Options tab. You may have to wait a few seconds for results</li>
+              <li>You will see a selection generated for each table that matches your search terms.</li>
+              <li>If you need to adjust your search, you can delete the results of your text search in the table of results below the search button.</li>
             </ol>
-            <h2>Don't know regex?</h2>
+            <h2>Additional Options</h2>
             <ul style="padding-left: 15px;">
-              <li>For more information on regex syntax for Java visit <a class ="tutorialspoint" href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Tutorial's
-              Point Regex Syntax</a> </li>
-              <li>For help on how to use regex (not necessarily regex syntax for Java) you can visit <a href="https://regexr.com/">here</a>.</li>
+              <li>If the text that marks your table varies (e.g. Table 1, Table 2), you can use Regular Expression ("regex") syntax to select it. More on <a class="tutorialspoint" href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">regex syntax</a>. </a> </li>
+              <li>You can exclude header/footer text by dragging the green and blue bumpers at the top/bottom of the page to cover text you'd like to exclude</li>
             </ul>
-
-<!--         <h5 id ="regex_guide"><b>Regex Guide</b></h5>
-        <p>Providing a regex command can improve how Tabula is able to detect where the data lies within the pdf! </p>
-        <p>On the first tab, <b>Commands</b> you can click if the first command is inclusive or not.</p>
-        <ul style="padding-left: 15px;">
-          <li>Inclusive: The command is included</li>
-          <li>Exclusive: Not including the command</li>
-        </ul>
-        <p>Once you've inputted your command(s), you can click the <b>Search button</b>! You should see the result highlighted based on what Tabula believes
-           it understood on the pdf, located in the middle of the screen.</p>
-        <p>Additionally, below the <b>Search button</b> is an option to view the. This serves as a view to see how many results the regex comman(s) generates.</p>
-        <p>For more information on Regex syntax for Java visit
-        <a class="tutorialspoint" href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Tutorial's Point Regex Syntax</a>
-                or visit the <a href="help">Help page!</a></p>
-                  <h8> Here are some quick pointers for using Tabula's regex feature:</h8>
-                  <ul style="padding-left:15px;">
-                    <li>Accepted regex commands follow the syntax for Java. For more information on Regex syntax for Java visit
-                      <a class="tutorialspoint" href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Tutorial's Point Regex Syntax</a>
-                        or visit the <a class="helppage" href="help">Help page</a>.</li>
-                    <li>Can specify case sensitivity by providing the upper and lowercase letter within a bracket.</li>
-                    <li>Only need to provide one backslash as an input character instead of two backslashes.</li>
-                  </ul>
-
- -->
           </div>
-          <p></p>
-          <h1 id= "troubleshooting" name="trouble">Having trouble with Tabula?</h1>
-          <ol>
-          <li><strong>Tabula said "Sorry, your PDF file is image-based" -- what does that mean?</strong> Your PDF does not have any embedded text. It might have been scanned from paper. Tabula is not able to extract any data from image-based PDFs. You can try OCRing the PDF with a tool like Adobe Acrobat Pro (paid), Tesseract, <a href="http://www.tobias-elze.de/pdfsandwich/">PDFSandwich</a> (Mac/Linux, free) or <a href="https://code.google.com/p/lime-ocr/">Lime OCR</a> (Windows, free) and then trying Tabula again.</li>
-          <li><strong>Some columns of my table are combined. What can I do?</strong> Tabula sometimes uses "streams" of whitespace to recreate your table's structure. If headers span multiple columns, they're probably causing a problem. Try excluding them from your selection (or selecting them separately). </li>
-          <li><strong>Some columns of my table are combined. And the headers aren't the problem! What <em>else</em> can I do?</strong> Tabula has two extraction methods. It tries to guess which one is right for document, but it's wrong sometimes. Try selecting the other (of "stream" and "lattice"), on the left in extraction mode, to see if that fixes the problem.</li>
-          <li><strong>Tabula helps, but my extracted data isn't in the layout I want! How can I fix <em>that</em>?</strong> Tabula tries to recreate the table structure of the original document. You can think of Tabula as a data <em>extraction</em> tool rather than a data <em>transformation</em> tool. If you want to clean and transform your exported CSV or TSV, tools such as <a href="http://openrefine.org/">OpenRefine</a> or a spreadsheet program might be a good place to start.</li>
-          <li><strong>Tabula's taking too long!</strong> Sorry! Tabula has to do a lot of weird math to reconstruct your table. Tabula's command-line counterpart, <a href="https://www.github.com/tabulapdf/tabula-extractor">tabula-extractor</a> is faster, but a little harder to use. You might give it a try.</li>
-          <li><strong>I had some other problem!</strong> Sorry! You can <a href="https://www.github.com/tabulapdf/tabula/issues/new">report it to us here</a>. Be sure to include your PDF, either as a link or attached to the issue -- or email it to <a href="about">one of the Tabula creators.</a> </li>
-          </ol>
-
+          
           </div> <!-- /jumbotron -->
         </div> <!-- /container -->
 
-        <!-- social media navigation bar at the bottom of the page, has twitter, open collective, and Tabula.Technology listed.-->
-        <div class="container">
-          <div class="navbar">
-          <ul class="nav nav-justified nav-tabs-justified" id="myNav">
-            <li><a href="https://twitter.com/tabulapdf?lang=en"><img src="../img/Twitter_Logo_Blue.png" width="30" height="30">@TabulaPDF</a></li>
-            <li><a href="https://tabula.technology"><img src="/img/logo.png" width="30" height="30"> Tabula.Technology</a></li>
-            <li><a href="https://opencollective.com/tabulapdf"><img src="./img/open_collective.png" width="30" height="30"> Tabulapdf</a></li>
-          </ul>
-          </div>
-        </div>
        </script>
 
     </div> <!-- /templates -->
@@ -687,6 +627,17 @@
 
     <script type="text/javascript" src="js/tabula.js?_cachebuster=201510300905"></script> <!-- actually starts Tabula -->
     <script type="text/javascript" src="js/template_library.js?_cachebuster=201510300905"></script> <!-- needed on almost all pages -->
+
+    <!-- social media navigation bar at the bottom of the page, has twitter, open collective, and Tabula.Technology listed.-->
+    <div class="container social-media-nav">
+      <div class="navbar">
+      <ul class="nav nav-justified nav-tabs-justified" id="myNav">
+        <li><a href="https://twitter.com/tabulapdf?lang=en"><img src="../img/Twitter_Logo_Blue.png" width="30" height="30">@TabulaPDF</a></li>
+        <li><a href="https://tabula.technology"><img src="/img/logo.png" width="30" height="30"> Tabula.Technology</a></li>
+        <li><a href="https://opencollective.com/tabulapdf"><img src="./img/open_collective.png" width="30" height="30"> OpenCollective (donate!)</a></li>
+      </ul>
+      </div>
+    </div>
 
   </body>
 </html>

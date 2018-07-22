@@ -7784,12 +7784,20 @@ div.spinner {
 }
 
 /* social media bar, via NCSU 2018 */
-.social_media_nav {
+.social-media-nav {
   display: block;
   margin: 0 auto;
   text-align: center;
   width: 70%;
   padding-bottom: 5px;
+  border-bottom: none;
+  border-top: 1px solid #ddd;
+}
+.social-media-nav .navbar {
+  border-bottom: none;
+}
+.social-media-nav .navbar a {
+  border-bottom: none;
 }
 
 .navbar_1 .navbar-nav_1 {
