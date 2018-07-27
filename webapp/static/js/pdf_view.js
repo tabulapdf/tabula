@@ -471,12 +471,12 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     $('body').addClass('page-selections');
 
 
-    var regex_search_collection = Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.models;
+    var regex_search_collection = Tabula.pdf_view.components['regex_search_view'].regex_results_handler.collection.models;
 
     /*
      * The rectangular coordinate areas associated with regex searches are stored in 2 areas (as of 1/30/2018):
      *  1) this.pdf_view.pdf_document.selections.models
-     *  2) Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.models
+     *  2) Tabula.pdf_view.components['regex_search_view'].regex_results_handler.collection.models
      *
      *  Therefore, when destroying one of these coordinate areas, its reference must be removed from both collections
      *  Also: When creating one of these coordinate areas, renderSelection must be called only once
@@ -578,7 +578,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
 
     //Short-hand variable...
-    var regex_collection = Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.collection.models;
+    var regex_collection = Tabula.pdf_view.components['regex_search_view'].regex_results_handler.collection.models;
 
     var regex_selection_ids = [];
 
@@ -972,7 +972,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     data['header_scale'] = data['header_height']/parseFloat(this.$el.css('height'));
     var filter_data = Tabula.pdf_view.components['document_view'].update_filter_specs(data);
 
-    Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.update_regex_search_properties_on_resize(filter_data);
+    Tabula.pdf_view.components['regex_search_view'].regex_results_handler.update_regex_search_properties_on_resize(filter_data);
     },
 
 
@@ -1086,13 +1086,6 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   },
 
   _onSelectEnd: function(selection) {
-
-    console.log("In _onSelectEnd:");
-    console.log("selection:");
-    console.log(selection);
-
-
-
     var selections = Tabula.pdf_view.pdf_document.selections;
 
     var sel = selections.updateOrCreateByVendorSelectorId(selection,this.model.get('number'),
@@ -1106,10 +1099,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
       selection.remove();
     }
 
-
-
-    // if this is not the last pager
-
+    // if this is not the last page
     if((this.model != this.model.collection.last()) && (selection.el.className!=="regex-table-region")) {
       var but_id = this.model.get('number') + '-' + selection.id;  //create a "Repeat this Selection" button
       var button = $('<div class="btn-group repeat-lassos-group" id="'+but_id+'"> \
@@ -1161,6 +1151,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     'click #all-data': 'queryAllData',
     'click #repeat-lassos': 'repeatLassos',
     'click #save-template': 'saveTemplate',
+    'click #regex_options_title': 'toggleRegexOptions'
 
   },
 
@@ -1173,6 +1164,18 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     this.saved_template_library_view = new Tabula.SavedTemplateLibraryView({collection: this.saved_template_collection})
   },
 
+
+
+  toggleRegexOptions: function(){
+    if (magical_state_thingy === true){
+      Tabula.pdf_view.components['regex_search_view'].$el.hide()
+      magical_state_thingy = false;
+    }else{
+      Tabula.pdf_view.components['regex_search_view'].$el.show()
+      magical_state_thingy = true;
+    }
+  },
+
   /* in case there's a PDF with a complex format that's repeated on multiple pages */
   repeatFirstPageLassos: function(){
     alert('not yet implemented');
@@ -1181,8 +1184,8 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   clearAllSelections: function(){
-    Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.reset();
-    Tabula.pdf_view.components['sidebar_view'].regex_handler.regex_results_handler.render();
+    Tabula.pdf_view.components['regex_search_view'].regex_results_handler.reset();
+    Tabula.pdf_view.components['regex_search_view'].regex_results_handler.render();
     _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){
       if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
     Tabula.pdf_view.pdf_document.selections.reset([]);
@@ -1259,7 +1262,7 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   }
 });
 
-//Tabula.RegexHandler
+//Tabula.RegexSearchView
 //   Backbone View extension for handling the UI regarding regex searches.
 //
 //   Serves as the Controller in the Model-View-Controller pattern enforced by Backbone. Creates the ReqgexQueryHandler
@@ -1268,12 +1271,14 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
 //
 //   11/23/2017  REM; created
 //
-Tabula.RegexHandler = Backbone.View.extend({
+Tabula.RegexSearchView = Backbone.View.extend({
   el: "#regex-container",
   className: 'regex-handler',
   events: {'click #regex-search': 'perform_regex_search'},
   regex_results_handler: null,
   regex_query_handler: null,
+  template: _.template($('#templates #regex-search-template').html().replace(/nestedscript/g, 'script')),
+
   initialize: function(){
     this.regex_query_handler = new Tabula.RegexQueryHandler();
     this.regex_results_handler= new Tabula.RegexCollectionView();
@@ -1314,6 +1319,11 @@ Tabula.RegexHandler = Backbone.View.extend({
       alert('The requested search has already been performed. Please try a different search pattern.')
     }
     this.regex_query_handler.reset_inputs();
+  },
+
+  render: function() {
+    this.$el.html(this.template());
+    return this;
   }
 });
 
@@ -1582,18 +1592,12 @@ Tabula.RegexResultView = Backbone.View.extend({
   tagName: 'tr',
   events: {'click .del':'remove_element_request'},
   initialize: function(data){
-    //console.log('In Tabula.RegexResultView.initialize:');
-    //console.log(data.model);
     this.model = data.model;
-//    console.log(JSON.stringify($('#regex-result').html()));
     this.template = _.template($('#regex-result').html());
 
     this.listenTo(this.model,'change',this.render);
   },
   render: function(){
-    //console.log("In render of Tabula.RegexResultView:");
-    //console.log("this.model:");
-    //console.log(this.model);
     this.$el.html(this.template(this.model.attributes));
     return this;
   },
@@ -1631,15 +1635,12 @@ Tabula.RegexResultModel = Backbone.Model.extend({
   matching_areas: null,  //set on initialize
 
   initialize: function(data) {
-
     this.set({
       pattern_before: data["pattern_before"],
       pattern_after: data["pattern_after"],
       num_matches: data["num_matches"],
       matching_areas: data["matching_areas"]
     });
-
-
   }
 });
 
@@ -1735,7 +1736,7 @@ Tabula.SidebarView = Backbone.View.extend({
   events:{ },
   thumbnail_list_view: null, // defined on initialize
   pdf_view: null,            // defined on initialize
-  regex_handler: new Tabula.RegexHandler(),
+  regex_search_view: new Tabula.RegexSearchView(),
   template: _.template($('#templates #select-sidebar-template').html().replace(/nestedscript/g, 'script')),
   initialize: function(stuff){
     _.bindAll(this, 'render')
@@ -2010,13 +2011,10 @@ Tabula.PDFView = Backbone.View.extend(
       this.components['document_view'] = new Tabula.DocumentView({el: '#pages-container' , pdf_view: this, collection: this.pdf_document.page_collection}); //creates page_views
       this.components['control_panel'] = new Tabula.ControlPanelView({pdf_view: this, saved_template_collection: this.saved_template_collection});
       this.components['sidebar_view'] = new Tabula.SidebarView({pdf_view: this, collection: this.pdf_document.page_collection});
-
+      this.components['regex_search_view'] = new Tabula.RegexSearchView({pdf_view: this, collection: this.pdf_document.page_collection});
 
       $(document).on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
       $('#sidebar').on('scroll', _.throttle(this.handleScroll, 100, {leading: false}));
-
-
-
 
 
       $('body').
@@ -2033,7 +2031,6 @@ Tabula.PDFView = Backbone.View.extend(
           selection.repeatLassoOnce();
           e.preventDefault();
         });
-
 
       window.tabula_router.route("pdf/:file_id/extract", function(){
         Tabula.pdf_view.createDataView();
@@ -2277,6 +2274,8 @@ Tabula.PDFView = Backbone.View.extend(
       this.components['sidebar_view'].thumbnail_list_view.$el = this.components['sidebar_view'].$el.find("#thumbnail-list");
       this.components['sidebar_view'].thumbnail_list_view.render();
 
+      $('#regex-search-container').append(this.components['regex_search_view'].render().el);
+
       $('.has-tooltip').tooltip();
 
       this.pageCount = this.pdf_document.page_collection.size();
@@ -2406,13 +2405,3 @@ function roundTo(num, fancymathwordforthenumberofdigitsafterthedecimal){
 //     y.style.display = "none";
 //  }
 // }
-
-function Regex_Options_btn(){
-  var x = document.getElementById("regex-container");
-  if(x.style.display == "none"){
-    x.style.display = "inline";
-  }
-  else{
-    x.style.display = "none";
-  }
-}

@@ -143,7 +143,7 @@
 
            <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
         <button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disabled_if_there_are_selections %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button>
-        <button type="button" class="btn btn-default" id="regex_options_title" onclick="Regex_Options_btn()"><span class="glyphicon glyphicon-list"></span> Select by Text</button>
+        <button type="button" class="btn btn-default" id="regex_options_title"><span class="glyphicon glyphicon-list"></span> Select by Text</button>
 
 
         <span style="float: right">
@@ -227,6 +227,56 @@
         </div>
       </script>
 
+      <script type="text/template" id="regex-search-template">
+        <div class="container" style="width: 100%;">
+
+          <h4 id = "regex_options_title">Select Regions with Text</h4>
+          <p>Select regions by searching with the the text that marks the start and end of the table.</p>
+          <div id="home">
+            <form id="regex_input_form" autocomplete="off">
+              <div>
+                <label>Table Start</label>
+                <input type="text" class="form-control" id="pattern_before" placeholder="Table Start Text...">
+                <label><input type="checkbox" id="include_pattern_before" value=false> Include match in table? </label>
+              </div>
+              <div>
+                <label>Table End</label>
+                <input type="text" class="form-control" id="pattern_after" placeholder="Table End Text...">
+                <label><input type="checkbox" id="include_pattern_after" value=false> Include match in table? </label>
+              </div>
+              <button type="button" id="regex-search" class="btn btn-default" disabled>Search</button>
+            </form>
+            
+            <h4>Searches</h4>
+            <p>Click to delete</p>
+            <table class="regex-results-table">
+              <thead class="thead-inverse">
+                <tr>
+                 <th>From&hellip;</th>
+                 <th>To</th>
+                 <th>Count</th>
+                </tr>
+              </thead>
+              <tbody class="regex-results-list" />
+            </table>
+
+            <hr />
+            <p style="padding-left:10px;">
+             <p></p>
+              <h5>Tips:</h5>
+              <ul style="padding-left:15px;">
+                <li>Case sensitive.</li>
+                <li>All matches will be selected.</li>
+                <li>You can use <a class="tutorialspoint"  href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Regex Syntax (Java)</a>.</li>
+                <li><a class="helppage" href="help#regex">More help on select by text</a>.</li>
+                <li>To exclude header/footer regions from the search, drag the blue/green bumpers to cover the header/footer.</li>
+              </ul>
+            </p>
+
+          </div>
+        </div>
+      </script>
+
       <script type="text/template" id="pdf-view-template">
         <div id="sidebar">
           <!-- thumbnails get rendered here by JS -->
@@ -236,53 +286,6 @@
           <div id="control-panel" />
           <div id="pages-container" />
           <div id="regex-container" > <!--container for regex options style="display: none;"-->
-            <div class="container" style="width: 100%;">
-
-              <h4 id = "regex_options_title">Select Regions with Text</h4>
-              <p>Select regions by searching with the the text that marks the start and end of the table.</p>
-              <div id="home">
-                <form id="regex_input_form" autocomplete="off">
-                  <div>
-                    <label>Table Start</label>
-                    <input type="text" class="form-control" id="pattern_before" placeholder="Table Start Text...">
-                    <label><input type="checkbox" id="include_pattern_before" value=false> Include match in table? </label>
-                  </div>
-                  <div>
-                    <label>Table End</label>
-                    <input type="text" class="form-control" id="pattern_after" placeholder="Table End Text...">
-                    <label><input type="checkbox" id="include_pattern_after" value=false> Include match in table? </label>
-                  </div>
-                  <button type="button" id="regex-search" class="btn btn-default" disabled>Search</button>
-                </form>
-                
-                <h4>Searches</h4>
-                <p>Click to delete</p>
-                <table class="regex-results-table">
-                  <thead class="thead-inverse">
-                    <tr>
-                     <th>From&hellip;</th>
-                     <th>To</th>
-                     <th>Count</th>
-                    </tr>
-                  </thead>
-                  <tbody class="regex-results-list" />
-                </table>
-
-                <hr />
-                <p style="padding-left:10px;">
-                 <p></p>
-                  <h5>Tips:</h5>
-                  <ul style="padding-left:15px;">
-                    <li>Case sensitive.</li>
-                    <li>All matches will be selected.</li>
-                    <li>You can use <a class="tutorialspoint"  href="https://www.tutorialspoint.com/java/java_regular_expressions.htm">Regex Syntax (Java)</a>.</li>
-                    <li><a class="helppage" href="help#regex">More help on select by text</a>.</li>
-                    <li>To exclude header/footer regions from the search, drag the blue/green bumpers to cover the header/footer.</li>
-                  </ul>
-                </p>
-
-              </div>
-            </div>
           </div>
         </div>
         <nestedscript type="text/javascript" src="js/vendor/spin.min.js"></nestedscript>
