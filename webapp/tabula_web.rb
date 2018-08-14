@@ -352,6 +352,13 @@ Cuba.define do
         tables.each do |table|
           res.write table.to_csv
         end
+        extractor = Tabula::Extraction::ObjectExtractor.new(pdf_path)
+        contentData = extractor.extract1()
+        print "Apple "
+
+        res.write contentData
+        extractor.close!
+
       when 'tsv'
         res['Content-Type'] = 'text/tab-separated-values'
         res['Content-Disposition'] = "attachment; filename=\"#{filename}.tsv\""

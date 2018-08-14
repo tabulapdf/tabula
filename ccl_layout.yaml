@@ -1,0 +1,16 @@
+# Details of a user
+---
+leftStartX: 80
+rightStartX: 320
+startY: 90
+endY: 723
+tableGap: 17.0
+tableDelimiter: "#####"
+twoColumns: true
+sections:
+- "^[0-9][A-E][0-9]{3}+ .*([Tt]echn.*|[Ss]oftware.*)#####Bold"
+- "^License Requirements"
+- "^Reporting Requirements"
+- "^List Based License Exceptions.*"
+- "^Special Conditions for STA"
+- "^List of Items Controlled"
