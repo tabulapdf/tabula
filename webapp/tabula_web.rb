@@ -349,11 +349,11 @@ Cuba.define do
       when 'csv'
         res['Content-Type'] = 'text/csv'
         res['Content-Disposition'] = "attachment; filename=\"#{filename}.csv\""
-        tables.each do |table|
-          res.write table.to_csv
-        end
+        #tables.each do |table|
+        #  res.write table.to_csv
+        #end
         extractor = Tabula::Extraction::ObjectExtractor.new(pdf_path)
-        contentData = extractor.extract1()
+        contentData = extractor.extract1(tables)
         print "Apple "
 
         res.write contentData
