@@ -97,11 +97,11 @@ def upload_template(template_file)
     raise InvalidTemplateError.new("template is invalid json: #{e}")
   end
 
-  raise InvalidTemplateError.new("template is invalid, must be an array of selection objects") unless template_data.is_a?(Array)
-  raise InvalidTemplateError.new("template is invalid; a selection object is invalid") unless template_data.all?{|sel| TEMPLATE_REQUIRED_KEYS.all?{|k| sel.has_key?(k)} }
+  #raise InvalidTemplateError.new("template is invalid, must be an array of selection objects") unless template_data.is_a?(Array)
+  #raise InvalidTemplateError.new("template is invalid; a selection object is invalid") unless template_data.all?{|sel| TEMPLATE_REQUIRED_KEYS.all?{|k| sel.has_key?(k)} }
 
-  page_count = template_data.map{|sel| sel["page"]}.uniq.size
-  selection_count = template_data.size
+  page_count = 0 #template_data.map{|sel| sel["page"]}.uniq.size
+  selection_count = 0 #template_data.size
 
   # write to file and to workspace
   Tabula::Workspace.instance.add_template({ "id" => template_id, 
@@ -336,6 +336,9 @@ Cuba.define do
         ]
       end
 
+      template_model_json = JSON.load(req.params['template_model_json'])
+      print "Apple " + template_model_json["selections"].to_json
+
       tables = Tabula.extract_tables(pdf_path, coords)
 
       filename =  if req.params['new_filename'] && req.params['new_filename'].strip.size
@@ -349,11 +352,14 @@ Cuba.define do
       when 'csv'
         res['Content-Type'] = 'text/csv'
         res['Content-Disposition'] = "attachment; filename=\"#{filename}.csv\""
-        #tables.each do |table|
-        #  res.write table.to_csv
-        #end
+
+        widgets = java.util.ArrayList.new()
+        tables.each do |table|
+          #res.write table.to_csv
+          widgets.add(table.to_csv)
+        end
         extractor = Tabula::Extraction::ObjectExtractor.new(pdf_path)
-        contentData = extractor.extract1(tables)
+        contentData = extractor.extract1(widgets, template_model_json["selections"].to_json)
         print "Apple "
 
         res.write contentData

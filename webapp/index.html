@@ -87,6 +87,8 @@
           <div id="hidden-fields">
             <input type='hidden' class='data-query' name='new_filename' value='<%=original_filename%>' >
             <input type='hidden' class='data-query' name='coords' value='<%=list_of_coords%>' >
+            <input type='hidden' class='data-query' name='template_model_json' value='<%=window.localStorage.getItem("layout")%>' >
+            
           </div>
           <!-- <input class="filename" name="new_filename" value="<%= new_filename || original_filename %>"></input> -->
           <span class="filename"><%= original_filename %></span>

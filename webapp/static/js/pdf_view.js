@@ -237,6 +237,7 @@ Tabula.Query = Backbone.Model.extend({
   // in the modal, modify and requery.
 
   initialize: function(){
+    //Backbone.Events.on("eventname", myEventHandler);
     // should be inited with list_of_coords
     _.bindAll(this, 'doQuery', 'setExtractionMethod', 'convertTo', 'convertToCSV',
                     'convertToTabulaExtractorScript', 'convertToBoundingBoxJSON');
@@ -295,15 +296,16 @@ Tabula.Query = Backbone.Model.extend({
   },
 
   doQuery: function(options) {
+
     this.query_data = {
       'coords': JSON.stringify(this.get('list_of_coords')),
       'new_filename': null,
+      'template_model_json': window.localStorage.getItem("layout")
     };
 
     // print selection coordinates to the console
     // way easier FOR NOW than downloading the script/JSON
-    console.log(_.map(this.get('list_of_coords'), function(l){ return [l.y1, l.x1, l.y2, l.x2].join(', '); }).join("\n") );
-
+    console.log("********" + _.map( this.get('list_of_coords'), function(l){ return [l.y1, l.x1, l.y2, l.x2].join(', '); }).join("\n") );
     // shallow copy the selections collection
     // so if hte user somehow changes the selections between starting the query and it finishing,
     // there isn't an error
@@ -1358,10 +1360,14 @@ Tabula.PDFView = Backbone.View.extend(
     },
 
     loadSavedTemplate: function(template_model){
+      //Backbone.Events.trigger("eventname",'clickedHtml'); 
+
       var existent_page_numbers = Tabula.pdf_view.pdf_document.page_collection.models.map(function(page){ return page.get('number')});
 
       _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){ if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
       template_model.fetch({success: _.bind(function(template_model){
+        window.localStorage.setItem("layout", JSON.stringify(template_model));
+
         var selections_to_load = _(_(template_model.get('selections')).filter(function(sel){ return existent_page_numbers.indexOf(sel.page) >= 0 })).map(function(sel){
           return Tabula.pdf_view.renderSelection(sel);
         });
