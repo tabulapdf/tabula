@@ -26,19 +26,19 @@ var TabulaRouter = Backbone.Router.extend({
   },
 
   help: function(){
-    document.title="Help | Tabula";
+    document.title="Help | PDF Extraction Framework";
     $('nav li a').removeClass('active'); $('nav #help-nav').addClass('active');
     $('#tabula-app').html( _.template( $('#help-template').html().replace(/nestedscript/g, 'script') )({ }) );
   },
 
   about: function(){
-    document.title="About | Tabula";
+    document.title="About | PDF Extraction Framework";
     $('nav li a').removeClass('active'); $('nav #about-nav').addClass('active');
     $('#tabula-app').html( _.template( $('#about-template').html().replace(/nestedscript/g, 'script') )({ }) );
   },
 
   templates: function(){
-    document.title="Templates | Tabula";
+    document.title="Templates | PDF Extraction Framework";
     $('nav li a').removeClass('active'); $('nav #templates-nav').addClass('active');
     $('#tabula-app').html( _.template( $('#templates-template').html().replace(/nestedscript/g, 'script') )({ }) );
     $.ajax({
@@ -55,7 +55,7 @@ var TabulaRouter = Backbone.Router.extend({
   },
 
   upload: function() { // library page.
-    document.title="Import | Tabula";
+    document.title="Import | PDF Extraction Framework";
     $('nav li a').removeClass('active'); $('nav #upload-nav').addClass('active');
     $.ajax({
       url: (base_uri || '/') + "js/library.js",

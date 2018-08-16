@@ -355,12 +355,10 @@ Cuba.define do
 
         widgets = java.util.ArrayList.new()
         tables.each do |table|
-          #res.write table.to_csv
           widgets.add(table.to_csv)
         end
         extractor = Tabula::Extraction::ObjectExtractor.new(pdf_path)
-        contentData = extractor.extract1(widgets, template_model_json["selections"].to_json)
-        print "Apple "
+        contentData = extractor.extractCsv(widgets, template_model_json["selections"].to_json)
 
         res.write contentData
         extractor.close!
@@ -439,14 +437,25 @@ Cuba.define do
         res['Content-Type'] = 'application/json'
 
         # start JSON array
-        res.write  "["
-        tables.each_with_index do |table, index|
-          res.write ", " if index > 0
-          res.write table.to_json[0...-1] + ", \"spec_index\": #{table.spec_index}}"
-        end
+        #res.write  "["
+        #tables.each_with_index do |table, index|
+        #  res.write ", " if index > 0
+        #  res.write table.to_json[0...-1] + ", \"spec_index\": #{table.spec_index}}"
+        #end
 
         # end JSON array
-        res.write "]"
+        #res.write "]"
+
+        widgets = java.util.ArrayList.new()
+        tables.each do |table|
+          widgets.add(table.to_json[0...-1] )
+        end
+        extractor = Tabula::Extraction::ObjectExtractor.new(pdf_path)
+        contentData = extractor.extractJson(widgets, template_model_json["selections"].to_json)
+
+        res.write contentData
+        extractor.close!
+
       end
     end
   end
