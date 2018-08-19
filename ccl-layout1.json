@@ -1,0 +1,17 @@
+{
+	"leftStartX": "80", 
+	"rightStartX": "320",
+	"startY": "90",
+	"endY": "723",
+	"tableGap": "17.0",
+	"tableDelimiter": "#####",
+	"twoColumns": "true",
+	"sections":[
+		{"name": "Description", "regex": "^[0-9][A-E][0-9]{3}+ .*([Tt]echn.*|[Ss]oftware.*)#####Bold", "isTabular": "false"},
+		{"name": "License Requirements", "regex": "^License Requirements", "isTabular": "true"},
+		{"name": "Reporting Requirements", "regex": "^Reporting Requirements", "isTabular": "false"},
+		{"name": "List Based License Exceptions", "regex": "^List Based License Exceptions.*", "isTabular": "false"},
+		{"name": "Special Conditions for STA", "regex": "^Special Conditions for STA", "isTabular": "false"},
+		{"name": "List of Items Controlled", "regex": "^List of Items Controlled", "isTabular": "false"}
+	]
+}

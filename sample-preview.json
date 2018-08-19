@@ -1,0 +1,379 @@
+[
+   {
+      "extraction_method" : "lattice",
+      "top" : 506.75195,
+      "left" : 72.06707,
+      "width" : 221.3390808105469,
+      "height" : 64.64892578125,
+      "data" : [
+         [
+            {
+               "top" : " ",
+               "left" : " ",
+               "width" : " ",
+               "height" : " ",
+               "text" : "Description"
+            },
+            {
+               "top" : " ",
+               "left" : " ",
+               "width" : " ",
+               "height" : " ",
+               "text" : "License Requirements"
+            },
+            {
+               "top" : 506.75195,
+               "left" : 72.06707,
+               "width" : 130.5416870117188,
+               "height" : 38.35797119140625,
+               "text" : "Control(s)"
+            },
+            {
+               "top" : 506.75195,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 38.35797119140625,
+               "text" : "Country Chart\r(See Supp. No. 1\rto part 738)"
+            },
+            {
+               "top" : 506.75195,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 38.35797119140625,
+               "text" : "Reporting Requirements "
+            },
+            {
+               "top" : 506.75195,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 38.35797119140625,
+               "text" : "List Based License Exceptions"
+            },
+            {
+               "top" : 506.75195,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 38.35797119140625,
+               "text" : "List of Items Controlled"
+            }
+         ],
+         [
+            {
+               "top" : 545.1099,
+               "left" : 72.06707,
+               "width" : 130.5416870117188,
+               "height" : 13.20050048828125,
+               "text" : "1A001 “Parts” and “components” made from\r\nfluorinated compounds, as follows (see List of\r\nItems Controlled)."
+            },
+            {
+               "top" : 545.1099,
+               "left" : 72.06707,
+               "width" : 130.5416870117188,
+               "height" : 13.20050048828125,
+               "text" : "Reason for Control: NS, AT "
+            },
+            {
+               "top" : 545.1099,
+               "left" : 72.06707,
+               "width" : 130.5416870117188,
+               "height" : 13.20050048828125,
+               "text" : "NS applies to entire entry"
+            },
+            {
+               "top" : 545.1099,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 13.20050048828125,
+               "text" : "NS Column 2"
+            },
+            {
+               "top" : 545.1099,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 13.20050048828125,
+               "text" : ""
+            },
+            {
+               "top" : 545.1099,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 13.20050048828125,
+               "text" : "(See Part 740 for\r\na description of all license exceptions)\r\nLVS: $5000\r\nGBS: N/A\r\nCIV: N/A "
+            },
+            {
+               "top" : 545.1099,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 13.20050048828125,
+               "text" : "Related Controls: (1) Items “specially\r\ndesigned” or modified for missiles or for\r\nitems on the U.S. Munitions List are “subject to the ITAR” (see 22 CFR parts 120 through\r\n130, including USML Category XXI). (2)\r\nSee also 1C009.\r\nRelated Definitions: N/A\r\nItems:\r\na. Seals, gaskets, sealants or fuel bladders,\r\n“specially designed” for “aircraft” or aerospace\r\nuse, made from more than 50% by weight of any\r\nof the materials controlled by 1C009.b or\r\n1C009.c;\r\n\r\nb. [Reserved] "
+            }
+         ],
+         [
+            {
+               "top" : 558.3104,
+               "left" : 72.06707,
+               "width" : 130.5416870117188,
+               "height" : 13.0904541015625,
+               "text" : " "
+            },
+            {
+               "top" : 558.3104,
+               "left" : 72.06707,
+               "width" : 130.5416870117188,
+               "height" : 13.0904541015625,
+               "text" : " "
+            },
+            {
+               "top" : 558.3104,
+               "left" : 72.06707,
+               "width" : 130.5416870117188,
+               "height" : 13.0904541015625,
+               "text" : "AT applies to entire entry"
+            },
+            {
+               "top" : 558.3104,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 13.0904541015625,
+               "text" : "AT Column 1"
+            },
+            {
+               "top" : 558.3104,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 13.0904541015625,
+               "text" : ""
+            },
+            {
+               "top" : 558.3104,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 13.0904541015625,
+               "text" : ""
+            },
+            {
+               "top" : 558.3104,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 13.0904541015625,
+               "text" : ""
+            }
+         ]
+      ],
+      "spec_index" : 0
+   },
+   {
+      "extraction_method" : "lattice",
+      "top" : 380.1115,
+      "left" : 324.07227,
+      "width" : 216.0234375,
+      "height" : 114.8174438476562,
+      "data" : [
+         [
+            {
+               "top" : "",
+               "left" : "",
+               "width" : "",
+               "height" : "",
+               "text" : "Description"
+            },
+            {
+               "top" : "",
+               "left" : "",
+               "width" : "",
+               "height" : "",
+               "text" : "License Requirements"
+            },
+            {
+               "top" : 380.1115,
+               "left" : 324.07227,
+               "width" : 134.9980773925781,
+               "height" : 38.13739013671875,
+               "text" : "Control(s)"
+            },
+            {
+               "top" : 380.1115,
+               "left" : 459.07034,
+               "width" : 81.02536010742188,
+               "height" : 38.13739013671875,
+               "text" : "Country Chart\r(See Supp. No.\r1 to part 738)"
+            },
+            {
+               "top" : 506.75195,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 38.35797119140625,
+               "text" : "Reporting Requirements "
+            },
+            {
+               "top" : 506.75195,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 38.35797119140625,
+               "text" : "List Based License Exceptions "
+            },
+            {
+               "top" : 506.75195,
+               "left" : 202.60875,
+               "width" : 90.79740905761719,
+               "height" : 38.35797119140625,
+               "text" : "List of Items Controlled"
+            }
+         ],
+         [
+            {
+               "top" : 418.2489,
+               "left" : 324.07227,
+               "width" : 134.9980773925781,
+               "height" : 12.86138916015625,
+               "text" : "1A002 “Composite” structures or laminates,\r\nhaving any of the following (see List of Items\r\nControlled)."
+            },
+            {
+               "top" : 418.2489,
+               "left" : 324.07227,
+               "width" : 134.9980773925781,
+               "height" : 12.86138916015625,
+               "text" : "Reason for Control: NS, NP, AT "
+            },
+            {
+               "top" : 418.2489,
+               "left" : 324.07227,
+               "width" : 134.9980773925781,
+               "height" : 12.86138916015625,
+               "text" : "NS applies to entire entry"
+            },
+            {
+               "top" : 418.2489,
+               "left" : 459.07034,
+               "width" : 81.02536010742188,
+               "height" : 12.86138916015625,
+               "text" : "NS Column 2"
+            },
+            {
+               "top" : 418.2489,
+               "left" : 459.07034,
+               "width" : 81.02536010742188,
+               "height" : 12.86138916015625,
+               "text" : "See § 743.1 of the EAR for reporting\r\nrequirements for exports under License\r\nExceptions, and Validated End-User\r\nauthorizations.\r"
+            },
+            {
+               "top" : 418.2489,
+               "left" : 459.07034,
+               "width" : 81.02536010742188,
+               "height" : 12.86138916015625,
+               "text" : "(See Part 740 for\r\na description of all license exceptions)\r\nLVS: $1,500; N/A for NP; N/A for\r\n“composite” structures or laminates\r\ncontrolled by 1A002.a, having an\r\norganic “matrix” and made from\r\nmaterials controlled by 1C010.c or\r\n1C010.d.\r\nGBS: N/A"
+            },
+            {
+               "top" : 418.2489,
+               "left" : 459.07034,
+               "width" : 81.02536010742188,
+               "height" : 12.86138916015625,
+               "text" : "Related Controls: (1) See ECCNs 1E001\r\n(“development” and “production”) and\r\n1E201 (“use”) for technology for items\r\ncontrolled by this entry. (2) Also see\r\nECCNs 1A202, 1C010, 1C210, 9A010, and\r\n9A110. (3) “Composite” structures\r\n“specially designed” for missile applications\r\n(including “specially designed” subsystems,\r\n“parts,” and “components”) are controlled by\r\nECCN 9A110. (4) “Composite” structures\r\nor laminates “specially designed” or prepared\r\nfor use in separating uranium isotopes are\r\nsubject to the export licensing authority of\r\nthe Nuclear Regulatory Commission (see 10\r\nCFR part 110).\r\nRelated Definitions: N/A\r\nItems:\r\na. Consisting of an organic “matrix” and\r\nmaterials controlled by 1C010.c 1C010.d, or\r\n1C010.e or\r\nb. Consisting of a metal or carbon “matrix”, and\r\nany of the following:\r\nb.1. Carbon “fibrous or filamentary\r\nmaterials” having all of the following:\r\nb.1.a. A “specific modulus” exceeding\r\n10.15 x 106\r\n m; and\r\nb.1.b. A “specific tensile strength”\r\nexceeding 17.7 x 104\r\n m; or\r\nb.2. Materials controlled by 1C010.c. "
+            }
+         ],
+         [
+            {
+               "top" : 431.1103,
+               "left" : 324.07227,
+               "width" : 134.9980773925781,
+               "height" : 50.87945556640625,
+               "text" : " "
+            },
+            {
+               "top" : 431.1103,
+               "left" : 324.07227,
+               "width" : 134.9980773925781,
+               "height" : 50.87945556640625,
+               "text" : " "
+            },
+            {
+               "top" : 431.1103,
+               "left" : 324.07227,
+               "width" : 134.9980773925781,
+               "height" : 50.87945556640625,
+               "text" : "NP applies to 1A002.b.1 in\r\nthe form of tubes with an\r\ninside diameter between 75\r\nmm and 400 mm "
+            },
+            {
+               "top" : 431.1103,
+               "left" : 459.07034,
+               "width" : 81.02536010742188,
+               "height" : 50.87945556640625,
+               "text" : "NP Column 1 "
+            },
+            {
+               "top" : 431.1103,
+               "left" : 459.07034,
+               "width" : 81.02536010742188,
+               "height" : 50.87945556640625,
+               "text" : ""
+            },
+            {
+               "top" : 431.1103,
+               "left" : 459.07034,
+               "width" : 81.02536010742188,
+               "height" : 50.87945556640625,
+               "text" : ""
+            },
+            {
+               "top" : 431.1103,
+               "left" : 459.07034,
+               "width" : 81.02536010742188,
+               "height" : 50.87945556640625,
+               "text" : ""
+            }
+         ],
+         [
+            {
+               "top" : 431.1103,
+               "left" : 324.07227,
+               "width" : 134.9980773925781,
+               "height" : 50.87945556640625,
+               "text" : " "
+            },
+            {
+               "top" : 431.1103,
+               "left" : 324.07227,
+               "width" : 134.9980773925781,
+               "height" : 50.87945556640625,
+               "text" : " "
+            },
+            {
+               "top" : 431.1103,
+               "left" : 324.07227,
+               "width" : 134.9980773925781,
+               "height" : 50.87945556640625,
+               "text" : "AT applies to entire entry "
+            },
+            {
+               "top" : 431.1103,
+               "left" : 459.07034,
+               "width" : 81.02536010742188,
+               "height" : 50.87945556640625,
+               "text" : "AT Column 1 "
+            },
+            {
+               "top" : 431.1103,
+               "left" : 459.07034,
+               "width" : 81.02536010742188,
+               "height" : 50.87945556640625,
+               "text" : ""
+            },
+            {
+               "top" : 431.1103,
+               "left" : 459.07034,
+               "width" : 81.02536010742188,
+               "height" : 50.87945556640625,
+               "text" : ""
+            },
+            {
+               "top" : 431.1103,
+               "left" : 459.07034,
+               "width" : 81.02536010742188,
+               "height" : 50.87945556640625,
+               "text" : ""
+            }
+         ]
+      ],
+      "spec_index" : 0
+   }
+]
