@@ -53,7 +53,8 @@ module Tabula
 
           area = page.getArea(spec['y1'], spec['x1'], spec['y2'], spec['x2'])
 
-          table_extractor = use_spreadsheet_extraction_method ? sea : bea
+          #table_extractor = use_spreadsheet_extraction_method ? sea : bea
+          table_extractor = sea
           table_extractor.extract(area).each { |table| table.spec_index = spec["spec_index"]; y.yield table }
         end
       end;

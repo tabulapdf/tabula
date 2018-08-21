@@ -10,7 +10,7 @@
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
 
-    <title>Tabula</title>
+    <title>PDF Extraction Framework</title>
 
     <base href="/"><!-- overwritten dynamically with the value of $servlet_context.getContextPath or ENV["ROOT_URI"] -->
 
@@ -39,18 +39,12 @@
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="">Tabula</a>
+          <a class="navbar-brand" href="">PDF Extraction Framework</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-left">
             <li><a id="upload-nav" href="">My Files</a></li>
-            <li><a id="templates-nav" href="mytemplates">My Templates</a></li>
-            <li><a id="about-nav" href="about">About</a></li>
-            <li><a id="help-nav" href="help">Help</a></li>
-            <li><a href="https://github.com/tabulapdf/tabula" target="_blank">Source Code</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a target="_blank" href="https://opencollective.com/tabulapdf">Support Tabula on OpenCollective!</a></li>
+            <li><a id="templates-nav" href="mytemplates">My Layout Templates</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -87,19 +81,20 @@
           <div id="hidden-fields">
             <input type='hidden' class='data-query' name='new_filename' value='<%=original_filename%>' >
             <input type='hidden' class='data-query' name='coords' value='<%=list_of_coords%>' >
+            <input type='hidden' class='data-query' name='template_model_json' value='<%=window.localStorage.getItem("layout")%>' >
+            
           </div>
           <!-- <input class="filename" name="new_filename" value="<%= new_filename || original_filename %>"></input> -->
           <span class="filename"><%= original_filename %></span>
           <label for="format">Export Format:</label>
           <select name="format" <%=disableIfNoData%> class="form-control format">
             <option value="csv">CSV</option>
-            <option value="tsv">TSV</option>
+            <option value="xml">XML</option>
             <option value="bbox">JSON (dimensions)</option>
             <option value="json">JSON (data)</option>
             <!-- <option value="&#x1F4A9;SV">&#x1F4A9;SV</option> -->
-            <option value="zip">zip of CSVs</option>
             <!-- <option value="xml">XML</option> -->
-            <option value="script">Script</option>
+            <option value="script">Runtime Script</option>
           </select>
           <button type="submit" <%=disableIfNoData%> id="download-data" class="btn btn-default" data-action='pdf/<%=pdf_id%>/data'>
             <span class="glyphicon glyphicon-refresh"></span>
@@ -131,9 +126,6 @@
 
 
         <a href="javascript:void(0)"><button type="button" id="clear-all-selections" class="btn btn-default" <%= disable_clear_all_selections %>><span class="glyphicon glyphicon-remove-circle"></span> Clear All Selections</button></a>
-        <button id="restore-detected-tables" type="button" class="btn btn-default <%= restore_detected_tables %>" <%= disabled_if_there_are_selections %>><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-refresh"></span> Autodetect Tables</button>
-
-
 
         <span style="float: right">
           <a href="javascript:void(0)"><button type="button" id="all-data" class="btn btn-success" <%= disable_download_all %>><span class="glyphicon glyphicon-list-alt"></span> Preview & Export Extracted Data</button></a>
@@ -161,21 +153,6 @@
             <button type="button" class="btn btn-default" id="revise-selections"><span class="glyphicon glyphicon-arrow-left"></span> Revise selection(s)</button>
           </p>
 
-          <h5>Choose Alternate Extraction Method</h5>
-
-          <p>The current preview uses the <strong>Stream</strong> extraction method. If the data is not mapped to the correct cells, try the <strong>Lattice</strong> method instead.</p>
-
-          <div class="btn-group" data-toggle="buttons-radio" id="extraction-method-btns" <%=disableExtractionMethodButtons%> >
-            <button type="button" id="original-method-btn" class="btn btn-default extraction-method-btn" data-method="original" ><span class="glyphicon glyphicon-th stream"></span> Stream</button>
-            <button type="button" id="spreadsheet-method-btn" class="btn btn-default extraction-method-btn" data-method="spreadsheet"><span class="glyphicon glyphicon-th lattice"></span> Lattice</button>
-          </div>
-
-          <p>
-            Stream looks for <em>whitespace</em> between columns, while Lattice looks for <em>boundary lines</em> between columns.
-          </p>
-
-         <h5>Still look wrong?</h5>
-          <p><a href="http://www.github.com/tabulapdf/tabula/issues/new">Contact the developers</a> and tell us what you tried to do that didn’t work.</p>
       </script>
 
       <!-- TODO: abstract out commonalities of select/export page templates -->
