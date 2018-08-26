@@ -1133,18 +1133,31 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
     'click #all-data': 'queryAllData',
     'click #repeat-lassos': 'repeatLassos',
     'click #save-template': 'saveTemplate',
-    'click #regex_options_title': 'toggleRegexOptions'
-
+    'click #regex_options_title': 'toggleRegexOptions',
+    'click #pdf_outline_title': 'toggleSidebar'
   },
   show_regex_search: false,
+  show_sidebar: true,
 
   template: _.template($('#templates #select-control-panel-template').html().replace(/nestedscript/g, 'script')),
   initialize: function(stuff){
     this.pdf_view = stuff.pdf_view;
     this.saved_template_collection = stuff.saved_template_collection;
-    _.bindAll(this, 'queryAllData', 'render', 'saveTemplate', 'toggleRegexOptions');
+    _.bindAll(this, 'queryAllData', 'render', 'saveTemplate', 'toggleRegexOptions', 'toggleSidebar');
     this.listenTo(this.pdf_view.pdf_document, 'sync', this.render );
     this.saved_template_library_view = new Tabula.SavedTemplateLibraryView({collection: this.saved_template_collection})
+  },
+
+  // this does NOT currently work. just a stub in case we want to turn it on later.
+  // the main pane would have to get resized too.
+  toggleSidebar: function() {
+    if (this.show_sidebar === true){
+      this.pdf_view.components["sidebar_view"].$el.parent().hide();
+      this.show_sidebar = false;
+    }else{
+      this.pdf_view.components["sidebar_view"].$el.parent().show();
+      this.show_sidebar = true;
+    }
   },
 
   toggleRegexOptions: function(){
