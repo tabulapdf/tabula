@@ -29,7 +29,6 @@
     resizing: false,
 
     enableFooterResize: function(event){
-      console.log("In enableFooterResize:");
 
       if(this.resizing == false) {
         this.height_on_start_of_resize = parseInt(this.$el.css('height'));
@@ -39,8 +38,6 @@
           this.gui_page_top_offset = this.$el['0'].parentElement.offsetTop;
         }
 
-
-        console.log("Height at start:"+this.height_on_start_of_resize);
         this.previous_y = (event.pageY - this.gui_page_top_offset);
 
         //NOTE: gui_page_height will be undefined if the corresponding page image is not loaded before enableFooterResize is called
@@ -61,19 +58,14 @@
     endFooterResize: function(event){
       if(this.resizing===true){
         this.resizing = false;
-        console.log("In endFooterResize:");
-        console.log(this.$el);
         sendback={};
         sendback['footer_height'] =parseInt(this.$el.css('height'));
-        console.log("Height at finish:"+sendback['footer_height']);
         this.trigger('footer_resized',sendback);
       }
     },
 
     resizeFooter: function(event){
-
       if(this.resizing===true){
-        console.log("In resizeFooter:");
         var mouseLocation = event.pageY - this.gui_page_top_offset;
         var new_height = this.gui_page_height - mouseLocation;
 
@@ -105,26 +97,25 @@
 
     checkHeaderOverlap: function(data){
       //Returns true if overlap with header is detected...
-      console.log(this.$el['0'].parentElement);
       var header_el = $(this.$el['0'].parentElement).find('.header-region');
-      console.log("In checkHeaderOverlap:");
-      console.log(header_el);
-
-      console.log("Header Height:"+header_el.css('height'));
-      console.log("Footer Top:"+data.new_top);
-
-
       return ((parseInt(header_el.css('height')))>data.new_top)
-
     },
 
     initialize: function(data){
-
       this.id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now();
+      this.dims = data;
+    },
+
+    resize: function(data){
+      this.dims = data
+      return this;
+    },
+
+    render: function(){
       this.$el.css({
-        "top": data.top,
-        "left": data.left,
-        "width": data.width,
+        "top": this.dims.top,
+        "left": this.dims.left,
+        "width": this.dims.width,
         "height": 0
       });
 
@@ -136,5 +127,7 @@
         mousemove: _.bind(this.resizeFooter,this),
         mouseup: _.bind(this.endFooterResize, this)
       });
-    }});
+      return this;
+    }
+  });
 });

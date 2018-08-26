@@ -31,12 +31,10 @@
     resizing: false,
 
     enableHeaderResize: function(event){
-      console.log("In enableHeaderResize:");
       if(this.resizing == false) {
         this.height_on_start_of_resize = parseInt(this.$el.css('height'));
         this.resizing = true;
 
-        console.log("Height at start:"+this.height_on_start_of_resize);
         this.previous_y = (event.pageY - this.$el['0'].parentElement.offsetTop);
 
         //So that the user can more easily drag the header area when it is up at the top of the page
@@ -47,13 +45,10 @@
     },
 
     endHeaderResize: function(event){
-      //console.log("In endHeaderResize:");
       if(this.resizing===true){
         this.resizing = false;
-        console.log(this.$el);
         sendback={};
         sendback['header_height'] =parseInt(this.$el.css('height'));
-        console.log("Height at finish:"+sendback['header_height']);
         this.trigger('header_resized',sendback);
       }
     },
@@ -82,19 +77,26 @@
 
     checkFooterOverlap: function(data){
       //Returns true if an overlap is detected
-      //console.log("In checkFooterOverlap:");
       var footer_el = $(this.$el['0'].parentElement).find('.footer-region');
       return ((parseInt(footer_el.css('top')))<=data.new_height)
 
     },
 
     initialize: function(data){
-
       this.id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now();
+      this.dims = data;
+    },
+
+    resize: function(data){
+      this.dims = data
+      return this;
+    },
+
+    render: function(){
       this.$el.css({
-        "top": data.top,
-        "left": data.left,
-        "width": data.width,
+        "top": this.dims.top,
+        "left": this.dims.left,
+        "width": this.dims.width,
         "height": 0
       });
 
@@ -105,5 +107,9 @@
         mousemove: _.bind(this.resizeHeader,this),
         mouseup: _.bind(this.endHeaderResize, this)
       });
-      }});
-    });
+      return this;   
+    }
+
+
+  });
+});

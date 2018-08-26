@@ -285,6 +285,8 @@ Tabula.Library = Backbone.View.extend({
         pct_complete: 0,
         importing: false
       }) );
+      $('#tabula-app').append( _.template( $('#social-media-nav').html().replace(/nestedscript/g, 'script') )({ })  )
+
       this.renderFileLibrary();
       this.renderNotification();
       this.renderVersion();
