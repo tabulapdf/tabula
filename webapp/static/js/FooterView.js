@@ -18,92 +18,94 @@
     tagName: 'div',
     className:'footer-region',
     template:"",
-    events:{'mousedown': 'enableFooterResize',
-      'mouseup': 'endFooterResize',
-      'mousemove': 'resizeFooter'},
+    events:{
+      'mousedown': 'startFooterResize',
+    },
     previous_y: 0, //Record of mouse height (relative to page) updated in between resize operations
     gui_page_height: null, //Set when the corresponding image of page has been loaded
     gui_page_top_offset: null, //Set when parent element has been loaded
-    BUFFER:10, //TODO: make a prototype include buffer as a const to reduce object overhead...
+    BUFFER: 10, //TODO: make a prototype include buffer as a const to reduce object overhead...
     height_on_start_of_resize: 0, //Footer height before the user begins resize operation
-    resizing: false,
 
-    enableFooterResize: function(event){
+    initialize: function(data, parentPageView){
+      this.id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now();
+      this.dims = data;
+      _.bindAll(this, "startFooterResize", "resizeFooter", "endFooterResize");
+      this.page = parentPageView;
+    },
 
-      if(this.resizing == false) {
-        this.height_on_start_of_resize = parseInt(this.$el.css('height'));
-        this.resizing = true;
+    startFooterResize: function(event){
+      this.page.$el.on("mousemove.footer", (e) => { this.resizeFooter(e) } )
+      this.page.$el.on("mouseleave.footer", (e) => { this.endFooterResize(e) } )
+      this.page.$el.on("mouseup.footer", (e) => { this.endFooterResize(e) } )
 
-        if(this.gui_page_top_offset==null){
-          this.gui_page_top_offset = this.$el['0'].parentElement.offsetTop;
-        }
+      this.height_on_start_of_resize = parseInt(this.$el.css('height'));
 
-        this.previous_y = (event.pageY - this.gui_page_top_offset);
+      if(this.gui_page_top_offset==null){
+        this.gui_page_top_offset = this.$el['0'].parentElement.offsetTop;
+      }
 
-        //NOTE: gui_page_height will be undefined if the corresponding page image is not loaded before enableFooterResize is called
-        if(this.gui_page_height==null) {
-          this.gui_page_height = $(this.$el['0'].parentElement).find('img').height();
-        }
+      this.previous_y = (event.pageY - this.gui_page_top_offset);
+
+      //NOTE: gui_page_height will be undefined if the corresponding page image is not loaded before startFooterResize is called
+      if(this.gui_page_height==null) {
+        this.gui_page_height = $(this.$el['0'].parentElement).find('img').height();
+      }
 
 
-        //So that the user can more easily drag the footer area up when it is initially at the bottom of the page
-        if(this.BUFFER>=(this.gui_page_height-this.previous_y)){
-          this.$el.css({'top': this.gui_page_height-this.BUFFER,
-                        'height': this.BUFFER});
-        }
+      //So that the user can more easily drag the footer area up when it is initially at the bottom of the page
+      if(this.BUFFER>=(this.gui_page_height-this.previous_y)){
+        this.$el.css({'top': this.gui_page_height-this.BUFFER,
+                      'height': this.BUFFER});
       }
 
     },
 
     endFooterResize: function(event){
-      if(this.resizing===true){
-        this.resizing = false;
-        sendback={};
-        sendback['footer_height'] =parseInt(this.$el.css('height'));
-        this.trigger('footer_resized',sendback);
-      }
+      this.page.$el.off("mousemove.footer");
+      this.page.$el.off("mouseleave.footer");
+      this.page.$el.off("mouseup.footer");
+
+      sendback={};
+      sendback['footer_height'] = parseInt(this.$el.css('height'));
+      this.trigger('footer_resized',sendback);
     },
 
     resizeFooter: function(event){
-      if(this.resizing===true){
-        var mouseLocation = event.pageY - this.gui_page_top_offset;
-        var new_height = this.gui_page_height - mouseLocation;
+      console.log("resizeFooter")
+      var mouseLocation = event.pageY - this.gui_page_top_offset;
+      var new_height = this.gui_page_height - mouseLocation;
 
-        var new_top = parseInt(this.$el.css('top'));
+      var new_top = parseInt(this.$el.css('top'));
 
-        if((this.previous_y<new_height) && ((this.gui_page_height-new_height)<=this.BUFFER)){ //When the user is shrinking the size of the footer
-          new_height=0;
-          new_top=this.gui_page_height;
-          this.$el.css({'top': new_top,
-            'height': new_height});
-        }
-        else{
-          new_height+=this.BUFFER; //buffer added to reduce cursor flicker
-          new_top = this.gui_page_height - new_height;
-        }
-
-        if((this.checkHeaderOverlap({'new_top':new_top}))||((new_height==0)&&(new_top==this.gui_page_height))){
-          while(this.checkHeaderOverlap(++new_top)){} //Resize to borderline
-          this.endFooterResize(event);
-        }
-        else{
-          this.$el.css({'top': new_top,
-            'height': new_height});
-        }
-        this.previous_y = mouseLocation; //Updating status variables for next mousemove...
+      if((this.previous_y<new_height) && ((this.gui_page_height-new_height)<=this.BUFFER)){ //When the user is shrinking the size of the footer
+        new_height=0;
+        new_top=this.gui_page_height;
+        this.$el.css({'top': new_top,
+          'height': new_height});
+      }
+      else{
+        new_height+=this.BUFFER; //buffer added to reduce cursor flicker
+        new_top = this.gui_page_height - new_height;
       }
 
+      if((this.checkHeaderOverlap({'new_top':new_top}))||((new_height==0)&&(new_top==this.gui_page_height))){
+        while(this.checkHeaderOverlap(++new_top)){} //Resize to borderline
+        this.endFooterResize(event);
+        console.log("endFooterResize", 'overlap')
+      }
+      else{
+        this.$el.css({'top': new_top,
+          'height': new_height});
+      }
+      this.previous_y = mouseLocation; //Updating status variables for next mousemove...
+      return false;
     },
 
     checkHeaderOverlap: function(data){
       //Returns true if overlap with header is detected...
       var header_el = $(this.$el['0'].parentElement).find('.header-region');
       return ((parseInt(header_el.css('height')))>data.new_top)
-    },
-
-    initialize: function(data){
-      this.id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now();
-      this.dims = data;
     },
 
     resize: function(data){
@@ -119,14 +121,9 @@
         "height": 0
       });
 
+      this.delegateEvents();
       this.$el.attr('title','Drag up to define footer area');
 
-
-      //Detect when user moves mouse/release mouse outside of the area
-      $(document).on({
-        mousemove: _.bind(this.resizeFooter,this),
-        mouseup: _.bind(this.endFooterResize, this)
-      });
       return this;
     }
   });

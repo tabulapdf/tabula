@@ -272,7 +272,7 @@ Tabula.Library = Backbone.View.extend({
           } );
       }else{
         $('#library-container').hide();
-        $('#library-container').
+        // $('#library-container').
 //          after(_.template( $('#help-template').html().replace(/nestedscript/g, 'script') )({})).
 //        after('<h1>First time using Tabula? Welcome!</h1>');
         $('.jumbotron.help').css('padding-top', '10px');
