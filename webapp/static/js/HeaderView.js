@@ -37,7 +37,6 @@
     },
 
     startHeaderResize: function(event){
-      console.log("startHeaderResize");
       this.page.$el.on("mousemove.header", (e) => { this.resizeHeader(e) } )
       this.page.$el.on("mouseleave.header", (e) => { this.endHeaderResize(e) } )
       this.page.$el.on("mouseup.header", (e) => { this.endHeaderResize(e) } )

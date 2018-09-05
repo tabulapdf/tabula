@@ -72,7 +72,6 @@
     },
 
     resizeFooter: function(event){
-      console.log("resizeFooter")
       var mouseLocation = event.pageY - this.gui_page_top_offset;
       var new_height = this.gui_page_height - mouseLocation;
 

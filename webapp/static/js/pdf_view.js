@@ -1922,17 +1922,16 @@ Tabula.PDFView = Backbone.View.extend(
       });
 
       this.pdf_document.fetch({
+        success: function(m){ }, 
         error: function(m, r, o){ console.log("error", m, r, o) }
-      }).then( function(meta_data){
+      }).then( function(metadata){
         $.ajax({
         type: 'POST',
         url: '/regex/reset',
-        data: { file_path: meta_data.id},
+        data: { file_path: metadata.id},
         dataType: 'json',
 
-        success: _.bind(function() {
-          console.log("Reset back-end book-keeping for regex queries")
-        }, this),
+        success: _.bind(function() { }, this),
         error: function (xhr, status, err) {
           alert('Error in reset: ' + JSON.stringify(err));
           console.log('Error in reset...: ', err);
