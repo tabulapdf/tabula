@@ -2,8 +2,6 @@
 require 'cuba'
 require 'cuba/render'
 
-require 'rubygems'
-require 'json'
 require 'digest/sha1'
 require 'json'
 require 'csv'
@@ -12,7 +10,6 @@ require 'fileutils'
 require 'securerandom'
 require 'java'
 require 'singleton'
-
 
 require_relative '../lib/tabula_java_wrapper.rb'
 java_import 'java.io.ByteArrayOutputStream'
@@ -88,7 +85,6 @@ STATIC_ROOT = if defined?($servlet_context)
               else
                 File.join(File.dirname(__FILE__), 'static')
               end
-
 
 Cuba.plugin Cuba::Render
 Cuba.settings[:render].store(:views, File.expand_path("views", File.dirname(__FILE__)))
@@ -294,7 +290,6 @@ Cuba.define do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
     end
 
-
     on 'documents' do
       res.status = 200
       res['Content-Type'] = 'application/json'
@@ -323,22 +318,13 @@ Cuba.define do
   end # /get
 
   on post do
-
-
     on 'regex' do
-
       on 'reset' do
-        puts req.params
-        puts "In regex/reset..."
         regex_query_meta_data.reset_for_new_doc(req.params['file_path'])
         res.write ''
       end
 
       on 'search' do
-        puts req.params
-        puts "In regex/search..."
-
-        puts regex_query_meta_data.filter_area
 
         regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(req.params['pattern_before'],
                                                                         req.params['include_pattern_before'],
@@ -349,22 +335,13 @@ Cuba.define do
 
         regex_query_meta_data.regex_searches.push(regex_search)
 
-        puts regex_query_meta_data.regex_searches
-
         gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
         res.write(gson.to_json(regex_search))
       end
 
       on 'check-on-resize' do
-        puts 'In regex/check-on-resize'
-        puts req.params
-
         regex_query_meta_data.filter_area = Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['header_scale'].to_f,
                                                                                               req.params['footer_scale'].to_f)
-
-
-        puts regex_query_meta_data.filter_area
-
         changedQueries = []
 
         unless regex_query_meta_data.regex_searches.nil? || regex_query_meta_data.regex_searches.empty?
@@ -374,31 +351,20 @@ Cuba.define do
                                                       regex_query_meta_data.regex_searches)
         end
 
-        puts 'Changed Queries:';
-        puts changedQueries.length
         gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
 
         res.write(gson.to_json(changedQueries))
       end
 
       on 'remove-search-data' do
-        puts req.params
-        puts regex_query_meta_data.regex_searches
-        puts 'In remove-search-data'
         removed_searches, regex_query_meta_data.regex_searches = regex_query_meta_data.regex_searches.partition {
           |search| search.getRegexBeforeTable() == req.params['pattern_before'] &&
             search.getRegexAfterTable() == req.params['pattern_after']
         }
         if removed_searches.length > 1 || removed_searches.length==0
           res.status =500
-          puts removed_searches.length
           res.write('Incorrect number of searches removed:')
         else
-          puts 'Removed Regex search:'
-          puts removed_searches[0]
-
-          puts 'Remaining Regex searches:'
-
           gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
           res.write(gson.to_json(removed_searches))
         end
@@ -460,16 +426,9 @@ Cuba.define do
     on "pdf/:file_id/data" do |file_id|
       pdf_path = Tabula::Workspace.instance.get_document_path(file_id)
 
-      puts 'DO I GET HERE BEFORE THE CRASH??'
-
       coords = JSON.load(req.params['coords'])
 
-      puts 'COORDS:'
-      puts coords
-
       coords.sort_by! do |coord_set|
-        puts 'coord_set:'
-        puts coord_set
         [
          coord_set['page'],
          [coord_set['y1'], coord_set['y2']].min.to_i / 10,
@@ -480,9 +439,6 @@ Cuba.define do
       extraction_method = JSON.load(req.params['extraction_method'])
 
       options = {"extraction_method" => extraction_method}
-
-
-      puts req.params
 
       tables = Tabula.extract_tables(pdf_path, coords, options)
 
@@ -497,11 +453,8 @@ Cuba.define do
         when 'csv'
           res['Content-Type'] = 'text/csv'
           res['Content-Disposition'] = "attachment; filename=\"#{filename}.csv\""
-          puts 'TABLES'
-          puts tables
           tables.each do |table|
             res.write table.to_csv
-            puts table.to_csv
           end
       when 'tsv'
         res['Content-Type'] = 'text/tab-separated-values'
@@ -538,11 +491,6 @@ Cuba.define do
         res.write String.from_java_bytes(baos.to_byte_array)
         when 'script'
 
-          puts 'USER DRAWN SELECTIONS...'
-          puts req.params['user_drawn_selections']
-          puts 'COORDS'
-          puts req.params['coords']
-
         gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
 
         sanitized_query_data = Array.new
@@ -557,11 +505,7 @@ Cuba.define do
                                      include_pattern_after: raw_search_data["_include_regex_after_table"]})
         }
 
-        puts sanitized_query_data
-
         regex_cli_option = JSON.generate({queries: sanitized_query_data});
-
-        puts regex_cli_option.to_json
 
         regex_cli_string = ""
         if !regex_query_meta_data.regex_searches.empty?
