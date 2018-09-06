@@ -326,12 +326,12 @@ form {
 			-webkit-user-select: none;
 			-ms-user-select: none;
 
-      user-drag: none;
-      -moz-user-drag: none;
-      -webkit-user-drag: none;
-      -ms-user-drag: none;
+      // user-drag: none;
+      // -moz-user-drag: none;
+      // -webkit-user-drag: none;
+      // -ms-user-drag: none;
       
-      pointer-events: none;
+      // pointer-events: none;
 		}		
 	}
 	.selection-box, .table-region {

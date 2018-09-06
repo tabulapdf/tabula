@@ -939,6 +939,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     this.image = new Image();
     this.image.src = this.model.imageUrl();
 
+
     this.$el.find('.page').append(this.image);
 
     this.$el.find('img').attr('data-page', this.model.get('number'))
@@ -1018,23 +1019,23 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
   _onSelectStart: function(selection) {
     Tabula.pdf_view.pdf_document.selections.updateOrCreateByVendorSelectorId(selection,
                                                                   this.model.get('number'),
-                                                                  {'width': this.image.width(),
+                                                                  {'width': this.image.width,
                                                                    'height': this.image.height});
   },
 
   _onSelectChange: function(selection) {
     Tabula.pdf_view.pdf_document.selections.updateOrCreateByVendorSelectorId(selection,
                                                                   this.model.get('number'),
-                                                                  {'width': this.image.width(),
-                                                                   'height': this.image.height()});
+                                                                  {'width': this.image.width,
+                                                                   'height': this.image.height});
   },
 
   _onSelectEnd: function(selection) {
     var selections = Tabula.pdf_view.pdf_document.selections;
 
     var sel = selections.updateOrCreateByVendorSelectorId(selection,this.model.get('number'),
-                                                          {'width':$(this.image).width(),
-                                                           'height':$(this.image).height()});
+                                                          {'width':this.image.width,
+                                                           'height':this.image.height});
 
 
     // deal with invalid/too-small selections somehow (including thumbnails)
@@ -2049,8 +2050,8 @@ Tabula.PDFView = Backbone.View.extend(
       // for a Tabula.Selection object's toCoords output (presumably taken out of the selection collection)
       // cause it to be rendered onto the page, and as a thumbnail
       // and causes it to get an 'id' attr.
-      var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page_number];
-      var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page_number});
+      var pageView = Tabula.pdf_view.components['document_view'].page_views[sel.page];
+      var page = Tabula.pdf_view.pdf_document.page_collection.findWhere({number: sel.page});
       if(!page){
         // the page we're trying to render a selection on might have been deleted.
         // or, we may be trying to load a template with more pages on it than this PDF has.
@@ -2060,6 +2061,9 @@ Tabula.PDFView = Backbone.View.extend(
       var original_pdf_width = page.get('width');
       var original_pdf_height = page.get('height');
       // var pdf_rotation = page.get('rotation');
+
+      console.log("creating selection...", pageView, sel.page);
+
 
       // TODO: create selection models for pages that aren't lazyloaded, but obviously don't display them.
       if(Tabula.LazyLoad && !pageView){
@@ -2089,7 +2093,6 @@ Tabula.PDFView = Backbone.View.extend(
 
       var vendorSelection;
 
-
       if(sel.selection_type==='regex'){
         console.log("Selection type is regex");
         vendorSelection = new RegexSelection({
@@ -2112,7 +2115,6 @@ Tabula.PDFView = Backbone.View.extend(
           remove: pageView._onSelectCancel
         });
       }
-
 
       Tabula.pdf_view.components['document_view'].$el.append(vendorSelection.el);
 

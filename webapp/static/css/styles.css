@@ -7581,11 +7581,6 @@ form {
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
-  user-drag: none;
-  -moz-user-drag: none;
-  -webkit-user-drag: none;
-  -ms-user-drag: none;
-  pointer-events: none;
 }
 #main-pane .page img:hover {
   cursor: crosshair;

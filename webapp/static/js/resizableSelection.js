@@ -26,7 +26,6 @@
     },
     resizeDirectionMatch : /(n|s|w|e|ne|nw|se|sw)-border/,
     mouseDownResize : function(event) {
-      console.log("In mouseDownResize:");
       var d = this.resizeDirectionMatch.exec($(event.target).attr('class'));
       if (!d || d.length < 2) {
         this.resizing = false;
@@ -36,7 +35,6 @@
         this.trigger('start', this);
       }},
     mouseMoveResize : function(event) {
-      console.log("In mouseMoveResize:");
       if (!this.resizing) return;
       var ev = event;
       var css = {};
