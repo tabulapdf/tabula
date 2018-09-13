@@ -1,4 +1,10 @@
 @charset "UTF-8";
+/*!
+ * WARNING: Don't edit this file by hand! Instead, you should be using Compass.
+ * Edit the file in webapp/static/sass/styles.scss (or webapp/static/sass/selectors.scss)
+ * Then, run `$ compass watch` to automatically re-compile the scss file into "normal" CSS on save.
+ * Alternatively, run `$ compass compile` to re-compile the SCSS once.
+ */
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;

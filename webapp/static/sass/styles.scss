@@ -1,3 +1,12 @@
+// IGNORE THE WARNING BELOW. If you're in styles.scss, you're in the right place. :)
+/*!
+ * WARNING: Don't edit this file by hand! Instead, you should be using Compass.
+ * Edit the file in webapp/static/sass/styles.scss (or webapp/static/sass/selectors.scss)
+ * Then, run `$ compass watch` to automatically re-compile the scss file into "normal" CSS on save.
+ * Alternatively, run `$ compass compile` to re-compile the SCSS once.
+ */
+// IGNORE THAT WARNING. YOU'RE IN THE RIGHT SPOT. 
+
 @import "compass";
 @import "bootstrap-compass";
 @import "bootstrap-variables";
