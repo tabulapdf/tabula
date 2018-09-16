@@ -468,12 +468,12 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
     $('body').addClass('page-selections');
 
 
-    var regex_search_collection = Tabula.pdf_view.components['regex_search_view'].regex_results_handler.collection.models;
+    var regex_search_collection = Tabula.pdf_view.components['regex_search_view'].regex_collection_view.collection.models;
 
     /*
      * The rectangular coordinate areas associated with regex searches are stored in 2 areas (as of 1/30/2018):
      *  1) this.pdf_view.pdf_document.selections.models
-     *  2) Tabula.pdf_view.components['regex_search_view'].regex_results_handler.collection.models
+     *  2) Tabula.pdf_view.components['regex_search_view'].regex_collection_view.collection.models
      *
      *  Therefore, when destroying one of these coordinate areas, its reference must be removed from both collections
      *  Also: When creating one of these coordinate areas, renderSelection must be called only once
@@ -548,7 +548,7 @@ Tabula.DataView = Backbone.View.extend({  // one per query object.
 
 
     //Short-hand variable...
-    var regex_collection = Tabula.pdf_view.components['regex_search_view'].regex_results_handler.collection.models;
+    var regex_collection = Tabula.pdf_view.components['regex_search_view'].regex_collection_view.collection.models;
 
     var regex_selection_ids = [];
 
@@ -927,7 +927,7 @@ Tabula.PageView = Backbone.View.extend({ // one per page of the PDF
     data['header_scale'] = data['header_height']/parseFloat(this.$el.css('height'));
     var filter_data = Tabula.pdf_view.components['document_view'].update_filter_specs(data);
 
-    Tabula.pdf_view.components['regex_search_view'].regex_results_handler.update_regex_search_properties_on_resize(filter_data);
+    Tabula.pdf_view.components['regex_search_view'].regex_collection_view.update_regex_search_properties_on_resize(filter_data);
   },
 
   render: function(){
@@ -1143,8 +1143,8 @@ Tabula.ControlPanelView = Backbone.View.extend({ // only one
   },
 
   clearAllSelections: function(){
-    Tabula.pdf_view.components['regex_search_view'].regex_results_handler.reset();
-    Tabula.pdf_view.components['regex_search_view'].regex_results_handler.render();
+    Tabula.pdf_view.components['regex_search_view'].regex_collection_view.reset();
+    Tabula.pdf_view.components['regex_search_view'].regex_collection_view.render();
 
     _(Tabula.pdf_view.pdf_document.selections.models.slice()).each(function(i){
       if(typeof i.attributes.remove !== "undefined") i.attributes.remove(); }); // call remove() on the vendorSelection of each seleciton; except for "hidden" selections that don't have one.
@@ -1235,14 +1235,14 @@ Tabula.RegexSearchView = Backbone.View.extend({
   events: {
     'click #regex-search': 'perform_regex_search'
   },
-  regex_results_handler: null,
+  regex_collection_view: null,
   regex_query_handler: null,
   template: _.template($('#templates #regex-search-template').html().replace(/nestedscript/g, 'script')),
 
   initialize: function(){
     this.regex_query_handler = new Tabula.RegexQueryHandler();
     window.regex_query_handler = this.regex_query_handler;
-    this.regex_results_handler = new Tabula.RegexCollectionView();
+    this.regex_collection_view = new Tabula.RegexCollectionView();
     _.bindAll(this, "perform_regex_search", "render");
   },
   //Event handler called when the Set Regex button is pushed
@@ -1254,7 +1254,7 @@ Tabula.RegexSearchView = Backbone.View.extend({
     //console.log("In perform_regex_search:");
 
 
-    if (this.regex_results_handler.has_same_query(this.regex_query_handler.model.toJSON()) == false) {
+    if (this.regex_collection_view.has_same_query(this.regex_query_handler.model.toJSON()) == false) {
       $('html').addClass("wait");
       $.ajax({
         type: 'POST',
@@ -1266,7 +1266,7 @@ Tabula.RegexSearchView = Backbone.View.extend({
         },
         success: _.bind(function (data) {
 
-          this.regex_results_handler.process_result(data);
+          this.regex_collection_view.process_result(data);
 
         }, this),
         error: function (xhr, status, err) {
@@ -1285,8 +1285,8 @@ Tabula.RegexSearchView = Backbone.View.extend({
   render: function() {
     this.$el.html(this.template());
     this.delegateEvents();
-    this.regex_results_handler.$el = this.$el.find('.regex-results-list')
-    this.regex_results_handler.delegateEvents();
+    this.regex_collection_view.$el = this.$el.find('.regex-results-list')
+    this.regex_collection_view.delegateEvents();
     this.regex_query_handler.$el = this.$el.find('#regex_input_form');
     this.regex_query_handler.delegateEvents();
     return this;
