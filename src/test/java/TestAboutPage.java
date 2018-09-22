@@ -1,4 +1,5 @@
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -11,6 +12,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.concurrent.TimeUnit;
 
 import static junit.framework.TestCase.assertTrue;
+import java.io.File;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.*;
 
 //Checks the multiple links found on the About page. For three of the links, there will be 3 tabs that open in addition to
 // to the original tab. The three tabs, I have not been able to switch control to another tab so it only checks to open the
@@ -19,6 +23,15 @@ import static junit.framework.TestCase.assertTrue;
 //@author: SM  modified: 2/22/18
 public class TestAboutPage {
     WebDriver driver;
+
+    @Before 
+    public void Setup() {
+        try{
+            Files.move(new File("~/.tabula/pdfs/workspace.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), new File("~/.tabula/workspace_moved_for_tests.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), REPLACE_EXISTING);
+
+        } catch (java.io.IOException e) {
+        }
+    }
 
     @Test
     public void startWebDriver(){
@@ -139,6 +152,12 @@ public class TestAboutPage {
     }
     @After
     public void TearDown(){
+        try{
+            Files.move(new File("~/.tabula/workspace_moved_for_tests.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), new File("~/.tabula/pdfs/workspace.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), REPLACE_EXISTING);
+
+        } catch (java.io.IOException e) {
+        }
+
         driver.quit();
     }
 }

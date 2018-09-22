@@ -8,6 +8,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import java.io.File;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.*;
 
 import java.util.List;
 
@@ -85,6 +88,13 @@ public class TestNCHouse2017StatPack {
     //instantiation of Tabula
     @BeforeClass
     public static void SetUp(){
+
+        try{
+            Files.move(new File("~/.tabula/pdfs/workspace.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), new File("~/.tabula/workspace_moved_for_tests.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), REPLACE_EXISTING);
+
+        } catch (java.io.IOException e) {
+        }
+
         System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless");
@@ -297,6 +307,12 @@ public class TestNCHouse2017StatPack {
     }
     @AfterClass
     public static void TearDown(){
+        try{
+            Files.move(new File("~/.tabula/workspace_moved_for_tests.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), new File("~/.tabula/pdfs/workspace.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), REPLACE_EXISTING);
+
+        } catch (java.io.IOException e) {
+        }
+        
         driver.quit();
     }
 }

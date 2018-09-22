@@ -1,4 +1,5 @@
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -10,6 +11,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.concurrent.TimeUnit;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import java.io.File;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.*;
 
 //Test of Tabula's extraction page, which incorporates the template, pdf outline, and regex buttons, as well as
 // the regex tabs. Prior and after each button is clicked, it checks if the element is present or not on the page.
@@ -19,6 +23,16 @@ import static junit.framework.TestCase.assertTrue;
 // For this test case, eu_002.pdf is utilized.
 // @author SM modified: 3/6/18
 public class TestExtractionPage {
+
+    @Before 
+    public void Setup() {
+        try{
+            Files.move(new File("~/.tabula/pdfs/workspace.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), new File("~/.tabula/workspace_moved_for_tests.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), REPLACE_EXISTING);
+
+        } catch (java.io.IOException e) {
+        }
+    }
+
     WebDriver driver;
     private void PageRefresh() throws InterruptedException {
         //menu options did not fully load
@@ -57,11 +71,11 @@ public class TestExtractionPage {
             //menu options did not fully load
             PageRefresh();
 
-            String regex_options_string = "Regex Options";
+            String regex_options_string = "Select by Text";
             By regex_options_title = By.id("regex_options_title");
             WebElement regex_options = wait.until(ExpectedConditions.elementToBeClickable(regex_options_title));
             driver.manage().timeouts().pageLoadTimeout(200, TimeUnit.SECONDS);
-            assertTrue("Failed, couldn't find Extraction page", regex_options_string.equals(regex_options.getText()));
+            assertTrue("Failed, couldn't find Regex Options button", regex_options_string.equals(regex_options.getText()));
             //checking that the PDF outline sidebar is visible
             By sidebar_title = By.id("sidebar");
             driver.manage().timeouts().pageLoadTimeout(150, TimeUnit.SECONDS);
@@ -120,6 +134,12 @@ public class TestExtractionPage {
     }
     @After
     public void TearDown(){
+        try{
+            Files.move(new File("~/.tabula/workspace_moved_for_tests.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), new File("~/.tabula/pdfs/workspace.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), REPLACE_EXISTING);
+
+        } catch (java.io.IOException e) {
+        }
+
         driver.quit();
     }
 }

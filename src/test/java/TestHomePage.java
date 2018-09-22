@@ -1,4 +1,5 @@
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -7,6 +8,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import java.io.File;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -121,9 +125,25 @@ public class TestHomePage {
         }catch(Exception e){
             System.out.print(e); }
     }
+
+    @Before 
+    public void Setup() {
+        try{
+            Files.move(new File("~/.tabula/pdfs/workspace.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), new File("~/.tabula/workspace_moved_for_tests.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), REPLACE_EXISTING);
+
+        } catch (java.io.IOException e) {
+        }
+    }
+
     //whether the test case passes or not, the instance of the browser will close
     @After
     public void TearDown(){
+        try{
+            Files.move(new File("~/.tabula/workspace_moved_for_tests.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), new File("~/.tabula/pdfs/workspace.json".replaceFirst("^~", System.getProperty("user.home"))).toPath(), REPLACE_EXISTING);
+
+        } catch (java.io.IOException e) {
+        }
+
         driver.quit();
     }
 }
