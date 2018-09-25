@@ -92,21 +92,26 @@ var TabulaRouter = Backbone.Router.extend({
 });
 
 
-Tabula.getVersion = function(){
+Tabula.getSettings = function(){
   Tabula.notification = new Backbone.Model({});
   Tabula.new_version = new Backbone.Model({});
-  $.getJSON((base_uri || '/') + "version", function(data){
-    Tabula.api_version = data["api"];
-    Tabula.getNotifications();
+  $.getJSON((base_uri || '/') + "settings", function(data){
+    Tabula.api_version = data["api_version"];
+    if(data["disable_version_check"] === false) {
+      Tabula.getLatestReleaseVersion();
+    }
+    if(data["disable_notifications"] === false) {
+      Tabula.getNotifications();
+    }
 
     // if(Tabula.api_version.slice(0,3) == "rev"){
     //   $('#dev-mode-ribbon').show();
     // }
-
   })
 }
-Tabula.getNotifications = function(){
-  if(localStorage.getItem("tabula-notifications") === false) return;
+
+
+Tabula.getLatestReleaseVersion = function(){
   $.get('https://api.github.com/repos/tabulapdf/tabula/releases',
       function(data) {
         if (data.length < 1) return;
@@ -150,6 +155,10 @@ Tabula.getNotifications = function(){
         }
       }
   );
+};
+
+
+Tabula.getNotifications = function(){
   $.ajax({
     url: 'http://tabula.jeremybmerrill.com/tabula/notifications.jsonp',
     dataType: "jsonp",
@@ -184,7 +193,7 @@ Tabula.getNotifications = function(){
 
 
 $(function(){
-  Tabula.getVersion();
+  Tabula.getSettings();
   window.tabula_router = new TabulaRouter();
   Backbone.history.start({
     pushState: true,

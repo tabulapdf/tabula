@@ -5,6 +5,8 @@ module TabulaSettings
 
   ########## Defaults ##########
   DEFAULT_DEBUG = false
+  DEFAULT_DISABLE_VERSION_CHECK = false
+  DEFAULT_DISABLE_NOTIFICATIONS = false
 
   ########## Helpers ##########
   def self.getDataDir
@@ -74,6 +76,23 @@ module TabulaSettings
     DEFAULT_DEBUG
   end
 
+  def self.disableVersionCheck
+    disable_version_check = java.lang.System.getProperty('tabula.disable_version_check')
+    unless disable_version_check.nil?
+      return (disable_version_check.to_i > 0)
+    end
+
+    DEFAULT_DISABLE_VERSION_CHECK
+  end
+
+  def self.disableStatsCallback
+    disable_notifications = java.lang.System.getProperty('tabula.disable_notifications')
+    unless disable_notifications.nil?
+      return (disable_notifications.to_i > 0)
+    end
+
+    DEFAULT_DISABLE_NOTIFICATIONS
+  end
 
   ########## Constants that are used around the app, based on settings ##########
   DOCUMENTS_BASEPATH = File.join(self.getDataDir, 'pdfs')
