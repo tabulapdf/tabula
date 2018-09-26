@@ -8,6 +8,11 @@
     <artifactId>484_P7_1-GUI</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <build>
+      <testSourceDirectory>test/</testSourceDirectory>
+    </build>
+
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
