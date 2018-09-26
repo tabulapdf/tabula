@@ -167,7 +167,7 @@ Tabula has bindings for JRuby and R. If you end up writing bindings for another 
 
 The site instance should now be viewable at http://127.0.0.1:9292/ .
 
-You can a couple some options when executing the server in this manner:
+You can use some options when executing the server in this manner:
 
     TABULA_DATA_DIR="/tmp/tabula" \
     TABULA_DEBUG=1 \
@@ -194,6 +194,14 @@ If you intend to develop against an unreleased version of [`tabula-java`](https:
     mvn install:install-file -Dfile=target/tabula-<version>-SNAPSHOT.jar -DgroupId=technology.tabula -DartifactId=tabula -Dversion=<version>-SNAPSHOT -Dpackaging=jar -DpomFile=pom.xml
     
 Then, adjust the `Jarfile` accordingly.
+
+If you intend to make stylesheet changes, do NOT modify the CSS files in `webapp/static/css`. Instead, modify the SASS files in `webapp/static/sass`. You can compile SASS into CSS with `$ compass compile`; alternatively, you can run `$ compass watch` to watch for changes to SASS files and automatically compile them to CSS.
+
+### Testing.
+
+There are tests in `test/`. You can run them all with `mvn test` or individually, e.g. `mvn test -Dtest=TestExtractionPage`. The tests depend on having `chromedriver` installed locally.
+
+We do not have 100% test coverage, so you should not assume that passing tests mean a code change doesn't break anything. Additionally, I believe there's some possibility that tests will sporadically fail "by accident", so if you get a failure, it might not be indicative of something broken.
 
 ### Building a packaged application version
 
