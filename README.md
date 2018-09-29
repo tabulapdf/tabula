@@ -41,7 +41,7 @@ a simple web interface.
 
 **Caveat**: Tabula only works on text-based PDFs, not scanned documents. If you can click-and-drag to select text in your table in a PDF viewer (even if the output is disorganized trash), then your PDF is text-based and Tabula should work.
 
-**Security Concerns?**: Tabula is designed with security in mind. Your PDF and the extracted data *never* touch the net -- when you use Tabula, as long as your browser's URL bar says "localhost" or "127.0.0.1", all processing takes place on your local machine. Tabula does download a list of Tabula versions from our server to alert you if Tabula has been updated (and we use hits to that list to count how often Tabula is being used); it also downloads a few badges and assets from the web.
+**Security Concerns?**: Tabula is designed with security in mind. Your PDF and the extracted data *never* touch the net -- when you use Tabula on your local machine, as long as your browser's URL bar says "localhost" or "127.0.0.1", all processing takes place on your local machine. Other than to retrieve a few badges and other static assets, there are two calls that are made from your browser to external machines; one fetches the list of latest Tabula versions from GitHub to alert you if Tabula has been updated, the other makes a call to a stats counter that helps us determine how often various versions of Tabula are being used. If this is a problem, the version check can be disabled by adding `-Dtabula.disable_version_check=1` to the command line at startup, and the stats counter call can be disabled by adding `-Dtabula.disable_notifications=1`. Please note: If you are providing Tabula as a service using a reverse SSL proxy, users [may notice a security warning](https://github.com/tabulapdf/tabula/issues/924) due to our stats counter endpoint being hosted at a non-secure URL, so you may wish to disable the notifications in this scenario.
 
 ## Using Tabula
 
@@ -137,7 +137,7 @@ Tabula has bindings for JRuby and R. If you end up writing bindings for another 
  - [tabulizer](https://github.com/leeper/tabulizer) provides [R](https://www.r-project.org/) bindings for tabula-java and is community-supported by @leeper.
  - [tabula-js](https://github.com/ezodude/tabula-js) provides [Node.js](https://nodejs.org/en/) bindings for tabula-java; it is community-supported by @ezodude.
  - [tabula-py](https://github.com/chezou/tabula-py) provides [Python](https://python.org) bindings for tabula-java; it is community-supported by @chezou.
- - [tabula-extractor](https://github.com/tabulapdf/tabula-extractor/) *DEPRECATED* - Provides JRuby bindings for tabula-java 
+ - [tabula-extractor](https://github.com/tabulapdf/tabula-extractor/) *DEPRECATED* - Provides JRuby bindings for tabula-java
 
 
 
@@ -187,12 +187,12 @@ version of the app.
 
     jruby -G -S rake war
     java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -jar build/tabula.jar
-    
+
 
 If you intend to develop against an unreleased version of [`tabula-java`](https://github.com/tabulapdf/tabula-java), you need to install its JAR to your local Maven repository. From the directory that contains `tabula-java` source:
 
     mvn install:install-file -Dfile=target/tabula-<version>-SNAPSHOT.jar -DgroupId=technology.tabula -DartifactId=tabula -Dversion=<version>-SNAPSHOT -Dpackaging=jar -DpomFile=pom.xml
-    
+
 Then, adjust the `Jarfile` accordingly.
 
 ### Building a packaged application version

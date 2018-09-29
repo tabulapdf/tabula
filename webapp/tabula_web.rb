@@ -104,10 +104,10 @@ def upload_template(template_file)
   selection_count = template_data.size
 
   # write to file and to workspace
-  Tabula::Workspace.instance.add_template({ "id" => template_id, 
+  Tabula::Workspace.instance.add_template({ "id" => template_id,
                                             "template" => template_data,
-                                            "name" => template_name, 
-                                            "page_count" => page_count, 
+                                            "name" => template_name,
+                                            "page_count" => page_count,
                                             "time" => Time.now.to_i,
                                             "selection_count" => selection_count})
   return template_id
@@ -127,14 +127,14 @@ Cuba.define do
     run TabulaJobProgress
   end
 
-  on "templates" do 
+  on "templates" do
     # GET  /books/ .... collection.fetch();
     # POST /books/ .... collection.create();
     # GET  /books/1 ... model.fetch();
     # PUT  /books/1 ... model.save();
     # DEL  /books/1 ... model.destroy();
 
-    on root do 
+    on root do
       # list them all
       on get do
         res.status = 200
@@ -143,22 +143,22 @@ Cuba.define do
       end
 
       # create a template from the GUI
-      on post do 
+      on post do
         template_info = JSON.parse(req.params["model"])
         template_name = template_info["name"] || "Unnamed Template #{Time.now.to_s}"
         template_id = Digest::SHA1.hexdigest(Time.now.to_s + template_name) # just SHA1 of time isn't unique with multiple uploads
         template_filename = template_id + ".tabula-template.json"
         file_path = File.join(TabulaSettings::DOCUMENTS_BASEPATH, "..", "templates")
-        # write to file 
+        # write to file
         FileUtils.mkdir_p(file_path)
         open(File.join(file_path, template_filename), 'w'){|f| f << JSON.dump(template_info["template"])}
         page_count = template_info.has_key?("page_count") ? template_info["page_count"] : template_info["template"].map{|f| f["page"]}.uniq.count
         selection_count = template_info.has_key?("selection_count") ? template_info["selection_count"] :  template_info["template"].count
         Tabula::Workspace.instance.add_template({
-                                                  "id" => template_id, 
-                                                  "name" => template_name, 
-                                                  "page_count" => page_count, 
-                                                  "time" => Time.now.to_i, 
+                                                  "id" => template_id,
+                                                  "name" => template_name,
+                                                  "page_count" => page_count,
+                                                  "time" => Time.now.to_i,
                                                   "selection_count" => selection_count,
                                                   "template" => template_info["template"]
                                                 })
@@ -251,8 +251,12 @@ Cuba.define do
       res.write(JSON.dump(Tabula::Workspace.instance.list_documents))
     end
 
-    on 'version' do
-      res.write JSON.dump({api: $TABULA_VERSION})
+    on 'settings' do
+      res.write JSON.dump({
+        api_version: $TABULA_VERSION,
+        disable_version_check: TabulaSettings::disableVersionCheck(),
+        disable_notifications: TabulaSettings::disableNotifications(),
+      })
     end
 
     on 'pdf/:file_id/metadata.json' do |file_id|
