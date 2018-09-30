@@ -296,8 +296,12 @@ Cuba.define do
       res.write(JSON.dump(Tabula::Workspace.instance.list_documents))
     end
 
-    on 'version' do
-      res.write JSON.dump({api: $TABULA_VERSION})
+    on 'settings' do
+      res.write JSON.dump({
+        api_version: $TABULA_VERSION,
+        disable_version_check: TabulaSettings::disableVersionCheck(),
+        disable_notifications: TabulaSettings::disableNotifications(),
+      })
     end
 
     on 'pdf/:file_id/metadata.json' do |file_id|

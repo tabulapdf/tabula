@@ -13,7 +13,7 @@ platform :jruby do
     gem 'jbundler', '~> 0.9.3'
     gem "rake"
     gem "warbler", "~> 2.0.4"
-    gem "jruby-jars", "9.1.15.0"
+    gem "jruby-jars", "9.2.0.0"
     gem "bootstrap-sass", "~> 3.2.0"
     gem "compass"
     gem "ruby-maven"

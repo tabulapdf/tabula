@@ -35,7 +35,7 @@ GEM
       jar-dependencies (~> 0.3)
       maven-tools (~> 1.1)
       ruby-maven (~> 3.3, >= 3.3.8)
-    jruby-jars (9.1.15.0)
+    jruby-jars (9.2.0.0)
     jruby-rack (1.1.21)
     maven-tools (1.1.6)
       virtus (~> 1.0)
@@ -48,7 +48,7 @@ GEM
     ruby-maven (3.3.12)
       ruby-maven-libs (~> 3.3.9)
     ruby-maven-libs (3.3.9)
-    rubyzip (1.2.1)
+    rubyzip (1.2.2)
     sass (3.4.25)
     thread_safe (0.3.6-java)
     tilt (2.0.8)
@@ -65,7 +65,6 @@ GEM
 
 PLATFORMS
   java
-  x86-mingw32
 
 DEPENDENCIES
   bootstrap-sass (~> 3.2.0)
@@ -73,7 +72,7 @@ DEPENDENCIES
   cuba (~> 3.9.2)
   jar-dependencies (= 0.3.12)
   jbundler (~> 0.9.3)
-  jruby-jars (= 9.1.15.0)
+  jruby-jars (= 9.2.0.0)
   rack (~> 2.0.4)
   rake
   ruby-maven
@@ -81,4 +80,4 @@ DEPENDENCIES
   warbler (~> 2.0.4)
 
 BUNDLED WITH
-   1.16.1
+   1.16.5
