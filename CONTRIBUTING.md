@@ -28,7 +28,7 @@ Guidelines for contributing code
 
 If you'd like to contribute code, here's some stuff you should know: You're also welcome to send us a note, if you'd like. All of our email addresses are listed on our Github pages.
 
-Tabula comes in a bunch of parts, all located in the [TabulaPDF Github organization](github.com/tabulapdf). 
+Tabula comes in a bunch of parts, all located in the [TabulaPDF Github organization](https://github.com/tabulapdf). 
  -The [tabula](https://github.com/tabulapdf/tabula) repo is the UI. We aim for it to soon be all front-end, but right now has a small web server, written in Ruby, to interface between the front-end and extractor library, called "tabula-extractor"
  - [tabula-java](https://github.com/tabulapdf/tabula-java/) is a pure Java port, for speed/wider usability. 
 
