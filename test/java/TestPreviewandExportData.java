@@ -45,7 +45,7 @@ public class TestPreviewandExportData {
         driver.get("http://127.0.0.1:9292/");
         driver.manage().window().maximize();
         WebDriverWait wait = new WebDriverWait(driver, 500);
-        String filePath = System.getProperty("user.dir") + "/src/test/pdf/eu-002.pdf";
+        String filePath = System.getProperty("user.dir") + "/test/pdf/eu-002.pdf";
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
         WebElement import_btn = driver.findElement(By.id("import_file"));

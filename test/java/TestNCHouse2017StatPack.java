@@ -70,7 +70,7 @@ public class TestNCHouse2017StatPack {
     }
     //go on and upload the pdf file
     private void UploadPDF() throws InterruptedException {
-        String filePath = System.getProperty("user.dir") + "/src/test/pdf/NC_HOUSE_2017_Stat_Pack_8.21.17.pdf";
+        String filePath = System.getProperty("user.dir") + "/test/pdf/NC_HOUSE_2017_Stat_Pack_8.21.17.pdf";
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
         Thread.sleep(1000);

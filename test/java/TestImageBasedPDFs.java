@@ -46,7 +46,7 @@ public class TestImageBasedPDFs {
         try {
             //Attempts to upload pdf file
             WebDriverWait wait = new WebDriverWait(driver, 500);
-            String filePath = System.getProperty("user.dir") + "/src/test/pdf/4._Buck_CAP_Part_2_Appx_A_partial.pdf";
+            String filePath = System.getProperty("user.dir") + "/test/pdf/4._Buck_CAP_Part_2_Appx_A_partial.pdf";
             WebElement chooseFile = driver.findElement(By.id("file"));
             chooseFile.sendKeys(filePath);//sends pdf path location
             WebElement import_btn = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("import_file"))));
@@ -63,7 +63,7 @@ public class TestImageBasedPDFs {
         try {
             //Attempts to upload pdf file
             WebDriverWait wait = new WebDriverWait(driver, 500);
-            String filePath = System.getProperty("user.dir") + "/src/test/pdf/Allen_CSA_table_6-9_gradients.pdf";
+            String filePath = System.getProperty("user.dir") + "/test/pdf/Allen_CSA_table_6-9_gradients.pdf";
             WebElement chooseFile = driver.findElement(By.id("file"));
             chooseFile.sendKeys(filePath); //sends pdf path location
             WebElement import_btn = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("import_file"))));
@@ -80,7 +80,7 @@ public class TestImageBasedPDFs {
         try {
             //Attempts to upload pdf file
             WebDriverWait wait = new WebDriverWait(driver, 500);
-            String filePath = System.getProperty("user.dir") + "/src/test/pdf/Cliffside_CSA_Report_NCDENR_Submittal.pdf";
+            String filePath = System.getProperty("user.dir") + "/test/pdf/Cliffside_CSA_Report_NCDENR_Submittal.pdf";
             WebElement chooseFile = driver.findElement(By.id("file"));
             chooseFile.sendKeys(filePath); //sends pdf path location
             WebElement import_btn = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("import_file"))));

@@ -69,7 +69,7 @@ public class Testboron_isotopic {
     }
     //go on and upload the pdf file
     private void UploadPDF() throws InterruptedException {
-        String filePath = System.getProperty("user.dir") + "/src/test/pdf/boron_isotopic_anal.pdf";
+        String filePath = System.getProperty("user.dir") + "/test/pdf/boron_isotopic_anal.pdf";
         WebElement chooseFile = driver.findElement(By.id("file"));
         chooseFile.sendKeys(filePath);
         Thread.sleep(1000);
