@@ -75,8 +75,9 @@ DEPENDENCIES
   jruby-jars (= 9.2.0.0)
   rack (~> 2.0.4)
   rake
+  ruby-maven
   tilt (~> 2.0.8)
   warbler (~> 2.0.4)
 
 BUNDLED WITH
-   1.16.2
+   1.16.5

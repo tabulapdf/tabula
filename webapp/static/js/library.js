@@ -154,7 +154,7 @@ Tabula.Library = Backbone.View.extend({
       _.bindAll(this, 'uploadPDF', 'render', 'renderFileLibrary');
       this.files_collection = new Tabula.UploadedFilesCollection([]);
       this.files_collection.fetch({silent: true, complete: _.bind(function(){ this.render(); }, this) });
-      
+
       this.listenTo(this.files_collection, 'add', this.renderFileLibrary);
       this.uploads_collection = new Tabula.FileUploadsCollection([]);
 
@@ -198,6 +198,8 @@ Tabula.Library = Backbone.View.extend({
       },this));
 
       var formdata = new FormData($('form#upload')[0]);
+      console.log("URL");
+      console.log($('form#upload').attr('action'));
       $.ajax({
           url: $('form#upload').attr('action'),
           type: 'POST',
@@ -270,9 +272,9 @@ Tabula.Library = Backbone.View.extend({
           } );
       }else{
         $('#library-container').hide();
-        $('#library-container').
-          after(_.template( $('#help-template').html().replace(/nestedscript/g, 'script') )({})).
-          after('<h1>First time using Tabula? Welcome!</h1>');
+        // $('#library-container').
+//          after(_.template( $('#help-template').html().replace(/nestedscript/g, 'script') )({})).
+//        after('<h1>First time using Tabula? Welcome!</h1>');
         $('.jumbotron.help').css('padding-top', '10px');
       }
     },
@@ -283,6 +285,8 @@ Tabula.Library = Backbone.View.extend({
         pct_complete: 0,
         importing: false
       }) );
+      $('#tabula-app').append( _.template( $('#social-media-nav').html().replace(/nestedscript/g, 'script') )({ })  )
+
       this.renderFileLibrary();
       this.renderNotification();
       this.renderVersion();

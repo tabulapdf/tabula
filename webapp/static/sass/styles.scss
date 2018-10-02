@@ -334,6 +334,13 @@ form {
 			-moz-user-select: none;
 			-webkit-user-select: none;
 			-ms-user-select: none;
+
+      // user-drag: none;
+      // -moz-user-drag: none;
+      // -webkit-user-drag: none;
+      // -ms-user-drag: none;
+      
+      // pointer-events: none;
 		}		
 	}
 	.selection-box, .table-region {
@@ -521,4 +528,87 @@ div.spinner {
 		top: 6px;
 		margin-right: 5px;
 	}
+}
+
+/* social media bar, via NCSU 2018 */
+.social-media-nav {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  width: 70%;
+  padding-bottom: 5px;
+  border-bottom: none;
+  border-top: 1px solid #ddd;
+
+  .navbar {
+    border-bottom: none;
+
+    a {
+      border-bottom: none;
+    }
+  }
+}
+.navbar_1 .navbar-nav_1 {
+    display: inline-block;
+    float: none;
+}
+
+.navbar_1 .navbar-collapse_1 {
+    text-align: center;
+}
+
+/* NCSU 2018 regex stuff */
+.header-region{
+  position: absolute;
+  border: 3px solid rgba(41, 255, 52, 0.8);
+  background: rgba(31, 255, 32, 0.2);
+  box-sizing: border-box;
+}
+
+.footer-region{
+  position: absolute;
+  border: 3px solid rgba(19, 248, 255, 0.8);
+  background: rgba(15, 183, 255, 0.2);
+  box-sizing: border-box;
+}
+
+.header-region:hover, .footer-region:hover{
+  cursor: row-resize;
+}
+
+
+#regex-container {
+  background: #eeeeee;
+  float: right;
+  right: 0px;
+  position: fixed;
+  top: 104px;
+  height:90%;
+  width: 230px;
+  display: inline;
+  overflow-y: scroll;
+  padding-top: 20px;
+  padding-bottom: 40px;
+
+
+  .regex-result {
+    .del {
+      cursor: pointer;
+      &:hover {
+        background: #ffc314;
+      }
+    }  
+  }
+  .regex-results-table {
+    border: 1px solid gray;
+    width: 100%;
+
+    th {
+      padding: 5px;
+    } 
+    td {
+      border: 1px solid black;
+      padding: 3px;
+    }
+  }
 }

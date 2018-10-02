@@ -29,12 +29,14 @@ var TabulaRouter = Backbone.Router.extend({
     document.title="Help | Tabula";
     $('nav li a').removeClass('active'); $('nav #help-nav').addClass('active');
     $('#tabula-app').html( _.template( $('#help-template').html().replace(/nestedscript/g, 'script') )({ }) );
+    $('#tabula-app').append( _.template( $('#social-media-nav').html().replace(/nestedscript/g, 'script') )({ })  );
   },
 
   about: function(){
     document.title="About | Tabula";
     $('nav li a').removeClass('active'); $('nav #about-nav').addClass('active');
     $('#tabula-app').html( _.template( $('#about-template').html().replace(/nestedscript/g, 'script') )({ }) );
+    $('#tabula-app').append( _.template( $('#social-media-nav').html().replace(/nestedscript/g, 'script') )({ })  );
   },
 
   templates: function(){

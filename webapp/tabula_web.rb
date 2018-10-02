@@ -8,11 +8,16 @@ require 'csv'
 require 'tempfile'
 require 'fileutils'
 require 'securerandom'
+require 'java'
+require 'singleton'
 
 require_relative '../lib/tabula_java_wrapper.rb'
 java_import 'java.io.ByteArrayOutputStream'
 java_import 'java.util.zip.ZipEntry'
 java_import 'java.util.zip.ZipOutputStream'
+java_import org.apache.pdfbox.pdmodel.PDDocument
+java_import org.apache.pdfbox.cos.COSDictionary
+java_import org.apache.pdfbox.cos.COSName
 
 require_relative './tabula_settings.rb'
 
@@ -28,11 +33,52 @@ require_relative '../lib/tabula_job_executor/jobs/generate_document_data.rb'
 require_relative '../lib/tabula_job_executor/jobs/generate_thumbnails.rb'
 require_relative '../lib/tabula_job_executor/jobs/detect_tables.rb'
 
+class RegexQueryMetaData
+
+  attr_accessor :regex_searches,:filter_area,:doc_ID
+  attr_reader   :file
+
+  include Singleton
+
+  def initialize
+    @doc_ID=String.new()
+    @regex_searches=[]
+    @file = nil
+    @filter_area = nil
+  end
+
+  def is_new_doc(docID)
+    puts !(@doc_ID == docID)
+    return !(@doc_ID == docID)
+  end
+
+  def reset_for_new_doc(docID)
+
+    @doc_ID=docID
+    @regex_searches=[]
+
+    @filter_area = nil #Page margins are initially not set
+
+    unless @file.nil?
+      @file.close() #TODO: figure out if a warning should be thrown here....
+    end
+
+    output_dir = File.join(TabulaSettings::DOCUMENTS_BASEPATH, @doc_ID)
+    @file = PDDocument.load(Java::JavaIO::File.new(File.join(output_dir,'document.pdf')))
+
+
+
+  end
+end
+
+
 
 def is_valid_pdf?(path)
   File.open(path, 'r') { |f| f.read(4) } == '%PDF'
 end
 
+
+regex_query_meta_data = RegexQueryMetaData.instance()
 
 STATIC_ROOT = if defined?($servlet_context)
                 File.join($servlet_context.getRealPath('/'), 'WEB-INF/webapp/static')
@@ -239,7 +285,6 @@ Cuba.define do
     end
   end
 
-
   on get do
     on 'pdfs' do
       run Rack::File.new(TabulaSettings::DOCUMENTS_BASEPATH)
@@ -277,6 +322,60 @@ Cuba.define do
   end # /get
 
   on post do
+    on 'regex' do
+      on 'reset' do
+        regex_query_meta_data.reset_for_new_doc(req.params['file_path'])
+        res.write ''
+      end
+
+      on 'search' do
+
+        regex_search = Java::TechnologyTabulaDetectors::RegexSearch.new(req.params['pattern_before'],
+                                                                        req.params['include_pattern_before'],
+                                                                        req.params['pattern_after'],
+                                                                        req.params['include_pattern_after'],
+                                                                        regex_query_meta_data.file,
+                                                                        regex_query_meta_data.filter_area)
+
+        regex_query_meta_data.regex_searches.push(regex_search)
+
+        gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+        res.write(gson.to_json(regex_search))
+      end
+
+      on 'check-on-resize' do
+        regex_query_meta_data.filter_area = Java::TechnologyTabulaDetectors::RegexSearch::FilteredArea.new(req.params['header_scale'].to_f,
+                                                                                              req.params['footer_scale'].to_f)
+        changedQueries = []
+
+        unless regex_query_meta_data.regex_searches.nil? || regex_query_meta_data.regex_searches.empty?
+          changedQueries = Java::TechnologyTabulaDetectors::
+              RegexSearch.checkSearchesOnFilterResize(regex_query_meta_data.file,
+                                                      regex_query_meta_data.filter_area,
+                                                      regex_query_meta_data.regex_searches)
+        end
+
+        gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+
+        res.write(gson.to_json(changedQueries))
+      end
+
+      on 'remove-search-data' do
+        removed_searches, regex_query_meta_data.regex_searches = regex_query_meta_data.regex_searches.partition {
+          |search| search.getRegexBeforeTable() == req.params['pattern_before'] &&
+            search.getRegexAfterTable() == req.params['pattern_after']
+        }
+        if removed_searches.length > 1 || removed_searches.length==0
+          res.status =500
+          res.write('Incorrect number of searches removed:')
+        else
+          gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+          res.write(gson.to_json(removed_searches))
+        end
+        res.write ''
+      end
+    end
+
     on 'upload.json' do
       # Make sure this is a PDF, before doing anything
 
@@ -332,6 +431,7 @@ Cuba.define do
       pdf_path = Tabula::Workspace.instance.get_document_path(file_id)
 
       coords = JSON.load(req.params['coords'])
+
       coords.sort_by! do |coord_set|
         [
          coord_set['page'],
@@ -340,7 +440,11 @@ Cuba.define do
         ]
       end
 
-      tables = Tabula.extract_tables(pdf_path, coords)
+      extraction_method = JSON.load(req.params['extraction_method'])
+
+      options = {"extraction_method" => extraction_method}
+
+      tables = Tabula.extract_tables(pdf_path, coords, options)
 
       filename =  if req.params['new_filename'] && req.params['new_filename'].strip.size
                     basename = File.basename(req.params['new_filename'], File.extname(req.params['new_filename']))
@@ -350,12 +454,12 @@ Cuba.define do
                   end
 
       case req.params['format']
-      when 'csv'
-        res['Content-Type'] = 'text/csv'
-        res['Content-Disposition'] = "attachment; filename=\"#{filename}.csv\""
-        tables.each do |table|
-          res.write table.to_csv
-        end
+        when 'csv'
+          res['Content-Type'] = 'text/csv'
+          res['Content-Disposition'] = "attachment; filename=\"#{filename}.csv\""
+          tables.each do |table|
+            res.write table.to_csv
+          end
       when 'tsv'
         res['Content-Type'] = 'text/tab-separated-values'
         res['Content-Disposition'] = "attachment; filename=\"#{filename}.tsv\""
@@ -389,22 +493,79 @@ Cuba.define do
         # ahahaha. I get the last laugh now.
 
         res.write String.from_java_bytes(baos.to_byte_array)
-      when 'script'
-        # Write shell script of tabula-extractor commands.  $1 takes
+        when 'script'
+
+        gson = Gson::GsonBuilder.new.setFieldNamingPolicy(Gson::FieldNamingPolicy::LOWER_CASE_WITH_UNDERSCORES).create()
+
+        sanitized_query_data = Array.new
+
+        regex_query_meta_data.regex_searches.each{ |x|
+
+          raw_search_data =JSON.parse(gson.to_json(x))
+
+          sanitized_query_data.push({pattern_before: raw_search_data["_regex_before_table"]["pattern"],
+                                     include_pattern_before: raw_search_data["_include_regex_before_table"],
+                                     pattern_after: raw_search_data["_regex_after_table"]["pattern"],
+                                     include_pattern_after: raw_search_data["_include_regex_after_table"]})
+        }
+
+        regex_cli_option = JSON.generate({queries: sanitized_query_data});
+
+        regex_cli_string = ""
+        if !regex_query_meta_data.regex_searches.empty?
+          regex_cli_string="-x '#{regex_cli_option}'"
+        end
+
+        drawn_boxes_cli_string=""
+
+        user_drawn_selections = JSON.load(req.params['user_drawn_selections'])
+
+        if user_drawn_selections.nil?
+          user_drawn_selections = []
+        end
+
+        user_drawn_selections.sort_by! do |sel_set|
+            [
+            sel_set['page'],
+            [sel_set['y1'], sel_set['y2']].min.to_i / 10,
+            [sel_set['x1'], sel_set['x2']].min
+            ]
+          end
+
+        user_drawn_selections.each do |s|
+          drawn_boxes_cli_string = drawn_boxes_cli_string +
+            " -a #{s['y1'].round(3)},#{s['x1'].round(3)},#{s['y2'].round(3)},#{s['x2'].round(3)} -p #{s['page']}"
+        end
+
+       extraction_cli_string = ''
+
+       coords.each do |c|
+         extraction_cli_string = if c['extraction_method'] == "original"
+                                   "--no-spreadsheet"
+                                 elsif c['extraction_method'] == "spreadsheet"
+                                   "--spreadsheet"
+                                 elsif c['extraction_method'] == "stream"
+                                   "--stream"
+                                 elsif c['extraction_method'] == "lattice"
+                                   "--lattice"
+                                 else
+                                      ' ' #Non-empty string
+                                 end
+         break
+       end
+
+
+       margins = JSON.load(req.params['margin_scale'])
+
+       margin_cli_string ="-m '#{margins}'"
+          # Write shell script of tabula-extractor commands.  $1 takes
         # the name of a file from the command line and passes it
         # to tabula-extractor so the script can be reused on similar pdfs.
         res['Content-Type'] = 'application/x-sh'
         res['Content-Disposition'] = "attachment; filename=\"#{filename}.sh\""
-        coords.each do |c|
-          extraction_method_switch = if c['extraction_method'] == "original"
-                                        "--no-spreadsheet"
-                                     elsif c['extraction_method'] == "spreadsheet"
-                                        "--spreadsheet"
-                                     else
-                                        ""
-                                     end
-          res.write "java -jar tabula-java.jar #{extraction_method_switch} -a #{c['y1'].round(3)},#{c['x1'].round(3)},#{c['y2'].round(3)},#{c['x2'].round(3)} -p #{c['page']} \"$1\" \n"
-        end
+
+        res.write "java -jar tabula-java.jar #{extraction_cli_string} #{regex_cli_string} #{drawn_boxes_cli_string} #{margin_cli_string} \"$1\" \n"
+
       when 'bbox'
         # Write json representation of bounding boxes and pages for
         # use in OCR and other back ends.
