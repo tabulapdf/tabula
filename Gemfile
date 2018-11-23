@@ -5,7 +5,7 @@
 source "https://rubygems.org"
 platform :jruby do
   gem "cuba", "~> 3.9.2"
-  gem "rack", "~> 2.0.4"
+  gem "rack", ">= 2.0.6"
   gem "tilt", "~> 2.0.8"
 
   group :development do
