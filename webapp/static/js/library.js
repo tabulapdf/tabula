@@ -1,4 +1,5 @@
 Tabula = window.Tabula || {};
+var base_uri = $('base').attr("href");
 
 Tabula.FileUpload = Backbone.Model.extend({
   // isOneOfMultiple:
@@ -19,7 +20,7 @@ Tabula.FileUpload = Backbone.Model.extend({
     }else{
       $.ajax({
           dataType: 'json',
-          url: '/queue/'+this.get('upload_id')+'/json?file_id=' + this.get('file_id'),
+          url: (base_uri || '/') + 'queue/'+this.get('upload_id')+'/json?file_id=' + this.get('file_id'),
           success: _.bind(function(data, status, xhr) {
             if( (data.message.length && data.message != "complete") || data.pct_complete == 100 ){
               this.set('message',  data.message);
