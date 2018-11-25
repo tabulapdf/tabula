@@ -85,7 +85,7 @@ module TabulaSettings
     DEFAULT_DISABLE_VERSION_CHECK
   end
 
-  def self.disableStatsCallback
+  def self.disableNotifications
     disable_notifications = java.lang.System.getProperty('tabula.disable_notifications')
     unless disable_notifications.nil?
       return (disable_notifications.to_i > 0)
