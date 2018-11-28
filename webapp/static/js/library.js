@@ -119,7 +119,7 @@ Tabula.UploadedFileView = Backbone.View.extend({
     if (!confirm('Delete file "'+btn.data('filename')+'"?')) return;
     var pdf_id = btn.data('pdfid');
 
-    $.post('/pdf/' + pdf_id,
+    $.post((base_uri || '/') + 'pdf/' + pdf_id,
           { _method: 'delete' },
           function() {
             tr.fadeOut(200, function() { $(this).remove(); });
@@ -315,7 +315,7 @@ Tabula.ProgressBar = Backbone.View.extend({
         if(this.model.get('isOneOfMultiple')){
           this.remove();
         }else{
-          window.location = '/pdf/' + this.model.get('file_id');
+          window.location = (base_uri || '/') + 'pdf/' + this.model.get('file_id');
         };
       }else if(this.model.get('pct_complete') >= 100 && this.model.get('error')){
         this.$el.find('h4').text("Upload Failed.");
