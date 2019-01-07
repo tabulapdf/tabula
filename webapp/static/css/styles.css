@@ -7539,6 +7539,20 @@ form {
   color: #333;
 }
 
+#notifications-approval-clicky{
+  width: 100%;
+  padding: 1em 3em;
+  position: fixed;
+  bottom: 0;
+  background: #FFFFE0;
+  font-size: 14px;
+}
+#notifications-approval-clicky #notifications-approval-close {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
 #main-pane {
   background: #777777;
   padding: 4.25em 2em 2em 2em;
