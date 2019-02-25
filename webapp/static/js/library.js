@@ -1,4 +1,5 @@
 Tabula = window.Tabula || {};
+var base_uri = $('base').attr("href");
 
 Tabula.FileUpload = Backbone.Model.extend({
   // isOneOfMultiple:
@@ -19,7 +20,7 @@ Tabula.FileUpload = Backbone.Model.extend({
     }else{
       $.ajax({
           dataType: 'json',
-          url: '/queue/'+this.get('upload_id')+'/json?file_id=' + this.get('file_id'),
+          url: (base_uri || '/') + 'queue/'+this.get('upload_id')+'/json?file_id=' + this.get('file_id'),
           success: _.bind(function(data, status, xhr) {
             if( (data.message.length && data.message != "complete") || data.pct_complete == 100 ){
               this.set('message',  data.message);
@@ -118,7 +119,7 @@ Tabula.UploadedFileView = Backbone.View.extend({
     if (!confirm('Delete file "'+btn.data('filename')+'"?')) return;
     var pdf_id = btn.data('pdfid');
 
-    $.post('/pdf/' + pdf_id,
+    $.post((base_uri || '/') + 'pdf/' + pdf_id,
           { _method: 'delete' },
           function() {
             tr.fadeOut(200, function() { $(this).remove(); });
@@ -314,7 +315,7 @@ Tabula.ProgressBar = Backbone.View.extend({
         if(this.model.get('isOneOfMultiple')){
           this.remove();
         }else{
-          window.location = '/pdf/' + this.model.get('file_id');
+          window.location = (base_uri || '/') + 'pdf/' + this.model.get('file_id');
         };
       }else if(this.model.get('pct_complete') >= 100 && this.model.get('error')){
         this.$el.find('h4').text("Upload Failed.");

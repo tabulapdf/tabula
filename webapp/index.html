@@ -289,7 +289,7 @@
 
             <div id="upload-form-container">
               <h4>Import one or more PDFs</h4>
-              <form id="upload" action="/upload.json" method="post" enctype="multipart/form-data" class="form-inline">
+              <form id="upload" action="upload.json" method="post" enctype="multipart/form-data" class="form-inline">
 
                 <div class="input-group">
                   <!-- we are using this here: http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
@@ -487,7 +487,14 @@
           </div> <!-- /jumbotron -->
         </div> <!-- /container -->
        </script>
-
+       <script type="text/template" id="notifications-approval-template">
+          <div id="notifications-approval-clicky">
+            Tabula can check for new versions and notifications from the developers and tell you about them. We count these requests to get a rough estimate of how many times Tabula is used per day (instead of Google Analytics). We never receive any information about what PDFs you extract with Tabula.
+            <input type="button" id="notifications-approval-okay" value="Okay! Notify me and count me." />
+            <input type="button" id="notifications-approval-opt-out" value="No thanks" />
+            <a id="notifications-approval-close" >✕</a>
+          </div>
+       </script>
 
     </div> <!-- /templates -->
 
