@@ -1,0 +1,14 @@
+version: '3.3'
+services:
+  web: &web
+    build:
+      context: .
+    command: "jruby -G -r jbundler -S rackup -p 9292 -o 0.0.0.0 config.ru"
+    volumes:
+      - .:/app
+      - bundle:/usr/local/bundle
+    ports:
+      - 9292:9292
+
+volumes:
+  bundle:
