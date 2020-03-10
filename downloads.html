@@ -35,8 +35,8 @@ body {
 <script type="text/javascript">
 
   var margin = {top: 20, right: 20, bottom: 30, left: 40},
-  width = 960 - margin.left - margin.right,
-  height = 500 - margin.top - margin.bottom;
+  width = 1300 - margin.left - margin.right,
+  height = 550 - margin.top - margin.bottom;
 
   var x = d3.scale.ordinal()
     .rangeRoundBands([0, width-20], .1);
@@ -172,6 +172,11 @@ body {
       .attr("dy", ".35em")
       .style("text-anchor", "end")
       .text(function(d) { return d; });
+
+  d3.selectAll(".x.axis .tick").attr("transform", function(d, i, a) {
+            var curXform = d3.select(this).attr("transform");
+            return curXform + "translate(0," + (i % 2 == 0 ? "12" : "0") + ")";
+          });
 
 
   d3.select("body").append('p').text('Total downloads: ' + total_downloads);
