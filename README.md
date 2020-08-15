@@ -1,6 +1,10 @@
-**Repo Note**: The `master` branch is an *in development* version of Tabula. This may be substantially different from the latest [releases of Tabula](https://github.com/tabulapdf/tabula/releases).
+**Is `tabula` an active project?**
 
-*As of August 2015, the master branch (and Tabula 1.1.X+) uses [tabula-java](https://github.com/tabulapdf/tabula-java) instead of [tabula-extractor](https://github.com/tabulapdf/tabula-extractor) under the hood. Previous versions of Tabula use tabula-extractor.*
+Tabula is, and always have been, a volunteer-run project. We've ocassionally had funding for specific features, but it's never been a commercial undertaking. At the moment, none of the original authors have the time to actively work on the project. The end-user application, hosted on this repo, is unlikely to see updates from us in the near future. [`tabula-java`](https://github.com/tabulapdf/tabula-java) sees updates and occasional bug-fix releases from time to time.
+
+--
+
+**Repo Note**: The `master` branch is an *in development* version of Tabula. This may be substantially different from the latest [releases of Tabula](https://github.com/tabulapdf/tabula/releases).
 
 ---
 
