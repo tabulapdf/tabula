@@ -1,6 +1,6 @@
 **Is `tabula` an active project?**
 
-Tabula is, and always have been, a volunteer-run project. We've ocassionally had funding for specific features, but it's never been a commercial undertaking. At the moment, none of the original authors have the time to actively work on the project. The end-user application, hosted on this repo, is unlikely to see updates from us in the near future. [`tabula-java`](https://github.com/tabulapdf/tabula-java) sees updates and occasional bug-fix releases from time to time.
+Tabula is, and always has been, a volunteer-run project. We've ocassionally had funding for specific features, but it's never been a commercial undertaking. At the moment, none of the original authors have the time to actively work on the project. The end-user application, hosted on this repo, is unlikely to see updates from us in the near future. [`tabula-java`](https://github.com/tabulapdf/tabula-java) sees updates and occasional bug-fix releases from time to time.
 
 --
 
