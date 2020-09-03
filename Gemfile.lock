@@ -71,6 +71,7 @@ GEM
 
 PLATFORMS
   java
+  ruby
 
 DEPENDENCIES
   bootstrap-sass (>= 3.4.1)
