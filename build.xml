@@ -87,7 +87,7 @@
             fileVersion="${full_version}"
             txtFileVersion="${full_version}"
             fileDescription="tabula"
-            copyright="© 2012-2018 Manuel Aristarán"
+            copyright="© 2012-2020 Manuel Aristarán"
             productVersion="${full_version}"
             txtProductVersion="${full_version}"
             productName="Tabula"

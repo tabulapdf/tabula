@@ -14,7 +14,7 @@ Tabula helps you liberate data tables trapped inside PDF files.
 * Find a bug? Report it on GitHub:
   https://github.com/tabulapdf/tabula/issues
 
-© 2012-2016 Manuel Aristarán. Available under MIT License.
+© 2012-2020 Manuel Aristarán. Available under MIT License.
 See `AUTHORS.txt` and `LICENSE.txt`.
 
 ---

@@ -1,20 +1,18 @@
 ---
 :runtime:
+- org.apache.pdfbox:fontbox:jar:2.0.21
+- org.apache.pdfbox:pdfbox:jar:2.0.21
 - commons-cli:commons-cli:jar:1.4
-- org.bouncycastle:bcpkix-jdk15on:jar:1.62
-- org.locationtech.jts:jts-core:jar:1.15.0
-- org.apache.pdfbox:jbig2-imageio:jar:3.0.2
-- org.apache.pdfbox:pdfbox:jar:2.0.15
-- com.google.code.gson:gson:jar:2.8.5
-- org.slf4j:slf4j-simple:jar:1.7.26
-- technology.tabula:tabula:jar:1.0.3
+- org.apache.pdfbox:jbig2-imageio:jar:3.0.3
+- org.slf4j:slf4j-simple:jar:1.7.30
+- org.bouncycastle:bcpkix-jdk15on:jar:1.66
+- org.bouncycastle:bcprov-jdk15on:jar:1.66
+- org.bouncycastle:bcmail-jdk15on:jar:1.66
+- com.google.code.gson:gson:jar:2.8.6
 - commons-logging:commons-logging:jar:1.2
 - com.github.jai-imageio:jai-imageio-core:jar:1.4.0
-- org.apache.commons:commons-csv:jar:1.7
-- org.bouncycastle:bcmail-jdk15on:jar:1.62
-- jline:jline:jar:2.14.6
-- org.yaml:snakeyaml:jar:1.23
-- org.apache.pdfbox:fontbox:jar:2.0.15
-- org.bouncycastle:bcprov-jdk15on:jar:1.62
-- org.slf4j:slf4j-api:jar:1.7.26
+- org.slf4j:slf4j-api:jar:1.7.30
+- technology.tabula:tabula:jar:1.0.4
+- org.apache.commons:commons-csv:jar:1.8
 - com.github.jai-imageio:jai-imageio-jpeg2000:jar:1.3.0
+- org.locationtech.jts:jts-core:jar:1.17.0

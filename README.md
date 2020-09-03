@@ -17,7 +17,7 @@ Tabula helps you liberate data tables trapped inside PDF files.
 * [Read more about Tabula on OpenNews Source](https://source.opennews.org/en-US/articles/introducing-tabula/)
 * Interested in using Tabula on the command-line? Check out [tabula-java](https://github.com/tabulapdf/tabula-java), a Java library and command-line interface for Tabula. (This is the extraction library that powers Tabula.)
 
-© 2012-2018 Manuel Aristarán. Available under MIT License. See
+© 2012-2020 Manuel Aristarán. Available under MIT License. See
 [`AUTHORS.md`](AUTHORS.md) and [`LICENSE.md`](LICENSE.md).
 
 -   [Why Tabula?](#why-tabula)
@@ -154,7 +154,7 @@ Tabula has bindings for JRuby and R. If you end up writing bindings for another 
     git clone git://github.com/tabulapdf/tabula.git
     cd tabula
 
-    gem install bundler
+    gem install bundler -v 1.17.3
     bundle install
     jruby -S jbundle install
     ~~~
@@ -209,7 +209,7 @@ on the machine you are building it on, you may remove this entire <exec> block (
 
 To compile the app:
 
-    rake macosx
+    WEBSERVER_VERSION=9.4.31.v20200723 MAVEN_REPO=https://repo1.maven.org/maven2 rake macosx
 
 This will result in a portable "tabula_mac.zip" archive (inside the `build` directory)
 for Mac OS X users.
@@ -235,7 +235,7 @@ is in the repository root.
 
 Then:
 
-    rake windows
+    WEBSERVER_VERSION=9.4.31.v20200723 MAVEN_REPO=https://repo1.maven.org/maven2 rake windows
 
 This will result in a portable "tabula_win.zip" archive (inside the `build` directory)
 for Mac OS X users.
@@ -246,7 +246,7 @@ If you have issues, you can try building manually. (These commands are for
 OS X/Linux and may need to be adjusted for Windows users.)
 
     # (from the root directory of the repo)
-    rake war
+    WEBSERVER_VERSION=9.4.31.v20200723 MAVEN_REPO=https://repo1.maven.org/maven2 rake war
     cd launch4j
     ant -f ../build.xml windows
 

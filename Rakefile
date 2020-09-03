@@ -13,6 +13,7 @@ Warbler::Task.new("war",
     config.webxml.jruby.rack.logging = "stderr"
     config.dirs = ['lib', 'webapp']
     config.override_gem_home = false
+    config.init_contents << StringIO.new("\nGem.clear_paths\nGem.path\n\n")
   }
 )
 
