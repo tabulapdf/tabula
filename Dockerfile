@@ -1,4 +1,4 @@
-FROM jruby:9.1-jdk
+FROM jruby:9.2-jdk
 
 RUN apt-get update -qq && apt-get install -y build-essential
 RUN echo 'gem: --no-rdoc --no-ri' >> /.gemrc
