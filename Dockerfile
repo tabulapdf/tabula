@@ -1,6 +1,6 @@
 FROM jruby:9.2-jdk
 
-RUN apt-get update -qq && apt-get install -y build-essential \
+RUN apt-get update -qq && apt-get install -y build-essential git \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN echo 'gem: --no-rdoc --no-ri' >> /.gemrc
 
