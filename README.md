@@ -89,6 +89,45 @@ If you have a problem, check [Known Issues](#knownissues) first, then [report an
 
   `java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Dwarbler.port=9999 -jar tabula.jar`
 
+* ### [Docker Compose](https://docs.docker.com/compose/) quick start using [Amazon Correttto](https://github.com/corretto) image
+  Make a new directory e.g. `tabulapdf` and enter it.
+  
+  `mkdir -p /opt/docker/tabulapdf`
+  `cd /opt/docker/tabulapdf`
+  
+  Download tabula-jar package - for example version 1.2.1
+  
+  `wget https://github.com/tabulapdf/tabula/releases/download/v1.2.1/tabula-jar-1.2.1.zip`
+  
+  verify checksum (compare output with the release page)
+
+  `sha256sum tabula-jar-1.2.1.zip`
+  
+  and unzip it.
+  
+  `unzip tabula-jar-1.2.1.zip`
+  
+  Place or create a `docker-compose.yml` file, adjust accordingly
+  
+  ```
+  ### tabulapdf docker-compose.yml example ###
+  services:
+  tabulapdf:
+    image: amazoncorretto:17
+    container_name: tabulapdf-app
+    command: >
+      java -Dfile.encoding=utf-8 -Xms256M -Xmx1024M -Dwarbler.port=8080 -Dtabula.openBrowser=false -jar /app/tabula.jar
+    volumes:
+      - ./tabula:/app
+    ports:
+      - "8080:8080"
+  ```
+  
+  Run the app with
+  
+  `docker compose up -d`
+  
+  The app will be exposed on port 8080 and can be easily paired with a reverse proxy e.g. traefik
 
 If the program fails to run, double-check that you have [Java installed][jre_download]
 and then try again.
