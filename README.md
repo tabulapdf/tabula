@@ -194,7 +194,7 @@ Tabula has bindings for JRuby and R. If you end up writing bindings for another 
    `rbenv`, ensure that JRuby is being used.
 
     ~~~
-    git clone git://github.com/tabulapdf/tabula.git
+    git clone https://github.com/tabulapdf/tabula.git
     cd tabula
 
     gem install bundler -v 1.17.3
