@@ -74,7 +74,16 @@ If you have a problem, check [Known Issues](#knownissues) first, then [report an
 
   Note: If you’re running Mac OS X 10.8 or later, you might get an error like "Tabula is damaged and can't be opened." We're working on fixing this, but click [here](#gatekeeper) for a workaround.
 
+* ### Linux snap
+  
+  Tabula is packaged as a snap package. If you have snap on your system, you can install it with
+
+  ```bash
+  sudo snap install tabula
+  ```
+
 * ### Other platforms (e.g. Linux)
+
   Download `tabula-jar.zip` from [the download site][tabula_dl] and unzip it
   to the directory of your choice. Open a terminal window, and `cd` to inside
   the `tabula` directory you just unzipped. Then run:
